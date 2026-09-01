@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { storage } from "./lib/storage.js";
+import { storage } from "./storage.js";
 import {
   Home,
   Compass,

@@ -20,20 +20,38 @@ O GitHub é onde o código da tua app fica guardado.
    nenhuma opção de "Add a README" — este projeto já vem com um.
 4. Clica em **"Create repository"**.
 
-### Carregar os ficheiros (sem terminal, direto no browser)
+### Carregar os ficheiros pelo telemóvel (passo a passo)
 
-1. Na página do repositório que acabaste de criar, procura o link
-   **"uploading an existing file"** (aparece no meio da página, nas
-   instruções de arranque).
-2. Extrai o `.zip` que te enviei no teu computador (duplo-clique nele,
-   ou "Extrair tudo").
-3. Arrasta **todo o conteúdo** da pasta extraída (todos os ficheiros e
-   pastas — `src`, `public`, `package.json`, etc.) para a área de
-   upload do GitHub.
-4. Em baixo, onde diz "Commit changes", podes deixar o texto como
-   está, e clicas no botão verde **"Commit changes"**.
+Isto é feito em **duas partes**, porque o telemóvel não consegue
+enviar pastas inteiras de uma vez — só ficheiros soltos. Não há
+problema, o projeto foi organizado para precisar de só uma pasta.
 
-Pronto — o código já está no GitHub.
+**Parte A — a pasta `public`**
+
+1. Na página do teu repositório, toca em **"Add file"** → **"Create new file"**.
+2. No campo do nome do ficheiro, escreve exatamente: `public/.manter`
+3. Desce e toca em **"Commit changes"**. Isto cria a pasta `public`.
+4. Volta à página principal do repositório e toca na pasta **"public"**
+   que agora aparece na lista.
+5. Lá dentro, toca em **"Add file"** → **"Upload files"**.
+6. Seleciona estes 5 ficheiros da pasta `public` que extraíste no
+   telemóvel: `favicon.png`, `manifest.json`, `icon-192.png`,
+   `icon-512.png`, `apple-touch-icon.png`.
+7. Toca em **"Commit changes"**.
+
+**Parte B — todos os outros ficheiros**
+
+1. Volta à página principal do repositório (toca no nome
+   "Escola-3s" no topo).
+2. Toca em **"Add file"** → **"Upload files"**.
+3. Desta vez, seleciona **todos os ficheiros que NÃO estão dentro de
+   nenhuma pasta** na pasta extraída: `index.html`, `App.jsx`,
+   `main.jsx`, `index.css`, `storage.js`, `supabase.js`,
+   `package.json`, `vite.config.js`, `tailwind.config.js`,
+   `postcss.config.js`, `README.md`.
+4. Toca em **"Commit changes"**.
+
+Pronto — o código já está no GitHub, organizado corretamente.
 
 ## Passo 2 — Criar conta na Vercel (grátis)
 
@@ -68,13 +86,13 @@ em vez de só no telemóvel de cada pessoa.
 
 Enquanto não fizeres este passo, a app **já funciona na mesma** —
 os dados ficam guardados no telemóvel/computador de cada pessoa
-(através do ficheiro `src/lib/storage.js`). Só não são partilhados
+(através do ficheiro `storage.js`). Só não são partilhados
 entre dispositivos diferentes.
 
 ## Ícone da app (instalar no telemóvel/computador)
 
 Este projeto já vem com o logótipo da Escola 3S preparado como ícone
-(`public/icons/`). Assim que a app estiver publicada (Passo 2), quem a
+(dentro da pasta `public/`). Assim que a app estiver publicada (Passo 2), quem a
 visitar pode "Adicionar ao ecrã principal" (no telemóvel) ou instalar
 como app (no computador, através do ícone que aparece na barra de
 endereço do Chrome) — e o ícone que aparece já é o teu, não um
