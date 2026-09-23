@@ -1,4 +1,4 @@
-// VERSAO-07-SET-MBWAY-REAL
+// VERSAO-07-SET-MATERIAL-GRATIS
 import { useState, useEffect } from "react";
 import { supabase } from "./supabase.js";
 import {
@@ -2436,7 +2436,7 @@ function ConteudoDetalhe({ curso, concluido, onToggleConcluido, onBack, materiai
                                   <MaterialCard
                                     key={mid}
                                     material={m}
-                                    desbloqueado={acessoTotal || Boolean(materiaisDesbloqueados[mid])}
+                                    desbloqueado={true}
                                     onDesbloquear={() => onDesbloquearMaterial(mid)}
                                     desbloqueadoFisico={acessoTotal || Boolean(materiaisDesbloqueados[mid + "-fisico"])}
                                     onDesbloquearFisico={() => onDesbloquearMaterial(mid + "-fisico")}
@@ -2484,7 +2484,7 @@ function ConteudoDetalhe({ curso, concluido, onToggleConcluido, onBack, materiai
                   <MaterialCard
                     key={mid}
                     material={m}
-                    desbloqueado={acessoTotal || Boolean(materiaisDesbloqueados[mid])}
+                    desbloqueado={true}
                     onDesbloquear={() => onDesbloquearMaterial(mid)}
                     desbloqueadoFisico={acessoTotal || Boolean(materiaisDesbloqueados[mid + "-fisico"])}
                     onDesbloquearFisico={() => onDesbloquearMaterial(mid + "-fisico")}
@@ -3870,7 +3870,7 @@ function MaterialDidaticoScreen({ onBack, desbloqueados, onDesbloquear, acessoTo
             <MaterialCard
               key={m.id}
               material={m}
-              desbloqueado={acessoTotal || Boolean(desbloqueados[m.id])}
+              desbloqueado={true}
               onDesbloquear={() => onDesbloquear(m.id)}
               desbloqueadoFisico={acessoTotal || Boolean(desbloqueados[m.id + "-fisico"])}
               onDesbloquearFisico={() => onDesbloquear(m.id + "-fisico")}
