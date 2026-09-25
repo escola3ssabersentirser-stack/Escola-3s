@@ -1,4 +1,4 @@
-// VERSAO-07-SET-SEGURANCA-AGENDA-MENTORA
+// VERSAO-07-SET-PRECOS-MATERIAL-249-699
 import { useState, useEffect } from "react";
 import { supabase } from "./supabase.js";
 import {
@@ -365,9 +365,9 @@ const materiais = [
   { id: 10, titulo: "Cartas Relações", formato: "Cartas", preco: "15€", url: "/cartas-relacoes.pdf" },
   { id: 11, titulo: "Ficha — Roda da Vida", formato: "Ficha", preco: "5€", url: "/roda-da-vida.pdf" },
   { id: 12, titulo: "A Rapariga Descalça", formato: "Livro", preco: "15€", url: "", tambemFisico: true, precoFisico: "22€" },
-  { id: 13, titulo: "Amina", formato: "Livro", preco: "15€", url: "/amina.pdf", tambemFisico: true, precoFisico: "22€" },
-  { id: 14, titulo: "Porta 15", formato: "Livro", preco: "15€", url: "/porta-15.pdf", tambemFisico: true, precoFisico: "22€" },
-  { id: 15, titulo: "O Último Cadeado", formato: "Livro", preco: "15€", url: "/o-ultimo-cadeado.pdf", tambemFisico: true, precoFisico: "22€" },
+  { id: 13, titulo: "Amina", formato: "Livro", preco: "6,99€", url: "/amina.pdf", tambemFisico: true, precoFisico: "22€" },
+  { id: 14, titulo: "Porta 15", formato: "Livro", preco: "6,99€", url: "/porta-15.pdf", tambemFisico: true, precoFisico: "22€" },
+  { id: 15, titulo: "O Último Cadeado", formato: "Livro", preco: "6,99€", url: "/o-ultimo-cadeado.pdf", tambemFisico: true, precoFisico: "22€" },
   { id: 16, titulo: "O Preço do Silêncio", formato: "Livro", preco: "15€", url: "", tambemFisico: true, precoFisico: "22€" },
   { id: 17, titulo: "Caderno da Pertença", formato: "Caderno", preco: "10€", url: "/caderno-pertenca.pdf", tambemFisico: true, precoFisico: "16€" },
   { id: 18, titulo: "Mapa dos Vínculos", formato: "Mapa", preco: "8€", url: "/mapa-vinculos.pdf" },
@@ -432,37 +432,37 @@ const materiais = [
   { id: 93, titulo: "Folha de Exercício — Identificar o Medo", formato: "Ficha", preco: "3€", url: "/folha-zona-conforto-aula2.pdf" },
   { id: 94, titulo: "Folha de Exercício — O Primeiro Passo", formato: "Ficha", preco: "3€", url: "/folha-zona-conforto-aula3.pdf" },
   { id: 95, titulo: "Folha de Exercício — O Meu Ciclo de Expansão", formato: "Ficha", preco: "3€", url: "/folha-zona-conforto-aula4.pdf" },
-  { id: 96, titulo: "Ferramenta A4 — Modelo GROW", formato: "Ficha", preco: "3€", url: "/ferramenta-grow.pdf" },
-  { id: 97, titulo: "Ferramenta A4 — Perguntas Poderosas", formato: "Ficha", preco: "3€", url: "/ferramenta-perguntas-poderosas.pdf" },
-  { id: 98, titulo: "Ferramenta A4 — Escuta Ativa", formato: "Ficha", preco: "3€", url: "/ferramenta-escuta-ativa.pdf" },
-  { id: 99, titulo: "Ferramenta A4 — Roda de Competências", formato: "Ficha", preco: "3€", url: "/ferramenta-roda-competencias.pdf" },
-  { id: 100, titulo: "Ferramenta A4 — Objetivos SMART", formato: "Ficha", preco: "3€", url: "/ferramenta-smart.pdf" },
-  { id: 101, titulo: "Ferramenta A4 — Plano de Ação", formato: "Ficha", preco: "3€", url: "/ferramenta-plano-acao.pdf" },
-  { id: 102, titulo: "Ferramenta A4 — Metamodelo da Linguagem", formato: "Ficha", preco: "3€", url: "/ferramenta-metamodelo.pdf" },
-  { id: 103, titulo: "Ferramenta A4 — Reenquadramento", formato: "Ficha", preco: "3€", url: "/ferramenta-reenquadramento.pdf" },
-  { id: 104, titulo: "Ferramenta A4 — Posições Percetivas", formato: "Ficha", preco: "3€", url: "/ferramenta-posicoes-percetivas.pdf" },
-  { id: 105, titulo: "Ferramenta A4 — Rapport", formato: "Ficha", preco: "3€", url: "/ferramenta-rapport.pdf" },
-  { id: 106, titulo: "Ferramenta A4 — Calibração", formato: "Ficha", preco: "3€", url: "/ferramenta-calibracao.pdf" },
-  { id: 107, titulo: "Ferramenta A4 — Comunicação Não Violenta", formato: "Ficha", preco: "3€", url: "/ferramenta-cnv.pdf" },
-  { id: 108, titulo: "Ferramenta A4 — Modelo DESC", formato: "Ficha", preco: "3€", url: "/ferramenta-desc.pdf" },
-  { id: 109, titulo: "Ferramenta A4 — Modelo SBI", formato: "Ficha", preco: "3€", url: "/ferramenta-sbi.pdf" },
-  { id: 110, titulo: "Ferramenta A4 — Feedforward", formato: "Ficha", preco: "3€", url: "/ferramenta-feedforward.pdf" },
-  { id: 111, titulo: "Ferramenta A4 — Roda da Vida", formato: "Ficha", preco: "3€", url: "/ferramenta-roda-da-vida.pdf" },
-  { id: 112, titulo: "Ferramenta A4 — Níveis Lógicos de Dilts", formato: "Ficha", preco: "3€", url: "/ferramenta-niveis-logicos.pdf" },
-  { id: 113, titulo: "Ferramenta A4 — Posições Percetivas", formato: "Ficha", preco: "3€", url: "/ferramenta-posicoes-percetivas-dp.pdf" },
-  { id: 114, titulo: "Ferramenta A4 — Perguntas para Reflexão", formato: "Ficha", preco: "3€", url: "/ferramenta-perguntas-reflexao-dp.pdf" },
-  { id: 115, titulo: "Ferramenta A4 — Mapa das Crenças", formato: "Ficha", preco: "3€", url: "/ferramenta-mapa-das-crencas-dp.pdf" },
-  { id: 116, titulo: "Ferramenta A4 — Facto ou Suposição?", formato: "Ficha", preco: "3€", url: "/ferramenta-facto-suposicao-dp.pdf" },
-  { id: 117, titulo: "Ferramenta A4 — Balança: Perdas vs. Ganhos", formato: "Ficha", preco: "3€", url: "/ferramenta-balanca-perdas-ganhos-dp.pdf" },
-  { id: 118, titulo: "Ferramenta A4 — Parar·Questionar·Ressignificar·Agir", formato: "Ficha", preco: "3€", url: "/ferramenta-parar-questionar-dp.pdf" },
-  { id: 119, titulo: "Ferramenta A4 — As 3 Zonas", formato: "Ficha", preco: "3€", url: "/ferramenta-tres-zonas-dp.pdf" },
-  { id: 120, titulo: "Ferramenta A4 — Primeiro Passo Pequeno", formato: "Ficha", preco: "3€", url: "/ferramenta-primeiro-passo-dp.pdf" },
-  { id: 121, titulo: "Ferramenta A4 — Ganho Secundário", formato: "Ficha", preco: "3€", url: "/ferramenta-ganho-secundario-dp.pdf" },
-  { id: 122, titulo: "Ferramenta A4 — Ciclo de Expansão", formato: "Ficha", preco: "3€", url: "/ferramenta-ciclo-expansao-dp.pdf" },
-  { id: 123, titulo: "Ferramenta A4 — Rotulagem Afetiva", formato: "Ficha", preco: "3€", url: "/ferramenta-rotulagem-afetiva-dp.pdf" },
-  { id: 124, titulo: "Ferramenta A4 — Validação Emocional", formato: "Ficha", preco: "3€", url: "/ferramenta-validacao-emocional-dp.pdf" },
-  { id: 125, titulo: "Ferramenta A4 — Autocompaixão", formato: "Ficha", preco: "3€", url: "/ferramenta-autocompaixao-dp.pdf" },
-  { id: 126, titulo: "Ferramenta A4 — Diário de Reflexão Diária", formato: "Ficha", preco: "3€", url: "/ferramenta-diario-reflexao-dp.pdf" },
+  { id: 96, titulo: "Ferramenta A4 — Modelo GROW", formato: "Ficha", preco: "2,49€", url: "/ferramenta-grow.pdf" },
+  { id: 97, titulo: "Ferramenta A4 — Perguntas Poderosas", formato: "Ficha", preco: "2,49€", url: "/ferramenta-perguntas-poderosas.pdf" },
+  { id: 98, titulo: "Ferramenta A4 — Escuta Ativa", formato: "Ficha", preco: "2,49€", url: "/ferramenta-escuta-ativa.pdf" },
+  { id: 99, titulo: "Ferramenta A4 — Roda de Competências", formato: "Ficha", preco: "2,49€", url: "/ferramenta-roda-competencias.pdf" },
+  { id: 100, titulo: "Ferramenta A4 — Objetivos SMART", formato: "Ficha", preco: "2,49€", url: "/ferramenta-smart.pdf" },
+  { id: 101, titulo: "Ferramenta A4 — Plano de Ação", formato: "Ficha", preco: "2,49€", url: "/ferramenta-plano-acao.pdf" },
+  { id: 102, titulo: "Ferramenta A4 — Metamodelo da Linguagem", formato: "Ficha", preco: "2,49€", url: "/ferramenta-metamodelo.pdf" },
+  { id: 103, titulo: "Ferramenta A4 — Reenquadramento", formato: "Ficha", preco: "2,49€", url: "/ferramenta-reenquadramento.pdf" },
+  { id: 104, titulo: "Ferramenta A4 — Posições Percetivas", formato: "Ficha", preco: "2,49€", url: "/ferramenta-posicoes-percetivas.pdf" },
+  { id: 105, titulo: "Ferramenta A4 — Rapport", formato: "Ficha", preco: "2,49€", url: "/ferramenta-rapport.pdf" },
+  { id: 106, titulo: "Ferramenta A4 — Calibração", formato: "Ficha", preco: "2,49€", url: "/ferramenta-calibracao.pdf" },
+  { id: 107, titulo: "Ferramenta A4 — Comunicação Não Violenta", formato: "Ficha", preco: "2,49€", url: "/ferramenta-cnv.pdf" },
+  { id: 108, titulo: "Ferramenta A4 — Modelo DESC", formato: "Ficha", preco: "2,49€", url: "/ferramenta-desc.pdf" },
+  { id: 109, titulo: "Ferramenta A4 — Modelo SBI", formato: "Ficha", preco: "2,49€", url: "/ferramenta-sbi.pdf" },
+  { id: 110, titulo: "Ferramenta A4 — Feedforward", formato: "Ficha", preco: "2,49€", url: "/ferramenta-feedforward.pdf" },
+  { id: 111, titulo: "Ferramenta A4 — Roda da Vida", formato: "Ficha", preco: "2,49€", url: "/ferramenta-roda-da-vida.pdf" },
+  { id: 112, titulo: "Ferramenta A4 — Níveis Lógicos de Dilts", formato: "Ficha", preco: "2,49€", url: "/ferramenta-niveis-logicos.pdf" },
+  { id: 113, titulo: "Ferramenta A4 — Posições Percetivas", formato: "Ficha", preco: "2,49€", url: "/ferramenta-posicoes-percetivas-dp.pdf" },
+  { id: 114, titulo: "Ferramenta A4 — Perguntas para Reflexão", formato: "Ficha", preco: "2,49€", url: "/ferramenta-perguntas-reflexao-dp.pdf" },
+  { id: 115, titulo: "Ferramenta A4 — Mapa das Crenças", formato: "Ficha", preco: "2,49€", url: "/ferramenta-mapa-das-crencas-dp.pdf" },
+  { id: 116, titulo: "Ferramenta A4 — Facto ou Suposição?", formato: "Ficha", preco: "2,49€", url: "/ferramenta-facto-suposicao-dp.pdf" },
+  { id: 117, titulo: "Ferramenta A4 — Balança: Perdas vs. Ganhos", formato: "Ficha", preco: "2,49€", url: "/ferramenta-balanca-perdas-ganhos-dp.pdf" },
+  { id: 118, titulo: "Ferramenta A4 — Parar·Questionar·Ressignificar·Agir", formato: "Ficha", preco: "2,49€", url: "/ferramenta-parar-questionar-dp.pdf" },
+  { id: 119, titulo: "Ferramenta A4 — As 3 Zonas", formato: "Ficha", preco: "2,49€", url: "/ferramenta-tres-zonas-dp.pdf" },
+  { id: 120, titulo: "Ferramenta A4 — Primeiro Passo Pequeno", formato: "Ficha", preco: "2,49€", url: "/ferramenta-primeiro-passo-dp.pdf" },
+  { id: 121, titulo: "Ferramenta A4 — Ganho Secundário", formato: "Ficha", preco: "2,49€", url: "/ferramenta-ganho-secundario-dp.pdf" },
+  { id: 122, titulo: "Ferramenta A4 — Ciclo de Expansão", formato: "Ficha", preco: "2,49€", url: "/ferramenta-ciclo-expansao-dp.pdf" },
+  { id: 123, titulo: "Ferramenta A4 — Rotulagem Afetiva", formato: "Ficha", preco: "2,49€", url: "/ferramenta-rotulagem-afetiva-dp.pdf" },
+  { id: 124, titulo: "Ferramenta A4 — Validação Emocional", formato: "Ficha", preco: "2,49€", url: "/ferramenta-validacao-emocional-dp.pdf" },
+  { id: 125, titulo: "Ferramenta A4 — Autocompaixão", formato: "Ficha", preco: "2,49€", url: "/ferramenta-autocompaixao-dp.pdf" },
+  { id: 126, titulo: "Ferramenta A4 — Diário de Reflexão Diária", formato: "Ficha", preco: "2,49€", url: "/ferramenta-diario-reflexao-dp.pdf" },
   { id: 32, titulo: "Caderno do Aluno — Crenças que Limitam", formato: "Caderno", preco: "12€", url: "/caderno-aluno-crencas-limitantes.pdf" },
   { id: 33, titulo: "Livro do Aluno — Autossabotagem", formato: "Livro", preco: "10€", url: "/livro-autossabotagem.pdf" },
   { id: 34, titulo: "Caderno de Trabalho — Autossabotagem", formato: "Caderno", preco: "10€", url: "/caderno-autossabotagem.pdf" },
@@ -2436,7 +2436,7 @@ function ConteudoDetalhe({ curso, concluido, onToggleConcluido, onBack, materiai
                                   <MaterialCard
                                     key={mid}
                                     material={m}
-                                    desbloqueado={true}
+                                    desbloqueado={acessoTotal || Boolean(materiaisDesbloqueados[mid])}
                                     onDesbloquear={() => onDesbloquearMaterial(mid)}
                                     desbloqueadoFisico={acessoTotal || Boolean(materiaisDesbloqueados[mid + "-fisico"])}
                                     onDesbloquearFisico={() => onDesbloquearMaterial(mid + "-fisico")}
@@ -2484,7 +2484,7 @@ function ConteudoDetalhe({ curso, concluido, onToggleConcluido, onBack, materiai
                   <MaterialCard
                     key={mid}
                     material={m}
-                    desbloqueado={true}
+                    desbloqueado={acessoTotal || Boolean(materiaisDesbloqueados[mid])}
                     onDesbloquear={() => onDesbloquearMaterial(mid)}
                     desbloqueadoFisico={acessoTotal || Boolean(materiaisDesbloqueados[mid + "-fisico"])}
                     onDesbloquearFisico={() => onDesbloquearMaterial(mid + "-fisico")}
@@ -3870,7 +3870,7 @@ function MaterialDidaticoScreen({ onBack, desbloqueados, onDesbloquear, acessoTo
             <MaterialCard
               key={m.id}
               material={m}
-              desbloqueado={true}
+              desbloqueado={acessoTotal || Boolean(desbloqueados[m.id])}
               onDesbloquear={() => onDesbloquear(m.id)}
               desbloqueadoFisico={acessoTotal || Boolean(desbloqueados[m.id + "-fisico"])}
               onDesbloquearFisico={() => onDesbloquear(m.id + "-fisico")}
