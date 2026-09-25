@@ -1,4 +1,4 @@
-// VERSAO-07-SET-PRECOS-MATERIAL-249-699
+// VERSAO-07-SET-CONSENTIMENTO-CONTA-INSCRITOS-EVENTO
 import { useState, useEffect } from "react";
 import { supabase } from "./supabase.js";
 import {
@@ -716,9 +716,13 @@ function LoginScreen({ onPedirConfirmacaoEmail, onPedidoRecuperacao }) {
   const [mostrarCodigo, setMostrarCodigo] = useState(false);
   const [aEnviar, setAEnviar] = useState(false);
   const [erro, setErro] = useState("");
+  const [aceitouConsentimento, setAceitouConsentimento] = useState(false);
+
+  const TEXTO_CONSENTIMENTO_CONTA = "Aceito que a Escola 3S guarde e utilize os meus dados pessoais (email e, sempre que os partilhar, nome, telemóvel e outra informação fornecida nos formulários da app) para gerir a minha conta e o meu percurso na escola.";
 
   const submeter = async () => {
     if (!email.trim() || !password.trim()) return;
+    if (modo === "criar" && !aceitouConsentimento) return;
     setErro("");
     setAEnviar(true);
     try {
@@ -731,6 +735,13 @@ function LoginScreen({ onPedirConfirmacaoEmail, onPedidoRecuperacao }) {
           password: password,
         });
         if (error) throw error;
+        if (data.user?.id) {
+          await supabase
+            .from("consentimentos_dados")
+            .insert({ user_id: data.user.id, email: email.trim(), texto_aceite: TEXTO_CONSENTIMENTO_CONTA })
+            .then(() => {})
+            .catch(() => {});
+        }
         if (!data.session) {
           // precisa de confirmar o email antes de poder entrar
           onPedirConfirmacaoEmail(email.trim());
@@ -856,9 +867,21 @@ function LoginScreen({ onPedirConfirmacaoEmail, onPedidoRecuperacao }) {
           )
         )}
 
+        {modo === "criar" && (
+          <label className="flex items-start gap-2.5 px-1">
+            <input
+              type="checkbox"
+              checked={aceitouConsentimento}
+              onChange={(e) => setAceitouConsentimento(e.target.checked)}
+              className="mt-0.5 shrink-0"
+            />
+            <span className="text-xs leading-relaxed" style={{ color: palette.navySoft }}>{TEXTO_CONSENTIMENTO_CONTA}</span>
+          </label>
+        )}
+
         <button
           onClick={submeter}
-          disabled={aEnviar}
+          disabled={aEnviar || (modo === "criar" && !aceitouConsentimento)}
           className="w-full rounded-full py-3.5 font-medium text-sm tracking-wide flex items-center justify-center gap-2 transition active:scale-[0.98] disabled:opacity-60"
           style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
         >
@@ -4189,6 +4212,10 @@ function MarcarSessaoScreen({ onBack, onConfirmar }) {
   const [confirmado, setConfirmado] = useState(false);
   const [codigoDesconto, setCodigoDesconto] = useState("");
   const [estadoPagamento, setEstadoPagamento] = useState(null);
+  const [nomeCompleto, setNomeCompleto] = useState("");
+  const [aceitouConsentimento, setAceitouConsentimento] = useState(false);
+
+  const TEXTO_CONSENTIMENTO = "Aceito fornecer os meus dados pessoais (nome, email e telemóvel) à Escola 3S, para fins de marcação e contacto sobre esta sessão.";
 
   const CODIGO_DESCONTO_COMUNIDADE = "COMUNIDADE10";
   const descontoValido = codigoDesconto.trim().toUpperCase() === CODIGO_DESCONTO_COMUNIDADE;
@@ -4230,12 +4257,29 @@ function MarcarSessaoScreen({ onBack, onConfirmar }) {
   const horariosLivres = horariosDisponiveis.filter((h) => !ocupados.includes(h.chave));
 
   const confirmarMarcacao = async () => {
-    if (!telemovel.trim() || !horario) return;
+    if (!telemovel.trim() || !horario || !nomeCompleto.trim() || !aceitouConsentimento) return;
     setErro("");
     setAConfirmar(true);
     try {
       const { data: sessaoAtual } = await supabase.auth.getSession();
       const userId = sessaoAtual.session.user.id;
+      const emailAtual = sessaoAtual.session.user.email;
+
+      await supabase
+        .from("clientes")
+        .upsert(
+          { user_id: userId, email: emailAtual, nome: nomeCompleto.trim(), telefone: telemovel.trim(), atualizado_em: new Date().toISOString() },
+          { onConflict: "user_id" }
+        )
+        .then(() => {})
+        .catch(() => {});
+
+      await supabase
+        .from("consentimentos_dados")
+        .insert({ user_id: userId, email: emailAtual, nome: nomeCompleto.trim(), telefone: telemovel.trim(), texto_aceite: TEXTO_CONSENTIMENTO })
+        .then(() => {})
+        .catch(() => {});
+
       const { error } = await supabase
         .from("marcacoes")
         .insert({
@@ -4387,6 +4431,14 @@ function MarcarSessaoScreen({ onBack, onConfirmar }) {
                 <button onClick={() => setHorario(null)} className="text-xs underline mt-1" style={{ color: palette.navySoft }}>Escolher outro horário</button>
               </div>
               <input
+                type="text"
+                value={nomeCompleto}
+                onChange={(e) => setNomeCompleto(e.target.value)}
+                placeholder="Nome completo"
+                className="w-full rounded-xl px-4 py-2.5 text-sm outline-none"
+                style={{ backgroundColor: palette.creamSoft, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
+              />
+              <input
                 type="tel"
                 value={telemovel}
                 onChange={(e) => setTelemovel(e.target.value)}
@@ -4407,6 +4459,15 @@ function MarcarSessaoScreen({ onBack, onConfirmar }) {
                   Código aplicado — 10% de desconto (membro da Comunidade)
                 </p>
               )}
+              <label className="flex items-start gap-2.5 px-1">
+                <input
+                  type="checkbox"
+                  checked={aceitouConsentimento}
+                  onChange={(e) => setAceitouConsentimento(e.target.checked)}
+                  className="mt-0.5 shrink-0"
+                />
+                <span className="text-xs leading-relaxed" style={{ color: palette.navySoft }}>{TEXTO_CONSENTIMENTO}</span>
+              </label>
               {estadoPagamento === "a_confirmar" ? (
                 <div className="text-center py-4">
                   <p className="text-sm font-medium mb-1" style={{ color: palette.navy }}>Confirma o pagamento no teu telemóvel</p>
@@ -4415,7 +4476,7 @@ function MarcarSessaoScreen({ onBack, onConfirmar }) {
               ) : (
                 <button
                   onClick={confirmarMarcacao}
-                  disabled={aConfirmar || !telemovel.trim()}
+                  disabled={aConfirmar || !telemovel.trim() || !nomeCompleto.trim() || !aceitouConsentimento}
                   className="w-full rounded-full py-3 font-medium text-sm tracking-wide disabled:opacity-60"
                   style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
                 >
@@ -4715,8 +4776,11 @@ function AgendaMentoraScreen({ onBack, linkVideochamada }) {
                     <div className="flex items-center justify-between mb-1">
                       <p className="text-sm font-medium" style={{ color: palette.ink }}>{hora} · {m.titulo}</p>
                     </div>
+                    <p className="text-xs" style={{ color: palette.ink }}>
+                      {cliente?.nome || "Pessoa sem ficha"}
+                    </p>
                     <p className="text-xs" style={{ color: palette.navySoft }}>
-                      {cliente?.nome || cliente?.email || "Pessoa sem ficha"}
+                      {cliente?.email || "sem email"}
                       {cliente?.telefone ? ` · ${cliente.telefone}` : ""}
                     </p>
                     {linkVideochamada && (
@@ -5003,6 +5067,8 @@ function DashboardMentoraScreen({ onBack, onAbrirCliente }) {
   const [filtroComunidade, setFiltroComunidade] = useState(false);
   const [entradasGratis, setEntradasGratis] = useState([]);
   const [membrosComunidade, setMembrosComunidade] = useState([]);
+  const [inscricoesEvento, setInscricoesEvento] = useState([]);
+  const [mostrarInscricoesEvento, setMostrarInscricoesEvento] = useState(false);
   const [mesFiltro, setMesFiltro] = useState("todos");
 
   const carregarTudo = async () => {
@@ -5022,7 +5088,7 @@ function DashboardMentoraScreen({ onBack, onAbrirCliente }) {
     let consultaMarcacoes = supabase.from("marcacoes").select("*").eq("estado", "confirmada").order("criado_em", { ascending: false });
     if (!ehDona) consultaMarcacoes = consultaMarcacoes.eq("mentor_user_id", userId);
 
-    const [rClientes, rProgressos, rPagamentos, rPedidos, rMarcacoes, rEntradasGratis, rMembrosComunidade] = await Promise.all([
+    const [rClientes, rProgressos, rPagamentos, rPedidos, rMarcacoes, rEntradasGratis, rMembrosComunidade, rInscricoesEvento] = await Promise.all([
       supabase.from("clientes").select("*").order("criado_em", { ascending: false }),
       supabase.from("user_progress").select("user_id, data"),
       supabase.from("pagamentos").select("*").order("criado_em", { ascending: false }),
@@ -5030,6 +5096,7 @@ function DashboardMentoraScreen({ onBack, onAbrirCliente }) {
       consultaMarcacoes,
       supabase.from("entradas_gratis_comunidade").select("*").order("criado_em", { ascending: false }),
       ehDona ? supabase.rpc("membros_comunidade") : Promise.resolve({ data: [] }),
+      ehDona ? supabase.from("inscricoes_evento").select("*").order("criado_em", { ascending: false }) : Promise.resolve({ data: [] }),
     ]);
 
     setClientes(rClientes.data || []);
@@ -5041,6 +5108,7 @@ function DashboardMentoraScreen({ onBack, onAbrirCliente }) {
     setMarcacoes(rMarcacoes.data || []);
     setEntradasGratis(rEntradasGratis.data || []);
     setMembrosComunidade(rMembrosComunidade.data || []);
+    setInscricoesEvento(rInscricoesEvento.data || []);
     setCarregando(false);
   };
 
@@ -5218,6 +5286,41 @@ function DashboardMentoraScreen({ onBack, onAbrirCliente }) {
           })}
         </div>
       </div>
+
+      {ehDona && inscricoesEvento.length > 0 && (
+        <div className="px-6 mb-8">
+          <button
+            onClick={() => setMostrarInscricoesEvento((v) => !v)}
+            className="w-full flex items-center justify-between rounded-xl px-4 py-3 mb-3"
+            style={mostrarInscricoesEvento ? { backgroundColor: palette.navy } : { backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}
+          >
+            <div className="flex items-center gap-2">
+              <Calendar size={15} style={{ color: mostrarInscricoesEvento ? palette.gold : palette.navySoft }} />
+              <p className="text-sm font-medium" style={{ color: mostrarInscricoesEvento ? palette.creamSoft : palette.ink }}>
+                Inscritos no Evento — 2 de outubro
+              </p>
+            </div>
+            <span className="text-xs font-serif" style={{ color: mostrarInscricoesEvento ? palette.gold : palette.navySoft }}>
+              {inscricoesEvento.length}
+            </span>
+          </button>
+          {mostrarInscricoesEvento && (
+            <div className="space-y-2">
+              {inscricoesEvento.map((i) => (
+                <div key={i.id} className="rounded-xl px-4 py-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
+                  <p className="text-sm font-medium" style={{ color: palette.ink }}>{i.nome}</p>
+                  <p className="text-xs mt-0.5" style={{ color: palette.navySoft }}>
+                    {i.email}{i.telefone ? ` · ${i.telefone}` : ""}
+                  </p>
+                  <p className="text-[10px] mt-1" style={{ color: palette.goldSoft }}>
+                    Inscrito em {new Date(i.criado_em).toLocaleDateString("pt-PT", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="px-6">
         <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>FICHA DE CLIENTES</p>
