@@ -1,4 +1,4 @@
-// VERSAO-07-SET-MATERIAL-GRATIS
+// VERSAO-07-SET-SEGURANCA-AGENDA-MENTORA
 import { useState, useEffect } from "react";
 import { supabase } from "./supabase.js";
 import {
@@ -4627,9 +4627,124 @@ function AgendaScreen({ inscricoesWorkshops, sessoesMarcadas }) {
 /* ---------------------------------------------------------
    Disponibilidade para sessões
 --------------------------------------------------------- */
-function DisponibilidadeScreen({ onBack, disponibilidade, onAdicionarData, onRemoverData, onAdicionarHora, onRemoverHora }) {
+function AgendaMentoraScreen({ onBack, linkVideochamada }) {
+  const [marcacoes, setMarcacoes] = useState([]);
+  const [clientesPorId, setClientesPorId] = useState({});
+  const [aCarregar, setACarregar] = useState(true);
+
+  useEffect(() => {
+    const carregar = async () => {
+      setACarregar(true);
+      const { data: sessaoAtual } = await supabase.auth.getSession();
+      const userId = sessaoAtual?.session?.user?.id;
+      if (!userId) { setACarregar(false); return; }
+
+      const { data: rMarcacoes } = await supabase
+        .from("marcacoes")
+        .select("*")
+        .eq("mentor_user_id", userId)
+        .eq("estado", "confirmada")
+        .order("horario", { ascending: true });
+
+      const lista = rMarcacoes || [];
+      setMarcacoes(lista);
+
+      const idsClientes = Array.from(new Set(lista.map((m) => m.user_id)));
+      if (idsClientes.length > 0) {
+        const { data: rClientes } = await supabase
+          .from("clientes")
+          .select("user_id, nome, email, telefone")
+          .in("user_id", idsClientes);
+        const mapa = {};
+        (rClientes || []).forEach((c) => { mapa[c.user_id] = c; });
+        setClientesPorId(mapa);
+      }
+      setACarregar(false);
+    };
+    carregar();
+  }, []);
+
+  const agora = new Date();
+  const proximas = marcacoes.filter((m) => new Date(m.horario) >= agora);
+
+  const porDia = {};
+  proximas.forEach((m) => {
+    const dataObj = new Date(m.horario);
+    const chaveDia = dataObj.toISOString().slice(0, 10);
+    if (!porDia[chaveDia]) porDia[chaveDia] = [];
+    porDia[chaveDia].push(m);
+  });
+  const diasOrdenados = Object.keys(porDia).sort();
+
+  const formatarDia = (chaveDia) => {
+    const [ano, mes, dia] = chaveDia.split("-").map(Number);
+    const dataObj = new Date(ano, mes - 1, dia);
+    const nomeDia = DIAS_SEMANA.find((n) => INDICE_DIA_SEMANA[n] === dataObj.getDay());
+    return `${nomeDia}, ${dia} ${MESES_ABREV[mes - 1]}`;
+  };
+
+  return (
+    <div className="pb-28">
+      <SectionHeader eyebrow="AS TUAS SESSÕES" title="A Minha Agenda" onBack={onBack} />
+
+      {!linkVideochamada && (
+        <div className="px-6 mb-5">
+          <p className="text-xs rounded-xl px-4 py-3" style={{ backgroundColor: `${palette.gold}1F`, color: palette.navy }}>
+            Ainda não definiste o teu link de videochamada — define-o em Disponibilidade para aparecer aqui, em cada sessão.
+          </p>
+        </div>
+      )}
+
+      <div className="px-6">
+        {aCarregar && <p className="text-sm" style={{ color: palette.navySoft }}>A carregar...</p>}
+        {!aCarregar && diasOrdenados.length === 0 && (
+          <p className="text-sm" style={{ color: palette.navySoft }}>Ainda não tens sessões marcadas.</p>
+        )}
+
+        {diasOrdenados.map((chaveDia) => (
+          <div key={chaveDia} className="mb-6">
+            <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>
+              {formatarDia(chaveDia).toUpperCase()}
+            </p>
+            <div className="space-y-2">
+              {porDia[chaveDia].map((m) => {
+                const cliente = clientesPorId[m.user_id];
+                const hora = new Date(m.horario).toLocaleTimeString("pt-PT", { hour: "2-digit", minute: "2-digit" });
+                return (
+                  <div key={m.id} className="rounded-xl px-4 py-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
+                    <div className="flex items-center justify-between mb-1">
+                      <p className="text-sm font-medium" style={{ color: palette.ink }}>{hora} · {m.titulo}</p>
+                    </div>
+                    <p className="text-xs" style={{ color: palette.navySoft }}>
+                      {cliente?.nome || cliente?.email || "Pessoa sem ficha"}
+                      {cliente?.telefone ? ` · ${cliente.telefone}` : ""}
+                    </p>
+                    {linkVideochamada && (
+                      <a
+                        href={linkVideochamada}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-2 flex items-center justify-center gap-1.5 rounded-lg py-2 text-xs font-medium tracking-wide"
+                        style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
+                      >
+                        Entrar na videochamada
+                      </a>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function DisponibilidadeScreen({ onBack, disponibilidade, onAdicionarData, onRemoverData, onAdicionarHora, onRemoverHora, onGuardarLinkVideochamada }) {
   const [novaHora, setNovaHora] = useState("");
   const [novaData, setNovaData] = useState("");
+  const [linkVideo, setLinkVideo] = useState(disponibilidade.linkVideochamada || "");
 
   const datasOrdenadas = [...disponibilidade.dias].sort();
 
@@ -4641,6 +4756,28 @@ function DisponibilidadeScreen({ onBack, disponibilidade, onAdicionarData, onRem
           Escolhe as datas exatas e as horas em que estás disponível. É isto que aparece
           a quem quiser marcar uma sessão — sem repetição automática por semana.
         </p>
+
+        <p className="text-[11px] tracking-[0.2em] font-medium mb-2" style={{ color: palette.gold }}>LINK DA VIDEOCHAMADA</p>
+        <p className="text-xs mb-3" style={{ color: palette.navySoft }}>
+          O teu link fixo (Google Meet, Zoom...) — aparece na tua Agenda, em cada sessão marcada contigo.
+        </p>
+        <div className="flex gap-2 mb-8">
+          <input
+            type="url"
+            value={linkVideo}
+            onChange={(e) => setLinkVideo(e.target.value)}
+            placeholder="https://meet.google.com/xxx-xxxx-xxx"
+            className="flex-1 rounded-xl px-4 py-2.5 text-sm outline-none"
+            style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
+          />
+          <button
+            onClick={() => onGuardarLinkVideochamada(linkVideo.trim())}
+            className="rounded-xl px-4 py-2.5 text-sm font-medium tracking-wide"
+            style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
+          >
+            Guardar
+          </button>
+        </div>
 
         <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>DATAS DISPONÍVEIS</p>
         <div className="flex flex-wrap gap-2 mb-4">
@@ -5692,7 +5829,7 @@ function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFor
   );
 }
 
-function PerfilScreen({ onVerAreaAluno, onVerDisponibilidade, onVerPainelMentora, papel, onToggleMentora, onSair, email }) {
+function PerfilScreen({ onVerAreaAluno, onVerDisponibilidade, onVerPainelMentora, onVerAgendaMentora, papel, onSair, email }) {
   const iniciais = email ? email.slice(0, 2).toUpperCase() : "?";
   return (
     <div className="pb-28">
@@ -5703,32 +5840,21 @@ function PerfilScreen({ onVerAreaAluno, onVerDisponibilidade, onVerPainelMentora
         </div>
         <p className="text-xs mt-3" style={{ color: palette.navySoft }}>{email}</p>
       </div>
-      <div className="px-6 mb-6">
-        <button
-          onClick={onToggleMentora}
-          disabled={papel === "dona"}
-          className="w-full flex items-center justify-between rounded-xl px-4 py-3.5 text-left disabled:opacity-70"
-          style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}
-        >
-          <div>
+      {(papel === "mentora" || papel === "dona") && (
+        <div className="px-6 mb-6">
+          <div
+            className="w-full rounded-xl px-4 py-3.5 text-left"
+            style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}
+          >
             <p className="text-sm font-medium" style={{ color: palette.ink }}>
-              {papel === "dona" ? "És a dona da escola" : "Estou a usar como Mentora"}
+              {papel === "dona" ? "És a dona da escola" : "És mentora"}
             </p>
             <p className="text-xs mt-0.5" style={{ color: palette.navySoft }}>
-              {papel === "dona" ? "Vês tudo — todas as mentoras, clientes e marcações" : "Ativa para veres o Painel da Mentora"}
+              {papel === "dona" ? "Vês tudo — todas as mentoras, clientes e marcações" : "Acesso aprovado pela dona da escola"}
             </p>
           </div>
-          <span
-            className="w-11 h-6 rounded-full flex items-center px-0.5 shrink-0 transition"
-            style={{
-              backgroundColor: (papel === "mentora" || papel === "dona") ? palette.navy : palette.goldSoft,
-              justifyContent: (papel === "mentora" || papel === "dona") ? "flex-end" : "flex-start",
-            }}
-          >
-            <span className="w-5 h-5 rounded-full" style={{ backgroundColor: palette.creamSoft }} />
-          </span>
-        </button>
-      </div>
+        </div>
+      )}
 
       <div className="px-6 space-y-2.5">
         {(papel === "mentora" || papel === "dona") && (
@@ -5739,6 +5865,16 @@ function PerfilScreen({ onVerAreaAluno, onVerDisponibilidade, onVerPainelMentora
           >
             <span className="text-sm font-medium" style={{ color: palette.creamSoft }}>Painel da Mentora</span>
             <ChevronRight size={16} style={{ color: palette.gold }} />
+          </button>
+        )}
+        {(papel === "mentora" || papel === "dona") && (
+          <button
+            onClick={onVerAgendaMentora}
+            className="w-full flex items-center justify-between rounded-xl px-4 py-3.5 text-left"
+            style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}
+          >
+            <span className="text-sm font-medium" style={{ color: palette.ink }}>A Minha Agenda</span>
+            <ChevronRight size={16} style={{ color: palette.navySoft }} />
           </button>
         )}
         <button
@@ -5934,7 +6070,7 @@ export default function App() {
     materiaisDesbloqueados: {},
     cursosConcluidos: {},
     comunidadeDesbloqueada: false,
-    disponibilidade: { dias: [], horas: [], meses: [] },
+    disponibilidade: { dias: [], horas: [], meses: [], linkVideochamada: "" },
     papel: "aluno",
     reflexoesComunidade: {},
     fichaGratisPreenchida: false,
@@ -6097,6 +6233,7 @@ export default function App() {
           dias: progresso.disponibilidade.dias,
           horas: progresso.disponibilidade.horas,
           meses: [],
+          link_videochamada: progresso.disponibilidade.linkVideochamada || null,
           atualizado_em: new Date().toISOString(),
         },
         { onConflict: "user_id" }
@@ -6134,11 +6271,6 @@ export default function App() {
       .catch(() => setFormadorAcessoCursos([]));
   }, [session, progresso.papel]);
 
-  const toggleMentora = () =>
-    setProgresso((p) => {
-      if (p.papel === "dona") return p; // a dona da escola não se rebaixa por engano
-      return { ...p, papel: p.papel === "mentora" ? "aluno" : "mentora" };
-    });
 
   const guardarReflexao = (mes, texto) =>
     setProgresso((p) => ({
@@ -6294,6 +6426,8 @@ export default function App() {
         onConfirmar={registarSessao}
       />
     );
+  } else if (secao === "agenda-mentora") {
+    content = <AgendaMentoraScreen onBack={() => setSecao(null)} linkVideochamada={progresso.disponibilidade.linkVideochamada} />;
   } else if (secao === "disponibilidade") {
     content = (
       <DisponibilidadeScreen
@@ -6303,6 +6437,7 @@ export default function App() {
         onRemoverData={removerDataDisponivel}
         onAdicionarHora={adicionarHora}
         onRemoverHora={removerHora}
+        onGuardarLinkVideochamada={(link) => setProgresso((p) => ({ ...p, disponibilidade: { ...p.disponibilidade, linkVideochamada: link } }))}
       />
     );
   } else if (secao === "painel-mentora") {
@@ -6334,9 +6469,9 @@ export default function App() {
       <PerfilScreen
         onVerAreaAluno={() => { setTab("inicio"); setSecao("aluno"); }}
         onVerDisponibilidade={() => { setTab("perfil"); setSecao("disponibilidade"); }}
+        onVerAgendaMentora={() => { setTab("perfil"); setSecao("agenda-mentora"); }}
         onVerPainelMentora={() => { setTab("perfil"); setSecao("painel-mentora"); }}
         papel={progresso.papel}
-        onToggleMentora={toggleMentora}
         onSair={() => supabase.auth.signOut()}
         email={session.user.email}
       />
