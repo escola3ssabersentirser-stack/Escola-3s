@@ -6463,6 +6463,114 @@ function FichaCursoScreen({ curso, session, onBack, onGuardada }) {
   );
 }
 
+/* ---------- Inscrição pública em eventos (sem conta) ---------- */
+const EVENTOS_PUBLICOS = {
+  imersao: {
+    nome: "Imersão Online — O que é liderar, afinal? (2 out, 21h)",
+    titulo: "O que é liderar, afinal?",
+    subtitulo: "Imersão online gratuita",
+    data: "Quinta-feira, 2 de outubro · 21h00",
+    descricao: "Uma noite para olhar para a liderança por dentro: o que é, o que não é e por onde começar. Online e gratuito.",
+  },
+};
+const TEXTO_CONSENTIMENTO_EVENTO = "Aceito que a Escola 3S guarde os meus dados (nome, email e telemóvel) para gerir a minha inscrição neste evento e me enviar o link e informações sobre ele.";
+
+function InscricaoEventoPublica({ eventoId }) {
+  const evento = EVENTOS_PUBLICOS[eventoId];
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
+  const [telefone, setTelefone] = useState("");
+  const [localidade, setLocalidade] = useState("");
+  const [aceitou, setAceitou] = useState(false);
+  const [estado, setEstado] = useState(null); // null | "a_enviar" | "ok"
+  const [erro, setErro] = useState("");
+
+  const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  const pode = nome.trim() && emailValido && telefone.trim() && aceitou;
+
+  const enviar = async () => {
+    if (!pode) return;
+    setEstado("a_enviar");
+    setErro("");
+    const { error } = await supabase.from("inscricoes_evento").insert({
+      evento: evento.nome,
+      nome: nome.trim(),
+      email: email.trim().toLowerCase(),
+      telefone: telefone.trim(),
+      localidade: localidade.trim() || null,
+      consentimento_texto: TEXTO_CONSENTIMENTO_EVENTO,
+    });
+    if (error) {
+      setEstado(null);
+      setErro("Não foi possível fazer a inscrição. Tenta novamente.");
+      return;
+    }
+    setEstado("ok");
+  };
+
+  const campo = (valor, setValor, placeholder, tipo = "text") => (
+    <input
+      type={tipo}
+      value={valor}
+      onChange={(e) => setValor(e.target.value)}
+      placeholder={placeholder}
+      className="w-full rounded-xl px-4 py-3 text-sm outline-none"
+      style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
+    />
+  );
+
+  return (
+    <>
+      <style>{FONTS}</style>
+      <style>{`.font-serif { font-family: 'Cormorant Garamond', serif; }`}</style>
+      <div className="min-h-screen w-full flex justify-center" style={{ backgroundColor: palette.cream, fontFamily: "Inter, sans-serif" }}>
+        <div className="w-full max-w-md px-6 pt-10 pb-16" style={{ backgroundColor: palette.creamSoft }}>
+          {!evento ? (
+            <p className="text-sm pt-10 text-center" style={{ color: palette.navySoft }}>Este evento já não está disponível.</p>
+          ) : (
+            <>
+              <div className="flex justify-center mb-6"><Brand size="lg" /></div>
+              <div className="rounded-2xl px-5 py-6 text-center mb-6" style={{ backgroundColor: palette.navy }}>
+                <p className="text-[11px] tracking-[0.25em] font-medium" style={{ color: palette.gold }}>{evento.subtitulo.toUpperCase()}</p>
+                <h1 className="font-serif text-3xl leading-tight mt-2" style={{ color: palette.creamSoft }}>{evento.titulo}</h1>
+                <p className="text-sm mt-3" style={{ color: palette.goldSoft }}>{evento.data}</p>
+              </div>
+              {estado === "ok" ? (
+                <div className="rounded-2xl px-5 py-6 text-center" style={{ backgroundColor: palette.card, border: `1px solid ${palette.gold}` }}>
+                  <CheckCircle2 size={30} style={{ color: palette.gold, margin: "0 auto" }} />
+                  <p className="font-serif text-2xl mt-2" style={{ color: palette.navy }}>Inscrição feita!</p>
+                  <p className="text-sm mt-2 leading-relaxed" style={{ color: palette.ink }}>Obrigada, {nome.trim().split(" ")[0]}. Vais receber o link de acesso antes do evento, no email {email.trim()}.</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <p className="text-sm leading-relaxed mb-2" style={{ color: palette.ink }}>{evento.descricao}</p>
+                  {campo(nome, setNome, "Nome completo")}
+                  {campo(email, setEmail, "Email", "email")}
+                  {campo(telefone, setTelefone, "Telemóvel", "tel")}
+                  {campo(localidade, setLocalidade, "Localidade (opcional)")}
+                  <label className="flex items-start gap-2.5 px-1 pt-1">
+                    <input type="checkbox" checked={aceitou} onChange={(e) => setAceitou(e.target.checked)} className="mt-0.5 shrink-0" />
+                    <span className="text-xs leading-relaxed" style={{ color: palette.navySoft }}>{TEXTO_CONSENTIMENTO_EVENTO}</span>
+                  </label>
+                  {erro && <p className="text-xs" style={{ color: "#B23A3A" }}>{erro}</p>}
+                  <button
+                    onClick={enviar}
+                    disabled={!pode || estado === "a_enviar"}
+                    className="w-full rounded-full py-3.5 font-medium text-sm disabled:opacity-50"
+                    style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
+                  >
+                    {estado === "a_enviar" ? "A inscrever…" : "Quero inscrever-me"}
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
+
 /* ---------- Arquivo da Escola (só a dona) ---------- */
 const TEXTO_CONSENTIMENTO_GERAL = "Aceito que a Escola 3S guarde e utilize os meus dados pessoais (email e, sempre que os partilhar, nome, telemóvel e outra informação fornecida nos formulários da app) para gerir a minha conta e o meu percurso na escola.";
 
@@ -6635,7 +6743,7 @@ function ArquivoEscolaScreen({ onBack }) {
     });
   });
   const inscricoesTodas = [
-    ...inscricoesEvento.map((i) => ({ acao: i.evento || "Evento", data: arquivoData(i.criado_em), nome: i.nome, email: i.email, telefone: i.telefone })),
+    ...inscricoesEvento.map((i) => ({ acao: i.evento || "Evento", data: arquivoData(i.criado_em), nome: i.nome, email: i.email, telefone: i.telefone, localidade: i.localidade })),
     ...inscricoesWorkshop,
   ];
 
@@ -6720,12 +6828,12 @@ function ArquivoEscolaScreen({ onBack }) {
           <>
             <div className="flex items-center justify-between">
               <p className="text-xs" style={{ color: palette.navySoft }}>Ações, formações, workshops e lives</p>
-              {botaoExportar(() => exportarCSV("inscricoes.csv", ["Ação", "Data", "Nome", "Email", "Telefone"],
-                inscricoesTodas.map((i) => [i.acao, i.data, i.nome, i.email, i.telefone])))}
+              {botaoExportar(() => exportarCSV("inscricoes.csv", ["Ação", "Data", "Nome", "Email", "Telefone", "Localidade"],
+                inscricoesTodas.map((i) => [i.acao, i.data, i.nome, i.email, i.telefone, i.localidade])))}
             </div>
             {inscricoesTodas.length === 0 && <p className="text-sm" style={{ color: palette.navySoft }}>Ainda não há inscrições.</p>}
             {inscricoesTodas.filter((i) => filtro(`${i.acao} ${i.nome} ${i.email} ${i.telefone}`)).map((i, k) => (
-              <ArquivoCartao key={k} titulo={i.nome || i.email || "Pessoa sem nome"} linhas={[i.acao, i.data, i.nome ? i.email : null, i.telefone]} />
+              <ArquivoCartao key={k} titulo={i.nome || i.email || "Pessoa sem nome"} linhas={[i.acao, i.data, i.nome ? i.email : null, i.telefone, i.localidade]} />
             ))}
           </>
         )}
@@ -7139,6 +7247,9 @@ export default function App() {
     setCertificadoAberto(null);
     setConversaAberta(null);
   };
+
+  const eventoPublico = (() => { try { return new URLSearchParams(window.location.search).get("inscricao"); } catch (e) { return null; } })();
+  if (eventoPublico) return <InscricaoEventoPublica eventoId={eventoPublico} />;
 
   if (!sessaoCarregada) {
     return (
