@@ -1,5 +1,5 @@
-// VERSAO-07-SET-CONSENTIMENTO-CONTA-INSCRITOS-EVENTO
-import { useState, useEffect } from "react";
+// VERSAO-27-SET-ARQUIVO-PAGAMENTOS-VIDEOS-CRENCAS
+import { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "./supabase.js";
 import {
   Home,
@@ -29,6 +29,7 @@ import {
   LogOut,
   Plus,
   Trash2,
+  ShoppingBag,
 } from "lucide-react";
 
 /* ---------------------------------------------------------
@@ -249,6 +250,7 @@ const cursos = [
   },
   {
     id: 7,
+    gratuito: true,
     escolaId: "ser",
     titulo: "Crenças que Limitam",
     promessa: "Identificar e mudar as crenças que te têm travado, muitas vezes sem que percebesses.",
@@ -258,9 +260,9 @@ const cursos = [
     concluido: false,
     aulas: [
       { titulo: "O que é uma crença limitadora", videoUrl: "https://www.youtube.com/embed/BbO2wd6QvYk?rel=0&modestbranding=1", descricao: "Como uma ideia repetida se torna \"verdade\" sobre nós e sobre o mundo.", conteudo: "Este é o primeiro capítulo de leitura do curso «Crenças Limitantes», da Escola 3S. Antes de qualquer exercício ou técnica, importa responder com clareza a duas perguntas simples, mas frequentemente mal respondidas: o que é, afinal, uma crença? E como reconhecemos que estamos perante uma, e não apenas perante um facto?\n\nVivemos, com frequência, as nossas crenças como se fossem verdades objetivas sobre o mundo. É precisamente essa confusão — entre aquilo que é e aquilo que interpretamos que é — que lhes confere o seu poder sobre nós. Este capítulo apoia-se em conceitos consolidados do coaching e da Programação Neurolinguística (PNL), duas disciplinas que, desde as últimas décadas do século XX, se dedicam a compreender como a linguagem e o pensamento moldam a experiência humana, e que propõem ferramentas práticas para a transformar.\n\nO convite que aqui se faz é simples de enunciar, ainda que exigente na prática: começar a separar aquilo que observamos daquilo que concluímos sobre o que observamos.\n\n«Não vemos as coisas como elas são. Vemos as coisas como nós somos.» — provérbio atribuído ao Talmude\n\nUm dos pressupostos fundadores da PNL — formulado a partir do trabalho do semanticista Alfred Korzybski — afirma que «o mapa não é o território»: a representação que fazemos da realidade não é a realidade em si, é apenas a nossa leitura dela, construída com a informação, a linguagem e a experiência de que dispomos em cada momento. Uma crença é, precisamente, um elemento desse mapa interno: uma generalização que fazemos a partir da experiência e que passamos a tratar como se fosse o próprio território.\n\nNascemos sem crenças sobre nós próprios. Vamo-las construindo, ao longo da vida, a partir daquilo que nos disseram, daquilo que vivemos e, sobretudo, daquilo que concluímos sobre o que vivemos. Em coaching, esta última etapa — a conclusão que tiramos dos factos — é frequentemente mais determinante para o nosso comportamento do que os próprios factos que a originaram.\n\nConsidere-se o seguinte exemplo: uma criança que erra, uma única vez, ao responder a uma pergunta na aula e é ridicularizada pelos colegas pode não concluir apenas «hoje correu mal». Pode concluir «eu sou estúpido» ou «não posso arriscar-me a falar em público». É esta segunda camada — a generalização sobre a identidade, e não apenas sobre o episódio — que dá origem a uma crença.\n\nO coach e formador norte-americano Robert Dilts propôs um modelo amplamente utilizado em coaching, conhecido como Níveis Lógicos, que organiza a experiência humana em diferentes camadas: o ambiente em que nos encontramos, os comportamentos que manifestamos, as capacidades que desenvolvemos, as crenças e valores que sustentamos, a identidade que assumimos e, por fim, um sentido mais amplo de missão ou propósito.\n\nEste modelo é útil porque mostra que as crenças ocupam um nível mais profundo do que o comportamento: não são apenas «coisas que pensamos», são o terreno a partir do qual decidimos o que é possível, permitido ou seguro fazer. Por isso, tentar mudar um comportamento sem tocar na crença que o sustenta tende a produzir resultados frágeis e temporários — e, inversamente, uma mudança de crença tende a refletir-se, com relativa naturalidade, em novos comportamentos.\n\nAs crenças formam-se, tipicamente, a partir de quatro fontes principais:\n\nExperiências marcantes, sobretudo na infância e na adolescência, em que uma emoção intensa — vergonha, medo, rejeição — ficou associada a uma conclusão sobre nós próprios.\n\nMensagens repetidas por figuras de referência — pais, professores, cuidadores — que, ditas muitas vezes, se tornam «verdades» interiorizadas.\n\nModelagem: aquilo que observámos os adultos à nossa volta acreditarem e viverem, mesmo sem nos dizerem nada diretamente — aprendemos padrões de pensamento por observação, e não apenas por instrução direta.\n\nCultura e contexto social: ideias sobre o que é «normal», «possível» ou «apropriado» para alguém como nós — pelo género, pela origem, pela idade, pela profissão.\n\nNenhuma destas origens constitui, em si, um erro. Formar crenças a partir da experiência é uma função saudável da mente: é assim que aprendemos a não repetir perigos e a agir com maior eficiência em contextos semelhantes a outros já vividos. O problema surge quando a crença deixa de servir a função para que foi criada e passa a limitar-nos em contextos onde já não faz sentido. É a essa crença que chamamos crença limitante.\n\nUma crença consolida-se por dois mecanismos principais: a repetição e a emoção. Quanto mais vezes uma ideia é confirmada — mesmo que essa confirmação seja, ela própria, produzida pela crença — mais automática e menos questionada ela se torna. E quanto mais intensa foi a emoção associada ao momento em que a crença se formou, mais forte tende a ser a sua fixação, mesmo quando a memória consciente do episódio original já se perdeu.\n\nÉ por esta razão que muitas crenças limitantes parecem não ter uma origem clara: não porque não a tenham, mas porque se formaram cedo, ou em torno de emoções que preferimos não revisitar. Não é, no entanto, necessário recuperar a memória exata da sua origem para trabalhá-las — o objetivo deste curso é reconhecê-las tal como operam hoje, e não fazer uma reconstituição biográfica exaustiva.\n\nAlgumas crenças são facilmente verbalizáveis: sabemos que as temos e conseguimos enunciá-las com relativa clareza. Outras operam de forma inconsciente — não as diríamos em voz alta se nos perguntassem diretamente, mas revelam-se nas escolhas que fazemos, nas oportunidades que evitamos e nos padrões que se repetem na nossa vida, muitas vezes sem que estabeleçamos a ligação entre esses padrões e a crença que os sustenta.\n\nUm dos objetivos deste primeiro capítulo — e da aula que o acompanha — é precisamente começar a trazer para o campo consciente aquilo que, até agora, operava em piloto automático.\n\nUma das confusões mais comuns — e mais determinantes nos seus efeitos — é tratar uma crença como se fosse um facto. Um facto pode ser verificado por qualquer pessoa, independentemente do que sente ou pensa sobre ele: «esta frase está escrita em português» é um facto. Uma crença é, pelo contrário, uma conclusão pessoal, carregada de emoção e de história, que apresentamos a nós próprios como se fosse tão sólida quanto um facto, mas que outra pessoa, com outra história, poderia perfeitamente não partilhar.\n\nUm pensamento é, em geral, mais passageiro: surge e desaparece, muitas vezes sem que lhe atribuamos grande importância. Uma opinião é uma avaliação consciente sobre algo externo, que reconhecemos como discutível. Uma crença distingue-se de ambos por um traço particular: deixou de ser sentida como uma entre várias interpretações possíveis, e passou a ser vivida como «a verdade sobre como as coisas são».\n\nA PNL desenvolveu, desde a sua origem, um instrumento particularmente útil para este trabalho: o Meta-Modelo da linguagem, criado por Richard Bandler e John Grinder a partir da observação de terapeutas de referência. O Meta-Modelo parte de uma constatação simples: a linguagem que usamos para descrever a nossa experiência nunca é a experiência completa, é sempre uma versão reduzida dela, construída através de três processos — generalização, distorção e omissão.\n\nGeneralização: tomamos uma ou poucas experiências e alargamo-las a uma regra universal — «isto correu mal uma vez» transforma-se em «isto corre sempre mal comigo».\n\nDistorção: alteramos o significado de uma experiência, frequentemente atribuindo-lhe uma causa ou intenção que não foi verificada — «ele não respondeu à mensagem» transforma-se em «ele já não gosta de mim».\n\nOmissão: retiramos informação da descrição de uma experiência, tornando-a mais vaga e, por isso, mais difícil de questionar — «eu não sou capaz» omite de quê, em que situação, e segundo que critério.\n\nAs crenças limitantes recorrem, quase sempre, a uma combinação destes três processos. Reconhecê-los na linguagem que usamos — e que os outros usam — é uma das formas mais diretas de identificar que estamos perante uma crença, e não perante uma descrição neutra dos factos.\n\nNa prática, os três processos do Meta-Modelo traduzem-se em construções de linguagem reconhecíveis. Algumas das mais frequentes são:\n\nGeneralizações absolutas: «sempre», «nunca», «todos», «ninguém» — «eu nunca consigo terminar o que começo».\n\nIdentidade fixa: frases que começam por «eu sou...» em vez de «eu fiz...» ou «eu senti...» — «eu sou incapaz», em vez de «esta tarefa correu mal».\n\nCerteza sem prova concreta: afirmações proferidas com convicção total, mas sem um facto verificável que as sustente diretamente — «isto nunca vai resultar comigo».\n\nCategorias sobre «pessoas como eu»: «pessoas da minha idade não conseguem mudar de carreira», «na minha família ninguém tem jeito para números».\n\nVerbos de obrigação ou impossibilidade, sem que a sua origem seja questionada: «tenho de...», «não posso...», «é impossível que...», ditos como regras absolutas e não como opções entre outras.\n\nReconhecer estas construções — na própria fala ou na de outra pessoa — é, em coaching, um dos primeiros passos de qualquer processo de mudança: não se pergunta apenas «o que a pessoa disse», mas «que estrutura de crença está por detrás daquilo que foi dito».\n\nNem todos os sinais de uma crença são linguísticos. O corpo regista, muitas vezes, a ativação de uma crença antes de a mente a conseguir nomear: uma tensão súbita, um aperto no peito, uma vontade de fugir ou de justificar-se. Em coaching, este tipo de reação é entendido como um indicador valioso, e não como um obstáculo a ignorar.\n\nUm critério prático para o reconhecer é a desproporção: quando a intensidade da emoção sentida parece maior do que aquilo que a situação, isolada, justificaria, é frequentemente sinal de que uma crença antiga foi ativada, e não apenas a situação presente. A situação atual funciona, nestes casos, como um gatilho que reativa uma interpretação muito mais antiga.\n\nPerante uma afirmação sobre si próprio(a), sobre outra pessoa ou sobre a vida em geral, pode aplicar o seguinte teste, inspirado nas perguntas do Meta-Modelo:\n\nIsto é algo que qualquer pessoa, observando a mesma situação, teria necessariamente de concluir — ou é a conclusão a que eu, com a minha história, cheguei?\n\nExiste alguma situação, ainda que rara, em que esta afirmação não se verifique?\n\nQue prova concreta e verificável sustenta esta afirmação, para além da convicção com que a sinto?\n\nSe, ao responder, notar que a afirmação resiste mal a estas perguntas — se encontrar exceções, se a prova for sobretudo emocional, se a conclusão parecer mais sua do que universal — está muito provavelmente perante uma crença, e não perante um facto.\n\n«Não é a situação que nos perturba, mas a opinião que temos sobre ela.» — Epicteto\n\nEnquanto tratarmos uma crença como um facto inquestionável, não existe espaço para a questionar: «é assim mesmo», dizemos, e paramos por aí. É apenas quando reconhecemos que aquilo em que acreditamos é uma interpretação — um mapa, e não o território — que se torna possível perguntar se essa interpretação ainda nos serve. Em coaching, este reconhecimento é frequentemente descrito como o momento em que se passa de estar fundido com o pensamento para se tornar capaz de o observar. É esse reconhecimento que abre a porta a todo o percurso deste curso.\n\nNo Caderno de Trabalho desta aula, é convidado(a) a aplicar estas ideias a uma frase sua concreta — o primeiro passo, muito prático, de todo o percurso deste curso.", materiaisIds: [45, 32, 48] },
-      { titulo: "De onde vieram as minhas crenças", descricao: "Família, escola e experiências marcantes que moldaram o que acreditas ser possível.", conteudo: "No capítulo anterior, aprendemos a reconhecer uma crença — a distingui-la de um facto, de um pensamento passageiro ou de uma opinião reconhecida como tal. O passo seguinte, e é esse que este capítulo trata, é perguntar: será que aquilo em que acredito corresponde, de facto, à realidade? Ou estarei a tratar como verdade absoluta algo que, na melhor das hipóteses, é apenas uma interpretação possível entre várias?\n\nEsta distinção — entre o que sabemos e o que supomos — é, provavelmente, a ferramenta mais imediatamente útil de todo este curso. Não porque resolva, por si só, uma crença limitante, mas porque lhe retira a certeza absoluta com que costuma operar. E uma crença que deixou de ser absolutamente certa já não tem o mesmo poder sobre nós.\n\nO investigador organizacional Chris Argyris propôs um modelo, mais tarde popularizado por Peter Senge, conhecido como a Escada de Inferência. O modelo descreve o percurso mental que fazemos, quase sempre sem darmos conta, entre observar algo e agir a partir disso: observamos uma quantidade imensa de dados; selecionamos apenas alguns; atribuímos-lhes significado com base na nossa experiência; fazemos suposições a partir desse significado; tiramos conclusões; adotamos ou reforçamos uma crença; e, por fim, agimos de acordo com essa crença.\n\nO problema não está em subir esta escada — é uma função necessária da mente, sem a qual não conseguiríamos funcionar no mundo. O problema está em subi-la tão depressa que deixamos de notar os degraus intermédios, e passamos a tratar o topo da escada (a nossa conclusão) como se fosse o próprio degrau de base (o dado observável).\n\nUm dos degraus mais decisivos da escada — e o mais invisível — é a seleção. De toda a informação disponível numa situação, reparamos apenas nalguma parte dela. E tendemos a reparar, precisamente, naquilo que já confirma o que esperávamos encontrar — um mecanismo a que a psicologia chama viés de confirmação. Uma pessoa que acredita que \"ninguém se interessa por mim\" tende a notar, numa festa, os dois momentos em que ficou sozinha, e a não registar os cinco em que alguém puxou conversa. Não porque minta a si própria de forma deliberada, mas porque a crença já filtrou, antecipadamente, o que merecia atenção.\n\nVimos, no capítulo anterior, que a linguagem das crenças costuma recorrer à omissão — retira informação, tornando a afirmação mais vaga e mais difícil de questionar. A primeira forma de testar uma crença é, por isso, tentar recuperar essa informação: que provas concretas, verificáveis por outra pessoa, sustentam esta afirmação? Comparado com quê, ou com quem? Segundo que critério?\n\nA autora norte-americana Byron Katie desenvolveu um método de questionamento, conhecido como \"O Trabalho\" (The Work), amplamente usado em coaching e em contextos terapêuticos, que se resume a quatro perguntas simples a colocar sobre qualquer crença:\n\nEstas perguntas não têm como objetivo provar que a crença é falsa — algumas crenças resistem bem ao escrutínio, e isso também é informação valiosa. O objetivo é criar, entre a pessoa e a sua crença, uma distância que antes não existia.\n\nO filósofo da ciência Karl Popper argumentou que uma afirmação só é cientificamente válida se for, em princípio, possível refutá-la — se existir um teste capaz de a provar falsa. Podemos aplicar a mesma lógica, de forma mais informal, às nossas crenças pessoais: uma crença que se apresenta como \"sempre\" ou \"nunca\" resiste, ou não, a uma procura ativa por exceções?\n\nProcurar, de propósito, uma única situação em que a crença não se confirmou — mesmo que pouco frequente — é muitas vezes suficiente para a fazer passar de \"verdade absoluta\" a \"tendência que às vezes se verifica\". E essa mudança, por pequena que pareça, já é uma primeira fissura na certeza que a sustentava.\n\nEntre observar uma situação e agir a partir dela, subimos uma escada de seleção, interpretação e suposição — quase sempre sem dar conta. Testar uma crença não é negá-la à partida; é perguntar, com honestidade, o que sabemos de facto e o que estamos apenas a supor, procurar provas concretas e procurar, ativamente, exceções que a possam contradizer. É esse o trabalho da Aula 2 — e da folha de exercício que a acompanha.", materiaisIds: [45, 32, 49] },
-      { titulo: "Testar a crença", descricao: "Separar factos de interpretações; procurar provas contra a crença, não só a favor.", conteudo: "Já sabemos reconhecer uma crença, e já temos ferramentas para testar se corresponde à realidade. Ainda assim, é comum continuarmos a agir a partir de crenças que já reconhecemos, no plano racional, como pouco fiáveis. Este capítulo trata dessa aparente contradição: porque continuamos a segurar algo que sabemos, pelo menos em parte, não ser inteiramente verdade?\n\nA resposta, quase sempre, é que a crença nos dá alguma coisa. Nenhuma crença sobrevive tanto tempo por acidente — sobrevive porque cumpre uma função. Compreender essa função, e não apenas a crença em si, é o que torna possível uma mudança duradoura.\n\nEm contextos terapêuticos, chama-se ganho secundário à vantagem — muitas vezes inconsciente — que uma pessoa retira de manter um padrão, mesmo quando esse padrão lhe traz sofrimento visível. Uma crença como \"não sou capaz de liderar\" pode, à superfície, ser apenas limitadora; mas pode também poupar a pessoa à exposição de tentar e falhar publicamente, à responsabilidade de decidir por outros, ou ao risco de descobrir que, mesmo tentando, o resultado não é o desejado.\n\nNomear o ganho secundário de uma crença não é procurar um pretexto para a manter — é, pelo contrário, o primeiro passo para lidar com a necessidade real que ela protege, em vez de tentar arrancar a crença à força e deixar essa necessidade desprotegida.\n\nO psicólogo Leon Festinger descreveu, em meados do século XX, o desconforto que sentimos quando duas crenças, ou uma crença e um comportamento, entram em contradição — a que chamou dissonância cognitiva. Para reduzir esse desconforto, tendemos a ajustar uma das partes, e é mais fácil ajustar a perceção do que o comportamento já tomado. Isto explica por que razão continuamos, por vezes, a justificar decisões ou crenças antigas mesmo perante provas em contrário: mudar de ideias custaria mais, no imediato, do que manter a consistência interna.\n\nOs investigadores Daniel Kahneman e Amos Tversky demonstraram que, em geral, sentimos o desconforto de uma perda com mais intensidade do que o prazer de um ganho equivalente — fenómeno a que chamaram aversão à perda. Aplicado às crenças: largar uma crença antiga, mesmo uma que já não serve, é sentido como uma perda de segurança imediata, ao passo que os ganhos de a largar (novas oportunidades, novas formas de agir) são, para já, apenas hipotéticos. É por isso que, racionalmente, sabermos que uma crença nos prejudica raramente basta para a mudarmos — o cálculo emocional não é simétrico.\n\nUm dos custos mais difíceis de contabilizar é aquele que nunca chegamos a ver: as oportunidades que nem sequer consideramos, porque a crença já as descartou antecipadamente. Não é uma escolha consciente de recusar — é uma opção que nunca chega a aparecer no radar.\n\nO objetivo deste exercício não é convencer-nos, de forma forçada, a abandonar uma crença. É olhar, com a maior honestidade possível, para os dois pratos da balança: o que esta crença me dá, e o que me tira. Só depois de vermos os dois lados com clareza é que a decisão de a manter ou a mudar deixa de ser automática, e passa a ser, verdadeiramente, uma escolha.\n\nAs crenças que persistem, mesmo custando-nos, costumam fazê-lo porque nos protegem de algo — rejeição, fracasso, responsabilidade, exposição. Reconhecer essa função, e pesar com honestidade o que ganhamos e o que perdemos ao mantê-la, é o trabalho da Aula 3.", materiaisIds: [45, 32, 50] },
-      { titulo: "Escrever uma crença nova", descricao: "Substituir a crença antiga por uma frase que sirva melhor ao que queres construir.", conteudo: "Ao longo das três aulas anteriores, aprendemos a identificar uma crença, a testar se corresponde à realidade, e a reconhecer aquilo que ganhamos e perdemos ao mantê-la. Nenhum destes passos, por si só, muda automaticamente o que fazemos a seguir. Falta o último — e, em muitos sentidos, o mais exigente: escolher, de forma deliberada, uma resposta diferente daquela que o piloto automático nos daria.\n\n«Entre o estímulo e a resposta há um espaço. Nesse espaço está o nosso poder de escolher a nossa resposta. Na nossa resposta está o nosso crescimento e a nossa liberdade.» — ideia atribuída a Viktor Frankl, psiquiatra e sobrevivente do Holocausto, fundador da logoterapia\n\nÉ esse espaço — entre o que nos acontece e o que fazemos a seguir — que este capítulo final procura ampliar.\n\nO psicólogo Albert Ellis, fundador da Terapia Racional-Emotiva Comportamental, propôs um modelo simples e influente, conhecido como Modelo ABC: A (Activating event) é o acontecimento; B (Belief) é a crença ou interpretação que temos sobre esse acontecimento; C (Consequence) é a consequência emocional e comportamental. O contributo central de Ellis foi mostrar que não é A que causa C diretamente — é B, a interpretação, que faz a ponte entre os dois. Ellis acrescentou ainda dois passos: D (Dispute), questionar essa interpretação, e E (Effect), o novo efeito, emocional e comportamental, que resulta de uma interpretação revista.\n\nRessignificar não é negar que algo doeu, nem fingir que uma situação difícil não o foi. Não é otimismo forçado, nem a ideia, por vezes chamada positividade tóxica, de que basta \"pensar pelo lado bom\" para o problema desaparecer. Ressignificar é, antes, reconhecer que um mesmo acontecimento pode sustentar mais do que uma interpretação — e que, entre essas interpretações possíveis, temos alguma margem de escolha sobre qual adotamos.\n\nA maior parte das respostas automáticas acontece porque saltamos, sem darmos conta, diretamente do acontecimento (A) para a consequência (C), sem nunca examinar B — a interpretação que, na verdade, está a conduzir tudo. Parar, ainda que por poucos segundos, antes de responder, é o que torna possível examinar esse B: o que pensei, automaticamente, sobre isto? O que senti? O que tive vontade de fazer?\n\nEsta pausa não elimina a reação inicial — não temos controlo total sobre o primeiro impulso. Mas cria a possibilidade de, antes de agir a partir dele, o questionar.\n\nEscrever uma interpretação nova é um exercício mental valioso, mas não é, por si só, suficiente. As crenças consolidam-se, como vimos no primeiro capítulo, por repetição — e é por repetição, também, que se revêm. Cada pequena ação coerente com a interpretação nova é uma prova, para nós mesmos, de que essa interpretação também é possível, e não apenas a antiga.\n\nNão é necessário — nem realista — mudar tudo de imediato. Uma ação pequena, concreta e repetível, escolhida no fim de cada sessão de trabalho como esta, é geralmente mais eficaz do que uma resolução ambiciosa que não sobrevive à primeira semana.\n\nAo longo destas quatro aulas, percorremos um caminho com quatro etapas: identificar uma crença, questionar se corresponde à realidade, avaliar o que ganhamos e perdemos ao mantê-la, e, por fim, ressignificar — escolher, de forma consciente, o significado que lhe damos e a resposta que construímos a partir daí. Este não é um trabalho que se conclua numa única passagem: as crenças mais antigas, sobretudo, pedem que se volte a este processo mais do que uma vez. O que muda, com a prática, não é a ausência de crenças limitantes — é a rapidez e a clareza com que as reconhecemos, da próxima vez que aparecerem.", materiaisIds: [45, 32, 51] },
+      { titulo: "De onde vieram as minhas crenças", videoUrl: "https://www.youtube.com/embed/W2uhB1B625w?rel=0&modestbranding=1", descricao: "Família, escola e experiências marcantes que moldaram o que acreditas ser possível.", conteudo: "No capítulo anterior, aprendemos a reconhecer uma crença — a distingui-la de um facto, de um pensamento passageiro ou de uma opinião reconhecida como tal. O passo seguinte, e é esse que este capítulo trata, é perguntar: será que aquilo em que acredito corresponde, de facto, à realidade? Ou estarei a tratar como verdade absoluta algo que, na melhor das hipóteses, é apenas uma interpretação possível entre várias?\n\nEsta distinção — entre o que sabemos e o que supomos — é, provavelmente, a ferramenta mais imediatamente útil de todo este curso. Não porque resolva, por si só, uma crença limitante, mas porque lhe retira a certeza absoluta com que costuma operar. E uma crença que deixou de ser absolutamente certa já não tem o mesmo poder sobre nós.\n\nO investigador organizacional Chris Argyris propôs um modelo, mais tarde popularizado por Peter Senge, conhecido como a Escada de Inferência. O modelo descreve o percurso mental que fazemos, quase sempre sem darmos conta, entre observar algo e agir a partir disso: observamos uma quantidade imensa de dados; selecionamos apenas alguns; atribuímos-lhes significado com base na nossa experiência; fazemos suposições a partir desse significado; tiramos conclusões; adotamos ou reforçamos uma crença; e, por fim, agimos de acordo com essa crença.\n\nO problema não está em subir esta escada — é uma função necessária da mente, sem a qual não conseguiríamos funcionar no mundo. O problema está em subi-la tão depressa que deixamos de notar os degraus intermédios, e passamos a tratar o topo da escada (a nossa conclusão) como se fosse o próprio degrau de base (o dado observável).\n\nUm dos degraus mais decisivos da escada — e o mais invisível — é a seleção. De toda a informação disponível numa situação, reparamos apenas nalguma parte dela. E tendemos a reparar, precisamente, naquilo que já confirma o que esperávamos encontrar — um mecanismo a que a psicologia chama viés de confirmação. Uma pessoa que acredita que \"ninguém se interessa por mim\" tende a notar, numa festa, os dois momentos em que ficou sozinha, e a não registar os cinco em que alguém puxou conversa. Não porque minta a si própria de forma deliberada, mas porque a crença já filtrou, antecipadamente, o que merecia atenção.\n\nVimos, no capítulo anterior, que a linguagem das crenças costuma recorrer à omissão — retira informação, tornando a afirmação mais vaga e mais difícil de questionar. A primeira forma de testar uma crença é, por isso, tentar recuperar essa informação: que provas concretas, verificáveis por outra pessoa, sustentam esta afirmação? Comparado com quê, ou com quem? Segundo que critério?\n\nA autora norte-americana Byron Katie desenvolveu um método de questionamento, conhecido como \"O Trabalho\" (The Work), amplamente usado em coaching e em contextos terapêuticos, que se resume a quatro perguntas simples a colocar sobre qualquer crença:\n\nEstas perguntas não têm como objetivo provar que a crença é falsa — algumas crenças resistem bem ao escrutínio, e isso também é informação valiosa. O objetivo é criar, entre a pessoa e a sua crença, uma distância que antes não existia.\n\nO filósofo da ciência Karl Popper argumentou que uma afirmação só é cientificamente válida se for, em princípio, possível refutá-la — se existir um teste capaz de a provar falsa. Podemos aplicar a mesma lógica, de forma mais informal, às nossas crenças pessoais: uma crença que se apresenta como \"sempre\" ou \"nunca\" resiste, ou não, a uma procura ativa por exceções?\n\nProcurar, de propósito, uma única situação em que a crença não se confirmou — mesmo que pouco frequente — é muitas vezes suficiente para a fazer passar de \"verdade absoluta\" a \"tendência que às vezes se verifica\". E essa mudança, por pequena que pareça, já é uma primeira fissura na certeza que a sustentava.\n\nEntre observar uma situação e agir a partir dela, subimos uma escada de seleção, interpretação e suposição — quase sempre sem dar conta. Testar uma crença não é negá-la à partida; é perguntar, com honestidade, o que sabemos de facto e o que estamos apenas a supor, procurar provas concretas e procurar, ativamente, exceções que a possam contradizer. É esse o trabalho da Aula 2 — e da folha de exercício que a acompanha.", materiaisIds: [45, 32, 49] },
+      { titulo: "Testar a crença", videoUrl: "https://www.youtube.com/embed/3B2h_CbAnW4?rel=0&modestbranding=1", descricao: "Separar factos de interpretações; procurar provas contra a crença, não só a favor.", conteudo: "Já sabemos reconhecer uma crença, e já temos ferramentas para testar se corresponde à realidade. Ainda assim, é comum continuarmos a agir a partir de crenças que já reconhecemos, no plano racional, como pouco fiáveis. Este capítulo trata dessa aparente contradição: porque continuamos a segurar algo que sabemos, pelo menos em parte, não ser inteiramente verdade?\n\nA resposta, quase sempre, é que a crença nos dá alguma coisa. Nenhuma crença sobrevive tanto tempo por acidente — sobrevive porque cumpre uma função. Compreender essa função, e não apenas a crença em si, é o que torna possível uma mudança duradoura.\n\nEm contextos terapêuticos, chama-se ganho secundário à vantagem — muitas vezes inconsciente — que uma pessoa retira de manter um padrão, mesmo quando esse padrão lhe traz sofrimento visível. Uma crença como \"não sou capaz de liderar\" pode, à superfície, ser apenas limitadora; mas pode também poupar a pessoa à exposição de tentar e falhar publicamente, à responsabilidade de decidir por outros, ou ao risco de descobrir que, mesmo tentando, o resultado não é o desejado.\n\nNomear o ganho secundário de uma crença não é procurar um pretexto para a manter — é, pelo contrário, o primeiro passo para lidar com a necessidade real que ela protege, em vez de tentar arrancar a crença à força e deixar essa necessidade desprotegida.\n\nO psicólogo Leon Festinger descreveu, em meados do século XX, o desconforto que sentimos quando duas crenças, ou uma crença e um comportamento, entram em contradição — a que chamou dissonância cognitiva. Para reduzir esse desconforto, tendemos a ajustar uma das partes, e é mais fácil ajustar a perceção do que o comportamento já tomado. Isto explica por que razão continuamos, por vezes, a justificar decisões ou crenças antigas mesmo perante provas em contrário: mudar de ideias custaria mais, no imediato, do que manter a consistência interna.\n\nOs investigadores Daniel Kahneman e Amos Tversky demonstraram que, em geral, sentimos o desconforto de uma perda com mais intensidade do que o prazer de um ganho equivalente — fenómeno a que chamaram aversão à perda. Aplicado às crenças: largar uma crença antiga, mesmo uma que já não serve, é sentido como uma perda de segurança imediata, ao passo que os ganhos de a largar (novas oportunidades, novas formas de agir) são, para já, apenas hipotéticos. É por isso que, racionalmente, sabermos que uma crença nos prejudica raramente basta para a mudarmos — o cálculo emocional não é simétrico.\n\nUm dos custos mais difíceis de contabilizar é aquele que nunca chegamos a ver: as oportunidades que nem sequer consideramos, porque a crença já as descartou antecipadamente. Não é uma escolha consciente de recusar — é uma opção que nunca chega a aparecer no radar.\n\nO objetivo deste exercício não é convencer-nos, de forma forçada, a abandonar uma crença. É olhar, com a maior honestidade possível, para os dois pratos da balança: o que esta crença me dá, e o que me tira. Só depois de vermos os dois lados com clareza é que a decisão de a manter ou a mudar deixa de ser automática, e passa a ser, verdadeiramente, uma escolha.\n\nAs crenças que persistem, mesmo custando-nos, costumam fazê-lo porque nos protegem de algo — rejeição, fracasso, responsabilidade, exposição. Reconhecer essa função, e pesar com honestidade o que ganhamos e o que perdemos ao mantê-la, é o trabalho da Aula 3.", materiaisIds: [45, 32, 50] },
+      { titulo: "Escrever uma crença nova", videoUrl: "https://www.youtube.com/embed/jaxvdcP19s4?rel=0&modestbranding=1", descricao: "Substituir a crença antiga por uma frase que sirva melhor ao que queres construir.", conteudo: "Ao longo das três aulas anteriores, aprendemos a identificar uma crença, a testar se corresponde à realidade, e a reconhecer aquilo que ganhamos e perdemos ao mantê-la. Nenhum destes passos, por si só, muda automaticamente o que fazemos a seguir. Falta o último — e, em muitos sentidos, o mais exigente: escolher, de forma deliberada, uma resposta diferente daquela que o piloto automático nos daria.\n\n«Entre o estímulo e a resposta há um espaço. Nesse espaço está o nosso poder de escolher a nossa resposta. Na nossa resposta está o nosso crescimento e a nossa liberdade.» — ideia atribuída a Viktor Frankl, psiquiatra e sobrevivente do Holocausto, fundador da logoterapia\n\nÉ esse espaço — entre o que nos acontece e o que fazemos a seguir — que este capítulo final procura ampliar.\n\nO psicólogo Albert Ellis, fundador da Terapia Racional-Emotiva Comportamental, propôs um modelo simples e influente, conhecido como Modelo ABC: A (Activating event) é o acontecimento; B (Belief) é a crença ou interpretação que temos sobre esse acontecimento; C (Consequence) é a consequência emocional e comportamental. O contributo central de Ellis foi mostrar que não é A que causa C diretamente — é B, a interpretação, que faz a ponte entre os dois. Ellis acrescentou ainda dois passos: D (Dispute), questionar essa interpretação, e E (Effect), o novo efeito, emocional e comportamental, que resulta de uma interpretação revista.\n\nRessignificar não é negar que algo doeu, nem fingir que uma situação difícil não o foi. Não é otimismo forçado, nem a ideia, por vezes chamada positividade tóxica, de que basta \"pensar pelo lado bom\" para o problema desaparecer. Ressignificar é, antes, reconhecer que um mesmo acontecimento pode sustentar mais do que uma interpretação — e que, entre essas interpretações possíveis, temos alguma margem de escolha sobre qual adotamos.\n\nA maior parte das respostas automáticas acontece porque saltamos, sem darmos conta, diretamente do acontecimento (A) para a consequência (C), sem nunca examinar B — a interpretação que, na verdade, está a conduzir tudo. Parar, ainda que por poucos segundos, antes de responder, é o que torna possível examinar esse B: o que pensei, automaticamente, sobre isto? O que senti? O que tive vontade de fazer?\n\nEsta pausa não elimina a reação inicial — não temos controlo total sobre o primeiro impulso. Mas cria a possibilidade de, antes de agir a partir dele, o questionar.\n\nEscrever uma interpretação nova é um exercício mental valioso, mas não é, por si só, suficiente. As crenças consolidam-se, como vimos no primeiro capítulo, por repetição — e é por repetição, também, que se revêm. Cada pequena ação coerente com a interpretação nova é uma prova, para nós mesmos, de que essa interpretação também é possível, e não apenas a antiga.\n\nNão é necessário — nem realista — mudar tudo de imediato. Uma ação pequena, concreta e repetível, escolhida no fim de cada sessão de trabalho como esta, é geralmente mais eficaz do que uma resolução ambiciosa que não sobrevive à primeira semana.\n\nAo longo destas quatro aulas, percorremos um caminho com quatro etapas: identificar uma crença, questionar se corresponde à realidade, avaliar o que ganhamos e perdemos ao mantê-la, e, por fim, ressignificar — escolher, de forma consciente, o significado que lhe damos e a resposta que construímos a partir daí. Este não é um trabalho que se conclua numa única passagem: as crenças mais antigas, sobretudo, pedem que se volte a este processo mais do que uma vez. O que muda, com a prática, não é a ausência de crenças limitantes — é a rapidez e a clareza com que as reconhecemos, da próxima vez que aparecerem.", materiaisIds: [45, 32, 51] },
     ],
     materiaisIds: [45, 32],
     materiaisFormadorIds: [52, 53, 54, 55],
@@ -1434,7 +1436,7 @@ function FichaEntradaGratisScreen({ onBack, onConcluido }) {
   );
 }
 
-function ComunidadeBloqueada({ onBack, onDesbloquear }) {
+function ComunidadeBloqueada({ onBack, onDesbloquear, terminouEm }) {
   const [modo, setModo] = useState(null); // null | "codigo" | "pagar"
   const [codigo, setCodigo] = useState("");
   const [telemovel, setTelemovel] = useState("");
@@ -1502,20 +1504,13 @@ function ComunidadeBloqueada({ onBack, onDesbloquear }) {
 
         {modo === null && (
           <div className="mt-5 space-y-2.5">
-            <button
-              onClick={() => setModo("pagar")}
-              className="w-full rounded-full py-3 font-medium text-sm tracking-wide transition active:scale-[0.98]"
-              style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
-            >
-              Assinar com MB WAY
-            </button>
-            <button
-              onClick={() => setModo("codigo")}
-              className="w-full text-center text-xs font-medium underline underline-offset-2 py-1"
-              style={{ color: palette.navySoft }}
-            >
-              Já tenho um código de acesso
-            </button>
+            {terminouEm && (
+              <p className="text-xs text-center" style={{ color: palette.navySoft }}>
+                A tua mensalidade terminou a {new Date(terminouEm).toLocaleDateString("pt-PT", { day: "2-digit", month: "long" })}. Renova para continuares.
+              </p>
+            )}
+            <BotaoCarrinho rotulo="Adicionar 1 mês ao carrinho" item={{ chave: "comunidade", tipo: "comunidade", titulo: "Comunidade 3S — mensalidade", valor: 7.49 }} />
+            <p className="text-[11px] text-center" style={{ color: palette.navySoft }}>Pagas por MB WAY, Multibanco ou Payshop. Cada pagamento dá acesso durante 1 mês.</p>
           </div>
         )}
 
@@ -2403,7 +2398,7 @@ function ConteudoDetalhe({ curso, concluido, onToggleConcluido, onBack, materiai
             <Icon size={22} style={{ color: palette.navy }} />
           </div>
         </div>
-        <p className="text-sm" style={{ color: palette.navySoft }}>{tipoLabel[curso.tipo]} · {curso.duracao}</p>
+        <p className="text-sm" style={{ color: palette.navySoft }}>{tipoLabel[curso.tipo]} · {curso.duracao}{curso.gratuito ? " · Gratuito" : ""}</p>
         {curso.promessa && (
           <p className="text-[15px] leading-relaxed mt-4" style={{ color: palette.ink }}>{curso.promessa}</p>
         )}
@@ -2419,7 +2414,7 @@ function ConteudoDetalhe({ curso, concluido, onToggleConcluido, onBack, materiai
                 return (
                   <div key={i} className="rounded-2xl px-4 py-3.5" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
                     <button
-                      onClick={() => setAulaExpandida(aberta ? null : i)}
+                      onClick={() => { if (!aberta) registarVisualizacao(curso, i, aula); setAulaExpandida(aberta ? null : i); }}
                       className="w-full flex items-start gap-3 text-left"
                     >
                       <span
@@ -4039,14 +4034,7 @@ function MaterialCard({ material, desbloqueado, onDesbloquear, desbloqueadoFisic
           Versão física encomendada
         </div>
       ) : estadoFisico === "fechado" ? (
-        <button
-          onClick={() => setEstadoFisico("pagar")}
-          className="w-full flex items-center justify-between rounded-lg px-3 py-2 text-xs font-medium"
-          style={{ backgroundColor: palette.creamSoft, color: palette.navy, border: `1px solid ${palette.goldSoft}55` }}
-        >
-          <span>Encomendar versão física</span>
-          <span className="font-serif" style={{ color: palette.gold }}>{material.precoFisico}</span>
-        </button>
+        <BotaoCarrinho pequeno rotulo="Encomendar versão física" item={{ chave: `fisico-${material.id}`, tipo: "material_fisico", materialId: material.id, titulo: `${material.titulo} (versão física)`, valor: precoNumero(material.precoFisico) }} />
       ) : estadoPagamentoFisico === "a_confirmar" ? (
         <div className="text-center py-3">
           <p className="text-xs font-medium" style={{ color: palette.navy }}>Confirma no teu telemóvel</p>
@@ -4121,21 +4109,8 @@ function MaterialCard({ material, desbloqueado, onDesbloquear, desbloqueadoFisic
       </div>
 
       {estado === "fechado" && (
-        <div className="flex items-center gap-4 mt-3">
-          <button
-            onClick={() => setEstado("pagar")}
-            className="flex-1 rounded-lg py-2 text-xs font-medium tracking-wide transition active:scale-[0.98]"
-            style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
-          >
-            Comprar com MB WAY
-          </button>
-          <button
-            onClick={() => setEstado("codigo")}
-            className="text-xs font-medium underline underline-offset-2"
-            style={{ color: palette.navySoft }}
-          >
-            Já tenho um código
-          </button>
+        <div className="mt-3">
+          <BotaoCarrinho pequeno item={{ chave: `material-${material.id}`, tipo: "material", materialId: material.id, titulo: material.titulo, valor: precoNumero(material.preco) }} />
         </div>
       )}
 
@@ -5165,7 +5140,7 @@ function DashboardMentoraScreen({ onBack, onAbrirCliente }) {
     setAProcessar(null);
   };
 
-  const idsComunidadePaga = Object.entries(progressos).filter(([, p]) => p.comunidadeDesbloqueada).map(([id]) => id);
+  const idsComunidadePaga = Object.entries(progressos).filter(([, p]) => comunidadeEmDia(p)).map(([id]) => id);
   const idsComunidadeGratis = Array.from(new Set(entradasGratis.map((e) => e.user_id)));
   const idsComunidadeTodos = new Set([...idsComunidadePaga, ...idsComunidadeGratis]);
   const totalInscritosComunidade = idsComunidadeTodos.size;
@@ -5710,7 +5685,7 @@ function AcessoFormadoresScreen({ onBack }) {
   );
 }
 
-function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFormadores }) {
+function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFormadores, onVerArquivo }) {
   const totalInscricoes = Object.values(progresso.inscricoesWorkshops).filter(Boolean).length;
   const totalMateriais = Object.values(progresso.materiaisDesbloqueados).filter(Boolean).length;
   const totalConcluidos = Object.values(progresso.cursosConcluidos).filter(Boolean).length;
@@ -5760,6 +5735,22 @@ function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFor
           <ChevronRight size={18} style={{ color: palette.gold }} />
         </button>
       </div>
+
+      {progresso.papel === "dona" && (
+        <div className="px-6 mb-6">
+          <button
+            onClick={onVerArquivo}
+            className="w-full flex items-center justify-between rounded-2xl px-5 py-4"
+            style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}
+          >
+            <div className="text-left">
+              <p className="font-serif text-lg" style={{ color: palette.navy }}>Arquivo da Escola</p>
+              <p className="text-xs mt-0.5" style={{ color: palette.navySoft }}>Autorizações RGPD, fichas, inscrições, pagamentos e documentos</p>
+            </div>
+            <ChevronRight size={18} style={{ color: palette.navySoft }} />
+          </button>
+        </div>
+      )}
 
       {progresso.papel === "dona" && (
         <div className="px-6 mb-6">
@@ -5911,10 +5902,10 @@ function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFor
           className="flex items-center gap-3 rounded-xl px-4 py-3 mb-3"
           style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}
         >
-          <Users size={16} style={{ color: progresso.comunidadeDesbloqueada ? palette.gold : palette.navySoft }} />
+          <Users size={16} style={{ color: comunidadeEmDia(progresso) ? palette.gold : palette.navySoft }} />
           <p className="text-sm flex-1" style={{ color: palette.ink }}>Acesso à Comunidade</p>
-          <span className="text-xs font-medium" style={{ color: progresso.comunidadeDesbloqueada ? palette.gold : palette.navySoft }}>
-            {progresso.comunidadeDesbloqueada ? "Desbloqueado" : "Por desbloquear"}
+          <span className="text-xs font-medium" style={{ color: comunidadeEmDia(progresso) ? palette.gold : palette.navySoft }}>
+            {comunidadeEmDia(progresso) ? "Em dia" : "Por pagar"}
           </span>
         </div>
 
@@ -6166,6 +6157,672 @@ function BottomNav({ active, onChange }) {
 /* ---------------------------------------------------------
    App
 --------------------------------------------------------- */
+
+/* ---------- Carrinho e pagamentos (MB WAY, Multibanco, Payshop) ---------- */
+const CarrinhoContext = createContext({ itens: [], adicionar: () => {}, remover: () => {}, limpar: () => {}, abrir: () => {} });
+
+function precoNumero(texto) {
+  const v = parseFloat(String(texto || "").replace("€", "").replace(",", ".").trim());
+  return isNaN(v) ? null : v;
+}
+function precoTexto(v) {
+  return `${Number(v).toFixed(2).replace(".", ",")}€`;
+}
+const comunidadeEmDia = (p) => Boolean(p?.comunidadePagaAte && new Date(p.comunidadePagaAte) > new Date());
+
+async function criarPagamento(tipo, valor, descricao, telemovel, itens) {
+  const { data: sessaoAtual } = await supabase.auth.getSession();
+  const token = sessaoAtual?.session?.access_token;
+  if (!token) throw new Error("Sessão inválida — entra na app de novo.");
+  const resp = await fetch("https://hspekqrhttxeckghtryi.supabase.co/functions/v1/criar-pagamento", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+    body: JSON.stringify({ tipo, valor: Number(valor.toFixed(2)), descricao, telemovel: telemovel || "", itens }),
+  });
+  const data = await resp.json();
+  if (!resp.ok || data.erro) throw new Error(data.erro || "Não foi possível iniciar o pagamento.");
+  return data;
+}
+
+const visualizacoesRegistadas = new Set();
+async function registarVisualizacao(curso, indice, aula) {
+  const chave = `${curso.id}-${indice}`;
+  if (visualizacoesRegistadas.has(chave)) return;
+  visualizacoesRegistadas.add(chave);
+  try {
+    const { data } = await supabase.auth.getSession();
+    const uid = data?.session?.user?.id;
+    if (!uid) return;
+    await supabase.from("visualizacoes_aulas").insert({
+      user_id: uid, curso_id: curso.id, curso_titulo: curso.titulo, aula_numero: indice + 1, aula_titulo: aula.titulo,
+    });
+  } catch (e) {}
+}
+
+function BotaoCarrinho({ item, rotulo, pequeno }) {
+  const carrinho = useContext(CarrinhoContext);
+  if (item.valor === null || item.valor === undefined) return null;
+  const noCarrinho = carrinho.itens.some((i) => i.chave === item.chave);
+  const classe = pequeno
+    ? "w-full flex items-center justify-between rounded-lg px-3 py-2 text-xs font-medium"
+    : "w-full rounded-full py-3 font-medium text-sm tracking-wide transition active:scale-[0.98]";
+  if (noCarrinho) {
+    return (
+      <button onClick={carrinho.abrir} className={classe} style={{ backgroundColor: palette.creamSoft, color: palette.navy, border: `1px solid ${palette.gold}` }}>
+        <span>No carrinho ✓ — ver carrinho</span>
+      </button>
+    );
+  }
+  return (
+    <button
+      onClick={() => carrinho.adicionar(item)}
+      className={classe}
+      style={pequeno ? { backgroundColor: palette.creamSoft, color: palette.navy, border: `1px solid ${palette.goldSoft}55` } : { backgroundColor: palette.navy, color: palette.creamSoft }}
+    >
+      {pequeno ? (
+        <>
+          <span>{rotulo || "Adicionar ao carrinho"}</span>
+          <span className="font-serif" style={{ color: palette.gold }}>{precoTexto(item.valor)}</span>
+        </>
+      ) : (
+        <span>{rotulo || "Adicionar ao carrinho"} · {precoTexto(item.valor)}</span>
+      )}
+    </button>
+  );
+}
+
+function CarrinhoScreen({ onBack, onPagamentoConfirmado }) {
+  const carrinho = useContext(CarrinhoContext);
+  const [metodo, setMetodo] = useState(null); // "mbway" | "mb" | "payshop"
+  const [telemovel, setTelemovel] = useState("");
+  const [codigoDesconto, setCodigoDesconto] = useState("");
+  const [estado, setEstado] = useState(null); // null | "a_enviar" | "a_confirmar" | "pago" | "referencia" | "falhou"
+  const [erro, setErro] = useState("");
+  const [referencia, setReferencia] = useState(null);
+  const [pendentes, setPendentes] = useState([]);
+
+  const carregarPendentes = async () => {
+    const { data: s } = await supabase.auth.getSession();
+    const uid = s?.session?.user?.id;
+    if (!uid) return;
+    const { data } = await supabase
+      .from("pagamentos")
+      .select("id, tipo, descricao, valor, entidade, referencia_pagamento, validade, criado_em")
+      .eq("user_id", uid)
+      .eq("estado", "pendente")
+      .in("tipo", ["mb", "payshop"])
+      .not("referencia_pagamento", "is", null)
+      .order("criado_em", { ascending: false })
+      .limit(10);
+    setPendentes(data || []);
+  };
+  useEffect(() => { carregarPendentes(); }, []);
+
+  const descontoValido = codigoDesconto.trim().toUpperCase() === "COMUNIDADE10";
+  const valorItem = (i) => (descontoValido && (i.tipo === "material") ? i.valor * 0.9 : i.valor);
+  const total = carrinho.itens.reduce((s, i) => s + valorItem(i), 0);
+  const descricao = carrinho.itens.map((i) => i.titulo).join(" + ");
+
+  const pagar = async () => {
+    if (!metodo || carrinho.itens.length === 0) return;
+    if (metodo === "mbway" && !telemovel.trim()) return;
+    setErro("");
+    setEstado("a_enviar");
+    const itens = carrinho.itens.map((i) => ({ tipo: i.tipo, materialId: i.materialId ?? null, titulo: i.titulo, valor: Number(valorItem(i).toFixed(2)) }));
+    try {
+      if (metodo === "mbway") guardarTelefone(telemovel.trim());
+      const r = await criarPagamento(metodo, total, descricao, telemovel.trim(), itens);
+      if (metodo === "mbway") {
+        setEstado("a_confirmar");
+        const pago = await aguardarConfirmacaoPagamento(r.pagamento_id, 240000);
+        if (pago) {
+          carrinho.limpar();
+          setEstado("pago");
+          onPagamentoConfirmado();
+        } else {
+          setEstado("falhou");
+          setErro("Não recebemos a confirmação a tempo. Se já aprovaste na app MB WAY, o acesso fica desbloqueado assim que o pagamento chegar.");
+        }
+      } else {
+        setReferencia({ metodo, entidade: r.entidade, referencia: r.referencia, valor: r.valor || total, validade: r.validade });
+        carrinho.limpar();
+        setEstado("referencia");
+        carregarPendentes();
+      }
+    } catch (e) {
+      setEstado("falhou");
+      setErro(e.message || "Não foi possível iniciar o pagamento.");
+    }
+  };
+
+  const cartaoMetodo = (id, titulo, desc) => (
+    <button
+      key={id}
+      onClick={() => setMetodo(id)}
+      className="w-full text-left rounded-2xl px-4 py-3"
+      style={metodo === id ? { backgroundColor: palette.navy, color: palette.creamSoft } : { backgroundColor: palette.card, color: palette.navy, border: `1px solid ${palette.goldSoft}55` }}
+    >
+      <p className="text-sm font-medium">{titulo}</p>
+      <p className="text-[11px] mt-0.5" style={{ color: metodo === id ? palette.goldSoft : palette.navySoft }}>{desc}</p>
+    </button>
+  );
+
+  const blocoReferencia = (r) => (
+    <div className="rounded-2xl px-5 py-4 space-y-1" style={{ backgroundColor: palette.card, border: `1px solid ${palette.gold}` }}>
+      <p className="text-[10px] tracking-[0.2em] font-medium" style={{ color: palette.gold }}>{r.metodo === "mb" || r.tipo === "mb" ? "MULTIBANCO" : "PAYSHOP"}</p>
+      {r.entidade && <p className="text-sm" style={{ color: palette.navy }}>Entidade: <b>{r.entidade}</b></p>}
+      <p className="text-sm" style={{ color: palette.navy }}>Referência: <b>{r.referencia || r.referencia_pagamento}</b></p>
+      <p className="text-sm" style={{ color: palette.navy }}>Valor: <b>{precoTexto(r.valor)}</b></p>
+      {r.validade && <p className="text-xs" style={{ color: palette.navySoft }}>Válida até: {r.validade}</p>}
+      {r.descricao && <p className="text-xs" style={{ color: palette.navySoft }}>{r.descricao}</p>}
+    </div>
+  );
+
+  return (
+    <div className="pb-28">
+      <SectionHeader eyebrow="LOJA" title="O teu carrinho" onBack={onBack} />
+      <div className="px-6 space-y-3">
+        {estado === "pago" && (
+          <div className="rounded-2xl px-5 py-5 text-center" style={{ backgroundColor: palette.navy }}>
+            <CheckCircle2 size={28} style={{ color: palette.gold, margin: "0 auto" }} />
+            <p className="font-serif text-xl mt-2" style={{ color: palette.creamSoft }}>Pagamento confirmado</p>
+            <p className="text-xs mt-1" style={{ color: palette.goldSoft }}>Já tens acesso ao que compraste. Obrigada!</p>
+          </div>
+        )}
+
+        {estado === "referencia" && referencia && (
+          <>
+            <p className="text-sm" style={{ color: palette.ink }}>Usa estes dados para pagar {referencia.metodo === "mb" ? "no multibanco ou no homebanking" : "num agente Payshop (CTT, papelarias, quiosques)"}. Assim que o pagamento chegar, o acesso fica desbloqueado automaticamente.</p>
+            {blocoReferencia(referencia)}
+          </>
+        )}
+
+        {carrinho.itens.length === 0 && estado !== "pago" && estado !== "referencia" && (
+          <p className="text-sm" style={{ color: palette.navySoft }}>O teu carrinho está vazio.</p>
+        )}
+
+        {carrinho.itens.length > 0 && (
+          <>
+            {carrinho.itens.map((i) => (
+              <div key={i.chave} className="rounded-2xl px-4 py-3 flex items-center gap-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm" style={{ color: palette.navy }}>{i.titulo}</p>
+                  <p className="text-xs" style={{ color: palette.gold }}>{precoTexto(valorItem(i))}{i.tipo === "comunidade" ? " · 1 mês" : ""}</p>
+                </div>
+                <button onClick={() => carrinho.remover(i.chave)} aria-label="Remover"><Trash2 size={16} style={{ color: palette.navySoft }} /></button>
+              </div>
+            ))}
+
+            <input
+              type="text"
+              value={codigoDesconto}
+              onChange={(e) => setCodigoDesconto(e.target.value)}
+              placeholder="Código de desconto (opcional)"
+              className="w-full rounded-xl px-4 py-2.5 text-sm outline-none"
+              style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
+            />
+            {descontoValido && <p className="text-xs" style={{ color: palette.gold }}>Desconto de 10% aplicado aos materiais.</p>}
+
+            <div className="flex items-center justify-between px-1 pt-1">
+              <p className="text-sm font-medium" style={{ color: palette.navy }}>Total</p>
+              <p className="font-serif text-2xl" style={{ color: palette.navy }}>{precoTexto(total)}</p>
+            </div>
+
+            <p className="text-[11px] tracking-[0.2em] font-medium pt-2" style={{ color: palette.gold }}>ESCOLHE COMO QUERES PAGAR</p>
+            {cartaoMetodo("mbway", "MB WAY", "Aprovas na app MB WAY e o acesso fica logo desbloqueado.")}
+            {cartaoMetodo("mb", "Referência Multibanco", "Pagas no multibanco ou no homebanking.")}
+            {cartaoMetodo("payshop", "Payshop", "Pagas em dinheiro num agente Payshop (CTT, papelarias).")}
+
+            {metodo === "mbway" && estado !== "a_confirmar" && (
+              <input
+                type="tel"
+                value={telemovel}
+                onChange={(e) => setTelemovel(e.target.value)}
+                placeholder="Número de telemóvel (MB WAY)"
+                className="w-full rounded-xl px-4 py-2.5 text-sm outline-none"
+                style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
+              />
+            )}
+
+            {estado === "a_confirmar" ? (
+              <div className="text-center py-4">
+                <p className="text-sm font-medium" style={{ color: palette.navy }}>Confirma no teu telemóvel</p>
+                <p className="text-xs" style={{ color: palette.navySoft }}>Abre a app MB WAY e aprova o pagamento de {precoTexto(total)}.</p>
+              </div>
+            ) : (
+              <button
+                onClick={pagar}
+                disabled={!metodo || estado === "a_enviar" || (metodo === "mbway" && !telemovel.trim())}
+                className="w-full rounded-full py-3.5 font-medium text-sm tracking-wide disabled:opacity-50"
+                style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
+              >
+                {estado === "a_enviar" ? "A preparar pagamento..." : metodo === "mbway" ? `Pagar ${precoTexto(total)}` : metodo ? `Gerar referência de ${precoTexto(total)}` : "Escolhe a forma de pagamento"}
+              </button>
+            )}
+          </>
+        )}
+
+        {erro && <p className="text-xs text-center" style={{ color: "#B23A3A" }}>{erro}</p>}
+
+        {pendentes.length > 0 && estado !== "referencia" && (
+          <div className="pt-4 space-y-2">
+            <p className="text-[11px] tracking-[0.2em] font-medium" style={{ color: palette.gold }}>REFERÊNCIAS POR PAGAR</p>
+            {pendentes.map((p) => <div key={p.id}>{blocoReferencia(p)}</div>)}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function FichaCursoScreen({ curso, session, onBack, onGuardada }) {
+  const [nome, setNome] = useState("");
+  const [telefone, setTelefone] = useState("");
+  const [aGuardar, setAGuardar] = useState(false);
+  const [erro, setErro] = useState("");
+  const guardar = async () => {
+    if (!nome.trim() || !telefone.trim()) return;
+    setAGuardar(true);
+    setErro("");
+    const { error } = await supabase.from("clientes").upsert(
+      { user_id: session.user.id, email: session.user.email, nome: nome.trim(), telefone: telefone.trim(), atualizado_em: new Date().toISOString() },
+      { onConflict: "user_id" }
+    );
+    setAGuardar(false);
+    if (error) { setErro("Não foi possível guardar. Tenta novamente."); return; }
+    onGuardada({ nome: nome.trim(), telefone: telefone.trim() });
+  };
+  const campo = (valor, setValor, placeholder, tipo = "text") => (
+    <input
+      type={tipo}
+      value={valor}
+      onChange={(e) => setValor(e.target.value)}
+      placeholder={placeholder}
+      className="w-full rounded-xl px-4 py-3 text-sm outline-none"
+      style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
+    />
+  );
+  return (
+    <div className="pb-28">
+      <SectionHeader eyebrow="CURSO GRATUITO" title={curso.titulo} onBack={onBack} />
+      <div className="px-6 space-y-3">
+        <p className="text-sm leading-relaxed" style={{ color: palette.ink }}>Este curso é gratuito. Para começares, preenche a tua ficha — só precisamos disto uma vez.</p>
+        {campo(nome, setNome, "Nome completo")}
+        {campo(telefone, setTelefone, "Telemóvel", "tel")}
+        {erro && <p className="text-xs" style={{ color: "#B23A3A" }}>{erro}</p>}
+        <button
+          onClick={guardar}
+          disabled={!nome.trim() || !telefone.trim() || aGuardar}
+          className="w-full rounded-full py-3.5 font-medium text-sm disabled:opacity-50"
+          style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
+        >
+          {aGuardar ? "A guardar…" : "Começar o curso"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Arquivo da Escola (só a dona) ---------- */
+const TEXTO_CONSENTIMENTO_GERAL = "Aceito que a Escola 3S guarde e utilize os meus dados pessoais (email e, sempre que os partilhar, nome, telemóvel e outra informação fornecida nos formulários da app) para gerir a minha conta e o meu percurso na escola.";
+
+function ConsentimentoGate({ session, onAceite }) {
+  const [aceitou, setAceitou] = useState(false);
+  const [aGuardar, setAGuardar] = useState(false);
+  const [erro, setErro] = useState("");
+  const guardar = async () => {
+    setAGuardar(true);
+    setErro("");
+    const { error } = await supabase
+      .from("consentimentos_dados")
+      .insert({ user_id: session.user.id, email: session.user.email, texto_aceite: TEXTO_CONSENTIMENTO_GERAL });
+    setAGuardar(false);
+    if (error) { setErro("Não foi possível guardar. Tenta novamente."); return; }
+    onAceite();
+  };
+  return (
+    <div className="min-h-screen w-full flex justify-center" style={{ backgroundColor: palette.cream, fontFamily: "Inter, sans-serif" }}>
+      <div className="w-full max-w-md px-6 pt-16" style={{ backgroundColor: palette.creamSoft }}>
+        <p className="text-[11px] tracking-[0.25em] font-medium mb-2" style={{ color: palette.gold }}>PROTEÇÃO DE DADOS</p>
+        <h1 className="font-serif text-2xl leading-tight mb-4" style={{ color: palette.navy }}>Antes de continuares</h1>
+        <p className="text-sm leading-relaxed mb-5" style={{ color: palette.ink }}>
+          Para cumprir o Regulamento Geral de Proteção de Dados (RGPD), precisamos da tua autorização para guardar os teus dados na Escola 3S.
+        </p>
+        <label className="flex items-start gap-2.5 rounded-2xl px-4 py-4 mb-5" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
+          <input type="checkbox" checked={aceitou} onChange={(e) => setAceitou(e.target.checked)} className="mt-0.5 shrink-0" />
+          <span className="text-xs leading-relaxed" style={{ color: palette.navySoft }}>{TEXTO_CONSENTIMENTO_GERAL}</span>
+        </label>
+        {erro && <p className="text-xs mb-3" style={{ color: "#A33" }}>{erro}</p>}
+        <button
+          onClick={guardar}
+          disabled={!aceitou || aGuardar}
+          className="w-full rounded-full py-3.5 font-medium text-sm disabled:opacity-60"
+          style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
+        >
+          {aGuardar ? "A guardar…" : "Aceito e continuar"}
+        </button>
+        <button onClick={() => supabase.auth.signOut()} className="w-full text-xs mt-4 py-2" style={{ color: palette.navySoft }}>
+          Não aceito — sair
+        </button>
+      </div>
+    </div>
+  );
+}
+
+const ARQUIVO_PASTAS = [
+  { id: "autorizacoes", nome: "Autorizações (RGPD)" },
+  { id: "fichas", nome: "Fichas de clientes" },
+  { id: "inscricoes", nome: "Inscrições" },
+  { id: "outros", nome: "Outros" },
+];
+
+function arquivoData(d) {
+  if (!d) return "—";
+  return new Date(d).toLocaleDateString("pt-PT", { day: "2-digit", month: "short", year: "numeric" });
+}
+
+function exportarCSV(nomeFicheiro, cabecalho, linhas) {
+  const esc = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+  const texto = "\uFEFF" + [cabecalho, ...linhas].map((l) => l.map(esc).join(";")).join("\n");
+  const blob = new Blob([texto], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = nomeFicheiro;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+
+function ArquivoCartao({ titulo, linhas }) {
+  return (
+    <div className="rounded-2xl px-4 py-3.5" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
+      <p className="font-serif text-base leading-snug" style={{ color: palette.navy }}>{titulo}</p>
+      {linhas.filter(Boolean).map((l, i) => (
+        <p key={i} className="text-xs leading-relaxed mt-0.5 break-words" style={{ color: palette.navySoft }}>{l}</p>
+      ))}
+    </div>
+  );
+}
+
+function ArquivoEscolaScreen({ onBack }) {
+  const [tab, setTab] = useState("autorizacoes");
+  const [carregando, setCarregando] = useState(true);
+  const [consentimentos, setConsentimentos] = useState([]);
+  const [clientes, setClientes] = useState([]);
+  const [inscricoesEvento, setInscricoesEvento] = useState([]);
+  const [progressos, setProgressos] = useState([]);
+  const [pagamentos, setPagamentos] = useState([]);
+  const [visualizacoes, setVisualizacoes] = useState([]);
+  const [pasta, setPasta] = useState("autorizacoes");
+  const [ficheiros, setFicheiros] = useState([]);
+  const [aCarregarFicheiro, setACarregarFicheiro] = useState(false);
+  const [mensagem, setMensagem] = useState("");
+  const [pesquisa, setPesquisa] = useState("");
+
+  useEffect(() => {
+    (async () => {
+      setCarregando(true);
+      const [rC, rCl, rI, rP, rPg, rV] = await Promise.all([
+        supabase.from("consentimentos_dados").select("*").order("aceite_em", { ascending: false }),
+        supabase.from("clientes").select("*").order("criado_em", { ascending: false }),
+        supabase.from("inscricoes_evento").select("*").order("criado_em", { ascending: false }),
+        supabase.from("user_progress").select("user_id, data"),
+        supabase.from("pagamentos").select("*").order("criado_em", { ascending: false }),
+        supabase.from("visualizacoes_aulas").select("*").order("visto_em", { ascending: false }),
+      ]);
+      setVisualizacoes(rV.data || []);
+      setConsentimentos(rC.data || []);
+      setClientes(rCl.data || []);
+      setInscricoesEvento(rI.data || []);
+      setProgressos(rP.data || []);
+      setPagamentos(rPg.data || []);
+      setCarregando(false);
+    })();
+  }, []);
+
+  const carregarFicheiros = async (p) => {
+    const { data } = await supabase.storage.from("arquivo").list(p, { limit: 200, sortBy: { column: "created_at", order: "desc" } });
+    setFicheiros((data || []).filter((f) => f.name && f.name !== ".emptyFolderPlaceholder"));
+  };
+
+  useEffect(() => {
+    if (tab === "documentos") carregarFicheiros(pasta);
+  }, [tab, pasta]);
+
+  const pessoa = (userId) => {
+    const c = clientes.find((x) => x.user_id === userId);
+    return { nome: c?.nome || "", email: c?.email || "", telefone: c?.telefone || "" };
+  };
+
+  const filtro = (texto) => !pesquisa.trim() || String(texto).toLowerCase().includes(pesquisa.trim().toLowerCase());
+
+  const carregarFicheiro = async (e) => {
+    const f = e.target.files && e.target.files[0];
+    e.target.value = "";
+    if (!f) return;
+    if (f.size > 20 * 1024 * 1024) { setMensagem("O ficheiro tem mais de 20 MB."); return; }
+    setACarregarFicheiro(true);
+    setMensagem("");
+    const nomeSeguro = f.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9._-]/g, "_");
+    const { error } = await supabase.storage.from("arquivo").upload(`${pasta}/${Date.now()}-${nomeSeguro}`, f, { upsert: false });
+    setACarregarFicheiro(false);
+    if (error) { setMensagem("Não foi possível carregar o ficheiro."); return; }
+    setMensagem("Ficheiro guardado.");
+    carregarFicheiros(pasta);
+  };
+
+  const abrirFicheiro = async (nome) => {
+    const { data } = await supabase.storage.from("arquivo").createSignedUrl(`${pasta}/${nome}`, 300);
+    if (data?.signedUrl) window.open(data.signedUrl, "_blank");
+  };
+
+  const apagarFicheiro = async (nome) => {
+    if (!window.confirm("Apagar este documento? Não é possível recuperar.")) return;
+    await supabase.storage.from("arquivo").remove([`${pasta}/${nome}`]);
+    carregarFicheiros(pasta);
+  };
+
+  // Inscrições em workshops e lives (guardadas no progresso de cada pessoa)
+  const inscricoesWorkshop = [];
+  workshops.forEach((w) => {
+    progressos.forEach((p) => {
+      if (p.data?.inscricoesWorkshops?.[w.id]) {
+        const pe = pessoa(p.user_id);
+        inscricoesWorkshop.push({ acao: w.titulo, data: `${w.data} ${w.hora || ""}`.trim(), ...pe });
+      }
+    });
+  });
+  const inscricoesTodas = [
+    ...inscricoesEvento.map((i) => ({ acao: i.evento || "Evento", data: arquivoData(i.criado_em), nome: i.nome, email: i.email, telefone: i.telefone })),
+    ...inscricoesWorkshop,
+  ];
+
+  const totalPago = pagamentos.filter((p) => p.estado === "pago").reduce((s, p) => s + Number(p.valor || 0), 0);
+
+  const separadores = [
+    { id: "autorizacoes", nome: "Autorizações", n: consentimentos.length },
+    { id: "fichas", nome: "Fichas", n: clientes.length },
+    { id: "inscricoes", nome: "Inscrições", n: inscricoesTodas.length },
+    { id: "pagamentos", nome: "Pagamentos", n: pagamentos.length },
+    { id: "visualizacoes", nome: "Quem viu", n: new Set(visualizacoes.map((v) => v.user_id)).size },
+    { id: "documentos", nome: "Documentos", n: null },
+  ];
+
+  const botaoExportar = (onClick) => (
+    <button onClick={onClick} className="flex items-center gap-1.5 text-xs font-medium rounded-full px-3.5 py-2" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>
+      <Download size={14} /> Exportar para Excel
+    </button>
+  );
+
+  return (
+    <div className="pb-28">
+      <SectionHeader eyebrow="SÓ PARA A DONA" title="Arquivo da Escola" onBack={onBack} />
+
+      <div className="px-6 mb-4 flex gap-2 overflow-x-auto pb-1">
+        {separadores.map((s) => (
+          <button
+            key={s.id}
+            onClick={() => { setTab(s.id); setPesquisa(""); }}
+            className="shrink-0 rounded-full px-3.5 py-2 text-xs font-medium"
+            style={tab === s.id ? { backgroundColor: palette.navy, color: palette.creamSoft } : { backgroundColor: palette.card, color: palette.navySoft, border: `1px solid ${palette.goldSoft}55` }}
+          >
+            {s.nome}{s.n !== null ? ` (${s.n})` : ""}
+          </button>
+        ))}
+      </div>
+
+      {tab !== "documentos" && (
+        <div className="px-6 mb-4">
+          <input
+            type="text"
+            value={pesquisa}
+            onChange={(e) => setPesquisa(e.target.value)}
+            placeholder="Pesquisar por nome, email ou telefone"
+            className="w-full rounded-xl px-4 py-2.5 text-sm outline-none"
+            style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
+          />
+        </div>
+      )}
+
+      <div className="px-6 space-y-3">
+        {carregando && tab !== "documentos" && <p className="text-sm" style={{ color: palette.navySoft }}>A carregar…</p>}
+
+        {!carregando && tab === "autorizacoes" && (
+          <>
+            <div className="flex items-center justify-between">
+              <p className="text-xs" style={{ color: palette.navySoft }}>Autorizações RGPD aceites na app</p>
+              {botaoExportar(() => exportarCSV("autorizacoes-rgpd.csv", ["Data", "Nome", "Email", "Telefone", "Texto aceite"],
+                consentimentos.map((c) => [arquivoData(c.aceite_em), c.nome, c.email, c.telefone, c.texto_aceite])))}
+            </div>
+            {consentimentos.length === 0 && <p className="text-sm" style={{ color: palette.navySoft }}>Ainda não há autorizações registadas.</p>}
+            {consentimentos.filter((c) => filtro(`${c.nome} ${c.email} ${c.telefone}`)).map((c) => (
+              <ArquivoCartao key={c.id} titulo={c.nome || c.email} linhas={[c.nome ? c.email : null, c.telefone, `Aceite em ${arquivoData(c.aceite_em)}`, `«${c.texto_aceite}»`]} />
+            ))}
+          </>
+        )}
+
+        {!carregando && tab === "fichas" && (
+          <>
+            <div className="flex items-center justify-between">
+              <p className="text-xs" style={{ color: palette.navySoft }}>Todas as pessoas registadas</p>
+              {botaoExportar(() => exportarCSV("fichas-clientes.csv", ["Nome", "Email", "Telefone", "Registo"],
+                clientes.map((c) => [c.nome, c.email, c.telefone, arquivoData(c.criado_em)])))}
+            </div>
+            {clientes.filter((c) => filtro(`${c.nome} ${c.email} ${c.telefone}`)).map((c) => (
+              <ArquivoCartao key={c.user_id} titulo={c.nome || c.email} linhas={[c.nome ? c.email : null, c.telefone ? `Tel. ${c.telefone}` : "Sem telefone", `Registo: ${arquivoData(c.criado_em)}`]} />
+            ))}
+          </>
+        )}
+
+        {!carregando && tab === "inscricoes" && (
+          <>
+            <div className="flex items-center justify-between">
+              <p className="text-xs" style={{ color: palette.navySoft }}>Ações, formações, workshops e lives</p>
+              {botaoExportar(() => exportarCSV("inscricoes.csv", ["Ação", "Data", "Nome", "Email", "Telefone"],
+                inscricoesTodas.map((i) => [i.acao, i.data, i.nome, i.email, i.telefone])))}
+            </div>
+            {inscricoesTodas.length === 0 && <p className="text-sm" style={{ color: palette.navySoft }}>Ainda não há inscrições.</p>}
+            {inscricoesTodas.filter((i) => filtro(`${i.acao} ${i.nome} ${i.email} ${i.telefone}`)).map((i, k) => (
+              <ArquivoCartao key={k} titulo={i.nome || i.email || "Pessoa sem nome"} linhas={[i.acao, i.data, i.nome ? i.email : null, i.telefone]} />
+            ))}
+          </>
+        )}
+
+        {!carregando && tab === "pagamentos" && (
+          <>
+            <div className="rounded-2xl px-5 py-4" style={{ backgroundColor: palette.navy }}>
+              <p className="text-[10px] tracking-[0.2em]" style={{ color: palette.goldSoft }}>TOTAL RECEBIDO</p>
+              <p className="font-serif text-3xl" style={{ color: palette.creamSoft }}>{totalPago.toFixed(2).replace(".", ",")} €</p>
+            </div>
+            <div className="flex items-center justify-between">
+              <p className="text-xs" style={{ color: palette.navySoft }}>Quem pagou e o quê</p>
+              {botaoExportar(() => exportarCSV("pagamentos.csv", ["Data", "Nome", "Email", "O que pagou", "Método", "Valor (€)", "Estado"],
+                pagamentos.map((p) => { const pe = pessoa(p.user_id); return [arquivoData(p.pago_em || p.criado_em), pe.nome, pe.email, p.descricao, p.tipo, String(p.valor).replace(".", ","), p.estado]; })))}
+            </div>
+            {pagamentos.length === 0 && <p className="text-sm" style={{ color: palette.navySoft }}>Ainda não há pagamentos.</p>}
+            {pagamentos.filter((p) => { const pe = pessoa(p.user_id); return filtro(`${pe.nome} ${pe.email} ${p.descricao}`); }).map((p) => {
+              const pe = pessoa(p.user_id);
+              return (
+                <ArquivoCartao
+                  key={p.id}
+                  titulo={`${Number(p.valor).toFixed(2).replace(".", ",")} € · ${p.estado === "pago" ? "Pago" : "Pendente"}`}
+                  linhas={[p.descricao, pe.nome || pe.email || "Pessoa desconhecida", pe.nome ? pe.email : null, `${p.tipo === "mbway" ? "MB WAY" : p.tipo || ""} · ${arquivoData(p.pago_em || p.criado_em)}`]}
+                />
+              );
+            })}
+          </>
+        )}
+
+
+        {!carregando && tab === "visualizacoes" && (
+          <>
+            <div className="flex items-center justify-between">
+              <p className="text-xs" style={{ color: palette.navySoft }}>Quem abriu cada aula dos cursos</p>
+              {botaoExportar(() => exportarCSV("quem-viu-aulas.csv", ["Data", "Nome", "Email", "Telefone", "Curso", "Aula"],
+                visualizacoes.map((v) => { const pe = pessoa(v.user_id); return [arquivoData(v.visto_em), pe.nome, pe.email, pe.telefone, v.curso_titulo, `Aula ${v.aula_numero} — ${v.aula_titulo}`]; })))}
+            </div>
+            {visualizacoes.length === 0 && <p className="text-sm" style={{ color: palette.navySoft }}>Ainda ninguém abriu aulas.</p>}
+            {Object.values(visualizacoes.reduce((acc, v) => {
+              const k = `${v.user_id}-${v.curso_id}`;
+              if (!acc[k]) acc[k] = { user_id: v.user_id, curso: v.curso_titulo, aulas: {}, ultima: v.visto_em };
+              acc[k].aulas[v.aula_numero] = v.aula_titulo;
+              if (v.visto_em > acc[k].ultima) acc[k].ultima = v.visto_em;
+              return acc;
+            }, {})).filter((g) => { const pe = pessoa(g.user_id); return filtro(`${pe.nome} ${pe.email} ${pe.telefone} ${g.curso}`); }).map((g) => {
+              const pe = pessoa(g.user_id);
+              const nums = Object.keys(g.aulas).map(Number).sort((a, b) => a - b);
+              return (
+                <ArquivoCartao
+                  key={`${g.user_id}-${g.curso}`}
+                  titulo={pe.nome || pe.email || "Pessoa sem ficha"}
+                  linhas={[pe.nome ? pe.email : null, pe.telefone, `${g.curso}: viu ${nums.length} aula${nums.length === 1 ? "" : "s"} (${nums.map((n) => `Aula ${n}`).join(", ")})`, `Última vez: ${arquivoData(g.ultima)}`]}
+                />
+              );
+            })}
+          </>
+        )}
+        {tab === "documentos" && (
+          <>
+            <p className="text-xs" style={{ color: palette.navySoft }}>Guarda aqui autorizações assinadas, fichas em papel digitalizadas e listas de presenças (PDF ou foto, até 20 MB). Só tu consegues ver estes documentos.</p>
+            <div className="flex gap-2 overflow-x-auto pb-1">
+              {ARQUIVO_PASTAS.map((p) => (
+                <button
+                  key={p.id}
+                  onClick={() => setPasta(p.id)}
+                  className="shrink-0 rounded-full px-3 py-1.5 text-xs"
+                  style={pasta === p.id ? { backgroundColor: palette.gold, color: palette.navy } : { backgroundColor: palette.card, color: palette.navySoft, border: `1px solid ${palette.goldSoft}55` }}
+                >
+                  {p.nome}
+                </button>
+              ))}
+            </div>
+            <label className="flex items-center justify-center gap-2 rounded-2xl py-3.5 text-sm font-medium cursor-pointer" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>
+              <Plus size={16} /> {aCarregarFicheiro ? "A carregar…" : "Adicionar documento"}
+              <input type="file" accept="application/pdf,image/*" onChange={carregarFicheiro} className="hidden" disabled={aCarregarFicheiro} />
+            </label>
+            {mensagem && <p className="text-xs" style={{ color: palette.navySoft }}>{mensagem}</p>}
+            {ficheiros.length === 0 && <p className="text-sm" style={{ color: palette.navySoft }}>Ainda não há documentos nesta pasta.</p>}
+            {ficheiros.map((f) => (
+              <div key={f.name} className="rounded-2xl px-4 py-3 flex items-center gap-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
+                <FileText size={18} style={{ color: palette.gold, flexShrink: 0 }} />
+                <button onClick={() => abrirFicheiro(f.name)} className="flex-1 min-w-0 text-left">
+                  <p className="text-sm truncate" style={{ color: palette.navy }}>{f.name.replace(/^\d+-/, "")}</p>
+                  <p className="text-[11px]" style={{ color: palette.navySoft }}>{arquivoData(f.created_at)}</p>
+                </button>
+                <button onClick={() => apagarFicheiro(f.name)} aria-label="Apagar">
+                  <Trash2 size={16} style={{ color: palette.navySoft }} />
+                </button>
+              </div>
+            ))}
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   const [session, setSession] = useState(null);
   const [sessaoCarregada, setSessaoCarregada] = useState(false);
@@ -6192,6 +6849,87 @@ export default function App() {
   });
   const [carregado, setCarregado] = useState(false);
   const [formadorAcessoCursos, setFormadorAcessoCursos] = useState([]);
+  const [consentimentoEmFalta, setConsentimentoEmFalta] = useState(false);
+  const [fichaCliente, setFichaCliente] = useState(null);
+  const [carrinhoItens, setCarrinhoItens] = useState(() => {
+    try { return JSON.parse(window.localStorage.getItem("escola3s:carrinho") || "[]"); } catch (e) { return []; }
+  });
+  useEffect(() => {
+    try { window.localStorage.setItem("escola3s:carrinho", JSON.stringify(carrinhoItens)); } catch (e) {}
+  }, [carrinhoItens]);
+
+  // RGPD: confirma se esta pessoa já deu autorização; se não, pede-a
+  useEffect(() => {
+    if (!session) { setConsentimentoEmFalta(false); return; }
+    let cancelado = false;
+    supabase
+      .from("consentimentos_dados")
+      .select("id")
+      .eq("user_id", session.user.id)
+      .limit(1)
+      .then(({ data, error }) => {
+        if (!cancelado && !error) setConsentimentoEmFalta(!data || data.length === 0);
+      });
+    return () => { cancelado = true; };
+  }, [session]);
+
+  // Ficha de cliente (nome e telefone)
+  useEffect(() => {
+    if (!session) { setFichaCliente(null); return; }
+    supabase.from("clientes").select("nome, telefone").eq("user_id", session.user.id).maybeSingle()
+      .then(({ data }) => setFichaCliente(data || { nome: "", telefone: "" }));
+  }, [session]);
+
+  // Aplica as compras pagas (MB WAY, Multibanco, Payshop): materiais e meses de Comunidade
+  const sincronizarCompras = async () => {
+    if (!session) return;
+    const { data, error } = await supabase
+      .from("pagamentos")
+      .select("descricao, itens, pago_em, criado_em")
+      .eq("user_id", session.user.id)
+      .eq("estado", "pago")
+      .order("pago_em", { ascending: true });
+    if (error) return;
+    let ate = null;
+    const materiais = {};
+    (data || []).forEach((p) => {
+      const d = new Date(p.pago_em || p.criado_em);
+      const itens = Array.isArray(p.itens) ? p.itens : [];
+      const temComunidade = itens.some((i) => i.tipo === "comunidade") || (!p.itens && /^Comunidade 3S/.test(p.descricao || ""));
+      if (temComunidade) {
+        const base = ate && ate > d ? ate : d;
+        const n = new Date(base);
+        n.setMonth(n.getMonth() + 1);
+        ate = n;
+      }
+      itens.forEach((i) => {
+        if (i.tipo === "material" && i.materialId != null) materiais[i.materialId] = true;
+        if (i.tipo === "material_fisico" && i.materialId != null) materiais[i.materialId + "-fisico"] = true;
+      });
+    });
+    setProgresso((p) => {
+      const novoAte = ate ? ate.toISOString() : (p.comunidadePagaAte || null);
+      const faltaMaterial = Object.keys(materiais).some((k) => !p.materiaisDesbloqueados[k]);
+      if (novoAte === (p.comunidadePagaAte || null) && !faltaMaterial) return p;
+      return { ...p, comunidadePagaAte: novoAte, materiaisDesbloqueados: { ...p.materiaisDesbloqueados, ...materiais } };
+    });
+  };
+
+  useEffect(() => {
+    if (!carregado || !session) return;
+    sincronizarCompras();
+    const aoVoltar = () => { if (document.visibilityState === "visible") sincronizarCompras(); };
+    document.addEventListener("visibilitychange", aoVoltar);
+    return () => document.removeEventListener("visibilitychange", aoVoltar);
+  }, [carregado, session]);
+
+  const carrinho = {
+    itens: carrinhoItens,
+    adicionar: (item) => setCarrinhoItens((l) => (l.some((i) => i.chave === item.chave) ? l : [...l, item])),
+    remover: (chave) => setCarrinhoItens((l) => l.filter((i) => i.chave !== chave)),
+    limpar: () => setCarrinhoItens([]),
+    abrir: () => { setCursoAberto(null); setSecao("carrinho"); },
+  };
 
   // Sessão de autenticação (email + password)
   useEffect(() => {
@@ -6359,7 +7097,7 @@ export default function App() {
 
   // Sempre que a Comunidade fica desbloqueada, cria/atualiza o perfil público (para o chat)
   useEffect(() => {
-    if (!carregado || !session || !progresso.comunidadeDesbloqueada) return;
+    if (!carregado || !session || !comunidadeEmDia(progresso)) return;
     supabase
       .from("perfis_comunidade")
       .upsert(
@@ -6368,7 +7106,7 @@ export default function App() {
       )
       .then(() => {})
       .catch(() => {});
-  }, [progresso.comunidadeDesbloqueada, carregado, session]);
+  }, [progresso.comunidadePagaAte, carregado, session]);
 
   // (registo de entrada gratuita agora acontece no envio do formulário FichaEntradaGratisScreen)
 
@@ -6446,6 +7184,10 @@ export default function App() {
     );
   }
 
+  if (consentimentoEmFalta) {
+    return <ConsentimentoGate session={session} onAceite={() => setConsentimentoEmFalta(false)} />;
+  }
+
   let content;
   if (conversaAberta) {
     content = <ChatPrivadoScreen pessoa={conversaAberta} onBack={() => setConversaAberta(null)} />;
@@ -6465,6 +7207,10 @@ export default function App() {
         onBack={() => setClienteAberto(null)}
       />
     );
+  } else if (secao === "carrinho") {
+    content = <CarrinhoScreen onBack={() => setSecao(null)} onPagamentoConfirmado={sincronizarCompras} />;
+  } else if (cursoAberto && cursoAberto.gratuito && progresso.papel !== "dona" && fichaCliente && !(fichaCliente.nome && fichaCliente.telefone)) {
+    content = <FichaCursoScreen curso={cursoAberto} session={session} onBack={() => setCursoAberto(null)} onGuardada={setFichaCliente} />;
   } else if (cursoAberto) {
     content = (
       <ConteudoDetalhe
@@ -6489,13 +7235,13 @@ export default function App() {
       />
     );
   } else if (secao === "comunidade") {
-    const precisaFicha = COMUNIDADE_MES_GRATIS && !progresso.comunidadeDesbloqueada && progresso.papel !== "dona" && !progresso.fichaGratisPreenchida;
+    const precisaFicha = COMUNIDADE_MES_GRATIS && !comunidadeEmDia(progresso) && progresso.papel !== "dona" && !progresso.fichaGratisPreenchida;
     content = precisaFicha ? (
       <FichaEntradaGratisScreen
         onBack={() => setSecao(null)}
         onConcluido={() => setProgresso((p) => ({ ...p, fichaGratisPreenchida: true }))}
       />
-    ) : (progresso.comunidadeDesbloqueada || progresso.papel === "dona" || COMUNIDADE_MES_GRATIS) ? (
+    ) : (comunidadeEmDia(progresso) || progresso.papel === "dona" || COMUNIDADE_MES_GRATIS) ? (
       <ComunidadeScreen
         onBack={() => setSecao(null)}
         onOpenCurso={setCursoAberto}
@@ -6507,7 +7253,7 @@ export default function App() {
         onDesbloquearMaterial={desbloquearMaterial}
       />
     ) : (
-      <ComunidadeBloqueada onBack={() => setSecao(null)} onDesbloquear={desbloquearComunidade} />
+      <ComunidadeBloqueada onBack={() => setSecao(null)} onDesbloquear={sincronizarCompras} terminouEm={progresso.comunidadePagaAte} />
     );
   } else if (secao === "notificacoes") {
     content = <NotificacoesScreen onBack={() => setSecao(null)} />;
@@ -6562,10 +7308,13 @@ export default function App() {
         progresso={progresso}
         onVerDashboard={() => setSecao("dashboard-mentora")}
         onVerAcessoFormadores={() => setSecao("acesso-formadores")}
+        onVerArquivo={() => setSecao("arquivo")}
       />
     );
   } else if (secao === "acesso-formadores") {
     content = <AcessoFormadoresScreen onBack={() => setSecao("painel-mentora")} />;
+  } else if (secao === "arquivo") {
+    content = <ArquivoEscolaScreen onBack={() => setSecao("painel-mentora")} />;
   } else if (secao === "dashboard-mentora") {
     content = (
       <DashboardMentoraScreen
@@ -6600,7 +7349,18 @@ export default function App() {
       <div className="min-h-screen w-full flex justify-center" style={{ backgroundColor: palette.cream, fontFamily: "Inter, sans-serif" }}>
         <div className="w-full max-w-md relative" style={{ backgroundColor: palette.creamSoft }}>
           <NotificacoesSino onAbrir={() => setSecao("notificacoes")} papel={progresso.papel} />
-          {content}
+          <CarrinhoContext.Provider value={carrinho}>
+            {content}
+            {carrinhoItens.length > 0 && secao !== "carrinho" && (
+              <button
+                onClick={carrinho.abrir}
+                className="fixed z-40 flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium shadow-lg"
+                style={{ bottom: "calc(88px + env(safe-area-inset-bottom, 0px))", right: "max(16px, calc(50vw - 208px))", backgroundColor: palette.gold, color: palette.navy }}
+              >
+                <ShoppingBag size={16} /> Carrinho ({carrinhoItens.length})
+              </button>
+            )}
+          </CarrinhoContext.Provider>
           {!cursoAberto && <BottomNav active={tab} onChange={mudarTab} />}
         </div>
       </div>
