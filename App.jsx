@@ -1,5 +1,5 @@
-// VERSAO-07-SET-CURSOS-10-99
-import { useState, useEffect } from "react";
+// VERSAO-27-SET-ARQUIVO-PAGAMENTOS-VIDEOS-CRENCAS
+import { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "./supabase.js";
 import {
   Home,
@@ -29,6 +29,8 @@ import {
   LogOut,
   Plus,
   Trash2,
+  ShoppingBag,
+  Lock,
 } from "lucide-react";
 
 /* ---------------------------------------------------------
@@ -249,6 +251,7 @@ const cursos = [
   },
   {
     id: 7,
+    gratuito: true,
     escolaId: "ser",
     titulo: "Crenças que Limitam",
     promessa: "Identificar e mudar as crenças que te têm travado, muitas vezes sem que percebesses.",
@@ -257,10 +260,10 @@ const cursos = [
     duracao: "4 aulas",
     concluido: false,
     aulas: [
-      { titulo: "O que é uma crença limitadora", descricao: "Como uma ideia repetida se torna \"verdade\" sobre nós e sobre o mundo.", conteudo: "Este é o primeiro capítulo de leitura do curso «Crenças Limitantes», da Escola 3S. Antes de qualquer exercício ou técnica, importa responder com clareza a duas perguntas simples, mas frequentemente mal respondidas: o que é, afinal, uma crença? E como reconhecemos que estamos perante uma, e não apenas perante um facto?\n\nVivemos, com frequência, as nossas crenças como se fossem verdades objetivas sobre o mundo. É precisamente essa confusão — entre aquilo que é e aquilo que interpretamos que é — que lhes confere o seu poder sobre nós. Este capítulo apoia-se em conceitos consolidados do coaching e da Programação Neurolinguística (PNL), duas disciplinas que, desde as últimas décadas do século XX, se dedicam a compreender como a linguagem e o pensamento moldam a experiência humana, e que propõem ferramentas práticas para a transformar.\n\nO convite que aqui se faz é simples de enunciar, ainda que exigente na prática: começar a separar aquilo que observamos daquilo que concluímos sobre o que observamos.\n\n«Não vemos as coisas como elas são. Vemos as coisas como nós somos.» — provérbio atribuído ao Talmude\n\nUm dos pressupostos fundadores da PNL — formulado a partir do trabalho do semanticista Alfred Korzybski — afirma que «o mapa não é o território»: a representação que fazemos da realidade não é a realidade em si, é apenas a nossa leitura dela, construída com a informação, a linguagem e a experiência de que dispomos em cada momento. Uma crença é, precisamente, um elemento desse mapa interno: uma generalização que fazemos a partir da experiência e que passamos a tratar como se fosse o próprio território.\n\nNascemos sem crenças sobre nós próprios. Vamo-las construindo, ao longo da vida, a partir daquilo que nos disseram, daquilo que vivemos e, sobretudo, daquilo que concluímos sobre o que vivemos. Em coaching, esta última etapa — a conclusão que tiramos dos factos — é frequentemente mais determinante para o nosso comportamento do que os próprios factos que a originaram.\n\nConsidere-se o seguinte exemplo: uma criança que erra, uma única vez, ao responder a uma pergunta na aula e é ridicularizada pelos colegas pode não concluir apenas «hoje correu mal». Pode concluir «eu sou estúpido» ou «não posso arriscar-me a falar em público». É esta segunda camada — a generalização sobre a identidade, e não apenas sobre o episódio — que dá origem a uma crença.\n\nO coach e formador norte-americano Robert Dilts propôs um modelo amplamente utilizado em coaching, conhecido como Níveis Lógicos, que organiza a experiência humana em diferentes camadas: o ambiente em que nos encontramos, os comportamentos que manifestamos, as capacidades que desenvolvemos, as crenças e valores que sustentamos, a identidade que assumimos e, por fim, um sentido mais amplo de missão ou propósito.\n\nEste modelo é útil porque mostra que as crenças ocupam um nível mais profundo do que o comportamento: não são apenas «coisas que pensamos», são o terreno a partir do qual decidimos o que é possível, permitido ou seguro fazer. Por isso, tentar mudar um comportamento sem tocar na crença que o sustenta tende a produzir resultados frágeis e temporários — e, inversamente, uma mudança de crença tende a refletir-se, com relativa naturalidade, em novos comportamentos.\n\nAs crenças formam-se, tipicamente, a partir de quatro fontes principais:\n\nExperiências marcantes, sobretudo na infância e na adolescência, em que uma emoção intensa — vergonha, medo, rejeição — ficou associada a uma conclusão sobre nós próprios.\n\nMensagens repetidas por figuras de referência — pais, professores, cuidadores — que, ditas muitas vezes, se tornam «verdades» interiorizadas.\n\nModelagem: aquilo que observámos os adultos à nossa volta acreditarem e viverem, mesmo sem nos dizerem nada diretamente — aprendemos padrões de pensamento por observação, e não apenas por instrução direta.\n\nCultura e contexto social: ideias sobre o que é «normal», «possível» ou «apropriado» para alguém como nós — pelo género, pela origem, pela idade, pela profissão.\n\nNenhuma destas origens constitui, em si, um erro. Formar crenças a partir da experiência é uma função saudável da mente: é assim que aprendemos a não repetir perigos e a agir com maior eficiência em contextos semelhantes a outros já vividos. O problema surge quando a crença deixa de servir a função para que foi criada e passa a limitar-nos em contextos onde já não faz sentido. É a essa crença que chamamos crença limitante.\n\nUma crença consolida-se por dois mecanismos principais: a repetição e a emoção. Quanto mais vezes uma ideia é confirmada — mesmo que essa confirmação seja, ela própria, produzida pela crença — mais automática e menos questionada ela se torna. E quanto mais intensa foi a emoção associada ao momento em que a crença se formou, mais forte tende a ser a sua fixação, mesmo quando a memória consciente do episódio original já se perdeu.\n\nÉ por esta razão que muitas crenças limitantes parecem não ter uma origem clara: não porque não a tenham, mas porque se formaram cedo, ou em torno de emoções que preferimos não revisitar. Não é, no entanto, necessário recuperar a memória exata da sua origem para trabalhá-las — o objetivo deste curso é reconhecê-las tal como operam hoje, e não fazer uma reconstituição biográfica exaustiva.\n\nAlgumas crenças são facilmente verbalizáveis: sabemos que as temos e conseguimos enunciá-las com relativa clareza. Outras operam de forma inconsciente — não as diríamos em voz alta se nos perguntassem diretamente, mas revelam-se nas escolhas que fazemos, nas oportunidades que evitamos e nos padrões que se repetem na nossa vida, muitas vezes sem que estabeleçamos a ligação entre esses padrões e a crença que os sustenta.\n\nUm dos objetivos deste primeiro capítulo — e da aula que o acompanha — é precisamente começar a trazer para o campo consciente aquilo que, até agora, operava em piloto automático.\n\nUma das confusões mais comuns — e mais determinantes nos seus efeitos — é tratar uma crença como se fosse um facto. Um facto pode ser verificado por qualquer pessoa, independentemente do que sente ou pensa sobre ele: «esta frase está escrita em português» é um facto. Uma crença é, pelo contrário, uma conclusão pessoal, carregada de emoção e de história, que apresentamos a nós próprios como se fosse tão sólida quanto um facto, mas que outra pessoa, com outra história, poderia perfeitamente não partilhar.\n\nUm pensamento é, em geral, mais passageiro: surge e desaparece, muitas vezes sem que lhe atribuamos grande importância. Uma opinião é uma avaliação consciente sobre algo externo, que reconhecemos como discutível. Uma crença distingue-se de ambos por um traço particular: deixou de ser sentida como uma entre várias interpretações possíveis, e passou a ser vivida como «a verdade sobre como as coisas são».\n\nA PNL desenvolveu, desde a sua origem, um instrumento particularmente útil para este trabalho: o Meta-Modelo da linguagem, criado por Richard Bandler e John Grinder a partir da observação de terapeutas de referência. O Meta-Modelo parte de uma constatação simples: a linguagem que usamos para descrever a nossa experiência nunca é a experiência completa, é sempre uma versão reduzida dela, construída através de três processos — generalização, distorção e omissão.\n\nGeneralização: tomamos uma ou poucas experiências e alargamo-las a uma regra universal — «isto correu mal uma vez» transforma-se em «isto corre sempre mal comigo».\n\nDistorção: alteramos o significado de uma experiência, frequentemente atribuindo-lhe uma causa ou intenção que não foi verificada — «ele não respondeu à mensagem» transforma-se em «ele já não gosta de mim».\n\nOmissão: retiramos informação da descrição de uma experiência, tornando-a mais vaga e, por isso, mais difícil de questionar — «eu não sou capaz» omite de quê, em que situação, e segundo que critério.\n\nAs crenças limitantes recorrem, quase sempre, a uma combinação destes três processos. Reconhecê-los na linguagem que usamos — e que os outros usam — é uma das formas mais diretas de identificar que estamos perante uma crença, e não perante uma descrição neutra dos factos.\n\nNa prática, os três processos do Meta-Modelo traduzem-se em construções de linguagem reconhecíveis. Algumas das mais frequentes são:\n\nGeneralizações absolutas: «sempre», «nunca», «todos», «ninguém» — «eu nunca consigo terminar o que começo».\n\nIdentidade fixa: frases que começam por «eu sou...» em vez de «eu fiz...» ou «eu senti...» — «eu sou incapaz», em vez de «esta tarefa correu mal».\n\nCerteza sem prova concreta: afirmações proferidas com convicção total, mas sem um facto verificável que as sustente diretamente — «isto nunca vai resultar comigo».\n\nCategorias sobre «pessoas como eu»: «pessoas da minha idade não conseguem mudar de carreira», «na minha família ninguém tem jeito para números».\n\nVerbos de obrigação ou impossibilidade, sem que a sua origem seja questionada: «tenho de...», «não posso...», «é impossível que...», ditos como regras absolutas e não como opções entre outras.\n\nReconhecer estas construções — na própria fala ou na de outra pessoa — é, em coaching, um dos primeiros passos de qualquer processo de mudança: não se pergunta apenas «o que a pessoa disse», mas «que estrutura de crença está por detrás daquilo que foi dito».\n\nNem todos os sinais de uma crença são linguísticos. O corpo regista, muitas vezes, a ativação de uma crença antes de a mente a conseguir nomear: uma tensão súbita, um aperto no peito, uma vontade de fugir ou de justificar-se. Em coaching, este tipo de reação é entendido como um indicador valioso, e não como um obstáculo a ignorar.\n\nUm critério prático para o reconhecer é a desproporção: quando a intensidade da emoção sentida parece maior do que aquilo que a situação, isolada, justificaria, é frequentemente sinal de que uma crença antiga foi ativada, e não apenas a situação presente. A situação atual funciona, nestes casos, como um gatilho que reativa uma interpretação muito mais antiga.\n\nPerante uma afirmação sobre si próprio(a), sobre outra pessoa ou sobre a vida em geral, pode aplicar o seguinte teste, inspirado nas perguntas do Meta-Modelo:\n\nIsto é algo que qualquer pessoa, observando a mesma situação, teria necessariamente de concluir — ou é a conclusão a que eu, com a minha história, cheguei?\n\nExiste alguma situação, ainda que rara, em que esta afirmação não se verifique?\n\nQue prova concreta e verificável sustenta esta afirmação, para além da convicção com que a sinto?\n\nSe, ao responder, notar que a afirmação resiste mal a estas perguntas — se encontrar exceções, se a prova for sobretudo emocional, se a conclusão parecer mais sua do que universal — está muito provavelmente perante uma crença, e não perante um facto.\n\n«Não é a situação que nos perturba, mas a opinião que temos sobre ela.» — Epicteto\n\nEnquanto tratarmos uma crença como um facto inquestionável, não existe espaço para a questionar: «é assim mesmo», dizemos, e paramos por aí. É apenas quando reconhecemos que aquilo em que acreditamos é uma interpretação — um mapa, e não o território — que se torna possível perguntar se essa interpretação ainda nos serve. Em coaching, este reconhecimento é frequentemente descrito como o momento em que se passa de estar fundido com o pensamento para se tornar capaz de o observar. É esse reconhecimento que abre a porta a todo o percurso deste curso.\n\nNo Caderno de Trabalho desta aula, é convidado(a) a aplicar estas ideias a uma frase sua concreta — o primeiro passo, muito prático, de todo o percurso deste curso.", materiaisIds: [45, 32, 48] },
-      { titulo: "De onde vieram as minhas crenças", descricao: "Família, escola e experiências marcantes que moldaram o que acreditas ser possível.", conteudo: "No capítulo anterior, aprendemos a reconhecer uma crença — a distingui-la de um facto, de um pensamento passageiro ou de uma opinião reconhecida como tal. O passo seguinte, e é esse que este capítulo trata, é perguntar: será que aquilo em que acredito corresponde, de facto, à realidade? Ou estarei a tratar como verdade absoluta algo que, na melhor das hipóteses, é apenas uma interpretação possível entre várias?\n\nEsta distinção — entre o que sabemos e o que supomos — é, provavelmente, a ferramenta mais imediatamente útil de todo este curso. Não porque resolva, por si só, uma crença limitante, mas porque lhe retira a certeza absoluta com que costuma operar. E uma crença que deixou de ser absolutamente certa já não tem o mesmo poder sobre nós.\n\nO investigador organizacional Chris Argyris propôs um modelo, mais tarde popularizado por Peter Senge, conhecido como a Escada de Inferência. O modelo descreve o percurso mental que fazemos, quase sempre sem darmos conta, entre observar algo e agir a partir disso: observamos uma quantidade imensa de dados; selecionamos apenas alguns; atribuímos-lhes significado com base na nossa experiência; fazemos suposições a partir desse significado; tiramos conclusões; adotamos ou reforçamos uma crença; e, por fim, agimos de acordo com essa crença.\n\nO problema não está em subir esta escada — é uma função necessária da mente, sem a qual não conseguiríamos funcionar no mundo. O problema está em subi-la tão depressa que deixamos de notar os degraus intermédios, e passamos a tratar o topo da escada (a nossa conclusão) como se fosse o próprio degrau de base (o dado observável).\n\nUm dos degraus mais decisivos da escada — e o mais invisível — é a seleção. De toda a informação disponível numa situação, reparamos apenas nalguma parte dela. E tendemos a reparar, precisamente, naquilo que já confirma o que esperávamos encontrar — um mecanismo a que a psicologia chama viés de confirmação. Uma pessoa que acredita que \"ninguém se interessa por mim\" tende a notar, numa festa, os dois momentos em que ficou sozinha, e a não registar os cinco em que alguém puxou conversa. Não porque minta a si própria de forma deliberada, mas porque a crença já filtrou, antecipadamente, o que merecia atenção.\n\nVimos, no capítulo anterior, que a linguagem das crenças costuma recorrer à omissão — retira informação, tornando a afirmação mais vaga e mais difícil de questionar. A primeira forma de testar uma crença é, por isso, tentar recuperar essa informação: que provas concretas, verificáveis por outra pessoa, sustentam esta afirmação? Comparado com quê, ou com quem? Segundo que critério?\n\nA autora norte-americana Byron Katie desenvolveu um método de questionamento, conhecido como \"O Trabalho\" (The Work), amplamente usado em coaching e em contextos terapêuticos, que se resume a quatro perguntas simples a colocar sobre qualquer crença:\n\nEstas perguntas não têm como objetivo provar que a crença é falsa — algumas crenças resistem bem ao escrutínio, e isso também é informação valiosa. O objetivo é criar, entre a pessoa e a sua crença, uma distância que antes não existia.\n\nO filósofo da ciência Karl Popper argumentou que uma afirmação só é cientificamente válida se for, em princípio, possível refutá-la — se existir um teste capaz de a provar falsa. Podemos aplicar a mesma lógica, de forma mais informal, às nossas crenças pessoais: uma crença que se apresenta como \"sempre\" ou \"nunca\" resiste, ou não, a uma procura ativa por exceções?\n\nProcurar, de propósito, uma única situação em que a crença não se confirmou — mesmo que pouco frequente — é muitas vezes suficiente para a fazer passar de \"verdade absoluta\" a \"tendência que às vezes se verifica\". E essa mudança, por pequena que pareça, já é uma primeira fissura na certeza que a sustentava.\n\nEntre observar uma situação e agir a partir dela, subimos uma escada de seleção, interpretação e suposição — quase sempre sem dar conta. Testar uma crença não é negá-la à partida; é perguntar, com honestidade, o que sabemos de facto e o que estamos apenas a supor, procurar provas concretas e procurar, ativamente, exceções que a possam contradizer. É esse o trabalho da Aula 2 — e da folha de exercício que a acompanha.", materiaisIds: [45, 32, 49] },
-      { titulo: "Testar a crença", descricao: "Separar factos de interpretações; procurar provas contra a crença, não só a favor.", conteudo: "Já sabemos reconhecer uma crença, e já temos ferramentas para testar se corresponde à realidade. Ainda assim, é comum continuarmos a agir a partir de crenças que já reconhecemos, no plano racional, como pouco fiáveis. Este capítulo trata dessa aparente contradição: porque continuamos a segurar algo que sabemos, pelo menos em parte, não ser inteiramente verdade?\n\nA resposta, quase sempre, é que a crença nos dá alguma coisa. Nenhuma crença sobrevive tanto tempo por acidente — sobrevive porque cumpre uma função. Compreender essa função, e não apenas a crença em si, é o que torna possível uma mudança duradoura.\n\nEm contextos terapêuticos, chama-se ganho secundário à vantagem — muitas vezes inconsciente — que uma pessoa retira de manter um padrão, mesmo quando esse padrão lhe traz sofrimento visível. Uma crença como \"não sou capaz de liderar\" pode, à superfície, ser apenas limitadora; mas pode também poupar a pessoa à exposição de tentar e falhar publicamente, à responsabilidade de decidir por outros, ou ao risco de descobrir que, mesmo tentando, o resultado não é o desejado.\n\nNomear o ganho secundário de uma crença não é procurar um pretexto para a manter — é, pelo contrário, o primeiro passo para lidar com a necessidade real que ela protege, em vez de tentar arrancar a crença à força e deixar essa necessidade desprotegida.\n\nO psicólogo Leon Festinger descreveu, em meados do século XX, o desconforto que sentimos quando duas crenças, ou uma crença e um comportamento, entram em contradição — a que chamou dissonância cognitiva. Para reduzir esse desconforto, tendemos a ajustar uma das partes, e é mais fácil ajustar a perceção do que o comportamento já tomado. Isto explica por que razão continuamos, por vezes, a justificar decisões ou crenças antigas mesmo perante provas em contrário: mudar de ideias custaria mais, no imediato, do que manter a consistência interna.\n\nOs investigadores Daniel Kahneman e Amos Tversky demonstraram que, em geral, sentimos o desconforto de uma perda com mais intensidade do que o prazer de um ganho equivalente — fenómeno a que chamaram aversão à perda. Aplicado às crenças: largar uma crença antiga, mesmo uma que já não serve, é sentido como uma perda de segurança imediata, ao passo que os ganhos de a largar (novas oportunidades, novas formas de agir) são, para já, apenas hipotéticos. É por isso que, racionalmente, sabermos que uma crença nos prejudica raramente basta para a mudarmos — o cálculo emocional não é simétrico.\n\nUm dos custos mais difíceis de contabilizar é aquele que nunca chegamos a ver: as oportunidades que nem sequer consideramos, porque a crença já as descartou antecipadamente. Não é uma escolha consciente de recusar — é uma opção que nunca chega a aparecer no radar.\n\nO objetivo deste exercício não é convencer-nos, de forma forçada, a abandonar uma crença. É olhar, com a maior honestidade possível, para os dois pratos da balança: o que esta crença me dá, e o que me tira. Só depois de vermos os dois lados com clareza é que a decisão de a manter ou a mudar deixa de ser automática, e passa a ser, verdadeiramente, uma escolha.\n\nAs crenças que persistem, mesmo custando-nos, costumam fazê-lo porque nos protegem de algo — rejeição, fracasso, responsabilidade, exposição. Reconhecer essa função, e pesar com honestidade o que ganhamos e o que perdemos ao mantê-la, é o trabalho da Aula 3.", materiaisIds: [45, 32, 50] },
-      { titulo: "Escrever uma crença nova", descricao: "Substituir a crença antiga por uma frase que sirva melhor ao que queres construir.", conteudo: "Ao longo das três aulas anteriores, aprendemos a identificar uma crença, a testar se corresponde à realidade, e a reconhecer aquilo que ganhamos e perdemos ao mantê-la. Nenhum destes passos, por si só, muda automaticamente o que fazemos a seguir. Falta o último — e, em muitos sentidos, o mais exigente: escolher, de forma deliberada, uma resposta diferente daquela que o piloto automático nos daria.\n\n«Entre o estímulo e a resposta há um espaço. Nesse espaço está o nosso poder de escolher a nossa resposta. Na nossa resposta está o nosso crescimento e a nossa liberdade.» — ideia atribuída a Viktor Frankl, psiquiatra e sobrevivente do Holocausto, fundador da logoterapia\n\nÉ esse espaço — entre o que nos acontece e o que fazemos a seguir — que este capítulo final procura ampliar.\n\nO psicólogo Albert Ellis, fundador da Terapia Racional-Emotiva Comportamental, propôs um modelo simples e influente, conhecido como Modelo ABC: A (Activating event) é o acontecimento; B (Belief) é a crença ou interpretação que temos sobre esse acontecimento; C (Consequence) é a consequência emocional e comportamental. O contributo central de Ellis foi mostrar que não é A que causa C diretamente — é B, a interpretação, que faz a ponte entre os dois. Ellis acrescentou ainda dois passos: D (Dispute), questionar essa interpretação, e E (Effect), o novo efeito, emocional e comportamental, que resulta de uma interpretação revista.\n\nRessignificar não é negar que algo doeu, nem fingir que uma situação difícil não o foi. Não é otimismo forçado, nem a ideia, por vezes chamada positividade tóxica, de que basta \"pensar pelo lado bom\" para o problema desaparecer. Ressignificar é, antes, reconhecer que um mesmo acontecimento pode sustentar mais do que uma interpretação — e que, entre essas interpretações possíveis, temos alguma margem de escolha sobre qual adotamos.\n\nA maior parte das respostas automáticas acontece porque saltamos, sem darmos conta, diretamente do acontecimento (A) para a consequência (C), sem nunca examinar B — a interpretação que, na verdade, está a conduzir tudo. Parar, ainda que por poucos segundos, antes de responder, é o que torna possível examinar esse B: o que pensei, automaticamente, sobre isto? O que senti? O que tive vontade de fazer?\n\nEsta pausa não elimina a reação inicial — não temos controlo total sobre o primeiro impulso. Mas cria a possibilidade de, antes de agir a partir dele, o questionar.\n\nEscrever uma interpretação nova é um exercício mental valioso, mas não é, por si só, suficiente. As crenças consolidam-se, como vimos no primeiro capítulo, por repetição — e é por repetição, também, que se revêm. Cada pequena ação coerente com a interpretação nova é uma prova, para nós mesmos, de que essa interpretação também é possível, e não apenas a antiga.\n\nNão é necessário — nem realista — mudar tudo de imediato. Uma ação pequena, concreta e repetível, escolhida no fim de cada sessão de trabalho como esta, é geralmente mais eficaz do que uma resolução ambiciosa que não sobrevive à primeira semana.\n\nAo longo destas quatro aulas, percorremos um caminho com quatro etapas: identificar uma crença, questionar se corresponde à realidade, avaliar o que ganhamos e perdemos ao mantê-la, e, por fim, ressignificar — escolher, de forma consciente, o significado que lhe damos e a resposta que construímos a partir daí. Este não é um trabalho que se conclua numa única passagem: as crenças mais antigas, sobretudo, pedem que se volte a este processo mais do que uma vez. O que muda, com a prática, não é a ausência de crenças limitantes — é a rapidez e a clareza com que as reconhecemos, da próxima vez que aparecerem.", materiaisIds: [45, 32, 51] },
+      { titulo: "O que é uma crença limitadora", videoUrl: "https://www.youtube.com/embed/BbO2wd6QvYk?rel=0&modestbranding=1", descricao: "Como uma ideia repetida se torna \"verdade\" sobre nós e sobre o mundo.", conteudo: "Este é o primeiro capítulo de leitura do curso «Crenças Limitantes», da Escola 3S. Antes de qualquer exercício ou técnica, importa responder com clareza a duas perguntas simples, mas frequentemente mal respondidas: o que é, afinal, uma crença? E como reconhecemos que estamos perante uma, e não apenas perante um facto?\n\nVivemos, com frequência, as nossas crenças como se fossem verdades objetivas sobre o mundo. É precisamente essa confusão — entre aquilo que é e aquilo que interpretamos que é — que lhes confere o seu poder sobre nós. Este capítulo apoia-se em conceitos consolidados do coaching e da Programação Neurolinguística (PNL), duas disciplinas que, desde as últimas décadas do século XX, se dedicam a compreender como a linguagem e o pensamento moldam a experiência humana, e que propõem ferramentas práticas para a transformar.\n\nO convite que aqui se faz é simples de enunciar, ainda que exigente na prática: começar a separar aquilo que observamos daquilo que concluímos sobre o que observamos.\n\n«Não vemos as coisas como elas são. Vemos as coisas como nós somos.» — provérbio atribuído ao Talmude\n\nUm dos pressupostos fundadores da PNL — formulado a partir do trabalho do semanticista Alfred Korzybski — afirma que «o mapa não é o território»: a representação que fazemos da realidade não é a realidade em si, é apenas a nossa leitura dela, construída com a informação, a linguagem e a experiência de que dispomos em cada momento. Uma crença é, precisamente, um elemento desse mapa interno: uma generalização que fazemos a partir da experiência e que passamos a tratar como se fosse o próprio território.\n\nNascemos sem crenças sobre nós próprios. Vamo-las construindo, ao longo da vida, a partir daquilo que nos disseram, daquilo que vivemos e, sobretudo, daquilo que concluímos sobre o que vivemos. Em coaching, esta última etapa — a conclusão que tiramos dos factos — é frequentemente mais determinante para o nosso comportamento do que os próprios factos que a originaram.\n\nConsidere-se o seguinte exemplo: uma criança que erra, uma única vez, ao responder a uma pergunta na aula e é ridicularizada pelos colegas pode não concluir apenas «hoje correu mal». Pode concluir «eu sou estúpido» ou «não posso arriscar-me a falar em público». É esta segunda camada — a generalização sobre a identidade, e não apenas sobre o episódio — que dá origem a uma crença.\n\nO coach e formador norte-americano Robert Dilts propôs um modelo amplamente utilizado em coaching, conhecido como Níveis Lógicos, que organiza a experiência humana em diferentes camadas: o ambiente em que nos encontramos, os comportamentos que manifestamos, as capacidades que desenvolvemos, as crenças e valores que sustentamos, a identidade que assumimos e, por fim, um sentido mais amplo de missão ou propósito.\n\nEste modelo é útil porque mostra que as crenças ocupam um nível mais profundo do que o comportamento: não são apenas «coisas que pensamos», são o terreno a partir do qual decidimos o que é possível, permitido ou seguro fazer. Por isso, tentar mudar um comportamento sem tocar na crença que o sustenta tende a produzir resultados frágeis e temporários — e, inversamente, uma mudança de crença tende a refletir-se, com relativa naturalidade, em novos comportamentos.\n\nAs crenças formam-se, tipicamente, a partir de quatro fontes principais:\n\nExperiências marcantes, sobretudo na infância e na adolescência, em que uma emoção intensa — vergonha, medo, rejeição — ficou associada a uma conclusão sobre nós próprios.\n\nMensagens repetidas por figuras de referência — pais, professores, cuidadores — que, ditas muitas vezes, se tornam «verdades» interiorizadas.\n\nModelagem: aquilo que observámos os adultos à nossa volta acreditarem e viverem, mesmo sem nos dizerem nada diretamente — aprendemos padrões de pensamento por observação, e não apenas por instrução direta.\n\nCultura e contexto social: ideias sobre o que é «normal», «possível» ou «apropriado» para alguém como nós — pelo género, pela origem, pela idade, pela profissão.\n\nNenhuma destas origens constitui, em si, um erro. Formar crenças a partir da experiência é uma função saudável da mente: é assim que aprendemos a não repetir perigos e a agir com maior eficiência em contextos semelhantes a outros já vividos. O problema surge quando a crença deixa de servir a função para que foi criada e passa a limitar-nos em contextos onde já não faz sentido. É a essa crença que chamamos crença limitante.\n\nUma crença consolida-se por dois mecanismos principais: a repetição e a emoção. Quanto mais vezes uma ideia é confirmada — mesmo que essa confirmação seja, ela própria, produzida pela crença — mais automática e menos questionada ela se torna. E quanto mais intensa foi a emoção associada ao momento em que a crença se formou, mais forte tende a ser a sua fixação, mesmo quando a memória consciente do episódio original já se perdeu.\n\nÉ por esta razão que muitas crenças limitantes parecem não ter uma origem clara: não porque não a tenham, mas porque se formaram cedo, ou em torno de emoções que preferimos não revisitar. Não é, no entanto, necessário recuperar a memória exata da sua origem para trabalhá-las — o objetivo deste curso é reconhecê-las tal como operam hoje, e não fazer uma reconstituição biográfica exaustiva.\n\nAlgumas crenças são facilmente verbalizáveis: sabemos que as temos e conseguimos enunciá-las com relativa clareza. Outras operam de forma inconsciente — não as diríamos em voz alta se nos perguntassem diretamente, mas revelam-se nas escolhas que fazemos, nas oportunidades que evitamos e nos padrões que se repetem na nossa vida, muitas vezes sem que estabeleçamos a ligação entre esses padrões e a crença que os sustenta.\n\nUm dos objetivos deste primeiro capítulo — e da aula que o acompanha — é precisamente começar a trazer para o campo consciente aquilo que, até agora, operava em piloto automático.\n\nUma das confusões mais comuns — e mais determinantes nos seus efeitos — é tratar uma crença como se fosse um facto. Um facto pode ser verificado por qualquer pessoa, independentemente do que sente ou pensa sobre ele: «esta frase está escrita em português» é um facto. Uma crença é, pelo contrário, uma conclusão pessoal, carregada de emoção e de história, que apresentamos a nós próprios como se fosse tão sólida quanto um facto, mas que outra pessoa, com outra história, poderia perfeitamente não partilhar.\n\nUm pensamento é, em geral, mais passageiro: surge e desaparece, muitas vezes sem que lhe atribuamos grande importância. Uma opinião é uma avaliação consciente sobre algo externo, que reconhecemos como discutível. Uma crença distingue-se de ambos por um traço particular: deixou de ser sentida como uma entre várias interpretações possíveis, e passou a ser vivida como «a verdade sobre como as coisas são».\n\nA PNL desenvolveu, desde a sua origem, um instrumento particularmente útil para este trabalho: o Meta-Modelo da linguagem, criado por Richard Bandler e John Grinder a partir da observação de terapeutas de referência. O Meta-Modelo parte de uma constatação simples: a linguagem que usamos para descrever a nossa experiência nunca é a experiência completa, é sempre uma versão reduzida dela, construída através de três processos — generalização, distorção e omissão.\n\nGeneralização: tomamos uma ou poucas experiências e alargamo-las a uma regra universal — «isto correu mal uma vez» transforma-se em «isto corre sempre mal comigo».\n\nDistorção: alteramos o significado de uma experiência, frequentemente atribuindo-lhe uma causa ou intenção que não foi verificada — «ele não respondeu à mensagem» transforma-se em «ele já não gosta de mim».\n\nOmissão: retiramos informação da descrição de uma experiência, tornando-a mais vaga e, por isso, mais difícil de questionar — «eu não sou capaz» omite de quê, em que situação, e segundo que critério.\n\nAs crenças limitantes recorrem, quase sempre, a uma combinação destes três processos. Reconhecê-los na linguagem que usamos — e que os outros usam — é uma das formas mais diretas de identificar que estamos perante uma crença, e não perante uma descrição neutra dos factos.\n\nNa prática, os três processos do Meta-Modelo traduzem-se em construções de linguagem reconhecíveis. Algumas das mais frequentes são:\n\nGeneralizações absolutas: «sempre», «nunca», «todos», «ninguém» — «eu nunca consigo terminar o que começo».\n\nIdentidade fixa: frases que começam por «eu sou...» em vez de «eu fiz...» ou «eu senti...» — «eu sou incapaz», em vez de «esta tarefa correu mal».\n\nCerteza sem prova concreta: afirmações proferidas com convicção total, mas sem um facto verificável que as sustente diretamente — «isto nunca vai resultar comigo».\n\nCategorias sobre «pessoas como eu»: «pessoas da minha idade não conseguem mudar de carreira», «na minha família ninguém tem jeito para números».\n\nVerbos de obrigação ou impossibilidade, sem que a sua origem seja questionada: «tenho de...», «não posso...», «é impossível que...», ditos como regras absolutas e não como opções entre outras.\n\nReconhecer estas construções — na própria fala ou na de outra pessoa — é, em coaching, um dos primeiros passos de qualquer processo de mudança: não se pergunta apenas «o que a pessoa disse», mas «que estrutura de crença está por detrás daquilo que foi dito».\n\nNem todos os sinais de uma crença são linguísticos. O corpo regista, muitas vezes, a ativação de uma crença antes de a mente a conseguir nomear: uma tensão súbita, um aperto no peito, uma vontade de fugir ou de justificar-se. Em coaching, este tipo de reação é entendido como um indicador valioso, e não como um obstáculo a ignorar.\n\nUm critério prático para o reconhecer é a desproporção: quando a intensidade da emoção sentida parece maior do que aquilo que a situação, isolada, justificaria, é frequentemente sinal de que uma crença antiga foi ativada, e não apenas a situação presente. A situação atual funciona, nestes casos, como um gatilho que reativa uma interpretação muito mais antiga.\n\nPerante uma afirmação sobre si próprio(a), sobre outra pessoa ou sobre a vida em geral, pode aplicar o seguinte teste, inspirado nas perguntas do Meta-Modelo:\n\nIsto é algo que qualquer pessoa, observando a mesma situação, teria necessariamente de concluir — ou é a conclusão a que eu, com a minha história, cheguei?\n\nExiste alguma situação, ainda que rara, em que esta afirmação não se verifique?\n\nQue prova concreta e verificável sustenta esta afirmação, para além da convicção com que a sinto?\n\nSe, ao responder, notar que a afirmação resiste mal a estas perguntas — se encontrar exceções, se a prova for sobretudo emocional, se a conclusão parecer mais sua do que universal — está muito provavelmente perante uma crença, e não perante um facto.\n\n«Não é a situação que nos perturba, mas a opinião que temos sobre ela.» — Epicteto\n\nEnquanto tratarmos uma crença como um facto inquestionável, não existe espaço para a questionar: «é assim mesmo», dizemos, e paramos por aí. É apenas quando reconhecemos que aquilo em que acreditamos é uma interpretação — um mapa, e não o território — que se torna possível perguntar se essa interpretação ainda nos serve. Em coaching, este reconhecimento é frequentemente descrito como o momento em que se passa de estar fundido com o pensamento para se tornar capaz de o observar. É esse reconhecimento que abre a porta a todo o percurso deste curso.\n\nNo Caderno de Trabalho desta aula, é convidado(a) a aplicar estas ideias a uma frase sua concreta — o primeiro passo, muito prático, de todo o percurso deste curso.", materiaisIds: [45, 32, 48] },
+      { titulo: "De onde vieram as minhas crenças", videoUrl: "https://www.youtube.com/embed/W2uhB1B625w?rel=0&modestbranding=1", descricao: "Família, escola e experiências marcantes que moldaram o que acreditas ser possível.", conteudo: "No capítulo anterior, aprendemos a reconhecer uma crença — a distingui-la de um facto, de um pensamento passageiro ou de uma opinião reconhecida como tal. O passo seguinte, e é esse que este capítulo trata, é perguntar: será que aquilo em que acredito corresponde, de facto, à realidade? Ou estarei a tratar como verdade absoluta algo que, na melhor das hipóteses, é apenas uma interpretação possível entre várias?\n\nEsta distinção — entre o que sabemos e o que supomos — é, provavelmente, a ferramenta mais imediatamente útil de todo este curso. Não porque resolva, por si só, uma crença limitante, mas porque lhe retira a certeza absoluta com que costuma operar. E uma crença que deixou de ser absolutamente certa já não tem o mesmo poder sobre nós.\n\nO investigador organizacional Chris Argyris propôs um modelo, mais tarde popularizado por Peter Senge, conhecido como a Escada de Inferência. O modelo descreve o percurso mental que fazemos, quase sempre sem darmos conta, entre observar algo e agir a partir disso: observamos uma quantidade imensa de dados; selecionamos apenas alguns; atribuímos-lhes significado com base na nossa experiência; fazemos suposições a partir desse significado; tiramos conclusões; adotamos ou reforçamos uma crença; e, por fim, agimos de acordo com essa crença.\n\nO problema não está em subir esta escada — é uma função necessária da mente, sem a qual não conseguiríamos funcionar no mundo. O problema está em subi-la tão depressa que deixamos de notar os degraus intermédios, e passamos a tratar o topo da escada (a nossa conclusão) como se fosse o próprio degrau de base (o dado observável).\n\nUm dos degraus mais decisivos da escada — e o mais invisível — é a seleção. De toda a informação disponível numa situação, reparamos apenas nalguma parte dela. E tendemos a reparar, precisamente, naquilo que já confirma o que esperávamos encontrar — um mecanismo a que a psicologia chama viés de confirmação. Uma pessoa que acredita que \"ninguém se interessa por mim\" tende a notar, numa festa, os dois momentos em que ficou sozinha, e a não registar os cinco em que alguém puxou conversa. Não porque minta a si própria de forma deliberada, mas porque a crença já filtrou, antecipadamente, o que merecia atenção.\n\nVimos, no capítulo anterior, que a linguagem das crenças costuma recorrer à omissão — retira informação, tornando a afirmação mais vaga e mais difícil de questionar. A primeira forma de testar uma crença é, por isso, tentar recuperar essa informação: que provas concretas, verificáveis por outra pessoa, sustentam esta afirmação? Comparado com quê, ou com quem? Segundo que critério?\n\nA autora norte-americana Byron Katie desenvolveu um método de questionamento, conhecido como \"O Trabalho\" (The Work), amplamente usado em coaching e em contextos terapêuticos, que se resume a quatro perguntas simples a colocar sobre qualquer crença:\n\nEstas perguntas não têm como objetivo provar que a crença é falsa — algumas crenças resistem bem ao escrutínio, e isso também é informação valiosa. O objetivo é criar, entre a pessoa e a sua crença, uma distância que antes não existia.\n\nO filósofo da ciência Karl Popper argumentou que uma afirmação só é cientificamente válida se for, em princípio, possível refutá-la — se existir um teste capaz de a provar falsa. Podemos aplicar a mesma lógica, de forma mais informal, às nossas crenças pessoais: uma crença que se apresenta como \"sempre\" ou \"nunca\" resiste, ou não, a uma procura ativa por exceções?\n\nProcurar, de propósito, uma única situação em que a crença não se confirmou — mesmo que pouco frequente — é muitas vezes suficiente para a fazer passar de \"verdade absoluta\" a \"tendência que às vezes se verifica\". E essa mudança, por pequena que pareça, já é uma primeira fissura na certeza que a sustentava.\n\nEntre observar uma situação e agir a partir dela, subimos uma escada de seleção, interpretação e suposição — quase sempre sem dar conta. Testar uma crença não é negá-la à partida; é perguntar, com honestidade, o que sabemos de facto e o que estamos apenas a supor, procurar provas concretas e procurar, ativamente, exceções que a possam contradizer. É esse o trabalho da Aula 2 — e da folha de exercício que a acompanha.", materiaisIds: [45, 32, 49] },
+      { titulo: "Testar a crença", videoUrl: "https://www.youtube.com/embed/3B2h_CbAnW4?rel=0&modestbranding=1", descricao: "Separar factos de interpretações; procurar provas contra a crença, não só a favor.", conteudo: "Já sabemos reconhecer uma crença, e já temos ferramentas para testar se corresponde à realidade. Ainda assim, é comum continuarmos a agir a partir de crenças que já reconhecemos, no plano racional, como pouco fiáveis. Este capítulo trata dessa aparente contradição: porque continuamos a segurar algo que sabemos, pelo menos em parte, não ser inteiramente verdade?\n\nA resposta, quase sempre, é que a crença nos dá alguma coisa. Nenhuma crença sobrevive tanto tempo por acidente — sobrevive porque cumpre uma função. Compreender essa função, e não apenas a crença em si, é o que torna possível uma mudança duradoura.\n\nEm contextos terapêuticos, chama-se ganho secundário à vantagem — muitas vezes inconsciente — que uma pessoa retira de manter um padrão, mesmo quando esse padrão lhe traz sofrimento visível. Uma crença como \"não sou capaz de liderar\" pode, à superfície, ser apenas limitadora; mas pode também poupar a pessoa à exposição de tentar e falhar publicamente, à responsabilidade de decidir por outros, ou ao risco de descobrir que, mesmo tentando, o resultado não é o desejado.\n\nNomear o ganho secundário de uma crença não é procurar um pretexto para a manter — é, pelo contrário, o primeiro passo para lidar com a necessidade real que ela protege, em vez de tentar arrancar a crença à força e deixar essa necessidade desprotegida.\n\nO psicólogo Leon Festinger descreveu, em meados do século XX, o desconforto que sentimos quando duas crenças, ou uma crença e um comportamento, entram em contradição — a que chamou dissonância cognitiva. Para reduzir esse desconforto, tendemos a ajustar uma das partes, e é mais fácil ajustar a perceção do que o comportamento já tomado. Isto explica por que razão continuamos, por vezes, a justificar decisões ou crenças antigas mesmo perante provas em contrário: mudar de ideias custaria mais, no imediato, do que manter a consistência interna.\n\nOs investigadores Daniel Kahneman e Amos Tversky demonstraram que, em geral, sentimos o desconforto de uma perda com mais intensidade do que o prazer de um ganho equivalente — fenómeno a que chamaram aversão à perda. Aplicado às crenças: largar uma crença antiga, mesmo uma que já não serve, é sentido como uma perda de segurança imediata, ao passo que os ganhos de a largar (novas oportunidades, novas formas de agir) são, para já, apenas hipotéticos. É por isso que, racionalmente, sabermos que uma crença nos prejudica raramente basta para a mudarmos — o cálculo emocional não é simétrico.\n\nUm dos custos mais difíceis de contabilizar é aquele que nunca chegamos a ver: as oportunidades que nem sequer consideramos, porque a crença já as descartou antecipadamente. Não é uma escolha consciente de recusar — é uma opção que nunca chega a aparecer no radar.\n\nO objetivo deste exercício não é convencer-nos, de forma forçada, a abandonar uma crença. É olhar, com a maior honestidade possível, para os dois pratos da balança: o que esta crença me dá, e o que me tira. Só depois de vermos os dois lados com clareza é que a decisão de a manter ou a mudar deixa de ser automática, e passa a ser, verdadeiramente, uma escolha.\n\nAs crenças que persistem, mesmo custando-nos, costumam fazê-lo porque nos protegem de algo — rejeição, fracasso, responsabilidade, exposição. Reconhecer essa função, e pesar com honestidade o que ganhamos e o que perdemos ao mantê-la, é o trabalho da Aula 3.", materiaisIds: [45, 32, 50] },
+      { titulo: "Escrever uma crença nova", videoUrl: "https://www.youtube.com/embed/jaxvdcP19s4?rel=0&modestbranding=1", descricao: "Substituir a crença antiga por uma frase que sirva melhor ao que queres construir.", conteudo: "Ao longo das três aulas anteriores, aprendemos a identificar uma crença, a testar se corresponde à realidade, e a reconhecer aquilo que ganhamos e perdemos ao mantê-la. Nenhum destes passos, por si só, muda automaticamente o que fazemos a seguir. Falta o último — e, em muitos sentidos, o mais exigente: escolher, de forma deliberada, uma resposta diferente daquela que o piloto automático nos daria.\n\n«Entre o estímulo e a resposta há um espaço. Nesse espaço está o nosso poder de escolher a nossa resposta. Na nossa resposta está o nosso crescimento e a nossa liberdade.» — ideia atribuída a Viktor Frankl, psiquiatra e sobrevivente do Holocausto, fundador da logoterapia\n\nÉ esse espaço — entre o que nos acontece e o que fazemos a seguir — que este capítulo final procura ampliar.\n\nO psicólogo Albert Ellis, fundador da Terapia Racional-Emotiva Comportamental, propôs um modelo simples e influente, conhecido como Modelo ABC: A (Activating event) é o acontecimento; B (Belief) é a crença ou interpretação que temos sobre esse acontecimento; C (Consequence) é a consequência emocional e comportamental. O contributo central de Ellis foi mostrar que não é A que causa C diretamente — é B, a interpretação, que faz a ponte entre os dois. Ellis acrescentou ainda dois passos: D (Dispute), questionar essa interpretação, e E (Effect), o novo efeito, emocional e comportamental, que resulta de uma interpretação revista.\n\nRessignificar não é negar que algo doeu, nem fingir que uma situação difícil não o foi. Não é otimismo forçado, nem a ideia, por vezes chamada positividade tóxica, de que basta \"pensar pelo lado bom\" para o problema desaparecer. Ressignificar é, antes, reconhecer que um mesmo acontecimento pode sustentar mais do que uma interpretação — e que, entre essas interpretações possíveis, temos alguma margem de escolha sobre qual adotamos.\n\nA maior parte das respostas automáticas acontece porque saltamos, sem darmos conta, diretamente do acontecimento (A) para a consequência (C), sem nunca examinar B — a interpretação que, na verdade, está a conduzir tudo. Parar, ainda que por poucos segundos, antes de responder, é o que torna possível examinar esse B: o que pensei, automaticamente, sobre isto? O que senti? O que tive vontade de fazer?\n\nEsta pausa não elimina a reação inicial — não temos controlo total sobre o primeiro impulso. Mas cria a possibilidade de, antes de agir a partir dele, o questionar.\n\nEscrever uma interpretação nova é um exercício mental valioso, mas não é, por si só, suficiente. As crenças consolidam-se, como vimos no primeiro capítulo, por repetição — e é por repetição, também, que se revêm. Cada pequena ação coerente com a interpretação nova é uma prova, para nós mesmos, de que essa interpretação também é possível, e não apenas a antiga.\n\nNão é necessário — nem realista — mudar tudo de imediato. Uma ação pequena, concreta e repetível, escolhida no fim de cada sessão de trabalho como esta, é geralmente mais eficaz do que uma resolução ambiciosa que não sobrevive à primeira semana.\n\nAo longo destas quatro aulas, percorremos um caminho com quatro etapas: identificar uma crença, questionar se corresponde à realidade, avaliar o que ganhamos e perdemos ao mantê-la, e, por fim, ressignificar — escolher, de forma consciente, o significado que lhe damos e a resposta que construímos a partir daí. Este não é um trabalho que se conclua numa única passagem: as crenças mais antigas, sobretudo, pedem que se volte a este processo mais do que uma vez. O que muda, com a prática, não é a ausência de crenças limitantes — é a rapidez e a clareza com que as reconhecemos, da próxima vez que aparecerem.", materiaisIds: [45, 32, 51] },
     ],
     materiaisIds: [45, 32],
     materiaisFormadorIds: [52, 53, 54, 55],
@@ -354,7 +357,7 @@ const cursos = [
 
 const materiais = [
   { id: 1, titulo: "Guia de Reflexão Diária", formato: "PDF", preco: "8€", url: "/guia-reflexao-diaria.pdf" },
-  { id: 2, titulo: "Caderno de Exercícios 3S", formato: "Caderno", preco: "12€", url: "/caderno-3s.pdf", tambemFisico: true, precoFisico: "18€" },
+  { id: 2, titulo: "Caderno de Exercícios 3S", formato: "Caderno", preco: "4,99€", url: "/caderno-3s.pdf", tambemFisico: true, precoFisico: "18€" },
   { id: 3, titulo: "Planeador 3S", formato: "PDF", preco: "10€", url: "/planeador-3s.pdf" },
   { id: 4, titulo: "Plano de Ação", formato: "PDF", preco: "10€", url: "/plano-de-acao.pdf" },
   { id: 5, titulo: "Modelo de Conversas de Feedback", formato: "PDF", preco: "10€", url: "/modelo-conversas-feedback.pdf" },
@@ -369,13 +372,13 @@ const materiais = [
   { id: 14, titulo: "Porta 15", formato: "Livro", preco: "6,99€", url: "/porta-15.pdf", tambemFisico: true, precoFisico: "22€" },
   { id: 15, titulo: "O Último Cadeado", formato: "Livro", preco: "6,99€", url: "/o-ultimo-cadeado.pdf", tambemFisico: true, precoFisico: "22€" },
   { id: 16, titulo: "O Preço do Silêncio", formato: "Livro", preco: "15€", url: "", tambemFisico: true, precoFisico: "22€" },
-  { id: 17, titulo: "Caderno da Pertença", formato: "Caderno", preco: "10€", url: "/caderno-pertenca.pdf", tambemFisico: true, precoFisico: "16€" },
+  { id: 17, titulo: "Caderno da Pertença", formato: "Caderno", preco: "4,99€", url: "/caderno-pertenca.pdf", tambemFisico: true, precoFisico: "16€" },
   { id: 18, titulo: "Mapa dos Vínculos", formato: "Mapa", preco: "8€", url: "/mapa-vinculos.pdf" },
-  { id: 19, titulo: "Caderno dos Cadeados", formato: "Caderno", preco: "10€", url: "/caderno-cadeados.pdf", tambemFisico: true, precoFisico: "16€" },
+  { id: 19, titulo: "Caderno dos Cadeados", formato: "Caderno", preco: "4,99€", url: "/caderno-cadeados.pdf", tambemFisico: true, precoFisico: "16€" },
   { id: 20, titulo: "Mapa de Padrões", formato: "Mapa", preco: "8€", url: "/mapa-padroes.pdf" },
-  { id: 21, titulo: "Caderno de Identidade", formato: "Caderno", preco: "10€", url: "/caderno-identidade.pdf", tambemFisico: true, precoFisico: "16€" },
+  { id: 21, titulo: "Caderno de Identidade", formato: "Caderno", preco: "4,99€", url: "/caderno-identidade.pdf", tambemFisico: true, precoFisico: "16€" },
   { id: 22, titulo: "Mapa do Eu", formato: "Mapa", preco: "8€", url: "/mapa-do-eu.pdf" },
-  { id: 23, titulo: "Caderno da Vergonha", formato: "Caderno", preco: "10€", url: "/caderno-vergonha.pdf", tambemFisico: true, precoFisico: "16€" },
+  { id: 23, titulo: "Caderno da Vergonha", formato: "Caderno", preco: "4,99€", url: "/caderno-vergonha.pdf", tambemFisico: true, precoFisico: "16€" },
   { id: 24, titulo: "Devolver a Vergonha", formato: "Exercício", preco: "6€", url: "/devolver-vergonha.pdf" },
   { id: 25, titulo: "Agenda 3S 2027", formato: "Agenda", preco: "25€", url: "/agenda-3s-2027.pdf", tambemFisico: true, precoFisico: "35€" },
   { id: 26, titulo: "Garrafa 3S", formato: "Produto Físico", preco: "12,90€", url: "", fisico: true },
@@ -384,10 +387,10 @@ const materiais = [
   { id: 29, titulo: "Marcador de Livros 3S", formato: "Produto Físico", preco: "1,50€", url: "", fisico: true },
   { id: 30, titulo: "Caneta 3S — Escolhe Viver", formato: "Produto Físico", preco: "2,50€", url: "", fisico: true },
   { id: 31, titulo: "Crenças que Limitam — Folhas de Exercício", formato: "Ficha", preco: "8€", url: "/crencas-limitantes-folhas.pdf" },
-  { id: 48, titulo: "Mapa das Crenças", formato: "Ficha", preco: "3€", url: "/mapa-das-crencas.pdf" },
-  { id: 49, titulo: "Facto ou Suposição?", formato: "Ficha", preco: "3€", url: "/facto-ou-suposicao.pdf" },
-  { id: 50, titulo: "Balança — Perdas vs. Ganhos", formato: "Ficha", preco: "3€", url: "/balanca-perdas-ganhos.pdf" },
-  { id: 51, titulo: "Parar → Questionar → Ressignificar → Agir", formato: "Ficha", preco: "3€", url: "/parar-questionar-ressignificar-agir.pdf" },
+  { id: 48, titulo: "Mapa das Crenças", formato: "Ficha", preco: "2,99€", url: "/mapa-das-crencas.pdf" },
+  { id: 49, titulo: "Facto ou Suposição?", formato: "Ficha", preco: "2,99€", url: "/facto-ou-suposicao.pdf" },
+  { id: 50, titulo: "Balança — Perdas vs. Ganhos", formato: "Ficha", preco: "2,99€", url: "/balanca-perdas-ganhos.pdf" },
+  { id: 51, titulo: "Parar → Questionar → Ressignificar → Agir", formato: "Ficha", preco: "2,99€", url: "/parar-questionar-ressignificar-agir.pdf" },
   { id: 52, titulo: "Manual Aula a Aula — Crenças Limitantes", formato: "Guia do Formador", preco: "—", url: "/manual-crencas-limitantes.pdf", apenasMentor: true },
   { id: 53, titulo: "Livro do Formador — Crenças Limitantes", formato: "Guia do Formador", preco: "—", url: "/livro-formador-crencas-limitantes.pdf", apenasMentor: true },
   { id: 54, titulo: "Caderno do Formador — Crenças Limitantes", formato: "Guia do Formador", preco: "—", url: "/caderno-formador-crencas-limitantes.pdf", apenasMentor: true },
@@ -400,14 +403,14 @@ const materiais = [
   { id: 61, titulo: "Livro do Formador — Conversas que Mudam Equipas", formato: "Guia do Formador", preco: "—", url: "/livro-formador-conversas-equipas.pdf", apenasMentor: true },
   { id: 62, titulo: "Caderno do Formador — Conversas que Mudam Equipas", formato: "Guia do Formador", preco: "—", url: "/caderno-formador-conversas-equipas.pdf", apenasMentor: true },
   { id: 63, titulo: "Plano de Ação Online — Conversas que Mudam Equipas", formato: "Guia do Formador", preco: "—", url: "/plano-acao-online-conversas-equipas.pdf", apenasMentor: true },
-  { id: 64, titulo: "Folha de Exercício — Comunicação Assertiva", formato: "Ficha", preco: "3€", url: "/folha-conversas-aula1.pdf" },
-  { id: 65, titulo: "Folha de Exercício — Feedback (Modelo SBI)", formato: "Ficha", preco: "3€", url: "/folha-conversas-aula2.pdf" },
-  { id: 66, titulo: "Folha de Exercício — Conflito", formato: "Ficha", preco: "3€", url: "/folha-conversas-aula3.pdf" },
-  { id: 67, titulo: "Folha de Exercício — Limites e Responsabilização", formato: "Ficha", preco: "3€", url: "/folha-conversas-aula4.pdf" },
-  { id: 68, titulo: "Folha de Exercício — Controlo ou Compromisso", formato: "Ficha", preco: "3€", url: "/folha-liderar-pessoas-aula1.pdf" },
-  { id: 69, titulo: "Folha de Exercício — Liderança Situacional", formato: "Ficha", preco: "3€", url: "/folha-liderar-pessoas-aula2.pdf" },
-  { id: 70, titulo: "Folha de Exercício — Segurança Psicológica", formato: "Ficha", preco: "3€", url: "/folha-liderar-pessoas-aula3.pdf" },
-  { id: 71, titulo: "Folha de Exercício — Que Líder Sou Eu", formato: "Ficha", preco: "3€", url: "/folha-liderar-pessoas-aula4.pdf" },
+  { id: 64, titulo: "Folha de Exercício — Comunicação Assertiva", formato: "Ficha", preco: "2,99€", url: "/folha-conversas-aula1.pdf" },
+  { id: 65, titulo: "Folha de Exercício — Feedback (Modelo SBI)", formato: "Ficha", preco: "2,99€", url: "/folha-conversas-aula2.pdf" },
+  { id: 66, titulo: "Folha de Exercício — Conflito", formato: "Ficha", preco: "2,99€", url: "/folha-conversas-aula3.pdf" },
+  { id: 67, titulo: "Folha de Exercício — Limites e Responsabilização", formato: "Ficha", preco: "2,99€", url: "/folha-conversas-aula4.pdf" },
+  { id: 68, titulo: "Folha de Exercício — Controlo ou Compromisso", formato: "Ficha", preco: "2,99€", url: "/folha-liderar-pessoas-aula1.pdf" },
+  { id: 69, titulo: "Folha de Exercício — Liderança Situacional", formato: "Ficha", preco: "2,99€", url: "/folha-liderar-pessoas-aula2.pdf" },
+  { id: 70, titulo: "Folha de Exercício — Segurança Psicológica", formato: "Ficha", preco: "2,99€", url: "/folha-liderar-pessoas-aula3.pdf" },
+  { id: 71, titulo: "Folha de Exercício — Que Líder Sou Eu", formato: "Ficha", preco: "2,99€", url: "/folha-liderar-pessoas-aula4.pdf" },
   { id: 72, titulo: "Livro do Formador — Aula 1", formato: "Guia do Formador", preco: "—", url: "/livro-formador-liderar-pessoas-aula1.pdf", apenasMentor: true },
   { id: 73, titulo: "Caderno do Formador — Aula 1", formato: "Guia do Formador", preco: "—", url: "/caderno-formador-liderar-pessoas-aula1.pdf", apenasMentor: true },
   { id: 74, titulo: "Livro do Formador — Aula 2", formato: "Guia do Formador", preco: "—", url: "/livro-formador-liderar-pessoas-aula2.pdf", apenasMentor: true },
@@ -428,10 +431,10 @@ const materiais = [
   { id: 89, titulo: "Manual do Formador — Aula 2", formato: "Guia do Formador", preco: "—", url: "/manual-conversas-equipas-aula2.pdf", apenasMentor: true },
   { id: 90, titulo: "Manual do Formador — Aula 3", formato: "Guia do Formador", preco: "—", url: "/manual-conversas-equipas-aula3.pdf", apenasMentor: true },
   { id: 91, titulo: "Manual do Formador — Aula 4", formato: "Guia do Formador", preco: "—", url: "/manual-conversas-equipas-aula4.pdf", apenasMentor: true },
-  { id: 92, titulo: "Folha de Exercício — As Minhas Três Zonas", formato: "Ficha", preco: "3€", url: "/folha-zona-conforto-aula1.pdf" },
-  { id: 93, titulo: "Folha de Exercício — Identificar o Medo", formato: "Ficha", preco: "3€", url: "/folha-zona-conforto-aula2.pdf" },
-  { id: 94, titulo: "Folha de Exercício — O Primeiro Passo", formato: "Ficha", preco: "3€", url: "/folha-zona-conforto-aula3.pdf" },
-  { id: 95, titulo: "Folha de Exercício — O Meu Ciclo de Expansão", formato: "Ficha", preco: "3€", url: "/folha-zona-conforto-aula4.pdf" },
+  { id: 92, titulo: "Folha de Exercício — As Minhas Três Zonas", formato: "Ficha", preco: "2,99€", url: "/folha-zona-conforto-aula1.pdf" },
+  { id: 93, titulo: "Folha de Exercício — Identificar o Medo", formato: "Ficha", preco: "2,99€", url: "/folha-zona-conforto-aula2.pdf" },
+  { id: 94, titulo: "Folha de Exercício — O Primeiro Passo", formato: "Ficha", preco: "2,99€", url: "/folha-zona-conforto-aula3.pdf" },
+  { id: 95, titulo: "Folha de Exercício — O Meu Ciclo de Expansão", formato: "Ficha", preco: "2,99€", url: "/folha-zona-conforto-aula4.pdf" },
   { id: 96, titulo: "Ferramenta A4 — Modelo GROW", formato: "Ficha", preco: "2,49€", url: "/ferramenta-grow.pdf" },
   { id: 97, titulo: "Ferramenta A4 — Perguntas Poderosas", formato: "Ficha", preco: "2,49€", url: "/ferramenta-perguntas-poderosas.pdf" },
   { id: 98, titulo: "Ferramenta A4 — Escuta Ativa", formato: "Ficha", preco: "2,49€", url: "/ferramenta-escuta-ativa.pdf" },
@@ -463,22 +466,22 @@ const materiais = [
   { id: 124, titulo: "Ferramenta A4 — Validação Emocional", formato: "Ficha", preco: "2,49€", url: "/ferramenta-validacao-emocional-dp.pdf" },
   { id: 125, titulo: "Ferramenta A4 — Autocompaixão", formato: "Ficha", preco: "2,49€", url: "/ferramenta-autocompaixao-dp.pdf" },
   { id: 126, titulo: "Ferramenta A4 — Diário de Reflexão Diária", formato: "Ficha", preco: "2,49€", url: "/ferramenta-diario-reflexao-dp.pdf" },
-  { id: 32, titulo: "Caderno do Aluno — Crenças que Limitam", formato: "Caderno", preco: "12€", url: "/caderno-aluno-crencas-limitantes.pdf" },
-  { id: 33, titulo: "Livro do Aluno — Autossabotagem", formato: "Livro", preco: "10€", url: "/livro-autossabotagem.pdf" },
-  { id: 34, titulo: "Caderno de Trabalho — Autossabotagem", formato: "Caderno", preco: "10€", url: "/caderno-autossabotagem.pdf" },
-  { id: 35, titulo: "Livro do Aluno — Mentalidade de Crescimento", formato: "Livro", preco: "10€", url: "/livro-mentalidade-crescimento.pdf" },
-  { id: 36, titulo: "Caderno de Trabalho — Mentalidade de Crescimento", formato: "Caderno", preco: "10€", url: "/caderno-mentalidade-crescimento.pdf" },
-  { id: 37, titulo: "Livro do Aluno — Resiliência", formato: "Livro", preco: "10€", url: "/livro-resiliencia.pdf" },
-  { id: 38, titulo: "Caderno de Trabalho — Resiliência", formato: "Caderno", preco: "10€", url: "/caderno-resiliencia.pdf" },
-  { id: 39, titulo: "Livro do Aluno — Empoderamento Pessoal", formato: "Livro", preco: "10€", url: "/livro-empoderamento.pdf" },
-  { id: 40, titulo: "Caderno de Trabalho — Empoderamento Pessoal", formato: "Caderno", preco: "10€", url: "/caderno-empoderamento.pdf" },
-  { id: 41, titulo: "Livro do Aluno — Liderar Pessoas", formato: "Livro", preco: "8€", url: "/livro-liderar-pessoas-v2.pdf" },
-  { id: 42, titulo: "Caderno de Trabalho — Liderar Pessoas", formato: "Caderno", preco: "8€", url: "/caderno-liderar-pessoas.pdf" },
-  { id: 43, titulo: "Livro do Aluno — Conversas que Mudam Equipas", formato: "Livro", preco: "8€", url: "/livro-conversas-equipas.pdf" },
-  { id: 44, titulo: "Caderno de Trabalho — Conversas que Mudam Equipas", formato: "Caderno", preco: "8€", url: "/caderno-conversas-equipas.pdf" },
-  { id: 45, titulo: "Livro do Aluno — Crenças que Limitam", formato: "Livro", preco: "10€", url: "/livro-crencas-limitantes.pdf" },
-  { id: 46, titulo: "Livro do Aluno — Zona de Conforto", formato: "Livro", preco: "10€", url: "/livro-zona-conforto.pdf" },
-  { id: 47, titulo: "Caderno de Trabalho — Zona de Conforto", formato: "Caderno", preco: "10€", url: "/caderno-zona-conforto.pdf" },
+  { id: 32, titulo: "Caderno do Aluno — Crenças que Limitam", formato: "Caderno", preco: "4,99€", url: "/caderno-aluno-crencas-limitantes.pdf" },
+  { id: 33, titulo: "Livro do Aluno — Autossabotagem", formato: "Livro", preco: "6,99€", url: "/livro-autossabotagem.pdf" },
+  { id: 34, titulo: "Caderno de Trabalho — Autossabotagem", formato: "Caderno", preco: "4,99€", url: "/caderno-autossabotagem.pdf" },
+  { id: 35, titulo: "Livro do Aluno — Mentalidade de Crescimento", formato: "Livro", preco: "6,99€", url: "/livro-mentalidade-crescimento.pdf" },
+  { id: 36, titulo: "Caderno de Trabalho — Mentalidade de Crescimento", formato: "Caderno", preco: "4,99€", url: "/caderno-mentalidade-crescimento.pdf" },
+  { id: 37, titulo: "Livro do Aluno — Resiliência", formato: "Livro", preco: "6,99€", url: "/livro-resiliencia.pdf" },
+  { id: 38, titulo: "Caderno de Trabalho — Resiliência", formato: "Caderno", preco: "4,99€", url: "/caderno-resiliencia.pdf" },
+  { id: 39, titulo: "Livro do Aluno — Empoderamento Pessoal", formato: "Livro", preco: "6,99€", url: "/livro-empoderamento.pdf" },
+  { id: 40, titulo: "Caderno de Trabalho — Empoderamento Pessoal", formato: "Caderno", preco: "4,99€", url: "/caderno-empoderamento.pdf" },
+  { id: 41, titulo: "Livro do Aluno — Liderar Pessoas", formato: "Livro", preco: "6,99€", url: "/livro-liderar-pessoas-v2.pdf" },
+  { id: 42, titulo: "Caderno de Trabalho — Liderar Pessoas", formato: "Caderno", preco: "4,99€", url: "/caderno-liderar-pessoas.pdf" },
+  { id: 43, titulo: "Livro do Aluno — Conversas que Mudam Equipas", formato: "Livro", preco: "6,99€", url: "/livro-conversas-equipas.pdf" },
+  { id: 44, titulo: "Caderno de Trabalho — Conversas que Mudam Equipas", formato: "Caderno", preco: "4,99€", url: "/caderno-conversas-equipas.pdf" },
+  { id: 45, titulo: "Livro do Aluno — Crenças que Limitam", formato: "Livro", preco: "6,99€", url: "/livro-crencas-limitantes.pdf" },
+  { id: 46, titulo: "Livro do Aluno — Zona de Conforto", formato: "Livro", preco: "6,99€", url: "/livro-zona-conforto.pdf" },
+  { id: 47, titulo: "Caderno de Trabalho — Zona de Conforto", formato: "Caderno", preco: "4,99€", url: "/caderno-zona-conforto.pdf" },
 ];
 
 const workshops = [
@@ -1052,7 +1055,9 @@ function SectionHeader({ eyebrow, title, onBack }) {
    Grelha de áreas (usada no Início e no Explorar)
 --------------------------------------------------------- */
 const areas = [
-  { key: "aluno", titulo: "Área do Aluno", desc: "Conteúdos, progresso e materiais", icon: GraduationCap, full: true },
+  { key: "alunos", titulo: "Alunos", desc: "Cursos das duas escolas", icon: GraduationCap, full: true },
+  { key: "aluno", titulo: "Área do Aluno", desc: "Progresso, certificados e materiais", icon: GraduationCap },
+  { key: "livros", titulo: "Os meus livros", desc: "Romances de Conceição Alves", icon: BookOpen },
   { key: "escola-lideranca", titulo: "Escola de Liderança", desc: "Cursos de liderança", icon: BookOpen },
   { key: "escola-ser", titulo: "Escola do Ser", desc: "Cursos de identidade e ser", icon: BookOpen },
   { key: "comunidade", titulo: "Comunidade", desc: "Tema, desafio e partilha do mês", icon: Users },
@@ -1063,12 +1068,12 @@ const areas = [
 ];
 
 const areasInicio = [
-  { key: "escola-lideranca", titulo: "Escola de Liderança", desc: "Cursos de liderança", icon: BookOpen },
-  { key: "escola-ser", titulo: "Escola do Ser", desc: "Cursos de identidade e ser", icon: BookOpen },
-  { key: "marcar", titulo: "Coaching e Mentoria", desc: "Sessões individuais e acompanhamento", icon: PenLine },
-  { key: "comunidade", titulo: "Comunidade", desc: "Tema, desafio e partilha do mês", icon: Users },
-  { key: "material", titulo: "Material Didático", desc: "Fichas, jogos, ebooks", icon: Layers },
+  { key: "alunos", titulo: "Alunos", desc: "Cursos da Escola do Ser e da Escola de Liderança", icon: GraduationCap },
+  { key: "comunidade", titulo: "Comunidade", desc: "O mês da Comunidade · 7,49€/mês", icon: Users },
+  { key: "material", titulo: "Material Didático", desc: "Fichas, cadernos, jogos, ebooks", icon: Layers },
   { key: "podcast", titulo: "Podcast", desc: "Episódios para ouvir", icon: Headphones },
+  { key: "livros", titulo: "Os meus livros", desc: "Romances de Conceição Alves", icon: BookOpen },
+  { key: "marcar", titulo: "Coaching e Mentoria", desc: "Sessões individuais e acompanhamento", icon: PenLine },
 ];
 
 function AreaCard({ area, onOpen, full }) {
@@ -1214,9 +1219,7 @@ function AreaAlunoScreen({ onBack, onOpenCurso, cursosConcluidos, materiaisDesbl
   const total = cursos.length;
   const concluidos = cursos.filter(estaConcluido).length;
   const pct = Math.round((concluidos / total) * 100);
-  const emCurso = cursos.filter((c) => !estaConcluido(c));
   const concluidosLista = cursos.filter(estaConcluido);
-  const inscritas = cursos.map((c) => c.titulo);
   const guardados = materiais.filter((m) => materiaisDesbloqueados[m.id]);
 
   return (
@@ -1236,29 +1239,45 @@ function AreaAlunoScreen({ onBack, onOpenCurso, cursosConcluidos, materiaisDesbl
         </div>
       </div>
 
-      <div className="px-6 mt-8">
-        <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>CONTEÚDOS EM CURSO</p>
-        <div className="space-y-2">
-          {emCurso.length === 0 && (
-            <p className="text-sm" style={{ color: palette.navySoft }}>Concluíste todos os conteúdos disponíveis.</p>
-          )}
-          {emCurso.map((c) => {
-            const Icon = tipoIcon[c.tipo];
-            return (
-              <button
-                key={c.id}
-                onClick={() => onOpenCurso(c)}
-                className="w-full flex items-center gap-3 rounded-xl px-4 py-3 text-left transition active:scale-[0.98]"
-                style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}
-              >
-                <Icon size={16} style={{ color: escolaCor[c.escolaId] }} />
-                <p className="text-sm flex-1" style={{ color: palette.ink }}>{c.titulo}</p>
-                <ChevronRight size={16} style={{ color: palette.navySoft }} />
-              </button>
-            );
-          })}
-        </div>
-      </div>
+      {[
+        { id: "ser", nome: "Escola do Ser", frase: "Autoconhecimento, emoções e crescimento pessoal" },
+        { id: "lideranca", nome: "Escola de Liderança", frase: "Liderar pessoas, equipas e conversas" },
+        { id: "comunidade", nome: "Formações da Comunidade", frase: "A formação de cada mês da Comunidade 3S" },
+      ].map((escola) => {
+        const lista = cursos.filter((c) => c.escolaId === escola.id);
+        if (lista.length === 0) return null;
+        const feitos = lista.filter(estaConcluido).length;
+        return (
+          <div key={escola.id} className="px-6 mt-8">
+            <div className="rounded-2xl px-5 py-4 mb-3" style={{ backgroundColor: palette.navy }}>
+              <p className="font-serif text-xl" style={{ color: palette.creamSoft }}>{escola.nome}</p>
+              <p className="text-xs mt-0.5" style={{ color: palette.goldSoft }}>{escola.frase}</p>
+              <p className="text-[11px] mt-2" style={{ color: palette.gold }}>{feitos} de {lista.length} cursos concluídos</p>
+            </div>
+            <div className="space-y-2">
+              {lista.map((c) => {
+                const Icon = tipoIcon[c.tipo];
+                const feito = estaConcluido(c);
+                return (
+                  <button
+                    key={c.id}
+                    onClick={() => onOpenCurso(c)}
+                    className="w-full flex items-center gap-3 rounded-xl px-4 py-3 text-left transition active:scale-[0.98]"
+                    style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}
+                  >
+                    {feito ? <CheckCircle2 size={16} style={{ color: palette.gold }} /> : <Icon size={16} style={{ color: escolaCor[c.escolaId] }} />}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm" style={{ color: palette.ink }}>{c.titulo}</p>
+                      <p className="text-[11px]" style={{ color: palette.navySoft }}>{feito ? "Concluído" : c.duracao}{c.gratuito ? " · Gratuito" : ""}</p>
+                    </div>
+                    <ChevronRight size={16} style={{ color: palette.navySoft }} />
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
 
       <div className="px-6 mt-8">
         <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>MEUS CERTIFICADOS</p>
@@ -1305,17 +1324,6 @@ function AreaAlunoScreen({ onBack, onOpenCurso, cursosConcluidos, materiaisDesbl
         </div>
       </div>
 
-      <div className="px-6 mt-8">
-        <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>FORMAÇÕES EM QUE ESTÁS INSCRITO</p>
-        <div className="space-y-2">
-          {inscritas.map((t) => (
-            <div key={t} className="flex items-center gap-3 rounded-xl px-4 py-3" style={{ backgroundColor: palette.card }}>
-              <CheckCircle2 size={16} style={{ color: palette.gold }} />
-              <p className="text-sm" style={{ color: palette.ink }}>{t}</p>
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }
@@ -1434,7 +1442,7 @@ function FichaEntradaGratisScreen({ onBack, onConcluido }) {
   );
 }
 
-function ComunidadeBloqueada({ onBack, onDesbloquear }) {
+function ComunidadeBloqueada({ onBack, onDesbloquear, terminouEm }) {
   const [modo, setModo] = useState(null); // null | "codigo" | "pagar"
   const [codigo, setCodigo] = useState("");
   const [telemovel, setTelemovel] = useState("");
@@ -1477,10 +1485,17 @@ function ComunidadeBloqueada({ onBack, onDesbloquear }) {
             Acesso à Comunidade 3S
           </p>
           <p className="text-sm mt-2 leading-relaxed" style={{ color: palette.goldSoft }}>
-            Tema do mês, desafio, reflexão e conteúdo exclusivo — um espaço leve,
-            renovado todos os meses.
+            Tudo o que precisas para o curso do mês, num só valor:
           </p>
-          <p className="font-serif text-2xl mt-4" style={{ color: palette.gold }}>7,49€ / mês</p>
+          <div className="text-left text-sm mt-3 space-y-1.5 mx-auto" style={{ color: palette.creamSoft, maxWidth: 280 }}>
+            <p>✓ Caderno de trabalho <span style={{ color: palette.goldSoft }}>(4,99€)</span></p>
+            <p>✓ Livro do aluno <span style={{ color: palette.goldSoft }}>(6,99€)</span></p>
+            <p>✓ Material didático <span style={{ color: palette.goldSoft }}>(2,99€)</span></p>
+            <p>✓ Aulas gravadas</p>
+            <p>✓ 1 encontro online por mês</p>
+          </div>
+          <p className="text-xs mt-4 line-through" style={{ color: palette.goldSoft }}>Em separado: mais de 14,97€</p>
+          <p className="font-serif text-2xl mt-1" style={{ color: palette.gold }}>7,49€ / mês</p>
         </div>
 
         <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>PROGRAMA SETEMBRO–DEZEMBRO</p>
@@ -1502,20 +1517,13 @@ function ComunidadeBloqueada({ onBack, onDesbloquear }) {
 
         {modo === null && (
           <div className="mt-5 space-y-2.5">
-            <button
-              onClick={() => setModo("pagar")}
-              className="w-full rounded-full py-3 font-medium text-sm tracking-wide transition active:scale-[0.98]"
-              style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
-            >
-              Assinar com MB WAY
-            </button>
-            <button
-              onClick={() => setModo("codigo")}
-              className="w-full text-center text-xs font-medium underline underline-offset-2 py-1"
-              style={{ color: palette.navySoft }}
-            >
-              Já tenho um código de acesso
-            </button>
+            {terminouEm && (
+              <p className="text-xs text-center" style={{ color: palette.navySoft }}>
+                A tua mensalidade terminou a {new Date(terminouEm).toLocaleDateString("pt-PT", { day: "2-digit", month: "long" })}. Renova para continuares.
+              </p>
+            )}
+            <BotaoCarrinho rotulo="Adicionar 1 mês ao carrinho" item={{ chave: "comunidade", tipo: "comunidade", titulo: "Comunidade 3S — mensalidade", valor: 7.49 }} />
+            <p className="text-[11px] text-center" style={{ color: palette.navySoft }}>Pagas por MB WAY, Multibanco ou Payshop. Cada pagamento dá acesso durante 1 mês.</p>
           </div>
         )}
 
@@ -1826,7 +1834,7 @@ function ChatPrivadoScreen({ pessoa, onBack }) {
   );
 }
 
-function ComunidadeScreen({ onBack, onOpenCurso, reflexoes, onGuardarReflexao, onAbrirChat, onAbrirMensagens, materiaisDesbloqueados, onDesbloquearMaterial }) {
+function ComunidadeScreen({ onBack, onOpenCurso, reflexoes, onGuardarReflexao, onAbrirChat, onAbrirMensagens, materiaisDesbloqueados, onDesbloquearMaterial, mensalidadeAte }) {
   const [mesIndex, setMesIndex] = useState(0);
   const [rascunho, setRascunho] = useState(reflexoes[comunidadeMeses[0].mes] || "");
   const [guardado, setGuardado] = useState(false);
@@ -1836,6 +1844,20 @@ function ComunidadeScreen({ onBack, onOpenCurso, reflexoes, onGuardarReflexao, o
   return (
     <div className="pb-28">
       <SectionHeader eyebrow="ESTE MÊS" title="Comunidade 3S" onBack={onBack} />
+      <div className="px-6 mb-5">
+        {mensalidadeAte && new Date(mensalidadeAte) > new Date() ? (
+          <div className="rounded-2xl px-4 py-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
+            <p className="text-xs" style={{ color: palette.navySoft }}>Mensalidade paga até <b style={{ color: palette.navy }}>{new Date(mensalidadeAte).toLocaleDateString("pt-PT", { day: "2-digit", month: "long" })}</b>.</p>
+            <div className="mt-2"><BotaoCarrinho pequeno rotulo="Renovar mais 1 mês" item={{ chave: "comunidade", tipo: "comunidade", titulo: "Comunidade 3S — mensalidade", valor: 7.49 }} /></div>
+          </div>
+        ) : (
+          <div className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.navy }}>
+            <p className="font-serif text-lg" style={{ color: palette.creamSoft }}>Torna-te membro da Comunidade</p>
+            <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.goldSoft }}>Caderno, livro e material didático do curso do mês, aulas gravadas e 1 encontro online por mês — tudo por 7,49€/mês.</p>
+            <div className="mt-3"><BotaoCarrinho rotulo="Aderir à Comunidade" item={{ chave: "comunidade", tipo: "comunidade", titulo: "Comunidade 3S — mensalidade", valor: 7.49 }} /></div>
+          </div>
+        )}
+      </div>
 
       <div className="px-6 mb-5 flex gap-2">
         <button
@@ -2275,22 +2297,12 @@ function PodcastScreen({ onBack, souDona }) {
 /* ---------------------------------------------------------
    Formação
 --------------------------------------------------------- */
-const PRECO_CURSO = "10,99€";
-// Cursos das Escolas de Liderança e do Ser são pagos; os da Comunidade estão incluídos
-// na mensalidade; "Crenças que Limitam" mantém-se gratuito.
-function cursoTemPreco(curso) {
-  if (!curso) return false;
-  if (curso.escolaId !== "lideranca" && curso.escolaId !== "ser") return false;
-  if (curso.titulo === "Crenças que Limitam") return false;
-  return true;
-}
-
 function mesDoCurso(cursoId) {
   const m = comunidadeMeses.find((mm) => mm.formacaoId === cursoId);
   return m ? m.mes : null;
 }
 
-function FormacaoScreen({ onBack, onOpenCurso, cursosConcluidos, escolaFixa, cursosDesbloqueados = {}, acessoLivre = false }) {
+function FormacaoScreen({ onBack, onOpenCurso, cursosConcluidos, escolaFixa }) {
   const [escolaId, setEscolaId] = useState(escolaFixa || escolas[0].id);
   const cursosDaEscola = cursos.filter((c) => c.escolaId === escolaId);
   const nomeEscola = (escolas.find((e) => e.id === escolaId) || {}).nome || "Formação";
@@ -2380,133 +2392,12 @@ function FormacaoScreen({ onBack, onOpenCurso, cursosConcluidos, escolaFixa, cur
                   <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{c.titulo}</p>
                   <p className="text-xs mt-0.5" style={{ color: palette.navySoft }}>{tipoLabel[c.tipo]} · {c.duracao}</p>
                 </div>
-                {cursoTemPreco(c) && !acessoLivre && !cursosDesbloqueados[c.id] && (
-                  <span className="text-xs font-serif shrink-0" style={{ color: palette.gold }}>{PRECO_CURSO}</span>
-                )}
                 {concluido ? <CheckCircle2 size={18} style={{ color: palette.gold }} /> : <ChevronRight size={18} style={{ color: palette.navySoft }} />}
               </div>
               <p className="text-sm leading-relaxed pl-[52px]" style={{ color: palette.ink }}>{c.promessa}</p>
             </button>
           );
         })}
-      </div>
-    </div>
-  );
-}
-
-function CursoBloqueadoScreen({ curso, onBack, onDesbloquear }) {
-  const [telemovel, setTelemovel] = useState("");
-  const [estadoPagamento, setEstadoPagamento] = useState(null); // null | a_enviar | a_confirmar | falhou
-  const [erro, setErro] = useState("");
-  const descricaoPagamento = `Curso — ${curso.titulo}`;
-
-  // Se a pessoa já pagou este curso (ex.: noutro dispositivo), desbloqueia sozinho
-  const verificarPagamentoAnterior = async () => {
-    const { data: sessaoAtual } = await supabase.auth.getSession();
-    const userId = sessaoAtual?.session?.user?.id;
-    if (!userId) return false;
-    const { data } = await supabase
-      .from("pagamentos")
-      .select("id")
-      .eq("user_id", userId)
-      .eq("estado", "pago")
-      .eq("descricao", descricaoPagamento)
-      .limit(1);
-    if (data && data.length > 0) {
-      onDesbloquear();
-      return true;
-    }
-    return false;
-  };
-
-  useEffect(() => { verificarPagamentoAnterior(); }, []);
-
-  const pagar = async () => {
-    if (!telemovel.trim()) return;
-    setErro("");
-    setEstadoPagamento("a_enviar");
-    try {
-      guardarTelefone(telemovel.trim());
-      const resultado = await iniciarPagamentoMBWay("curso", descricaoPagamento, PRECO_CURSO, telemovel.trim());
-      setEstadoPagamento("a_confirmar");
-      const pago = await aguardarConfirmacaoPagamento(resultado.pagamento_id);
-      if (pago) {
-        onDesbloquear();
-      } else {
-        setEstadoPagamento("falhou");
-        setErro("Não recebemos a confirmação a tempo. Se já aprovaste no MB WAY, toca em \"Já paguei — verificar\".");
-      }
-    } catch (e) {
-      setEstadoPagamento("falhou");
-      setErro(e.message || "Não foi possível iniciar o pagamento.");
-    }
-  };
-
-  return (
-    <div className="pb-28">
-      <div className="px-6 pt-8">
-        <button onClick={onBack} className="flex items-center gap-1 text-sm font-medium" style={{ color: palette.navySoft }}>
-          <ChevronLeft size={16} />
-          Voltar
-        </button>
-      </div>
-      <div className="px-6 pt-6">
-        <p className="text-[11px] tracking-[0.25em] font-medium mb-2" style={{ color: palette.gold }}>
-          {(escolas.find((e) => e.id === curso.escolaId) || {}).nome?.toUpperCase() || "FORMAÇÃO"}
-        </p>
-        <h1 className="font-serif text-2xl leading-tight mb-3" style={{ color: palette.navy }}>{curso.titulo}</h1>
-        {curso.promessa && (
-          <p className="text-[15px] leading-relaxed mb-4" style={{ color: palette.ink }}>{curso.promessa}</p>
-        )}
-        {curso.aulas && curso.aulas.length > 0 && (
-          <div className="mb-6">
-            <p className="text-[11px] tracking-[0.2em] font-medium mb-2" style={{ color: palette.gold }}>{curso.aulas.length} AULAS</p>
-            <div className="space-y-1.5">
-              {curso.aulas.map((a, i) => (
-                <p key={i} className="text-sm" style={{ color: palette.navySoft }}>{i + 1}. {a.titulo}</p>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <div className="rounded-2xl px-5 py-5" style={{ backgroundColor: palette.navy }}>
-          <p className="font-serif text-3xl mb-1" style={{ color: palette.gold }}>{PRECO_CURSO}</p>
-          <p className="text-xs mb-4" style={{ color: palette.goldSoft }}>Acesso ao curso completo, para sempre.</p>
-          {estadoPagamento === "a_confirmar" ? (
-            <div className="text-center py-3">
-              <p className="text-sm font-medium mb-1" style={{ color: palette.creamSoft }}>Confirma o pagamento no teu telemóvel</p>
-              <p className="text-xs" style={{ color: palette.goldSoft }}>Abre a notificação da app MB WAY e aprova — pode demorar até 90 segundos.</p>
-            </div>
-          ) : (
-            <div className="space-y-2.5">
-              <input
-                type="tel"
-                value={telemovel}
-                onChange={(e) => setTelemovel(e.target.value)}
-                placeholder="Número de telemóvel (MB WAY)"
-                className="w-full rounded-xl px-4 py-2.5 text-sm outline-none"
-                style={{ backgroundColor: palette.creamSoft, color: palette.ink }}
-              />
-              <button
-                onClick={pagar}
-                disabled={estadoPagamento === "a_enviar" || !telemovel.trim()}
-                className="w-full rounded-full py-3 font-medium text-sm tracking-wide disabled:opacity-60"
-                style={{ backgroundColor: palette.gold, color: palette.navy }}
-              >
-                {estadoPagamento === "a_enviar" ? "A enviar pedido..." : `Pagar ${PRECO_CURSO} com MB WAY`}
-              </button>
-              {erro && <p className="text-xs text-center" style={{ color: palette.creamSoft }}>{erro}</p>}
-            </div>
-          )}
-        </div>
-
-        <button
-          onClick={verificarPagamentoAnterior}
-          className="w-full text-center text-xs mt-4 underline"
-          style={{ color: palette.navySoft }}
-        >
-          Já paguei — verificar
-        </button>
       </div>
     </div>
   );
@@ -2534,7 +2425,7 @@ function ConteudoDetalhe({ curso, concluido, onToggleConcluido, onBack, materiai
             <Icon size={22} style={{ color: palette.navy }} />
           </div>
         </div>
-        <p className="text-sm" style={{ color: palette.navySoft }}>{tipoLabel[curso.tipo]} · {curso.duracao}</p>
+        <p className="text-sm" style={{ color: palette.navySoft }}>{tipoLabel[curso.tipo]} · {curso.duracao}{curso.gratuito ? " · Gratuito" : ""}</p>
         {curso.promessa && (
           <p className="text-[15px] leading-relaxed mt-4" style={{ color: palette.ink }}>{curso.promessa}</p>
         )}
@@ -2550,7 +2441,7 @@ function ConteudoDetalhe({ curso, concluido, onToggleConcluido, onBack, materiai
                 return (
                   <div key={i} className="rounded-2xl px-4 py-3.5" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
                     <button
-                      onClick={() => setAulaExpandida(aberta ? null : i)}
+                      onClick={() => { if (!aberta) registarVisualizacao(curso, i, aula); setAulaExpandida(aberta ? null : i); }}
                       className="w-full flex items-start gap-3 text-left"
                     >
                       <span
@@ -2573,6 +2464,18 @@ function ConteudoDetalhe({ curso, concluido, onToggleConcluido, onBack, materiai
                     </button>
                     {aberta && aula.conteudo && (
                       <div className="mt-4 pl-9 pr-1">
+                        {aula.videoUrl && (
+                          <div className="rounded-2xl overflow-hidden aspect-video mb-4" style={{ backgroundColor: palette.navy }}>
+                            <iframe
+                              src={aula.videoUrl}
+                              title={aula.titulo}
+                              className="w-full h-full"
+                              frameBorder="0"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                              allowFullScreen
+                            />
+                          </div>
+                        )}
                         {(() => {
                           const primeiraFrase = aula.conteudo.split(/(?<=[.!?])\s/)[0];
                           return (
@@ -4158,14 +4061,7 @@ function MaterialCard({ material, desbloqueado, onDesbloquear, desbloqueadoFisic
           Versão física encomendada
         </div>
       ) : estadoFisico === "fechado" ? (
-        <button
-          onClick={() => setEstadoFisico("pagar")}
-          className="w-full flex items-center justify-between rounded-lg px-3 py-2 text-xs font-medium"
-          style={{ backgroundColor: palette.creamSoft, color: palette.navy, border: `1px solid ${palette.goldSoft}55` }}
-        >
-          <span>Encomendar versão física</span>
-          <span className="font-serif" style={{ color: palette.gold }}>{material.precoFisico}</span>
-        </button>
+        <BotaoCarrinho pequeno rotulo="Encomendar versão física" item={{ chave: `fisico-${material.id}`, tipo: "material_fisico", materialId: material.id, titulo: `${material.titulo} (versão física)`, valor: precoNumero(material.precoFisico) }} />
       ) : estadoPagamentoFisico === "a_confirmar" ? (
         <div className="text-center py-3">
           <p className="text-xs font-medium" style={{ color: palette.navy }}>Confirma no teu telemóvel</p>
@@ -4240,21 +4136,8 @@ function MaterialCard({ material, desbloqueado, onDesbloquear, desbloqueadoFisic
       </div>
 
       {estado === "fechado" && (
-        <div className="flex items-center gap-4 mt-3">
-          <button
-            onClick={() => setEstado("pagar")}
-            className="flex-1 rounded-lg py-2 text-xs font-medium tracking-wide transition active:scale-[0.98]"
-            style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
-          >
-            Comprar com MB WAY
-          </button>
-          <button
-            onClick={() => setEstado("codigo")}
-            className="text-xs font-medium underline underline-offset-2"
-            style={{ color: palette.navySoft }}
-          >
-            Já tenho um código
-          </button>
+        <div className="mt-3">
+          <BotaoCarrinho pequeno item={{ chave: `material-${material.id}`, tipo: "material", materialId: material.id, titulo: material.titulo, valor: precoNumero(material.preco) }} />
         </div>
       )}
 
@@ -5284,7 +5167,7 @@ function DashboardMentoraScreen({ onBack, onAbrirCliente }) {
     setAProcessar(null);
   };
 
-  const idsComunidadePaga = Object.entries(progressos).filter(([, p]) => p.comunidadeDesbloqueada).map(([id]) => id);
+  const idsComunidadePaga = Object.entries(progressos).filter(([, p]) => comunidadeEmDia(p)).map(([id]) => id);
   const idsComunidadeGratis = Array.from(new Set(entradasGratis.map((e) => e.user_id)));
   const idsComunidadeTodos = new Set([...idsComunidadePaga, ...idsComunidadeGratis]);
   const totalInscritosComunidade = idsComunidadeTodos.size;
@@ -5829,7 +5712,7 @@ function AcessoFormadoresScreen({ onBack }) {
   );
 }
 
-function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFormadores }) {
+function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFormadores, onVerArquivo }) {
   const totalInscricoes = Object.values(progresso.inscricoesWorkshops).filter(Boolean).length;
   const totalMateriais = Object.values(progresso.materiaisDesbloqueados).filter(Boolean).length;
   const totalConcluidos = Object.values(progresso.cursosConcluidos).filter(Boolean).length;
@@ -5879,6 +5762,22 @@ function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFor
           <ChevronRight size={18} style={{ color: palette.gold }} />
         </button>
       </div>
+
+      {progresso.papel === "dona" && (
+        <div className="px-6 mb-6">
+          <button
+            onClick={onVerArquivo}
+            className="w-full flex items-center justify-between rounded-2xl px-5 py-4"
+            style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}
+          >
+            <div className="text-left">
+              <p className="font-serif text-lg" style={{ color: palette.navy }}>Arquivo da Escola</p>
+              <p className="text-xs mt-0.5" style={{ color: palette.navySoft }}>Autorizações RGPD, fichas, inscrições, pagamentos e documentos</p>
+            </div>
+            <ChevronRight size={18} style={{ color: palette.navySoft }} />
+          </button>
+        </div>
+      )}
 
       {progresso.papel === "dona" && (
         <div className="px-6 mb-6">
@@ -6030,10 +5929,10 @@ function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFor
           className="flex items-center gap-3 rounded-xl px-4 py-3 mb-3"
           style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}
         >
-          <Users size={16} style={{ color: progresso.comunidadeDesbloqueada ? palette.gold : palette.navySoft }} />
+          <Users size={16} style={{ color: comunidadeEmDia(progresso) ? palette.gold : palette.navySoft }} />
           <p className="text-sm flex-1" style={{ color: palette.ink }}>Acesso à Comunidade</p>
-          <span className="text-xs font-medium" style={{ color: progresso.comunidadeDesbloqueada ? palette.gold : palette.navySoft }}>
-            {progresso.comunidadeDesbloqueada ? "Desbloqueado" : "Por desbloquear"}
+          <span className="text-xs font-medium" style={{ color: comunidadeEmDia(progresso) ? palette.gold : palette.navySoft }}>
+            {comunidadeEmDia(progresso) ? "Em dia" : "Por pagar"}
           </span>
         </div>
 
@@ -6285,6 +6184,973 @@ function BottomNav({ active, onChange }) {
 /* ---------------------------------------------------------
    App
 --------------------------------------------------------- */
+
+const MESES_PT = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+function materiaisIncluidosComunidade() {
+  const mes = comunidadeMeses.find((m) => m.mes === MESES_PT[new Date().getMonth()]);
+  const curso = mes && mes.formacaoId ? cursos.find((c) => c.id === mes.formacaoId) : null;
+  const ids = {};
+  if (!curso) return ids;
+  (curso.materiaisIds || []).forEach((id) => { ids[id] = true; });
+  (curso.aulas || []).forEach((a) => (a.materiaisIds || []).forEach((id) => { ids[id] = true; }));
+  return ids;
+}
+
+/* ---------- Carrinho e pagamentos (MB WAY, Multibanco, Payshop) ---------- */
+const CarrinhoContext = createContext({ itens: [], adicionar: () => {}, remover: () => {}, limpar: () => {}, abrir: () => {} });
+
+function precoNumero(texto) {
+  const v = parseFloat(String(texto || "").replace("€", "").replace(",", ".").trim());
+  return isNaN(v) ? null : v;
+}
+function precoTexto(v) {
+  return `${Number(v).toFixed(2).replace(".", ",")}€`;
+}
+const comunidadeEmDia = (p) => Boolean(p?.comunidadePagaAte && new Date(p.comunidadePagaAte) > new Date());
+
+async function criarPagamento(tipo, valor, descricao, telemovel, itens) {
+  const { data: sessaoAtual } = await supabase.auth.getSession();
+  const token = sessaoAtual?.session?.access_token;
+  if (!token) throw new Error("Sessão inválida — entra na app de novo.");
+  const resp = await fetch("https://hspekqrhttxeckghtryi.supabase.co/functions/v1/criar-pagamento", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+    body: JSON.stringify({ tipo, valor: Number(valor.toFixed(2)), descricao, telemovel: telemovel || "", itens }),
+  });
+  const data = await resp.json();
+  if (!resp.ok || data.erro) throw new Error(data.erro || "Não foi possível iniciar o pagamento.");
+  return data;
+}
+
+const visualizacoesRegistadas = new Set();
+async function registarVisualizacao(curso, indice, aula) {
+  const chave = `${curso.id}-${indice}`;
+  if (visualizacoesRegistadas.has(chave)) return;
+  visualizacoesRegistadas.add(chave);
+  try {
+    const { data } = await supabase.auth.getSession();
+    const uid = data?.session?.user?.id;
+    if (!uid) return;
+    await supabase.from("visualizacoes_aulas").insert({
+      user_id: uid, curso_id: curso.id, curso_titulo: curso.titulo, aula_numero: indice + 1, aula_titulo: aula.titulo,
+    });
+  } catch (e) {}
+}
+
+function BotaoCarrinho({ item, rotulo, pequeno }) {
+  const carrinho = useContext(CarrinhoContext);
+  if (item.valor === null || item.valor === undefined) return null;
+  const noCarrinho = carrinho.itens.some((i) => i.chave === item.chave);
+  const incluidoNoMes = (item.tipo === "material" || item.tipo === "material_fisico") && materiaisIncluidosComunidade()[item.materialId];
+  const dica = incluidoNoMes ? (
+    <p className="text-[11px] mt-1.5" style={{ color: palette.gold }}>Incluído na Comunidade deste mês — tudo por 7,49€/mês</p>
+  ) : null;
+  const classe = pequeno
+    ? "w-full flex items-center justify-between rounded-lg px-3 py-2 text-xs font-medium"
+    : "w-full rounded-full py-3 font-medium text-sm tracking-wide transition active:scale-[0.98]";
+  if (noCarrinho) {
+    return (
+      <>
+        <button onClick={carrinho.abrir} className={classe} style={{ backgroundColor: palette.creamSoft, color: palette.navy, border: `1px solid ${palette.gold}` }}>
+          <span>No carrinho ✓ — ver carrinho</span>
+        </button>
+        {dica}
+      </>
+    );
+  }
+  return (
+    <>
+    <button
+      onClick={() => carrinho.adicionar(item)}
+      className={classe}
+      style={pequeno ? { backgroundColor: palette.creamSoft, color: palette.navy, border: `1px solid ${palette.goldSoft}55` } : { backgroundColor: palette.navy, color: palette.creamSoft }}
+    >
+      {pequeno ? (
+        <>
+          <span>{rotulo || "Adicionar ao carrinho"}</span>
+          <span className="font-serif" style={{ color: palette.gold }}>{precoTexto(item.valor)}</span>
+        </>
+      ) : (
+        <span>{rotulo || "Adicionar ao carrinho"} · {precoTexto(item.valor)}</span>
+      )}
+    </button>
+    {dica}
+    </>
+  );
+}
+
+function CarrinhoScreen({ onBack, onPagamentoConfirmado }) {
+  const carrinho = useContext(CarrinhoContext);
+  const [metodo, setMetodo] = useState(null); // "mbway" | "mb" | "payshop"
+  const [telemovel, setTelemovel] = useState("");
+  const [codigoDesconto, setCodigoDesconto] = useState("");
+  const [estado, setEstado] = useState(null); // null | "a_enviar" | "a_confirmar" | "pago" | "referencia" | "falhou"
+  const [erro, setErro] = useState("");
+  const [referencia, setReferencia] = useState(null);
+  const [pendentes, setPendentes] = useState([]);
+
+  const carregarPendentes = async () => {
+    const { data: s } = await supabase.auth.getSession();
+    const uid = s?.session?.user?.id;
+    if (!uid) return;
+    const { data } = await supabase
+      .from("pagamentos")
+      .select("id, tipo, descricao, valor, entidade, referencia_pagamento, validade, criado_em")
+      .eq("user_id", uid)
+      .eq("estado", "pendente")
+      .in("tipo", ["mb", "payshop"])
+      .not("referencia_pagamento", "is", null)
+      .order("criado_em", { ascending: false })
+      .limit(10);
+    setPendentes(data || []);
+  };
+  useEffect(() => { carregarPendentes(); }, []);
+
+  const incluidosMes = materiaisIncluidosComunidade();
+  const itensIncluidos = carrinho.itens.filter((i) => (i.tipo === "material" || i.tipo === "material_fisico") && incluidosMes[i.materialId]);
+  const temComunidadeNoCarrinho = carrinho.itens.some((i) => i.tipo === "comunidade");
+  const trocarPelaComunidade = () => {
+    itensIncluidos.forEach((i) => carrinho.remover(i.chave));
+    carrinho.adicionar({ chave: "comunidade", tipo: "comunidade", titulo: "Comunidade 3S — mensalidade", valor: 7.49 });
+  };
+  const descontoValido = codigoDesconto.trim().toUpperCase() === "COMUNIDADE10";
+  const valorItem = (i) => (descontoValido && (i.tipo === "material") ? i.valor * 0.9 : i.valor);
+  const total = carrinho.itens.reduce((s, i) => s + valorItem(i), 0);
+  const descricao = carrinho.itens.map((i) => i.titulo).join(" + ");
+
+  const pagar = async () => {
+    if (!metodo || carrinho.itens.length === 0) return;
+    if (metodo === "mbway" && !telemovel.trim()) return;
+    setErro("");
+    setEstado("a_enviar");
+    const itens = carrinho.itens.map((i) => ({ tipo: i.tipo, materialId: i.materialId ?? null, titulo: i.titulo, valor: Number(valorItem(i).toFixed(2)) }));
+    try {
+      if (metodo === "mbway") guardarTelefone(telemovel.trim());
+      const r = await criarPagamento(metodo, total, descricao, telemovel.trim(), itens);
+      if (metodo === "mbway") {
+        setEstado("a_confirmar");
+        const pago = await aguardarConfirmacaoPagamento(r.pagamento_id, 240000);
+        if (pago) {
+          carrinho.limpar();
+          setEstado("pago");
+          onPagamentoConfirmado();
+        } else {
+          setEstado("falhou");
+          setErro("Não recebemos a confirmação a tempo. Se já aprovaste na app MB WAY, o acesso fica desbloqueado assim que o pagamento chegar.");
+        }
+      } else {
+        setReferencia({ metodo, entidade: r.entidade, referencia: r.referencia, valor: r.valor || total, validade: r.validade });
+        carrinho.limpar();
+        setEstado("referencia");
+        carregarPendentes();
+      }
+    } catch (e) {
+      setEstado("falhou");
+      setErro(e.message || "Não foi possível iniciar o pagamento.");
+    }
+  };
+
+  const cartaoMetodo = (id, titulo, desc) => (
+    <button
+      key={id}
+      onClick={() => setMetodo(id)}
+      className="w-full text-left rounded-2xl px-4 py-3"
+      style={metodo === id ? { backgroundColor: palette.navy, color: palette.creamSoft } : { backgroundColor: palette.card, color: palette.navy, border: `1px solid ${palette.goldSoft}55` }}
+    >
+      <p className="text-sm font-medium">{titulo}</p>
+      <p className="text-[11px] mt-0.5" style={{ color: metodo === id ? palette.goldSoft : palette.navySoft }}>{desc}</p>
+    </button>
+  );
+
+  const blocoReferencia = (r) => (
+    <div className="rounded-2xl px-5 py-4 space-y-1" style={{ backgroundColor: palette.card, border: `1px solid ${palette.gold}` }}>
+      <p className="text-[10px] tracking-[0.2em] font-medium" style={{ color: palette.gold }}>{r.metodo === "mb" || r.tipo === "mb" ? "MULTIBANCO" : "PAYSHOP"}</p>
+      {r.entidade && <p className="text-sm" style={{ color: palette.navy }}>Entidade: <b>{r.entidade}</b></p>}
+      <p className="text-sm" style={{ color: palette.navy }}>Referência: <b>{r.referencia || r.referencia_pagamento}</b></p>
+      <p className="text-sm" style={{ color: palette.navy }}>Valor: <b>{precoTexto(r.valor)}</b></p>
+      {r.validade && <p className="text-xs" style={{ color: palette.navySoft }}>Válida até: {r.validade}</p>}
+      {r.descricao && <p className="text-xs" style={{ color: palette.navySoft }}>{r.descricao}</p>}
+    </div>
+  );
+
+  return (
+    <div className="pb-28">
+      <SectionHeader eyebrow="LOJA" title="O teu carrinho" onBack={onBack} />
+      <div className="px-6 space-y-3">
+        {estado === "pago" && (
+          <div className="rounded-2xl px-5 py-5 text-center" style={{ backgroundColor: palette.navy }}>
+            <CheckCircle2 size={28} style={{ color: palette.gold, margin: "0 auto" }} />
+            <p className="font-serif text-xl mt-2" style={{ color: palette.creamSoft }}>Pagamento confirmado</p>
+            <p className="text-xs mt-1" style={{ color: palette.goldSoft }}>Já tens acesso ao que compraste. Obrigada!</p>
+          </div>
+        )}
+
+        {estado === "referencia" && referencia && (
+          <>
+            <p className="text-sm" style={{ color: palette.ink }}>Usa estes dados para pagar {referencia.metodo === "mb" ? "no multibanco ou no homebanking" : "num agente Payshop (CTT, papelarias, quiosques)"}. Assim que o pagamento chegar, o acesso fica desbloqueado automaticamente.</p>
+            {blocoReferencia(referencia)}
+          </>
+        )}
+
+        {carrinho.itens.length === 0 && estado !== "pago" && estado !== "referencia" && (
+          <p className="text-sm" style={{ color: palette.navySoft }}>O teu carrinho está vazio.</p>
+        )}
+
+        {carrinho.itens.length > 0 && (
+          <>
+            {carrinho.itens.map((i) => (
+              <div key={i.chave} className="rounded-2xl px-4 py-3 flex items-center gap-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm" style={{ color: palette.navy }}>{i.titulo}</p>
+                  <p className="text-xs" style={{ color: palette.gold }}>{precoTexto(valorItem(i))}{i.tipo === "comunidade" ? " · 1 mês" : i.tipo === "curso" ? " · curso completo" : ""}</p>
+                </div>
+                <button onClick={() => carrinho.remover(i.chave)} aria-label="Remover"><Trash2 size={16} style={{ color: palette.navySoft }} /></button>
+              </div>
+            ))}
+
+            {itensIncluidos.length > 0 && !temComunidadeNoCarrinho && (
+              <div className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.navy }}>
+                <p className="font-serif text-lg" style={{ color: palette.creamSoft }}>Fica tudo por 7,49€</p>
+                <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.goldSoft }}>
+                  {itensIncluidos.length === 1 ? "Este material está incluído" : "Estes materiais estão incluídos"} na Comunidade deste mês. Aderindo por 7,49€/mês, ficas com o caderno, o livro e o material didático do curso do mês, as aulas gravadas e 1 encontro online.
+                </p>
+                <button onClick={trocarPelaComunidade} className="w-full rounded-full py-2.5 mt-3 text-sm font-medium" style={{ backgroundColor: palette.gold, color: palette.navy }}>
+                  Trocar pela Comunidade · 7,49€
+                </button>
+              </div>
+            )}
+
+            <input
+              type="text"
+              value={codigoDesconto}
+              onChange={(e) => setCodigoDesconto(e.target.value)}
+              placeholder="Código de desconto (opcional)"
+              className="w-full rounded-xl px-4 py-2.5 text-sm outline-none"
+              style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
+            />
+            {descontoValido && <p className="text-xs" style={{ color: palette.gold }}>Desconto de 10% aplicado aos materiais.</p>}
+
+            <div className="flex items-center justify-between px-1 pt-1">
+              <p className="text-sm font-medium" style={{ color: palette.navy }}>Total</p>
+              <p className="font-serif text-2xl" style={{ color: palette.navy }}>{precoTexto(total)}</p>
+            </div>
+
+            <p className="text-[11px] tracking-[0.2em] font-medium pt-2" style={{ color: palette.gold }}>ESCOLHE COMO QUERES PAGAR</p>
+            {cartaoMetodo("mbway", "MB WAY", "Aprovas na app MB WAY e o acesso fica logo desbloqueado.")}
+            {cartaoMetodo("mb", "Referência Multibanco", "Pagas no multibanco ou no homebanking.")}
+            {cartaoMetodo("payshop", "Payshop", "Pagas em dinheiro num agente Payshop (CTT, papelarias).")}
+
+            {metodo === "mbway" && estado !== "a_confirmar" && (
+              <input
+                type="tel"
+                value={telemovel}
+                onChange={(e) => setTelemovel(e.target.value)}
+                placeholder="Número de telemóvel (MB WAY)"
+                className="w-full rounded-xl px-4 py-2.5 text-sm outline-none"
+                style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
+              />
+            )}
+
+            {estado === "a_confirmar" ? (
+              <div className="text-center py-4">
+                <p className="text-sm font-medium" style={{ color: palette.navy }}>Confirma no teu telemóvel</p>
+                <p className="text-xs" style={{ color: palette.navySoft }}>Abre a app MB WAY e aprova o pagamento de {precoTexto(total)}.</p>
+              </div>
+            ) : (
+              <button
+                onClick={pagar}
+                disabled={!metodo || estado === "a_enviar" || (metodo === "mbway" && !telemovel.trim())}
+                className="w-full rounded-full py-3.5 font-medium text-sm tracking-wide disabled:opacity-50"
+                style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
+              >
+                {estado === "a_enviar" ? "A preparar pagamento..." : metodo === "mbway" ? `Pagar ${precoTexto(total)}` : metodo ? `Gerar referência de ${precoTexto(total)}` : "Escolhe a forma de pagamento"}
+              </button>
+            )}
+          </>
+        )}
+
+        {erro && <p className="text-xs text-center" style={{ color: "#B23A3A" }}>{erro}</p>}
+
+        {pendentes.length > 0 && estado !== "referencia" && (
+          <div className="pt-4 space-y-2">
+            <p className="text-[11px] tracking-[0.2em] font-medium" style={{ color: palette.gold }}>REFERÊNCIAS POR PAGAR</p>
+            {pendentes.map((p) => <div key={p.id}>{blocoReferencia(p)}</div>)}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function FichaCursoScreen({ curso, session, onBack, onGuardada }) {
+  const [nome, setNome] = useState("");
+  const [telefone, setTelefone] = useState("");
+  const [aGuardar, setAGuardar] = useState(false);
+  const [erro, setErro] = useState("");
+  const guardar = async () => {
+    if (!nome.trim() || !telefone.trim()) return;
+    setAGuardar(true);
+    setErro("");
+    const { error } = await supabase.from("clientes").upsert(
+      { user_id: session.user.id, email: session.user.email, nome: nome.trim(), telefone: telefone.trim(), atualizado_em: new Date().toISOString() },
+      { onConflict: "user_id" }
+    );
+    setAGuardar(false);
+    if (error) { setErro("Não foi possível guardar. Tenta novamente."); return; }
+    onGuardada({ nome: nome.trim(), telefone: telefone.trim() });
+  };
+  const campo = (valor, setValor, placeholder, tipo = "text") => (
+    <input
+      type={tipo}
+      value={valor}
+      onChange={(e) => setValor(e.target.value)}
+      placeholder={placeholder}
+      className="w-full rounded-xl px-4 py-3 text-sm outline-none"
+      style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
+    />
+  );
+  return (
+    <div className="pb-28">
+      <SectionHeader eyebrow="CURSO GRATUITO" title={curso.titulo} onBack={onBack} />
+      <div className="px-6 space-y-3">
+        <p className="text-sm leading-relaxed" style={{ color: palette.ink }}>Este curso é gratuito. Para começares, preenche a tua ficha — só precisamos disto uma vez.</p>
+        {campo(nome, setNome, "Nome completo")}
+        {campo(telefone, setTelefone, "Telemóvel", "tel")}
+        {erro && <p className="text-xs" style={{ color: "#B23A3A" }}>{erro}</p>}
+        <button
+          onClick={guardar}
+          disabled={!nome.trim() || !telefone.trim() || aGuardar}
+          className="w-full rounded-full py-3.5 font-medium text-sm disabled:opacity-50"
+          style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
+        >
+          {aGuardar ? "A guardar…" : "Começar o curso"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Inscrição pública em eventos (sem conta) ---------- */
+const EVENTOS_PUBLICOS = {
+  encontro: {
+    nome: "Encontro Online — O que é liderar, afinal? (2 out, 21h)",
+    titulo: "O que é liderar, afinal?",
+    subtitulo: "Encontro online gratuito",
+    data: "Quinta-feira, 2 de outubro · 21h00",
+    descricao: "Um encontro para olhar para a liderança por dentro: o que é, o que não é e por onde começar. Online e gratuito.",
+  },
+};
+EVENTOS_PUBLICOS.imersao = EVENTOS_PUBLICOS.encontro;
+const TEXTO_CONSENTIMENTO_EVENTO = "Aceito que a Escola 3S guarde os meus dados (nome, email e telemóvel) para gerir a minha inscrição neste evento e me enviar o link e informações sobre ele.";
+
+function InscricaoEventoPublica({ eventoId }) {
+  const evento = EVENTOS_PUBLICOS[eventoId];
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
+  const [telefone, setTelefone] = useState("");
+  const [localidade, setLocalidade] = useState("");
+  const [aceitou, setAceitou] = useState(false);
+  const [estado, setEstado] = useState(null); // null | "a_enviar" | "ok"
+  const [erro, setErro] = useState("");
+
+  const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  const pode = nome.trim() && emailValido && telefone.trim() && aceitou;
+
+  const enviar = async () => {
+    if (!pode) return;
+    setEstado("a_enviar");
+    setErro("");
+    const { error } = await supabase.from("inscricoes_evento").insert({
+      evento: evento.nome,
+      nome: nome.trim(),
+      email: email.trim().toLowerCase(),
+      telefone: telefone.trim(),
+      localidade: localidade.trim() || null,
+      consentimento_texto: TEXTO_CONSENTIMENTO_EVENTO,
+    });
+    if (error) {
+      setEstado(null);
+      setErro("Não foi possível fazer a inscrição. Tenta novamente.");
+      return;
+    }
+    setEstado("ok");
+  };
+
+  const campo = (valor, setValor, placeholder, tipo = "text") => (
+    <input
+      type={tipo}
+      value={valor}
+      onChange={(e) => setValor(e.target.value)}
+      placeholder={placeholder}
+      className="w-full rounded-xl px-4 py-3 text-sm outline-none"
+      style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
+    />
+  );
+
+  return (
+    <>
+      <style>{FONTS}</style>
+      <style>{`.font-serif { font-family: 'Cormorant Garamond', serif; }`}</style>
+      <div className="min-h-screen w-full flex justify-center" style={{ backgroundColor: palette.cream, fontFamily: "Inter, sans-serif" }}>
+        <div className="w-full max-w-md px-6 pt-10 pb-16" style={{ backgroundColor: palette.creamSoft }}>
+          {!evento ? (
+            <p className="text-sm pt-10 text-center" style={{ color: palette.navySoft }}>Este evento já não está disponível.</p>
+          ) : (
+            <>
+              <div className="flex justify-center mb-6"><Brand size="lg" /></div>
+              <div className="rounded-2xl px-5 py-6 text-center mb-6" style={{ backgroundColor: palette.navy }}>
+                <p className="text-[11px] tracking-[0.25em] font-medium" style={{ color: palette.gold }}>{evento.subtitulo.toUpperCase()}</p>
+                <h1 className="font-serif text-3xl leading-tight mt-2" style={{ color: palette.creamSoft }}>{evento.titulo}</h1>
+                <p className="text-sm mt-3" style={{ color: palette.goldSoft }}>{evento.data}</p>
+              </div>
+              {estado === "ok" ? (
+                <div className="rounded-2xl px-5 py-6 text-center" style={{ backgroundColor: palette.card, border: `1px solid ${palette.gold}` }}>
+                  <CheckCircle2 size={30} style={{ color: palette.gold, margin: "0 auto" }} />
+                  <p className="font-serif text-2xl mt-2" style={{ color: palette.navy }}>Inscrição feita!</p>
+                  <p className="text-sm mt-2 leading-relaxed" style={{ color: palette.ink }}>Obrigada, {nome.trim().split(" ")[0]}. Vais receber o link de acesso antes do evento, no email {email.trim()}.</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <p className="text-sm leading-relaxed mb-2" style={{ color: palette.ink }}>{evento.descricao}</p>
+                  {campo(nome, setNome, "Nome completo")}
+                  {campo(email, setEmail, "Email", "email")}
+                  {campo(telefone, setTelefone, "Telemóvel", "tel")}
+                  {campo(localidade, setLocalidade, "Localidade (opcional)")}
+                  <label className="flex items-start gap-2.5 px-1 pt-1">
+                    <input type="checkbox" checked={aceitou} onChange={(e) => setAceitou(e.target.checked)} className="mt-0.5 shrink-0" />
+                    <span className="text-xs leading-relaxed" style={{ color: palette.navySoft }}>{TEXTO_CONSENTIMENTO_EVENTO}</span>
+                  </label>
+                  {erro && <p className="text-xs" style={{ color: "#B23A3A" }}>{erro}</p>}
+                  <button
+                    onClick={enviar}
+                    disabled={!pode || estado === "a_enviar"}
+                    className="w-full rounded-full py-3.5 font-medium text-sm disabled:opacity-50"
+                    style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
+                  >
+                    {estado === "a_enviar" ? "A inscrever…" : "Quero inscrever-me"}
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
+
+/* ---------- Montra: cursos à venda, livros ---------- */
+const PRECO_CURSO = 14.9;
+const LIVROS_AUTORA_IDS = [12, 13, 14, 15, 16];
+
+function materiaisDoCurso(curso) {
+  const ids = new Set(curso.materiaisIds || []);
+  (curso.aulas || []).forEach((a) => (a.materiaisIds || []).forEach((id) => ids.add(id)));
+  return [...ids].map((id) => materiais.find((m) => m.id === id)).filter(Boolean);
+}
+
+function incluiCurso(curso) {
+  const mats = materiaisDoCurso(curso);
+  const lista = [];
+  const nAulas = (curso.aulas || []).length;
+  if (nAulas) lista.push(`${nAulas} aula${nAulas === 1 ? "" : "s"}${(curso.aulas || []).some((a) => a.videoUrl) ? " em vídeo" : ""}`);
+  if (mats.some((m) => m.formato === "Caderno")) lista.push("Caderno de trabalho");
+  if (mats.some((m) => m.formato === "Livro")) lista.push("Livro do aluno");
+  if (mats.some((m) => m.formato === "Ficha")) lista.push("Material didático");
+  lista.push("Certificado de conclusão");
+  return lista;
+}
+
+function CatalogoCursosScreen({ onBack, temAcesso, onAbrirCurso, onAreaAluno }) {
+  const escolasCatalogo = [
+    { id: "ser", nome: "Escola do Ser", frase: "Autoconhecimento, emoções e crescimento pessoal" },
+    { id: "lideranca", nome: "Escola de Liderança", frase: "Liderar pessoas, equipas e conversas" },
+  ];
+  return (
+    <div className="pb-28">
+      <SectionHeader eyebrow="ALUNOS" title="Cursos" onBack={onBack} />
+      <div className="px-6">
+        <button
+          onClick={onAreaAluno}
+          className="w-full flex items-center justify-between rounded-2xl px-5 py-4"
+          style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}
+        >
+          <div className="text-left">
+            <p className="font-serif text-lg" style={{ color: palette.navy }}>A minha área de aluno</p>
+            <p className="text-xs mt-0.5" style={{ color: palette.navySoft }}>Progresso, certificados e materiais</p>
+          </div>
+          <ChevronRight size={18} style={{ color: palette.navySoft }} />
+        </button>
+      </div>
+      {escolasCatalogo.map((escola) => {
+        const lista = cursos.filter((c) => c.escolaId === escola.id);
+        if (lista.length === 0) return null;
+        return (
+          <div key={escola.id} className="px-6 mt-8">
+            <div className="rounded-2xl px-5 py-4 mb-3" style={{ backgroundColor: palette.navy }}>
+              <p className="font-serif text-xl" style={{ color: palette.creamSoft }}>{escola.nome}</p>
+              <p className="text-xs mt-0.5" style={{ color: palette.goldSoft }}>{escola.frase}</p>
+            </div>
+            <div className="space-y-3">
+              {lista.map((c) => {
+                const acesso = temAcesso(c);
+                return (
+                  <button
+                    key={c.id}
+                    onClick={() => onAbrirCurso(c)}
+                    className="w-full text-left rounded-2xl px-4 py-4 transition active:scale-[0.99]"
+                    style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}
+                  >
+                    <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{c.titulo}</p>
+                    {c.promessa && <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{c.promessa}</p>}
+                    <p className="text-[11px] mt-2 leading-relaxed" style={{ color: palette.navySoft }}>{incluiCurso(c).join(" · ")}</p>
+                    <div className="flex items-center justify-between mt-3">
+                      {acesso ? (
+                        <span className="text-xs font-medium flex items-center gap-1" style={{ color: palette.gold }}><CheckCircle2 size={14} /> Tens acesso — entrar</span>
+                      ) : c.gratuito ? (
+                        <span className="text-xs font-medium" style={{ color: palette.gold }}>Gratuito</span>
+                      ) : (
+                        <span className="font-serif text-xl" style={{ color: palette.gold }}>{precoTexto(PRECO_CURSO)}</span>
+                      )}
+                      <span className="text-xs flex items-center gap-1" style={{ color: palette.navySoft }}>{acesso ? "" : "Ver o curso"} <ChevronRight size={14} /></span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function CursoVendaScreen({ curso, onBack }) {
+  const escolaNome = curso.escolaId === "lideranca" ? "ESCOLA DE LIDERANÇA" : curso.escolaId === "ser" ? "ESCOLA DO SER" : "COMUNIDADE 3S";
+  const inclui = incluiCurso(curso);
+  const ehComunidade = curso.escolaId === "comunidade";
+  return (
+    <div className="pb-28">
+      <SectionHeader eyebrow={escolaNome} title={curso.titulo} onBack={onBack} />
+      <div className="px-6 space-y-5">
+        {curso.promessa && <p className="text-sm leading-relaxed" style={{ color: palette.ink }}>{curso.promessa}</p>}
+        {curso.pergunta && <p className="font-serif text-lg italic leading-snug" style={{ color: palette.navy }}>“{curso.pergunta}”</p>}
+
+        <div>
+          <p className="text-[11px] tracking-[0.2em] font-medium mb-2" style={{ color: palette.gold }}>O QUE VAIS APRENDER</p>
+          <div className="space-y-2">
+            {(curso.aulas || []).map((a, i) => (
+              <div key={i} className="flex gap-3 rounded-xl px-4 py-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
+                <Lock size={14} style={{ color: palette.goldSoft, marginTop: 3, flexShrink: 0 }} />
+                <div>
+                  <p className="text-sm" style={{ color: palette.navy }}>Aula {i + 1} — {a.titulo}</p>
+                  {a.descricao && <p className="text-xs mt-0.5 leading-relaxed" style={{ color: palette.navySoft }}>{a.descricao}</p>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-2xl px-5 py-5" style={{ backgroundColor: palette.navy }}>
+          <p className="text-[11px] tracking-[0.2em] font-medium mb-2" style={{ color: palette.gold }}>{ehComunidade ? "INCLUÍDO NA COMUNIDADE" : "O CURSO INCLUI"}</p>
+          <div className="space-y-1.5">
+            {inclui.map((t) => <p key={t} className="text-sm" style={{ color: palette.creamSoft }}>✓ {t}</p>)}
+          </div>
+          <p className="font-serif text-3xl mt-4" style={{ color: palette.gold }}>{ehComunidade ? "7,49€ / mês" : precoTexto(PRECO_CURSO)}</p>
+        </div>
+
+        {ehComunidade ? (
+          <BotaoCarrinho rotulo="Aderir à Comunidade" item={{ chave: "comunidade", tipo: "comunidade", titulo: "Comunidade 3S — mensalidade", valor: 7.49 }} />
+        ) : (
+          <BotaoCarrinho rotulo="Comprar o curso" item={{ chave: `curso-${curso.id}`, tipo: "curso", cursoId: curso.id, titulo: `Curso — ${curso.titulo}`, valor: PRECO_CURSO }} />
+        )}
+        <p className="text-[11px] text-center" style={{ color: palette.navySoft }}>Pagas por MB WAY, Multibanco ou Payshop. Assim que o pagamento é confirmado, o curso abre automaticamente.</p>
+      </div>
+    </div>
+  );
+}
+
+function LivrosScreen({ onBack, materiaisDesbloqueados }) {
+  const livros = LIVROS_AUTORA_IDS.map((id) => materiais.find((m) => m.id === id)).filter(Boolean);
+  return (
+    <div className="pb-28">
+      <SectionHeader eyebrow="CONCEIÇÃO ALVES" title="Os meus livros" onBack={onBack} />
+      <div className="px-6 space-y-3">
+        {livros.map((m) => (
+          <MaterialCard
+            key={m.id}
+            material={m}
+            desbloqueado={Boolean(materiaisDesbloqueados[m.id])}
+            onDesbloquear={() => {}}
+            desbloqueadoFisico={Boolean(materiaisDesbloqueados[m.id + "-fisico"])}
+            onDesbloquearFisico={() => {}}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Arquivo da Escola (só a dona) ---------- */
+const TEXTO_CONSENTIMENTO_GERAL = "Aceito que a Escola 3S guarde e utilize os meus dados pessoais (email e, sempre que os partilhar, nome, telemóvel e outra informação fornecida nos formulários da app) para gerir a minha conta e o meu percurso na escola.";
+
+function ConsentimentoGate({ session, onAceite }) {
+  const [aceitou, setAceitou] = useState(false);
+  const [aGuardar, setAGuardar] = useState(false);
+  const [erro, setErro] = useState("");
+  const guardar = async () => {
+    setAGuardar(true);
+    setErro("");
+    const { error } = await supabase
+      .from("consentimentos_dados")
+      .insert({ user_id: session.user.id, email: session.user.email, texto_aceite: TEXTO_CONSENTIMENTO_GERAL });
+    setAGuardar(false);
+    if (error) { setErro("Não foi possível guardar. Tenta novamente."); return; }
+    onAceite();
+  };
+  return (
+    <div className="min-h-screen w-full flex justify-center" style={{ backgroundColor: palette.cream, fontFamily: "Inter, sans-serif" }}>
+      <div className="w-full max-w-md px-6 pt-16" style={{ backgroundColor: palette.creamSoft }}>
+        <p className="text-[11px] tracking-[0.25em] font-medium mb-2" style={{ color: palette.gold }}>PROTEÇÃO DE DADOS</p>
+        <h1 className="font-serif text-2xl leading-tight mb-4" style={{ color: palette.navy }}>Antes de continuares</h1>
+        <p className="text-sm leading-relaxed mb-5" style={{ color: palette.ink }}>
+          Para cumprir o Regulamento Geral de Proteção de Dados (RGPD), precisamos da tua autorização para guardar os teus dados na Escola 3S.
+        </p>
+        <label className="flex items-start gap-2.5 rounded-2xl px-4 py-4 mb-5" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
+          <input type="checkbox" checked={aceitou} onChange={(e) => setAceitou(e.target.checked)} className="mt-0.5 shrink-0" />
+          <span className="text-xs leading-relaxed" style={{ color: palette.navySoft }}>{TEXTO_CONSENTIMENTO_GERAL}</span>
+        </label>
+        {erro && <p className="text-xs mb-3" style={{ color: "#A33" }}>{erro}</p>}
+        <button
+          onClick={guardar}
+          disabled={!aceitou || aGuardar}
+          className="w-full rounded-full py-3.5 font-medium text-sm disabled:opacity-60"
+          style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
+        >
+          {aGuardar ? "A guardar…" : "Aceito e continuar"}
+        </button>
+        <button onClick={() => supabase.auth.signOut()} className="w-full text-xs mt-4 py-2" style={{ color: palette.navySoft }}>
+          Não aceito — sair
+        </button>
+      </div>
+    </div>
+  );
+}
+
+const ARQUIVO_PASTAS = [
+  { id: "autorizacoes", nome: "Autorizações (RGPD)" },
+  { id: "fichas", nome: "Fichas de clientes" },
+  { id: "inscricoes", nome: "Inscrições" },
+  { id: "outros", nome: "Outros" },
+];
+
+function arquivoData(d) {
+  if (!d) return "—";
+  return new Date(d).toLocaleDateString("pt-PT", { day: "2-digit", month: "short", year: "numeric" });
+}
+
+function exportarCSV(nomeFicheiro, cabecalho, linhas) {
+  const esc = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+  const texto = "\uFEFF" + [cabecalho, ...linhas].map((l) => l.map(esc).join(";")).join("\n");
+  const blob = new Blob([texto], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = nomeFicheiro;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+
+function ArquivoCartao({ titulo, linhas }) {
+  return (
+    <div className="rounded-2xl px-4 py-3.5" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
+      <p className="font-serif text-base leading-snug" style={{ color: palette.navy }}>{titulo}</p>
+      {linhas.filter(Boolean).map((l, i) => (
+        <p key={i} className="text-xs leading-relaxed mt-0.5 break-words" style={{ color: palette.navySoft }}>{l}</p>
+      ))}
+    </div>
+  );
+}
+
+function ArquivoEscolaScreen({ onBack }) {
+  const [tab, setTab] = useState("autorizacoes");
+  const [carregando, setCarregando] = useState(true);
+  const [consentimentos, setConsentimentos] = useState([]);
+  const [clientes, setClientes] = useState([]);
+  const [inscricoesEvento, setInscricoesEvento] = useState([]);
+  const [progressos, setProgressos] = useState([]);
+  const [pagamentos, setPagamentos] = useState([]);
+  const [visualizacoes, setVisualizacoes] = useState([]);
+  const [pasta, setPasta] = useState("autorizacoes");
+  const [ficheiros, setFicheiros] = useState([]);
+  const [aCarregarFicheiro, setACarregarFicheiro] = useState(false);
+  const [mensagem, setMensagem] = useState("");
+  const [pesquisa, setPesquisa] = useState("");
+
+  useEffect(() => {
+    (async () => {
+      setCarregando(true);
+      const [rC, rCl, rI, rP, rPg, rV] = await Promise.all([
+        supabase.from("consentimentos_dados").select("*").order("aceite_em", { ascending: false }),
+        supabase.from("clientes").select("*").order("criado_em", { ascending: false }),
+        supabase.from("inscricoes_evento").select("*").order("criado_em", { ascending: false }),
+        supabase.from("user_progress").select("user_id, data"),
+        supabase.from("pagamentos").select("*").order("criado_em", { ascending: false }),
+        supabase.from("visualizacoes_aulas").select("*").order("visto_em", { ascending: false }),
+      ]);
+      setVisualizacoes(rV.data || []);
+      setConsentimentos(rC.data || []);
+      setClientes(rCl.data || []);
+      setInscricoesEvento(rI.data || []);
+      setProgressos(rP.data || []);
+      setPagamentos(rPg.data || []);
+      setCarregando(false);
+    })();
+  }, []);
+
+  const carregarFicheiros = async (p) => {
+    const { data } = await supabase.storage.from("arquivo").list(p, { limit: 200, sortBy: { column: "created_at", order: "desc" } });
+    setFicheiros((data || []).filter((f) => f.name && f.name !== ".emptyFolderPlaceholder"));
+  };
+
+  useEffect(() => {
+    if (tab === "documentos") carregarFicheiros(pasta);
+  }, [tab, pasta]);
+
+  const pessoa = (userId) => {
+    const c = clientes.find((x) => x.user_id === userId);
+    return { nome: c?.nome || "", email: c?.email || "", telefone: c?.telefone || "" };
+  };
+
+  const filtro = (texto) => !pesquisa.trim() || String(texto).toLowerCase().includes(pesquisa.trim().toLowerCase());
+
+  const carregarFicheiro = async (e) => {
+    const f = e.target.files && e.target.files[0];
+    e.target.value = "";
+    if (!f) return;
+    if (f.size > 20 * 1024 * 1024) { setMensagem("O ficheiro tem mais de 20 MB."); return; }
+    setACarregarFicheiro(true);
+    setMensagem("");
+    const nomeSeguro = f.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9._-]/g, "_");
+    const { error } = await supabase.storage.from("arquivo").upload(`${pasta}/${Date.now()}-${nomeSeguro}`, f, { upsert: false });
+    setACarregarFicheiro(false);
+    if (error) { setMensagem("Não foi possível carregar o ficheiro."); return; }
+    setMensagem("Ficheiro guardado.");
+    carregarFicheiros(pasta);
+  };
+
+  const abrirFicheiro = async (nome) => {
+    const { data } = await supabase.storage.from("arquivo").createSignedUrl(`${pasta}/${nome}`, 300);
+    if (data?.signedUrl) window.open(data.signedUrl, "_blank");
+  };
+
+  const apagarFicheiro = async (nome) => {
+    if (!window.confirm("Apagar este documento? Não é possível recuperar.")) return;
+    await supabase.storage.from("arquivo").remove([`${pasta}/${nome}`]);
+    carregarFicheiros(pasta);
+  };
+
+  // Inscrições em workshops e lives (guardadas no progresso de cada pessoa)
+  const inscricoesWorkshop = [];
+  workshops.forEach((w) => {
+    progressos.forEach((p) => {
+      if (p.data?.inscricoesWorkshops?.[w.id]) {
+        const pe = pessoa(p.user_id);
+        inscricoesWorkshop.push({ acao: w.titulo, data: `${w.data} ${w.hora || ""}`.trim(), ...pe });
+      }
+    });
+  });
+  const inscricoesTodas = [
+    ...inscricoesEvento.map((i) => ({ acao: i.evento || "Evento", data: arquivoData(i.criado_em), nome: i.nome, email: i.email, telefone: i.telefone, localidade: i.localidade })),
+    ...inscricoesWorkshop,
+  ];
+
+  const totalPago = pagamentos.filter((p) => p.estado === "pago").reduce((s, p) => s + Number(p.valor || 0), 0);
+
+  const separadores = [
+    { id: "autorizacoes", nome: "Autorizações", n: consentimentos.length },
+    { id: "fichas", nome: "Fichas", n: clientes.length },
+    { id: "inscricoes", nome: "Inscrições", n: inscricoesTodas.length },
+    { id: "pagamentos", nome: "Pagamentos", n: pagamentos.length },
+    { id: "visualizacoes", nome: "Quem viu", n: new Set(visualizacoes.map((v) => v.user_id)).size },
+    { id: "documentos", nome: "Documentos", n: null },
+  ];
+
+  const botaoExportar = (onClick) => (
+    <button onClick={onClick} className="flex items-center gap-1.5 text-xs font-medium rounded-full px-3.5 py-2" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>
+      <Download size={14} /> Exportar para Excel
+    </button>
+  );
+
+  return (
+    <div className="pb-28">
+      <SectionHeader eyebrow="SÓ PARA A DONA" title="Arquivo da Escola" onBack={onBack} />
+
+      <div className="px-6 mb-4 flex gap-2 overflow-x-auto pb-1">
+        {separadores.map((s) => (
+          <button
+            key={s.id}
+            onClick={() => { setTab(s.id); setPesquisa(""); }}
+            className="shrink-0 rounded-full px-3.5 py-2 text-xs font-medium"
+            style={tab === s.id ? { backgroundColor: palette.navy, color: palette.creamSoft } : { backgroundColor: palette.card, color: palette.navySoft, border: `1px solid ${palette.goldSoft}55` }}
+          >
+            {s.nome}{s.n !== null ? ` (${s.n})` : ""}
+          </button>
+        ))}
+      </div>
+
+      {tab !== "documentos" && (
+        <div className="px-6 mb-4">
+          <input
+            type="text"
+            value={pesquisa}
+            onChange={(e) => setPesquisa(e.target.value)}
+            placeholder="Pesquisar por nome, email ou telefone"
+            className="w-full rounded-xl px-4 py-2.5 text-sm outline-none"
+            style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
+          />
+        </div>
+      )}
+
+      <div className="px-6 space-y-3">
+        {carregando && tab !== "documentos" && <p className="text-sm" style={{ color: palette.navySoft }}>A carregar…</p>}
+
+        {!carregando && tab === "autorizacoes" && (
+          <>
+            <div className="flex items-center justify-between">
+              <p className="text-xs" style={{ color: palette.navySoft }}>Autorizações RGPD aceites na app</p>
+              {botaoExportar(() => exportarCSV("autorizacoes-rgpd.csv", ["Data", "Nome", "Email", "Telefone", "Texto aceite"],
+                consentimentos.map((c) => [arquivoData(c.aceite_em), c.nome, c.email, c.telefone, c.texto_aceite])))}
+            </div>
+            {consentimentos.length === 0 && <p className="text-sm" style={{ color: palette.navySoft }}>Ainda não há autorizações registadas.</p>}
+            {consentimentos.filter((c) => filtro(`${c.nome} ${c.email} ${c.telefone}`)).map((c) => (
+              <ArquivoCartao key={c.id} titulo={c.nome || c.email} linhas={[c.nome ? c.email : null, c.telefone, `Aceite em ${arquivoData(c.aceite_em)}`, `«${c.texto_aceite}»`]} />
+            ))}
+          </>
+        )}
+
+        {!carregando && tab === "fichas" && (
+          <>
+            <div className="flex items-center justify-between">
+              <p className="text-xs" style={{ color: palette.navySoft }}>Todas as pessoas registadas</p>
+              {botaoExportar(() => exportarCSV("fichas-clientes.csv", ["Nome", "Email", "Telefone", "Registo"],
+                clientes.map((c) => [c.nome, c.email, c.telefone, arquivoData(c.criado_em)])))}
+            </div>
+            {clientes.filter((c) => filtro(`${c.nome} ${c.email} ${c.telefone}`)).map((c) => (
+              <ArquivoCartao key={c.user_id} titulo={c.nome || c.email} linhas={[c.nome ? c.email : null, c.telefone ? `Tel. ${c.telefone}` : "Sem telefone", `Registo: ${arquivoData(c.criado_em)}`]} />
+            ))}
+          </>
+        )}
+
+        {!carregando && tab === "inscricoes" && (
+          <>
+            <div className="flex items-center justify-between">
+              <p className="text-xs" style={{ color: palette.navySoft }}>Ações, formações, workshops e lives</p>
+              {botaoExportar(() => exportarCSV("inscricoes.csv", ["Ação", "Data", "Nome", "Email", "Telefone", "Localidade"],
+                inscricoesTodas.map((i) => [i.acao, i.data, i.nome, i.email, i.telefone, i.localidade])))}
+            </div>
+            {inscricoesTodas.length === 0 && <p className="text-sm" style={{ color: palette.navySoft }}>Ainda não há inscrições.</p>}
+            {inscricoesTodas.filter((i) => filtro(`${i.acao} ${i.nome} ${i.email} ${i.telefone}`)).map((i, k) => (
+              <ArquivoCartao key={k} titulo={i.nome || i.email || "Pessoa sem nome"} linhas={[i.acao, i.data, i.nome ? i.email : null, i.telefone, i.localidade]} />
+            ))}
+          </>
+        )}
+
+        {!carregando && tab === "pagamentos" && (
+          <>
+            <div className="rounded-2xl px-5 py-4" style={{ backgroundColor: palette.navy }}>
+              <p className="text-[10px] tracking-[0.2em]" style={{ color: palette.goldSoft }}>TOTAL RECEBIDO</p>
+              <p className="font-serif text-3xl" style={{ color: palette.creamSoft }}>{totalPago.toFixed(2).replace(".", ",")} €</p>
+            </div>
+            <div className="flex items-center justify-between">
+              <p className="text-xs" style={{ color: palette.navySoft }}>Quem pagou e o quê</p>
+              {botaoExportar(() => exportarCSV("pagamentos.csv", ["Data", "Nome", "Email", "O que pagou", "Método", "Valor (€)", "Estado"],
+                pagamentos.map((p) => { const pe = pessoa(p.user_id); return [arquivoData(p.pago_em || p.criado_em), pe.nome, pe.email, p.descricao, p.tipo, String(p.valor).replace(".", ","), p.estado]; })))}
+            </div>
+            {pagamentos.length === 0 && <p className="text-sm" style={{ color: palette.navySoft }}>Ainda não há pagamentos.</p>}
+            {pagamentos.filter((p) => { const pe = pessoa(p.user_id); return filtro(`${pe.nome} ${pe.email} ${p.descricao}`); }).map((p) => {
+              const pe = pessoa(p.user_id);
+              return (
+                <ArquivoCartao
+                  key={p.id}
+                  titulo={`${Number(p.valor).toFixed(2).replace(".", ",")} € · ${p.estado === "pago" ? "Pago" : "Pendente"}`}
+                  linhas={[p.descricao, pe.nome || pe.email || "Pessoa desconhecida", pe.nome ? pe.email : null, `${p.tipo === "mbway" ? "MB WAY" : p.tipo || ""} · ${arquivoData(p.pago_em || p.criado_em)}`]}
+                />
+              );
+            })}
+          </>
+        )}
+
+
+        {!carregando && tab === "visualizacoes" && (
+          <>
+            <div className="flex items-center justify-between">
+              <p className="text-xs" style={{ color: palette.navySoft }}>Quem abriu cada aula dos cursos</p>
+              {botaoExportar(() => exportarCSV("quem-viu-aulas.csv", ["Data", "Nome", "Email", "Telefone", "Curso", "Aula"],
+                visualizacoes.map((v) => { const pe = pessoa(v.user_id); return [arquivoData(v.visto_em), pe.nome, pe.email, pe.telefone, v.curso_titulo, `Aula ${v.aula_numero} — ${v.aula_titulo}`]; })))}
+            </div>
+            {visualizacoes.length === 0 && <p className="text-sm" style={{ color: palette.navySoft }}>Ainda ninguém abriu aulas.</p>}
+            {Object.values(visualizacoes.reduce((acc, v) => {
+              const k = `${v.user_id}-${v.curso_id}`;
+              if (!acc[k]) acc[k] = { user_id: v.user_id, curso: v.curso_titulo, aulas: {}, ultima: v.visto_em };
+              acc[k].aulas[v.aula_numero] = v.aula_titulo;
+              if (v.visto_em > acc[k].ultima) acc[k].ultima = v.visto_em;
+              return acc;
+            }, {})).filter((g) => { const pe = pessoa(g.user_id); return filtro(`${pe.nome} ${pe.email} ${pe.telefone} ${g.curso}`); }).map((g) => {
+              const pe = pessoa(g.user_id);
+              const nums = Object.keys(g.aulas).map(Number).sort((a, b) => a - b);
+              return (
+                <ArquivoCartao
+                  key={`${g.user_id}-${g.curso}`}
+                  titulo={pe.nome || pe.email || "Pessoa sem ficha"}
+                  linhas={[pe.nome ? pe.email : null, pe.telefone, `${g.curso}: viu ${nums.length} aula${nums.length === 1 ? "" : "s"} (${nums.map((n) => `Aula ${n}`).join(", ")})`, `Última vez: ${arquivoData(g.ultima)}`]}
+                />
+              );
+            })}
+          </>
+        )}
+        {tab === "documentos" && (
+          <>
+            <p className="text-xs" style={{ color: palette.navySoft }}>Guarda aqui autorizações assinadas, fichas em papel digitalizadas e listas de presenças (PDF ou foto, até 20 MB). Só tu consegues ver estes documentos.</p>
+            <div className="flex gap-2 overflow-x-auto pb-1">
+              {ARQUIVO_PASTAS.map((p) => (
+                <button
+                  key={p.id}
+                  onClick={() => setPasta(p.id)}
+                  className="shrink-0 rounded-full px-3 py-1.5 text-xs"
+                  style={pasta === p.id ? { backgroundColor: palette.gold, color: palette.navy } : { backgroundColor: palette.card, color: palette.navySoft, border: `1px solid ${palette.goldSoft}55` }}
+                >
+                  {p.nome}
+                </button>
+              ))}
+            </div>
+            <label className="flex items-center justify-center gap-2 rounded-2xl py-3.5 text-sm font-medium cursor-pointer" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>
+              <Plus size={16} /> {aCarregarFicheiro ? "A carregar…" : "Adicionar documento"}
+              <input type="file" accept="application/pdf,image/*" onChange={carregarFicheiro} className="hidden" disabled={aCarregarFicheiro} />
+            </label>
+            {mensagem && <p className="text-xs" style={{ color: palette.navySoft }}>{mensagem}</p>}
+            {ficheiros.length === 0 && <p className="text-sm" style={{ color: palette.navySoft }}>Ainda não há documentos nesta pasta.</p>}
+            {ficheiros.map((f) => (
+              <div key={f.name} className="rounded-2xl px-4 py-3 flex items-center gap-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
+                <FileText size={18} style={{ color: palette.gold, flexShrink: 0 }} />
+                <button onClick={() => abrirFicheiro(f.name)} className="flex-1 min-w-0 text-left">
+                  <p className="text-sm truncate" style={{ color: palette.navy }}>{f.name.replace(/^\d+-/, "")}</p>
+                  <p className="text-[11px]" style={{ color: palette.navySoft }}>{arquivoData(f.created_at)}</p>
+                </button>
+                <button onClick={() => apagarFicheiro(f.name)} aria-label="Apagar">
+                  <Trash2 size={16} style={{ color: palette.navySoft }} />
+                </button>
+              </div>
+            ))}
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   const [session, setSession] = useState(null);
   const [sessaoCarregada, setSessaoCarregada] = useState(false);
@@ -6302,7 +7168,6 @@ export default function App() {
     inscricoesWorkshops: {},
     sessoesMarcadas: [],
     materiaisDesbloqueados: {},
-    cursosDesbloqueados: {},
     cursosConcluidos: {},
     comunidadeDesbloqueada: false,
     disponibilidade: { dias: [], horas: [], meses: [], linkVideochamada: "" },
@@ -6312,6 +7177,94 @@ export default function App() {
   });
   const [carregado, setCarregado] = useState(false);
   const [formadorAcessoCursos, setFormadorAcessoCursos] = useState([]);
+  const [consentimentoEmFalta, setConsentimentoEmFalta] = useState(false);
+  const [fichaCliente, setFichaCliente] = useState(null);
+  const [carrinhoItens, setCarrinhoItens] = useState(() => {
+    try { return JSON.parse(window.localStorage.getItem("escola3s:carrinho") || "[]"); } catch (e) { return []; }
+  });
+  useEffect(() => {
+    try { window.localStorage.setItem("escola3s:carrinho", JSON.stringify(carrinhoItens)); } catch (e) {}
+  }, [carrinhoItens]);
+
+  // RGPD: confirma se esta pessoa já deu autorização; se não, pede-a
+  useEffect(() => {
+    if (!session) { setConsentimentoEmFalta(false); return; }
+    let cancelado = false;
+    supabase
+      .from("consentimentos_dados")
+      .select("id")
+      .eq("user_id", session.user.id)
+      .limit(1)
+      .then(({ data, error }) => {
+        if (!cancelado && !error) setConsentimentoEmFalta(!data || data.length === 0);
+      });
+    return () => { cancelado = true; };
+  }, [session]);
+
+  // Ficha de cliente (nome e telefone)
+  useEffect(() => {
+    if (!session) { setFichaCliente(null); return; }
+    supabase.from("clientes").select("nome, telefone").eq("user_id", session.user.id).maybeSingle()
+      .then(({ data }) => setFichaCliente(data || { nome: "", telefone: "" }));
+  }, [session]);
+
+  // Aplica as compras pagas (MB WAY, Multibanco, Payshop): materiais e meses de Comunidade
+  const sincronizarCompras = async () => {
+    if (!session) return;
+    const { data, error } = await supabase
+      .from("pagamentos")
+      .select("descricao, itens, pago_em, criado_em")
+      .eq("user_id", session.user.id)
+      .eq("estado", "pago")
+      .order("pago_em", { ascending: true });
+    if (error) return;
+    let ate = null;
+    const materiais = {};
+    const cursosPagos = {};
+    (data || []).forEach((p) => {
+      const d = new Date(p.pago_em || p.criado_em);
+      const itens = Array.isArray(p.itens) ? p.itens : [];
+      const temComunidade = itens.some((i) => i.tipo === "comunidade") || (!p.itens && /^Comunidade 3S/.test(p.descricao || ""));
+      if (temComunidade) {
+        const base = ate && ate > d ? ate : d;
+        const n = new Date(base);
+        n.setMonth(n.getMonth() + 1);
+        ate = n;
+      }
+      itens.forEach((i) => {
+        if (i.tipo === "material" && i.materialId != null) materiais[i.materialId] = true;
+        if (i.tipo === "material_fisico" && i.materialId != null) materiais[i.materialId + "-fisico"] = true;
+        if (i.tipo === "curso" && i.cursoId != null) {
+          cursosPagos[i.cursoId] = true;
+          const c = cursos.find((x) => x.id === i.cursoId);
+          if (c) materiaisDoCurso(c).forEach((m) => { materiais[m.id] = true; });
+        }
+      });
+    });
+    setProgresso((p) => {
+      const novoAte = ate ? ate.toISOString() : (p.comunidadePagaAte || null);
+      const faltaMaterial = Object.keys(materiais).some((k) => !p.materiaisDesbloqueados[k]);
+      const faltaCurso = Object.keys(cursosPagos).some((k) => !(p.cursosComprados && p.cursosComprados[k]));
+      if (novoAte === (p.comunidadePagaAte || null) && !faltaMaterial && !faltaCurso) return p;
+      return { ...p, comunidadePagaAte: novoAte, materiaisDesbloqueados: { ...p.materiaisDesbloqueados, ...materiais }, cursosComprados: { ...(p.cursosComprados || {}), ...cursosPagos } };
+    });
+  };
+
+  useEffect(() => {
+    if (!carregado || !session) return;
+    sincronizarCompras();
+    const aoVoltar = () => { if (document.visibilityState === "visible") sincronizarCompras(); };
+    document.addEventListener("visibilitychange", aoVoltar);
+    return () => document.removeEventListener("visibilitychange", aoVoltar);
+  }, [carregado, session]);
+
+  const carrinho = {
+    itens: carrinhoItens,
+    adicionar: (item) => setCarrinhoItens((l) => (l.some((i) => i.chave === item.chave) ? l : [...l, item])),
+    remover: (chave) => setCarrinhoItens((l) => l.filter((i) => i.chave !== chave)),
+    limpar: () => setCarrinhoItens([]),
+    abrir: () => { setCursoAberto(null); setSecao("carrinho"); },
+  };
 
   // Sessão de autenticação (email + password)
   useEffect(() => {
@@ -6418,12 +7371,6 @@ export default function App() {
       materiaisDesbloqueados: { ...p.materiaisDesbloqueados, [id]: true },
     }));
 
-  const desbloquearCurso = (id) =>
-    setProgresso((p) => ({
-      ...p,
-      cursosDesbloqueados: { ...(p.cursosDesbloqueados || {}), [id]: true },
-    }));
-
   const toggleConcluido = (id) =>
     setProgresso((p) => ({
       ...p,
@@ -6485,7 +7432,7 @@ export default function App() {
 
   // Sempre que a Comunidade fica desbloqueada, cria/atualiza o perfil público (para o chat)
   useEffect(() => {
-    if (!carregado || !session || !progresso.comunidadeDesbloqueada) return;
+    if (!carregado || !session || !comunidadeEmDia(progresso)) return;
     supabase
       .from("perfis_comunidade")
       .upsert(
@@ -6494,7 +7441,7 @@ export default function App() {
       )
       .then(() => {})
       .catch(() => {});
-  }, [progresso.comunidadeDesbloqueada, carregado, session]);
+  }, [progresso.comunidadePagaAte, carregado, session]);
 
   // (registo de entrada gratuita agora acontece no envio do formulário FichaEntradaGratisScreen)
 
@@ -6527,6 +7474,9 @@ export default function App() {
     setCertificadoAberto(null);
     setConversaAberta(null);
   };
+
+  const eventoPublico = (() => { try { return new URLSearchParams(window.location.search).get("inscricao"); } catch (e) { return null; } })();
+  if (eventoPublico) return <InscricaoEventoPublica eventoId={eventoPublico} />;
 
   if (!sessaoCarregada) {
     return (
@@ -6572,6 +7522,21 @@ export default function App() {
     );
   }
 
+  if (consentimentoEmFalta) {
+    return <ConsentimentoGate session={session} onAceite={() => setConsentimentoEmFalta(false)} />;
+  }
+
+  const temAcessoCurso = (c) =>
+    progresso.papel === "dona" ||
+    Boolean(c.gratuito) ||
+    formadorAcessoCursos.includes(c.id) ||
+    Boolean(progresso.cursosComprados && progresso.cursosComprados[c.id]) ||
+    (c.escolaId === "comunidade" && (comunidadeEmDia(progresso) || COMUNIDADE_MES_GRATIS));
+
+  const materiaisAcesso = comunidadeEmDia(progresso)
+    ? { ...progresso.materiaisDesbloqueados, ...materiaisIncluidosComunidade() }
+    : progresso.materiaisDesbloqueados;
+
   let content;
   if (conversaAberta) {
     content = <ChatPrivadoScreen pessoa={conversaAberta} onBack={() => setConversaAberta(null)} />;
@@ -6591,14 +7556,12 @@ export default function App() {
         onBack={() => setClienteAberto(null)}
       />
     );
-  } else if (cursoAberto && cursoTemPreco(cursoAberto) && progresso.papel !== "dona" && progresso.papel !== "mentora" && !(progresso.cursosDesbloqueados || {})[cursoAberto.id]) {
-    content = (
-      <CursoBloqueadoScreen
-        curso={cursoAberto}
-        onBack={() => setCursoAberto(null)}
-        onDesbloquear={() => desbloquearCurso(cursoAberto.id)}
-      />
-    );
+  } else if (secao === "carrinho") {
+    content = <CarrinhoScreen onBack={() => setSecao(null)} onPagamentoConfirmado={sincronizarCompras} />;
+  } else if (cursoAberto && !temAcessoCurso(cursoAberto)) {
+    content = <CursoVendaScreen curso={cursoAberto} onBack={() => setCursoAberto(null)} />;
+  } else if (cursoAberto && cursoAberto.gratuito && progresso.papel !== "dona" && fichaCliente && !(fichaCliente.nome && fichaCliente.telefone)) {
+    content = <FichaCursoScreen curso={cursoAberto} session={session} onBack={() => setCursoAberto(null)} onGuardada={setFichaCliente} />;
   } else if (cursoAberto) {
     content = (
       <ConteudoDetalhe
@@ -6606,30 +7569,34 @@ export default function App() {
         concluido={Boolean(progresso.cursosConcluidos[cursoAberto.id])}
         onToggleConcluido={() => toggleConcluido(cursoAberto.id)}
         onBack={() => setCursoAberto(null)}
-        materiaisDesbloqueados={progresso.materiaisDesbloqueados}
+        materiaisDesbloqueados={materiaisAcesso}
         onDesbloquearMaterial={desbloquearMaterial}
         acessoTotal={progresso.papel === "dona"}
         formadorAutorizado={formadorAcessoCursos.includes(cursoAberto.id)}
       />
     );
+  } else if (secao === "alunos") {
+    content = <CatalogoCursosScreen onBack={() => setSecao(null)} temAcesso={temAcessoCurso} onAbrirCurso={setCursoAberto} onAreaAluno={() => setSecao("aluno")} />;
+  } else if (secao === "livros") {
+    content = <LivrosScreen onBack={() => setSecao(null)} materiaisDesbloqueados={materiaisAcesso} />;
   } else if (secao === "aluno") {
     content = (
       <AreaAlunoScreen
         onBack={() => setSecao(null)}
         onOpenCurso={setCursoAberto}
         cursosConcluidos={progresso.cursosConcluidos}
-        materiaisDesbloqueados={progresso.materiaisDesbloqueados}
+        materiaisDesbloqueados={materiaisAcesso}
         onVerCertificado={setCertificadoAberto}
       />
     );
   } else if (secao === "comunidade") {
-    const precisaFicha = COMUNIDADE_MES_GRATIS && !progresso.comunidadeDesbloqueada && progresso.papel !== "dona" && !progresso.fichaGratisPreenchida;
+    const precisaFicha = COMUNIDADE_MES_GRATIS && !comunidadeEmDia(progresso) && progresso.papel !== "dona" && !progresso.fichaGratisPreenchida;
     content = precisaFicha ? (
       <FichaEntradaGratisScreen
         onBack={() => setSecao(null)}
         onConcluido={() => setProgresso((p) => ({ ...p, fichaGratisPreenchida: true }))}
       />
-    ) : (progresso.comunidadeDesbloqueada || progresso.papel === "dona" || COMUNIDADE_MES_GRATIS) ? (
+    ) : (comunidadeEmDia(progresso) || progresso.papel === "dona" || COMUNIDADE_MES_GRATIS) ? (
       <ComunidadeScreen
         onBack={() => setSecao(null)}
         onOpenCurso={setCursoAberto}
@@ -6637,11 +7604,12 @@ export default function App() {
         onGuardarReflexao={guardarReflexao}
         onAbrirChat={() => setSecao("chat-comunidade")}
         onAbrirMensagens={() => setSecao("mensagens")}
-        materiaisDesbloqueados={progresso.materiaisDesbloqueados}
+        materiaisDesbloqueados={materiaisAcesso}
         onDesbloquearMaterial={desbloquearMaterial}
+        mensalidadeAte={progresso.comunidadePagaAte}
       />
     ) : (
-      <ComunidadeBloqueada onBack={() => setSecao(null)} onDesbloquear={desbloquearComunidade} />
+      <ComunidadeBloqueada onBack={() => setSecao(null)} onDesbloquear={sincronizarCompras} terminouEm={progresso.comunidadePagaAte} />
     );
   } else if (secao === "notificacoes") {
     content = <NotificacoesScreen onBack={() => setSecao(null)} />;
@@ -6654,16 +7622,16 @@ export default function App() {
   } else if (secao === "podcast") {
     content = <PodcastScreen onBack={() => setSecao(null)} souDona={progresso.papel === "dona"} />;
   } else if (secao === "formacao") {
-    content = <FormacaoScreen onBack={() => setSecao(null)} onOpenCurso={setCursoAberto} cursosConcluidos={progresso.cursosConcluidos} cursosDesbloqueados={progresso.cursosDesbloqueados || {}} acessoLivre={(progresso.papel === "dona" || progresso.papel === "mentora")} />;
+    content = <FormacaoScreen onBack={() => setSecao(null)} onOpenCurso={setCursoAberto} cursosConcluidos={progresso.cursosConcluidos} />;
   } else if (secao === "escola-lideranca") {
-    content = <FormacaoScreen onBack={() => setSecao(null)} onOpenCurso={setCursoAberto} cursosConcluidos={progresso.cursosConcluidos} escolaFixa="lideranca" cursosDesbloqueados={progresso.cursosDesbloqueados || {}} acessoLivre={(progresso.papel === "dona" || progresso.papel === "mentora")} />;
+    content = <FormacaoScreen onBack={() => setSecao(null)} onOpenCurso={setCursoAberto} cursosConcluidos={progresso.cursosConcluidos} escolaFixa="lideranca" />;
   } else if (secao === "escola-ser") {
-    content = <FormacaoScreen onBack={() => setSecao(null)} onOpenCurso={setCursoAberto} cursosConcluidos={progresso.cursosConcluidos} escolaFixa="ser" cursosDesbloqueados={progresso.cursosDesbloqueados || {}} acessoLivre={(progresso.papel === "dona" || progresso.papel === "mentora")} />;
+    content = <FormacaoScreen onBack={() => setSecao(null)} onOpenCurso={setCursoAberto} cursosConcluidos={progresso.cursosConcluidos} escolaFixa="ser" />;
   } else if (secao === "material") {
     content = (
       <MaterialDidaticoScreen
         onBack={() => setSecao(null)}
-        desbloqueados={progresso.materiaisDesbloqueados}
+        desbloqueados={materiaisAcesso}
         onDesbloquear={desbloquearMaterial}
         acessoTotal={progresso.papel === "dona"}
       />
@@ -6696,10 +7664,13 @@ export default function App() {
         progresso={progresso}
         onVerDashboard={() => setSecao("dashboard-mentora")}
         onVerAcessoFormadores={() => setSecao("acesso-formadores")}
+        onVerArquivo={() => setSecao("arquivo")}
       />
     );
   } else if (secao === "acesso-formadores") {
     content = <AcessoFormadoresScreen onBack={() => setSecao("painel-mentora")} />;
+  } else if (secao === "arquivo") {
+    content = <ArquivoEscolaScreen onBack={() => setSecao("painel-mentora")} />;
   } else if (secao === "dashboard-mentora") {
     content = (
       <DashboardMentoraScreen
@@ -6734,7 +7705,18 @@ export default function App() {
       <div className="min-h-screen w-full flex justify-center" style={{ backgroundColor: palette.cream, fontFamily: "Inter, sans-serif" }}>
         <div className="w-full max-w-md relative" style={{ backgroundColor: palette.creamSoft }}>
           <NotificacoesSino onAbrir={() => setSecao("notificacoes")} papel={progresso.papel} />
-          {content}
+          <CarrinhoContext.Provider value={carrinho}>
+            {content}
+            {secao !== "carrinho" && !cursoAberto && (
+              <button
+                onClick={carrinho.abrir}
+                className="fixed z-40 flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium shadow-lg"
+                style={{ bottom: "calc(88px + env(safe-area-inset-bottom, 0px))", right: "max(16px, calc(50vw - 208px))", backgroundColor: palette.gold, color: palette.navy }}
+              >
+                <ShoppingBag size={16} /> Carrinho ({carrinhoItens.length})
+              </button>
+            )}
+          </CarrinhoContext.Provider>
           {!cursoAberto && <BottomNav active={tab} onChange={mudarTab} />}
         </div>
       </div>
