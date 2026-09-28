@@ -711,8 +711,8 @@ async function aguardarConfirmacaoPagamento(pagamentoId, timeoutMs = 90000) {
   return false;
 }
 
-function LoginScreen({ onPedirConfirmacaoEmail, onPedidoRecuperacao }) {
-  const [modo, setModo] = useState("entrar"); // "entrar" | "criar"
+function LoginScreen({ onPedirConfirmacaoEmail, onPedidoRecuperacao, modoInicial }) {
+  const [modo, setModo] = useState(modoInicial || "entrar"); // "entrar" | "criar"
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [codigo, setCodigo] = useState("");
@@ -1068,12 +1068,11 @@ const areas = [
 ];
 
 const areasInicio = [
-  { key: "alunos", titulo: "Alunos", desc: "Cursos da Escola do Ser e da Escola de Liderança", icon: GraduationCap },
-  { key: "comunidade", titulo: "Comunidade", desc: "O mês da Comunidade · 7,49€/mês", icon: Users },
-  { key: "material", titulo: "Material Didático", desc: "Fichas, cadernos, jogos, ebooks", icon: Layers },
-  { key: "podcast", titulo: "Podcast", desc: "Episódios para ouvir", icon: Headphones },
-  { key: "livros", titulo: "Os meus livros", desc: "Romances de Conceição Alves", icon: BookOpen },
-  { key: "marcar", titulo: "Coaching e Mentoria", desc: "Sessões individuais e acompanhamento", icon: PenLine },
+  { key: "podcast", titulo: "Podcasts", icon: Headphones },
+  { key: "alunos", titulo: "Aluno", icon: GraduationCap },
+  { key: "comunidade", titulo: "Comunidade", icon: Users },
+  { key: "livros", titulo: "Os meus livros", icon: BookOpen },
+  { key: "material", titulo: "Material didático", icon: Layers },
 ];
 
 function AreaCard({ area, onOpen, full }) {
@@ -1095,9 +1094,6 @@ function AreaCard({ area, onOpen, full }) {
       <p className="font-serif text-lg leading-tight" style={{ color: palette.creamSoft }}>
         {area.titulo}
       </p>
-      <p className="text-xs mt-1 leading-snug" style={{ color: palette.goldSoft }}>
-        {area.desc}
-      </p>
     </button>
   );
 }
@@ -1110,8 +1106,10 @@ function AreasGrid({ onOpen, lista }) {
     return (
       <div className="px-6">
         <div className="grid grid-cols-2 gap-3">
-          {items.map((a) => (
-            <AreaCard key={a.key} area={a} onOpen={onOpen} />
+          {items.map((a, i) => (
+            <div key={a.key} className={items.length % 2 === 1 && i === items.length - 1 ? "col-span-2" : ""}>
+              <AreaCard area={a} onOpen={onOpen} full />
+            </div>
           ))}
         </div>
       </div>
@@ -1132,7 +1130,7 @@ function AreasGrid({ onOpen, lista }) {
 /* ---------------------------------------------------------
    Ecrã: Início
 --------------------------------------------------------- */
-function InicioScreen({ onOpen, email, papel }) {
+function InicioScreen({ onOpen, email, papel, naoLidas, onVerAgenda, onVerNotificacoes }) {
   const primeiroNome = papel === "dona" ? "Conceição" : (email ? email.split("@")[0] : "");
   return (
     <div className="pb-28">
@@ -1147,6 +1145,9 @@ function InicioScreen({ onOpen, email, papel }) {
           O que queres explorar hoje?
         </p>
       </div>
+      {(papel === "dona" || papel === "mentora") && (
+        <AvisosMentoraInicio naoLidas={naoLidas || 0} onVerAgenda={onVerAgenda} onVerNotificacoes={onVerNotificacoes} />
+      )}
       <AreasGrid onOpen={onOpen} lista={areasInicio} />
     </div>
   );
@@ -4616,6 +4617,7 @@ function AgendaScreen({ inscricoesWorkshops, sessoesMarcadas }) {
     <div className="pb-28">
       <SectionHeader eyebrow="O QUE TENS MARCADO" title="Agenda" />
       <div className="px-6">
+        <MinhasSessoesMarcadas />
         <CalendarioMes
           eventosPorDia={eventosPorDia}
           mesAtual={mesAtual}
@@ -4702,8 +4704,9 @@ function AgendaScreen({ inscricoesWorkshops, sessoesMarcadas }) {
 /* ---------------------------------------------------------
    Disponibilidade para sessões
 --------------------------------------------------------- */
-function AgendaMentoraScreen({ onBack, linkVideochamada }) {
+function AgendaMentoraScreen({ onBack, linkVideochamada, onVista }) {
   const [marcacoes, setMarcacoes] = useState([]);
+  const [linksPorId, setLinksPorId] = useState({});
   const [clientesPorId, setClientesPorId] = useState({});
   const [aCarregar, setACarregar] = useState(true);
 
@@ -4723,6 +4726,15 @@ function AgendaMentoraScreen({ onBack, linkVideochamada }) {
 
       const lista = rMarcacoes || [];
       setMarcacoes(lista);
+
+      if (lista.length > 0) {
+        const { data: rLinks } = await supabase.from("marcacoes_links").select("marcacao_id, link").in("marcacao_id", lista.map((m) => m.id));
+        const mapaLinks = {};
+        (rLinks || []).forEach((l) => { mapaLinks[l.marcacao_id] = l.link; });
+        setLinksPorId(mapaLinks);
+      }
+      await supabase.from("notificacoes").update({ lida: true }).eq("destinatario_id", userId).eq("tipo", "marcacao").eq("lida", false);
+      if (onVista) onVista();
 
       const idsClientes = Array.from(new Set(lista.map((m) => m.user_id)));
       if (idsClientes.length > 0) {
@@ -4762,13 +4774,12 @@ function AgendaMentoraScreen({ onBack, linkVideochamada }) {
     <div className="pb-28">
       <SectionHeader eyebrow="AS TUAS SESSÕES" title="A Minha Agenda" onBack={onBack} />
 
-      {!linkVideochamada && (
-        <div className="px-6 mb-5">
-          <p className="text-xs rounded-xl px-4 py-3" style={{ backgroundColor: `${palette.gold}1F`, color: palette.navy }}>
-            Ainda não definiste o teu link de videochamada — define-o em Disponibilidade para aparecer aqui, em cada sessão.
-          </p>
-        </div>
-      )}
+      <div className="px-6 mb-5">
+        <p className="text-xs rounded-xl px-4 py-3" style={{ backgroundColor: `${palette.gold}1F`, color: palette.navy }}>
+          Cada marcação tem um link de videochamada criado automaticamente, que também é enviado por email ao cliente e a ti.
+          {linkVideochamada ? " Estás a usar o teu link fixo (definido em Disponibilidade)." : ""}
+        </p>
+      </div>
 
       <div className="px-6">
         {aCarregar && <p className="text-sm" style={{ color: palette.navySoft }}>A carregar...</p>}
@@ -4797,17 +4808,7 @@ function AgendaMentoraScreen({ onBack, linkVideochamada }) {
                       {cliente?.email || "sem email"}
                       {cliente?.telefone ? ` · ${cliente.telefone}` : ""}
                     </p>
-                    {linkVideochamada && (
-                      <a
-                        href={linkVideochamada}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-2 flex items-center justify-center gap-1.5 rounded-lg py-2 text-xs font-medium tracking-wide"
-                        style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
-                      >
-                        Entrar na videochamada
-                      </a>
-                    )}
+                    <BotaoLinkSessao link={linksPorId[m.id] || linkVideochamada} />
                   </div>
                 );
               })}
@@ -6152,7 +6153,7 @@ function NotificacoesSino({ onAbrir, papel }) {
   );
 }
 
-function BottomNav({ active, onChange }) {
+function BottomNav({ active, onChange, badgeAgenda }) {
   const items = [
     { key: "inicio", label: "Início", icon: Home },
     { key: "explorar", label: "Explorar", icon: Compass },
@@ -6169,7 +6170,14 @@ function BottomNav({ active, onChange }) {
           const isActive = active === key;
           return (
             <button key={key} onClick={() => onChange(key)} className="flex-1 flex flex-col items-center justify-center gap-1 py-2.5">
-              <Icon size={20} strokeWidth={isActive ? 2.4 : 1.8} style={{ color: isActive ? palette.navy : palette.navySoft, opacity: isActive ? 1 : 0.55 }} />
+              <span className="relative">
+                <Icon size={20} strokeWidth={isActive ? 2.4 : 1.8} style={{ color: isActive ? palette.navy : palette.navySoft, opacity: isActive ? 1 : 0.55 }} />
+                {key === "agenda" && badgeAgenda > 0 && (
+                  <span className="absolute -top-1.5 -right-2.5 flex items-center justify-center rounded-full text-[9px] font-bold" style={{ minWidth: 16, height: 16, padding: "0 3px", backgroundColor: "#C0392B", color: "#fff" }}>
+                    {badgeAgenda > 9 ? "9+" : badgeAgenda}
+                  </span>
+                )}
+              </span>
               <span className="text-[10px] font-medium tracking-wide" style={{ color: isActive ? palette.navy : palette.navySoft, opacity: isActive ? 1 : 0.55 }}>
                 {label}
               </span>
@@ -6791,6 +6799,284 @@ function LivrosScreen({ onBack, materiaisDesbloqueados }) {
   );
 }
 
+/* ---------- Montra pública (antes de entrar na app) ---------- */
+function MontraPublica({ onCriarConta, onEntrar, onEscolher }) {
+  const comunidadeItem = { chave: "comunidade", tipo: "comunidade", titulo: "Comunidade 3S — mensalidade", valor: 7.49 };
+  const cursoGratis = cursos.find((c) => c.gratuito);
+  const livros = LIVROS_AUTORA_IDS.map((id) => materiais.find((m) => m.id === id)).filter(Boolean);
+  const titulo = (eyebrow, texto) => (
+    <div className="mb-3">
+      <p className="text-[11px] tracking-[0.25em] font-medium" style={{ color: palette.gold }}>{eyebrow}</p>
+      <p className="font-serif text-2xl leading-tight mt-1" style={{ color: palette.navy }}>{texto}</p>
+    </div>
+  );
+  const botao = (texto, onClick, claro) => (
+    <button
+      onClick={onClick}
+      className="w-full rounded-full py-3.5 font-medium text-sm tracking-wide transition active:scale-[0.98]"
+      style={claro ? { backgroundColor: palette.gold, color: palette.navy } : { backgroundColor: palette.navy, color: palette.creamSoft }}
+    >
+      {texto}
+    </button>
+  );
+  return (
+    <div className="min-h-screen w-full flex justify-center" style={{ backgroundColor: palette.cream, fontFamily: "Inter, sans-serif" }}>
+      <div className="w-full max-w-md pb-16" style={{ backgroundColor: palette.creamSoft }}>
+        {/* Topo */}
+        <div className="px-6 pt-6 flex items-center justify-between">
+          <Brand />
+          <button onClick={onEntrar} className="text-xs font-medium rounded-full px-4 py-2" style={{ border: `1px solid ${palette.navy}`, color: palette.navy }}>Entrar</button>
+        </div>
+
+        {/* Herói */}
+        <div className="px-6 pt-10 pb-8 text-center">
+          <p className="text-[11px] tracking-[0.3em] font-medium" style={{ color: palette.gold }}>SABER · SENTIR · SER</p>
+          <h1 className="font-serif text-4xl leading-tight mt-3" style={{ color: palette.navy }}>Conhece-te. Sente. Lidera a tua vida.</h1>
+          <p className="text-sm mt-4 leading-relaxed" style={{ color: palette.navySoft }}>
+            Cursos em vídeo, cadernos de trabalho e uma comunidade que te acompanha todos os meses — com a Conceição Alves e a Escola 3S.
+          </p>
+          <div className="mt-6 space-y-2.5">
+            {botao("Começar grátis", onCriarConta)}
+            <button onClick={onEntrar} className="text-xs underline underline-offset-2" style={{ color: palette.navySoft }}>Já tenho conta</button>
+          </div>
+        </div>
+
+        {/* Curso grátis */}
+        {cursoGratis && (
+          <div className="px-6 mb-10">
+            <div className="rounded-3xl px-5 py-6" style={{ backgroundColor: palette.navy }}>
+              <p className="text-[11px] tracking-[0.25em] font-medium" style={{ color: palette.gold }}>OFERTA · CURSO GRATUITO</p>
+              <p className="font-serif text-2xl leading-tight mt-2" style={{ color: palette.creamSoft }}>{cursoGratis.titulo}</p>
+              <p className="text-sm mt-2 leading-relaxed" style={{ color: palette.goldSoft }}>{cursoGratis.promessa}</p>
+              <div className="mt-3 space-y-1">
+                {(cursoGratis.aulas || []).map((a, i) => (
+                  <p key={i} className="text-xs" style={{ color: palette.creamSoft }}>▸ Aula {i + 1} — {a.titulo}</p>
+                ))}
+              </div>
+              <div className="mt-5">{botao("Quero o curso grátis", onCriarConta, true)}</div>
+            </div>
+          </div>
+        )}
+
+        {/* Comunidade */}
+        <div className="px-6 mb-10">
+          {titulo("COMUNIDADE 3S", "Tudo o que precisas, todos os meses")}
+          <div className="rounded-3xl px-5 py-5" style={{ backgroundColor: palette.card, border: `1px solid ${palette.gold}` }}>
+            <div className="space-y-1.5">
+              {["Caderno de trabalho do curso do mês", "Livro do aluno", "Material didático", "Aulas gravadas", "1 encontro online por mês", "Partilha e desafios com o grupo"].map((t) => (
+                <p key={t} className="text-sm" style={{ color: palette.ink }}><span style={{ color: palette.gold }}>✓</span> {t}</p>
+              ))}
+            </div>
+            <p className="text-xs mt-4 line-through" style={{ color: palette.navySoft }}>Em separado: mais de 14,97€</p>
+            <p className="font-serif text-3xl" style={{ color: palette.navy }}>7,49€ <span className="text-base" style={{ color: palette.navySoft }}>/ mês</span></p>
+            <p className="text-[11px] mt-1" style={{ color: palette.navySoft }}>Sem fidelização: pagas mês a mês.</p>
+            <div className="mt-4">{botao("Quero ser membro", () => onEscolher(comunidadeItem))}</div>
+          </div>
+        </div>
+
+        {/* Cursos */}
+        {[
+          { id: "ser", nome: "Escola do Ser", frase: "Autoconhecimento, emoções e crescimento pessoal" },
+          { id: "lideranca", nome: "Escola de Liderança", frase: "Liderar pessoas, equipas e conversas" },
+        ].map((escola) => {
+          const lista = cursos.filter((c) => c.escolaId === escola.id && !c.gratuito);
+          if (lista.length === 0) return null;
+          return (
+            <div key={escola.id} className="px-6 mb-10">
+              {titulo(escola.nome.toUpperCase(), escola.frase)}
+              <div className="space-y-3">
+                {lista.map((c) => (
+                  <div key={c.id} className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
+                    <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{c.titulo}</p>
+                    {c.promessa && <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{c.promessa}</p>}
+                    <p className="text-[11px] mt-2 leading-relaxed" style={{ color: palette.navySoft }}>{incluiCurso(c).join(" · ")}</p>
+                    <div className="flex items-center justify-between mt-3 gap-3">
+                      <span className="font-serif text-xl" style={{ color: palette.gold }}>{precoTexto(PRECO_CURSO)}</span>
+                      <button
+                        onClick={() => onEscolher({ chave: `curso-${c.id}`, tipo: "curso", cursoId: c.id, titulo: `Curso — ${c.titulo}`, valor: PRECO_CURSO })}
+                        className="rounded-full px-4 py-2 text-xs font-medium"
+                        style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
+                      >
+                        Comprar
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+
+        {/* Livros */}
+        {livros.length > 0 && (
+          <div className="px-6 mb-10">
+            {titulo("OS LIVROS DA CONCEIÇÃO", "Histórias que tocam onde dói")}
+            <div className="space-y-2">
+              {livros.map((m) => (
+                <div key={m.id} className="flex items-center justify-between rounded-xl px-4 py-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
+                  <div>
+                    <p className="text-sm" style={{ color: palette.navy }}>{m.titulo}</p>
+                    <p className="text-[11px]" style={{ color: palette.navySoft }}>Digital {m.preco}{m.tambemFisico && m.precoFisico ? ` · Físico ${m.precoFisico}` : ""}</p>
+                  </div>
+                  <button
+                    onClick={() => onEscolher({ chave: `material-${m.id}`, tipo: "material", materialId: m.id, titulo: m.titulo, valor: precoNumero(m.preco) })}
+                    className="rounded-full px-3.5 py-1.5 text-xs font-medium"
+                    style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
+                  >
+                    Comprar
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Como comprar */}
+        <div className="px-6 mb-10">
+          {titulo("COMO FUNCIONA", "Comprar é simples")}
+          <div className="space-y-3">
+            {[
+              ["1", "Cria a tua conta grátis", "Só precisas de email e palavra-passe."],
+              ["2", "Escolhe o que queres", "O que escolheste fica guardado no teu carrinho."],
+              ["3", "Paga como preferires", "MB WAY, referência Multibanco ou Payshop."],
+              ["4", "Acesso automático", "Assim que o pagamento é confirmado, o conteúdo abre."],
+            ].map(([n, t, d]) => (
+              <div key={n} className="flex gap-3">
+                <span className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 font-serif" style={{ backgroundColor: palette.navy, color: palette.gold }}>{n}</span>
+                <div>
+                  <p className="text-sm font-medium" style={{ color: palette.navy }}>{t}</p>
+                  <p className="text-xs" style={{ color: palette.navySoft }}>{d}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Fecho */}
+        <div className="px-6">
+          <div className="rounded-3xl px-5 py-6 text-center" style={{ backgroundColor: palette.navy }}>
+            <p className="font-serif text-2xl leading-tight" style={{ color: palette.creamSoft }}>Começa hoje, ao teu ritmo.</p>
+            <p className="text-xs mt-2" style={{ color: palette.goldSoft }}>O primeiro curso é por nossa conta.</p>
+            <div className="mt-4">{botao("Criar conta grátis", onCriarConta, true)}</div>
+          </div>
+          <p className="text-[11px] text-center mt-6" style={{ color: palette.navySoft }}>Escola 3S · Saber · Sentir · Ser</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Sessões com link e avisos visíveis ---------- */
+function formatarHorarioSessao(horario) {
+  const d = new Date(String(horario).replace(" ", "T"));
+  if (isNaN(d)) return horario;
+  const hoje = new Date();
+  const amanha = new Date(); amanha.setDate(hoje.getDate() + 1);
+  const mesmoDia = (a, b) => a.toDateString() === b.toDateString();
+  const hora = d.toLocaleTimeString("pt-PT", { hour: "2-digit", minute: "2-digit" });
+  if (mesmoDia(d, hoje)) return `Hoje às ${hora}`;
+  if (mesmoDia(d, amanha)) return `Amanhã às ${hora}`;
+  return `${d.toLocaleDateString("pt-PT", { weekday: "long", day: "numeric", month: "long" })} às ${hora}`;
+}
+
+function BotaoLinkSessao({ link }) {
+  const [copiado, setCopiado] = useState(false);
+  if (!link) return null;
+  return (
+    <div className="flex gap-2 mt-2">
+      <a href={link} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center rounded-lg py-2 text-xs font-medium tracking-wide" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>
+        Entrar na videochamada
+      </a>
+      <button
+        onClick={() => { try { navigator.clipboard.writeText(link); setCopiado(true); setTimeout(() => setCopiado(false), 2000); } catch (e) {} }}
+        className="rounded-lg px-3 py-2 text-xs font-medium"
+        style={{ backgroundColor: palette.creamSoft, color: palette.navy, border: `1px solid ${palette.goldSoft}55` }}
+      >
+        {copiado ? "Copiado ✓" : "Copiar link"}
+      </button>
+    </div>
+  );
+}
+
+function MinhasSessoesMarcadas() {
+  const [sessoes, setSessoes] = useState([]);
+  useEffect(() => {
+    (async () => {
+      const { data: s } = await supabase.auth.getSession();
+      const uid = s?.session?.user?.id;
+      if (!uid) return;
+      const hojeTxt = new Date().toISOString().slice(0, 10);
+      const { data: ms } = await supabase.from("marcacoes").select("id, titulo, horario").eq("user_id", uid).eq("estado", "confirmada").gte("horario", hojeTxt).order("horario", { ascending: true });
+      const lista = ms || [];
+      if (lista.length === 0) { setSessoes([]); return; }
+      const { data: ls } = await supabase.from("marcacoes_links").select("marcacao_id, link").in("marcacao_id", lista.map((m) => m.id));
+      const mapa = {};
+      (ls || []).forEach((l) => { mapa[l.marcacao_id] = l.link; });
+      setSessoes(lista.map((m) => ({ ...m, link: mapa[m.id] })));
+    })();
+  }, []);
+  if (sessoes.length === 0) return null;
+  return (
+    <div className="mb-6">
+      <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>AS TUAS SESSÕES</p>
+      <div className="space-y-2">
+        {sessoes.map((m) => (
+          <div key={m.id} className="rounded-xl px-4 py-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.gold}` }}>
+            <p className="text-sm font-medium" style={{ color: palette.navy }}>{m.titulo}</p>
+            <p className="text-xs" style={{ color: palette.navySoft }}>{formatarHorarioSessao(m.horario)}</p>
+            <BotaoLinkSessao link={m.link} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function AvisosMentoraInicio({ naoLidas, onVerAgenda, onVerNotificacoes }) {
+  const [proxima, setProxima] = useState(null);
+  useEffect(() => {
+    (async () => {
+      const { data: s } = await supabase.auth.getSession();
+      const uid = s?.session?.user?.id;
+      if (!uid) return;
+      const agoraTxt = new Date(Date.now() - 60 * 60 * 1000).toISOString().slice(0, 16).replace("T", " ");
+      const { data: ms } = await supabase.from("marcacoes").select("id, titulo, horario, user_id").eq("mentor_user_id", uid).eq("estado", "confirmada").gte("horario", agoraTxt).order("horario", { ascending: true }).limit(1);
+      const m = ms && ms[0];
+      if (!m) { setProxima(null); return; }
+      const [{ data: l }, { data: c }] = await Promise.all([
+        supabase.from("marcacoes_links").select("link").eq("marcacao_id", m.id).maybeSingle(),
+        supabase.from("clientes").select("nome, email").eq("user_id", m.user_id).maybeSingle(),
+      ]);
+      setProxima({ ...m, link: l?.link, cliente: c?.nome || c?.email || "" });
+    })();
+  }, [naoLidas]);
+  return (
+    <div className="px-6 mb-6 space-y-3">
+      {naoLidas > 0 && (
+        <button onClick={onVerNotificacoes} className="w-full flex items-center gap-3 rounded-2xl px-4 py-4 text-left" style={{ backgroundColor: palette.gold }}>
+          <span className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: palette.navy }}>
+            <Bell size={18} style={{ color: palette.gold }} />
+          </span>
+          <div className="flex-1">
+            <p className="font-serif text-lg leading-tight" style={{ color: palette.navy }}>{naoLidas === 1 ? "Tens 1 novidade" : `Tens ${naoLidas} novidades`}</p>
+            <p className="text-xs" style={{ color: palette.navy }}>Novas marcações e avisos — toca para ver</p>
+          </div>
+          <ChevronRight size={18} style={{ color: palette.navy }} />
+        </button>
+      )}
+      {proxima && (
+        <div className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.navy }}>
+          <p className="text-[11px] tracking-[0.2em] font-medium" style={{ color: palette.gold }}>PRÓXIMA SESSÃO</p>
+          <p className="font-serif text-lg mt-1" style={{ color: palette.creamSoft }}>{formatarHorarioSessao(proxima.horario)}</p>
+          <p className="text-xs mt-0.5" style={{ color: palette.goldSoft }}>{proxima.titulo}{proxima.cliente ? ` · ${proxima.cliente}` : ""}</p>
+          <BotaoLinkSessao link={proxima.link} />
+          <button onClick={onVerAgenda} className="text-xs underline underline-offset-2 mt-2" style={{ color: palette.goldSoft }}>Ver a agenda toda</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ---------- Arquivo da Escola (só a dona) ---------- */
 const TEXTO_CONSENTIMENTO_GERAL = "Aceito que a Escola 3S guarde e utilize os meus dados pessoais (email e, sempre que os partilhar, nome, telemóvel e outra informação fornecida nos formulários da app) para gerir a minha conta e o meu percurso na escola.";
 
@@ -7179,6 +7465,8 @@ export default function App() {
   const [formadorAcessoCursos, setFormadorAcessoCursos] = useState([]);
   const [consentimentoEmFalta, setConsentimentoEmFalta] = useState(false);
   const [fichaCliente, setFichaCliente] = useState(null);
+  const [ecraPublico, setEcraPublico] = useState("montra"); // "montra" | "entrar" | "criar"
+  const [naoLidas, setNaoLidas] = useState(0);
   const [carrinhoItens, setCarrinhoItens] = useState(() => {
     try { return JSON.parse(window.localStorage.getItem("escola3s:carrinho") || "[]"); } catch (e) { return []; }
   });
@@ -7200,6 +7488,24 @@ export default function App() {
       });
     return () => { cancelado = true; };
   }, [session]);
+
+  // Novidades (marcações, avisos) para a dona e mentoras — verificado a cada 30 segundos
+  const atualizarNaoLidas = async () => {
+    if (!session) return;
+    const { count } = await supabase.from("notificacoes").select("id", { count: "exact", head: true }).eq("destinatario_id", session.user.id).eq("lida", false);
+    setNaoLidas(count || 0);
+  };
+  useEffect(() => {
+    if (!session || (progresso.papel !== "dona" && progresso.papel !== "mentora")) return;
+    atualizarNaoLidas();
+    const t = setInterval(atualizarNaoLidas, 30000);
+    const aoVoltar = () => { if (document.visibilityState === "visible") atualizarNaoLidas(); };
+    document.addEventListener("visibilitychange", aoVoltar);
+    return () => { clearInterval(t); document.removeEventListener("visibilitychange", aoVoltar); };
+  }, [session, progresso.papel]);
+  useEffect(() => {
+    try { document.title = naoLidas > 0 ? `(${naoLidas}) Escola 3S` : "Escola 3S"; } catch (e) {}
+  }, [naoLidas]);
 
   // Ficha de cliente (nome e telefone)
   useEffect(() => {
@@ -7252,6 +7558,12 @@ export default function App() {
 
   useEffect(() => {
     if (!carregado || !session) return;
+    try {
+      if (window.localStorage.getItem("escola3s:abrirCarrinho") === "1") {
+        window.localStorage.removeItem("escola3s:abrirCarrinho");
+        setSecao("carrinho");
+      }
+    } catch (e) {}
     sincronizarCompras();
     const aoVoltar = () => { if (document.visibilityState === "visible") sincronizarCompras(); };
     document.addEventListener("visibilitychange", aoVoltar);
@@ -7514,8 +7826,33 @@ export default function App() {
             <AguardaEmailScreen email={emailEnviado} />
           ) : emailRecuperacao ? (
             <AguardaEmailScreen email={emailRecuperacao} recuperacao />
+          ) : ecraPublico === "montra" ? (
+            <MontraPublica
+              onCriarConta={() => setEcraPublico("criar")}
+              onEntrar={() => setEcraPublico("entrar")}
+              onEscolher={(item) => {
+                if (item.valor === null || item.valor === undefined) return;
+                setCarrinhoItens((l) => (l.some((i) => i.chave === item.chave) ? l : [...l, item]));
+                try { window.localStorage.setItem("escola3s:abrirCarrinho", "1"); } catch (e) {}
+                setEcraPublico("criar");
+              }}
+            />
           ) : (
-            <LoginScreen onPedirConfirmacaoEmail={setEmailEnviado} onPedidoRecuperacao={setEmailRecuperacao} />
+            <>
+              <div className="w-full flex justify-center" style={{ backgroundColor: palette.cream }}>
+                <div className="w-full max-w-md px-6 pt-4" style={{ backgroundColor: palette.creamSoft }}>
+                  <button onClick={() => setEcraPublico("montra")} className="flex items-center gap-1 text-xs" style={{ color: palette.navySoft }}>
+                    <ChevronLeft size={16} /> Ver cursos e preços
+                  </button>
+                  {carrinhoItens.length > 0 && (
+                    <p className="text-xs mt-2 rounded-xl px-3 py-2" style={{ backgroundColor: palette.card, color: palette.navy, border: `1px solid ${palette.gold}` }}>
+                      🛒 Guardámos no teu carrinho: {carrinhoItens.map((i) => i.titulo).join(", ")}. Cria a tua conta (ou entra) para finalizar a compra.
+                    </p>
+                  )}
+                </div>
+              </div>
+              <LoginScreen key={ecraPublico} modoInicial={ecraPublico} onPedirConfirmacaoEmail={setEmailEnviado} onPedidoRecuperacao={setEmailRecuperacao} />
+            </>
           )}
         </div>
       </>
@@ -7644,7 +7981,7 @@ export default function App() {
       />
     );
   } else if (secao === "agenda-mentora") {
-    content = <AgendaMentoraScreen onBack={() => setSecao(null)} linkVideochamada={progresso.disponibilidade.linkVideochamada} />;
+    content = <AgendaMentoraScreen onBack={() => setSecao(null)} linkVideochamada={progresso.disponibilidade.linkVideochamada} onVista={atualizarNaoLidas} />;
   } else if (secao === "disponibilidade") {
     content = (
       <DisponibilidadeScreen
@@ -7679,9 +8016,20 @@ export default function App() {
       />
     );
   } else if (tab === "inicio") {
-    content = <InicioScreen onOpen={setSecao} email={session.user.email} papel={progresso.papel} />;
+    content = (
+      <InicioScreen
+        onOpen={setSecao}
+        email={session.user.email}
+        papel={progresso.papel}
+        naoLidas={naoLidas}
+        onVerAgenda={() => mudarTab("agenda")}
+        onVerNotificacoes={() => setSecao("notificacoes")}
+      />
+    );
   } else if (tab === "explorar") {
     content = <ExplorarScreen onOpen={setSecao} />;
+  } else if (tab === "agenda" && (progresso.papel === "dona" || progresso.papel === "mentora")) {
+    content = <AgendaMentoraScreen linkVideochamada={progresso.disponibilidade.linkVideochamada} onVista={atualizarNaoLidas} />;
   } else if (tab === "agenda") {
     content = <AgendaScreen inscricoesWorkshops={progresso.inscricoesWorkshops} sessoesMarcadas={progresso.sessoesMarcadas} />;
   } else if (tab === "perfil") {
@@ -7717,7 +8065,7 @@ export default function App() {
               </button>
             )}
           </CarrinhoContext.Provider>
-          {!cursoAberto && <BottomNav active={tab} onChange={mudarTab} />}
+          {!cursoAberto && <BottomNav active={tab} onChange={mudarTab} badgeAgenda={naoLidas} />}
         </div>
       </div>
     </>
