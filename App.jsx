@@ -1147,7 +1147,22 @@ function InicioScreen({ onOpen, email, papel, naoLidas, onVerAgenda, onVerNotifi
       </div>
       <BannerEncontro />
       {(papel === "dona" || papel === "mentora") && (
-        <AvisosMentoraInicio naoLidas={naoLidas || 0} onVerAgenda={onVerAgenda} onVerNotificacoes={onVerNotificacoes} />
+        <div className="px-6 mb-6">
+          <button
+            onClick={onVerAgenda}
+            className="w-full flex items-center gap-3 rounded-2xl px-5 py-4 text-left transition active:scale-[0.99]"
+            style={{ backgroundColor: naoLidas > 0 ? palette.gold : palette.card, border: `1px solid ${palette.gold}` }}
+          >
+            <Calendar size={20} style={{ color: palette.navy }} />
+            <span className="flex-1 font-serif text-lg" style={{ color: palette.navy }}>Marcações</span>
+            {naoLidas > 0 && (
+              <span className="flex items-center justify-center rounded-full text-xs font-bold" style={{ minWidth: 24, height: 24, padding: "0 6px", backgroundColor: "#C0392B", color: "#fff" }}>
+                {naoLidas > 9 ? "9+" : naoLidas}
+              </span>
+            )}
+            <ChevronRight size={18} style={{ color: palette.navy }} />
+          </button>
+        </div>
       )}
       <AreasGrid onOpen={onOpen} lista={areasInicio} />
     </div>
@@ -6586,7 +6601,7 @@ EVENTOS_PUBLICOS.dezembro = {
 const TEXTO_CONSENTIMENTO_EVENTO = "Aceito que a Escola 3S guarde os meus dados (nome, email e telemóvel) para gerir a minha inscrição neste evento e me enviar o link e informações sobre ele.";
 
 function BannerEncontro() {
-  const chaves = ["encontro", "outubro", "novembro", "dezembro"];
+  const chaves = ["encontro"];
   const chave = chaves.find((k) => EVENTOS_PUBLICOS[k] && new Date(EVENTOS_PUBLICOS[k].inicio).getTime() + 2 * 3600e3 > Date.now());
   if (!chave) return null;
   const ev = EVENTOS_PUBLICOS[chave];
@@ -8120,14 +8135,12 @@ export default function App() {
         email={session.user.email}
         papel={progresso.papel}
         naoLidas={naoLidas}
-        onVerAgenda={() => mudarTab("agenda")}
+        onVerAgenda={() => setSecao("agenda-mentora")}
         onVerNotificacoes={() => setSecao("notificacoes")}
       />
     );
   } else if (tab === "explorar") {
     content = <ExplorarScreen onOpen={setSecao} />;
-  } else if (tab === "agenda" && (progresso.papel === "dona" || progresso.papel === "mentora")) {
-    content = <AgendaMentoraScreen linkVideochamada={progresso.disponibilidade.linkVideochamada} onVista={atualizarNaoLidas} />;
   } else if (tab === "agenda") {
     content = <AgendaScreen inscricoesWorkshops={progresso.inscricoesWorkshops} sessoesMarcadas={progresso.sessoesMarcadas} />;
   } else if (tab === "perfil") {
@@ -8163,7 +8176,7 @@ export default function App() {
               </button>
             )}
           </CarrinhoContext.Provider>
-          {!cursoAberto && <BottomNav active={tab} onChange={mudarTab} badgeAgenda={naoLidas} />}
+          {!cursoAberto && <BottomNav active={tab} onChange={mudarTab} />}
         </div>
       </div>
     </>
