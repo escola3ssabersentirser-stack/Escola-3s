@@ -7263,6 +7263,18 @@ function exportarCSV(nomeFicheiro, cabecalho, linhas) {
   setTimeout(() => URL.revokeObjectURL(url), 2000);
 }
 
+function numeroWhatsApp(tel) {
+  let n = String(tel || "").replace(/\D/g, "");
+  if (n.startsWith("00")) n = n.slice(2);
+  if (n.length === 9) n = "351" + n;
+  return n.length >= 11 ? n : "";
+}
+function mensagemEvento(nome, ev) {
+  const primeiro = String(nome || "").trim().split(" ")[0];
+  const quando = new Date(ev.inicio).toLocaleDateString("pt-PT", { weekday: "long", day: "numeric", month: "long" }) + " às " + new Date(ev.inicio).toLocaleTimeString("pt-PT", { hour: "2-digit", minute: "2-digit" });
+  return `Olá${primeiro ? " " + primeiro : ""}! 😊 Obrigada pela tua inscrição no ${ev.titulo}.\n\n📅 ${quando}\n🔗 Link para entrar: ${ev.link}\n\nAté já!\nConceição Alves · Escola 3S`;
+}
+
 function ArquivoCartao({ titulo, linhas }) {
   return (
     <div className="rounded-2xl px-4 py-3.5" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
@@ -7283,6 +7295,7 @@ function ArquivoEscolaScreen({ onBack }) {
   const [progressos, setProgressos] = useState([]);
   const [pagamentos, setPagamentos] = useState([]);
   const [visualizacoes, setVisualizacoes] = useState([]);
+  const [eventosOnline, setEventosOnline] = useState([]);
   const [pasta, setPasta] = useState("autorizacoes");
   const [ficheiros, setFicheiros] = useState([]);
   const [aCarregarFicheiro, setACarregarFicheiro] = useState(false);
@@ -7301,6 +7314,8 @@ function ArquivoEscolaScreen({ onBack }) {
         supabase.from("visualizacoes_aulas").select("*").order("visto_em", { ascending: false }),
       ]);
       setVisualizacoes(rV.data || []);
+      const rE = await supabase.from("eventos_online").select("*").order("inicio", { ascending: true });
+      setEventosOnline(rE.data || []);
       setConsentimentos(rC.data || []);
       setClientes(rCl.data || []);
       setInscricoesEvento(rI.data || []);
@@ -7363,7 +7378,7 @@ function ArquivoEscolaScreen({ onBack }) {
     });
   });
   const inscricoesTodas = [
-    ...inscricoesEvento.map((i) => ({ acao: i.evento || "Evento", data: arquivoData(i.criado_em), nome: i.nome, email: i.email, telefone: i.telefone, localidade: i.localidade })),
+    ...inscricoesEvento.map((i) => ({ acao: i.evento || "Evento", data: arquivoData(i.criado_em), nome: i.nome, email: i.email, telefone: i.telefone, localidade: i.localidade, eventoChave: i.evento_chave })),
     ...inscricoesWorkshop,
   ];
 
@@ -7452,9 +7467,42 @@ function ArquivoEscolaScreen({ onBack }) {
                 inscricoesTodas.map((i) => [i.acao, i.data, i.nome, i.email, i.telefone, i.localidade])))}
             </div>
             {inscricoesTodas.length === 0 && <p className="text-sm" style={{ color: palette.navySoft }}>Ainda não há inscrições.</p>}
-            {inscricoesTodas.filter((i) => filtro(`${i.acao} ${i.nome} ${i.email} ${i.telefone}`)).map((i, k) => (
-              <ArquivoCartao key={k} titulo={i.nome || i.email || "Pessoa sem nome"} linhas={[i.acao, i.data, i.nome ? i.email : null, i.telefone, i.localidade]} />
-            ))}
+            {eventosOnline.filter((e) => new Date(e.inicio).getTime() + (e.duracao_min || 90) * 60000 > Date.now()).map((e) => {
+              const n = inscricoesTodas.filter((i) => i.eventoChave === e.chave).length;
+              return (
+                <div key={e.id} className="rounded-2xl px-4 py-3" style={{ backgroundColor: palette.navy }}>
+                  <p className="text-sm font-medium" style={{ color: palette.creamSoft }}>{e.titulo}</p>
+                  <p className="text-xs" style={{ color: palette.goldSoft }}>{n} inscrito{n === 1 ? "" : "s"} · link: {e.link}</p>
+                  <button
+                    onClick={() => { try { navigator.clipboard.writeText(mensagemEvento("", e)); alert("Mensagem copiada! Cola-a no grupo ou na lista de transmissão do WhatsApp."); } catch (err) {} }}
+                    className="mt-2 w-full rounded-lg py-2 text-xs font-medium"
+                    style={{ backgroundColor: palette.gold, color: palette.navy }}
+                  >
+                    Copiar mensagem com o link (para grupos do WhatsApp)
+                  </button>
+                </div>
+              );
+            })}
+            {inscricoesTodas.filter((i) => filtro(`${i.acao} ${i.nome} ${i.email} ${i.telefone}`)).map((i, k) => {
+              const ev = eventosOnline.find((e) => e.chave === i.eventoChave);
+              const num = numeroWhatsApp(i.telefone);
+              return (
+                <div key={k}>
+                  <ArquivoCartao titulo={i.nome || i.email || "Pessoa sem nome"} linhas={[i.acao, i.data, i.nome ? i.email : null, i.telefone, i.localidade]} />
+                  {ev && num && (
+                    <a
+                      href={`https://wa.me/${num}?text=${encodeURIComponent(mensagemEvento(i.nome, ev))}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-1.5 flex items-center justify-center rounded-lg py-2 text-xs font-medium"
+                      style={{ backgroundColor: "#25D366", color: "#fff" }}
+                    >
+                      Enviar link por WhatsApp
+                    </a>
+                  )}
+                </div>
+              );
+            })}
           </>
         )}
 
