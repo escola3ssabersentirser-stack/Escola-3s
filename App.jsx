@@ -4752,12 +4752,11 @@ function AgendaMentoraScreen({ onBack, linkVideochamada, onVista }) {
   }, []);
 
   const agora = new Date();
-  const proximas = marcacoes.filter((m) => new Date(m.horario) >= agora);
+  const proximas = marcacoes.filter((m) => !sessaoJaAcabou(m.horario));
 
   const porDia = {};
   proximas.forEach((m) => {
-    const dataObj = new Date(m.horario);
-    const chaveDia = dataObj.toISOString().slice(0, 10);
+    const chaveDia = String(m.horario).slice(0, 10);
     if (!porDia[chaveDia]) porDia[chaveDia] = [];
     porDia[chaveDia].push(m);
   });
@@ -4782,6 +4781,7 @@ function AgendaMentoraScreen({ onBack, linkVideochamada, onVista }) {
       </div>
 
       <div className="px-6">
+        <EventosOnlineMentora />
         {aCarregar && <p className="text-sm" style={{ color: palette.navySoft }}>A carregar...</p>}
         {!aCarregar && diasOrdenados.length === 0 && (
           <p className="text-sm" style={{ color: palette.navySoft }}>Ainda não tens sessões marcadas.</p>
@@ -4795,7 +4795,7 @@ function AgendaMentoraScreen({ onBack, linkVideochamada, onVista }) {
             <div className="space-y-2">
               {porDia[chaveDia].map((m) => {
                 const cliente = clientesPorId[m.user_id];
-                const hora = new Date(m.horario).toLocaleTimeString("pt-PT", { hour: "2-digit", minute: "2-digit" });
+                const hora = String(m.horario).slice(11, 16);
                 return (
                   <div key={m.id} className="rounded-xl px-4 py-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
                     <div className="flex items-center justify-between mb-1">
@@ -6544,11 +6544,46 @@ const EVENTOS_PUBLICOS = {
     nome: "Encontro Online — O que é liderar, afinal? (2 out, 21h)",
     titulo: "O que é liderar, afinal?",
     subtitulo: "Encontro online gratuito",
-    data: "Quinta-feira, 2 de outubro · 21h00",
+    data: "Sexta-feira, 2 de outubro · 21h00",
     descricao: "Um encontro para olhar para a liderança por dentro: o que é, o que não é e por onde começar. Online e gratuito.",
   },
 };
 EVENTOS_PUBLICOS.imersao = EVENTOS_PUBLICOS.encontro;
+EVENTOS_PUBLICOS.outubro = {
+  nome: "Encontro Online da Escola 3S — 30 de outubro (21h)",
+  titulo: "Encontro Online da Escola 3S",
+  subtitulo: "Encontro online",
+  data: "Sexta-feira, 30 de outubro · 21h00",
+  descricao: "Um encontro ao vivo, online, para refletir, partilhar e crescer em conjunto com a Escola 3S.",
+};
+EVENTOS_PUBLICOS.novembro = {
+  nome: "Encontro Online da Escola 3S — 27 de novembro (21h)",
+  titulo: "Encontro Online da Escola 3S",
+  subtitulo: "Encontro online",
+  data: "Sexta-feira, 27 de novembro · 21h00",
+  descricao: "Um encontro ao vivo, online, para refletir, partilhar e crescer em conjunto com a Escola 3S.",
+};
+EVENTOS_PUBLICOS.dezembro = {
+  nome: "Encontro Online da Escola 3S — 18 de dezembro (21h)",
+  titulo: "Encontro Online da Escola 3S",
+  subtitulo: "Encontro online",
+  data: "Sexta-feira, 18 de dezembro · 21h00",
+  descricao: "Um encontro ao vivo, online, para refletir, partilhar e crescer em conjunto com a Escola 3S.",
+};
+EVENTOS_PUBLICOS.outubro = {
+  nome: "Encontro Online da Escola 3S — 30 de outubro, 21h",
+  titulo: "Encontro Online da Escola 3S",
+  subtitulo: "Encontro online gratuito",
+  data: "Sexta-feira, 30 de outubro · 21h00",
+  descricao: "Um encontro online para parar, refletir e crescer em conjunto. Online e gratuito.",
+};
+EVENTOS_PUBLICOS.novembro = {
+  nome: "Encontro Online da Escola 3S — 27 de novembro, 21h",
+  titulo: "Encontro Online da Escola 3S",
+  subtitulo: "Encontro online gratuito",
+  data: "Sexta-feira, 27 de novembro · 21h00",
+  descricao: "Um encontro online para parar, refletir e crescer em conjunto. Online e gratuito.",
+};
 const TEXTO_CONSENTIMENTO_EVENTO = "Aceito que a Escola 3S guarde os meus dados (nome, email e telemóvel) para gerir a minha inscrição neste evento e me enviar o link e informações sobre ele.";
 
 function InscricaoEventoPublica({ eventoId }) {
@@ -6570,6 +6605,7 @@ function InscricaoEventoPublica({ eventoId }) {
     setErro("");
     const { error } = await supabase.from("inscricoes_evento").insert({
       evento: evento.nome,
+      evento_chave: eventoId === "imersao" ? "encontro" : eventoId,
       nome: nome.trim(),
       email: email.trim().toLowerCase(),
       telefone: telefone.trim(),
@@ -6979,6 +7015,44 @@ function formatarHorarioSessao(horario) {
   return `${d.toLocaleDateString("pt-PT", { weekday: "long", day: "numeric", month: "long" })} às ${hora}`;
 }
 
+function dataSessao(horario) {
+  return new Date(String(horario).replace(" ", "T"));
+}
+const sessaoJaAcabou = (horario, minutos = 60) => dataSessao(horario).getTime() + minutos * 60000 < Date.now();
+
+function EventosOnlineMentora({ compacto }) {
+  const [eventos, setEventos] = useState([]);
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase.from("eventos_online").select("*").gte("inicio", new Date(Date.now() - 4 * 3600e3).toISOString()).order("inicio", { ascending: true });
+      const ativos = (data || []).filter((e) => new Date(e.inicio).getTime() + (e.duracao_min || 90) * 60000 > Date.now());
+      const comContagem = await Promise.all(ativos.map(async (e) => {
+        const { count } = await supabase.from("inscricoes_evento").select("id", { count: "exact", head: true }).eq("evento_chave", e.chave);
+        return { ...e, inscritos: count || 0 };
+      }));
+      setEventos(compacto ? comContagem.slice(0, 1) : comContagem);
+    })();
+  }, []);
+  if (eventos.length === 0) return null;
+  return (
+    <div className={compacto ? "" : "mb-6"}>
+      {!compacto && <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>EVENTOS ONLINE</p>}
+      <div className="space-y-2">
+        {eventos.map((e) => (
+          <div key={e.id} className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.navy }}>
+            {compacto && <p className="text-[11px] tracking-[0.2em] font-medium" style={{ color: palette.gold }}>PRÓXIMO EVENTO ONLINE</p>}
+            <p className="font-serif text-lg mt-1 leading-snug" style={{ color: palette.creamSoft }}>{e.titulo}</p>
+            <p className="text-xs mt-0.5" style={{ color: palette.goldSoft }}>
+              {formatarHorarioSessao(new Date(e.inicio).toISOString())} · {e.inscritos} inscrito{e.inscritos === 1 ? "" : "s"}
+            </p>
+            <BotaoLinkSessao link={e.link} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function BotaoLinkSessao({ link }) {
   const [copiado, setCopiado] = useState(false);
   if (!link) return null;
@@ -7012,7 +7086,7 @@ function MinhasSessoesMarcadas() {
       const { data: ls } = await supabase.from("marcacoes_links").select("marcacao_id, link").in("marcacao_id", lista.map((m) => m.id));
       const mapa = {};
       (ls || []).forEach((l) => { mapa[l.marcacao_id] = l.link; });
-      setSessoes(lista.map((m) => ({ ...m, link: mapa[m.id] })));
+      setSessoes(lista.filter((m) => !sessaoJaAcabou(m.horario)).map((m) => ({ ...m, link: mapa[m.id] })));
     })();
   }, []);
   if (sessoes.length === 0) return null;
@@ -7040,8 +7114,8 @@ function AvisosMentoraInicio({ naoLidas, onVerAgenda, onVerNotificacoes }) {
       const uid = s?.session?.user?.id;
       if (!uid) return;
       const agoraTxt = new Date(Date.now() - 60 * 60 * 1000).toISOString().slice(0, 16).replace("T", " ");
-      const { data: ms } = await supabase.from("marcacoes").select("id, titulo, horario, user_id").eq("mentor_user_id", uid).eq("estado", "confirmada").gte("horario", agoraTxt).order("horario", { ascending: true }).limit(1);
-      const m = ms && ms[0];
+      const { data: ms } = await supabase.from("marcacoes").select("id, titulo, horario, user_id").eq("mentor_user_id", uid).eq("estado", "confirmada").gte("horario", agoraTxt).order("horario", { ascending: true }).limit(3);
+      const m = ms && ms.find((x) => !sessaoJaAcabou(x.horario));
       if (!m) { setProxima(null); return; }
       const [{ data: l }, { data: c }] = await Promise.all([
         supabase.from("marcacoes_links").select("link").eq("marcacao_id", m.id).maybeSingle(),
@@ -7073,6 +7147,7 @@ function AvisosMentoraInicio({ naoLidas, onVerAgenda, onVerNotificacoes }) {
           <button onClick={onVerAgenda} className="text-xs underline underline-offset-2 mt-2" style={{ color: palette.goldSoft }}>Ver a agenda toda</button>
         </div>
       )}
+      <EventosOnlineMentora compacto />
     </div>
   );
 }
