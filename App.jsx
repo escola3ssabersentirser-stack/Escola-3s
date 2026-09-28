@@ -1073,6 +1073,7 @@ const areasInicio = [
   { key: "comunidade", titulo: "Comunidade", icon: Users },
   { key: "livros", titulo: "Os meus livros", icon: BookOpen },
   { key: "material", titulo: "Material didático", icon: Layers },
+  { key: "marcar", titulo: "Marcar sessão", icon: PenLine },
 ];
 
 function AreaCard({ area, onOpen, full }) {
