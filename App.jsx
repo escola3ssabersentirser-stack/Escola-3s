@@ -1131,7 +1131,7 @@ function AreasGrid({ onOpen, lista }) {
 /* ---------------------------------------------------------
    Ecrã: Início
 --------------------------------------------------------- */
-function InicioScreen({ onOpen, email, papel, naoLidas, onVerAgenda, onVerNotificacoes }) {
+function InicioScreen({ onOpen, email, papel, naoLidas, onVerAgenda, onVerNotificacoes, onVerPainel }) {
   const primeiroNome = papel === "dona" ? "Conceição" : (email ? email.split("@")[0] : "");
   return (
     <div className="pb-28">
@@ -1162,6 +1162,15 @@ function InicioScreen({ onOpen, email, papel, naoLidas, onVerAgenda, onVerNotifi
               </span>
             )}
             <ChevronRight size={18} style={{ color: palette.navy }} />
+          </button>
+          <button
+            onClick={onVerPainel}
+            className="w-full flex items-center gap-3 rounded-2xl px-5 py-4 mt-3 text-left transition active:scale-[0.99]"
+            style={{ backgroundColor: palette.navy }}
+          >
+            <Users size={20} style={{ color: palette.gold }} />
+            <span className="flex-1 font-serif text-lg" style={{ color: palette.creamSoft }}>Painel da Escola</span>
+            <ChevronRight size={18} style={{ color: palette.gold }} />
           </button>
         </div>
       )}
@@ -5319,7 +5328,7 @@ function DashboardMentoraScreen({ onBack, onAbrirCliente }) {
         </div>
       </div>
 
-      {ehDona && inscricoesEvento.length > 0 && (
+      {souDona && inscricoesEvento.length > 0 && (
         <div className="px-6 mb-8">
           <button
             onClick={() => setMostrarInscricoesEvento((v) => !v)}
@@ -5731,9 +5740,9 @@ function AcessoFormadoresScreen({ onBack }) {
 }
 
 function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFormadores, onVerArquivo }) {
-  const totalInscricoes = Object.values(progresso.inscricoesWorkshops).filter(Boolean).length;
-  const totalMateriais = Object.values(progresso.materiaisDesbloqueados).filter(Boolean).length;
-  const totalConcluidos = Object.values(progresso.cursosConcluidos).filter(Boolean).length;
+  const totalInscricoes = Object.values(progresso.inscricoesWorkshops || {}).filter(Boolean).length;
+  const totalMateriais = Object.values(progresso.materiaisDesbloqueados || {}).filter(Boolean).length;
+  const totalConcluidos = Object.values(progresso.cursosConcluidos || {}).filter(Boolean).length;
 
   const [novidadeAberta, setNovidadeAberta] = useState(false);
   const [tituloNovidade, setTituloNovidade] = useState("");
@@ -8185,6 +8194,7 @@ export default function App() {
         papel={progresso.papel}
         naoLidas={naoLidas}
         onVerAgenda={() => setSecao("agenda-mentora")}
+        onVerPainel={() => setSecao("painel-mentora")}
         onVerNotificacoes={() => setSecao("notificacoes")}
       />
     );
