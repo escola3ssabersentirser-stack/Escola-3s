@@ -686,7 +686,7 @@ async function guardarTelefone(telefone) {
   }
 }
 
-async function iniciarPagamentoMBWay(tipo, descricao, precoTexto, telefone) {
+async function iniciarPagamentoMBWay(tipo, descricao, precoTexto, telefone, marcacaoId) {
   const valor = parseFloat(String(precoTexto).replace("€", "").replace(",", "."));
   const { data: sessaoAtual } = await supabase.auth.getSession();
   const token = sessaoAtual?.session?.access_token;
@@ -694,7 +694,7 @@ async function iniciarPagamentoMBWay(tipo, descricao, precoTexto, telefone) {
   const resp = await fetch("https://hspekqrhttxeckghtryi.supabase.co/functions/v1/criar-pagamento", {
     method: "POST",
     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-    body: JSON.stringify({ tipo: "mbway", valor: isNaN(valor) ? 0 : valor, descricao, telemovel: telefone }),
+    body: JSON.stringify({ tipo: "mbway", valor: isNaN(valor) ? 0 : valor, descricao, telemovel: telefone, marcacao_id: marcacaoId || null }),
   });
   const data = await resp.json();
   if (!resp.ok || data.erro) throw new Error(data.erro || "Não foi possível iniciar o pagamento.");
@@ -4289,7 +4289,7 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
     const { data } = await supabase
       .from("marcacoes")
       .select("horario")
-      .eq("estado", "confirmada")
+      .in("estado", ["confirmada", "pendente_pagamento"])
       .eq("mentor_user_id", mentorUserId);
     setOcupados((data || []).map((m) => m.horario));
   };
@@ -4333,7 +4333,7 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
         .then(() => {})
         .catch(() => {});
 
-      const { error } = await supabase
+      const { data: novaMarcacao, error } = await supabase
         .from("marcacoes")
         .insert({
           user_id: userId,
@@ -4341,9 +4341,11 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
           tipo: servicoEscolhido.tipo,
           titulo: usaCiclo ? `${servicoEscolhido.titulo} (ciclo de 4 sessões)` : descontoValido ? `${servicoEscolhido.titulo} (código de desconto aplicado — 10%)` : servicoEscolhido.titulo,
           horario: horario.chave,
-          estado: "confirmada",
+          estado: usaCiclo ? "confirmada" : "pendente_pagamento",
           pago_com_ciclo: usaCiclo,
-        });
+        })
+        .select("id")
+        .single();
       if (error) {
         setErro("Esse horário acabou de ser reservado por outra pessoa. Escolhe outro.");
         await carregarOcupados(mentoraEscolhida.user_id);
@@ -4360,11 +4362,11 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
       }
       const precoFinal = descontoValido ? precoComDesconto(servicoEscolhido.preco) : servicoEscolhido.preco;
       setEstadoPagamento("a_enviar");
-      const resultado = await iniciarPagamentoMBWay("sessao", `${servicoEscolhido.titulo} — ${horario.label}`, precoFinal, telemovel.trim());
+      const resultado = await iniciarPagamentoMBWay("sessao", `${servicoEscolhido.titulo} — ${horario.label}`, precoFinal, telemovel.trim(), novaMarcacao?.id);
       setEstadoPagamento("a_confirmar");
       const pago = await aguardarConfirmacaoPagamento(resultado.pagamento_id);
       if (!pago) {
-        setErro("A marcação ficou reservada, mas não recebemos a confirmação do pagamento a tempo. Se já pagaste, contacta-nos.");
+        setErro("O horário fica reservado durante 20 minutos. Se aprovares o pagamento na app MB WAY nesse tempo, a marcação fica confirmada automaticamente e recebes o link por email.");
         setAConfirmar(false);
         return;
       }
