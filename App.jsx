@@ -1175,6 +1175,15 @@ function InicioScreen({ onOpen, email, papel, naoLidas, onVerAgenda, onVerNotifi
         </div>
       )}
       <AreasGrid onOpen={onOpen} lista={areasInicio} />
+      <div className="px-6 mt-5">
+        <button
+          onClick={() => onOpen("codigo")}
+          className="w-full rounded-2xl px-5 py-4 text-center text-sm font-medium"
+          style={{ border: `1px dashed ${palette.gold}`, color: palette.navy, backgroundColor: palette.card }}
+        >
+          🎁 Tenho um código de oferta
+        </button>
+      </div>
     </div>
   );
 }
@@ -1551,6 +1560,7 @@ function ComunidadeBloqueada({ onBack, onDesbloquear, terminouEm }) {
             )}
             <BotaoCarrinho rotulo="Adicionar 1 mês ao carrinho" item={{ chave: "comunidade", tipo: "comunidade", titulo: "Comunidade 3S — mensalidade", valor: 7.49 }} />
             <p className="text-[11px] text-center" style={{ color: palette.navySoft }}>Pagas por MB WAY, Multibanco ou Payshop. Cada pagamento dá acesso durante 1 mês.</p>
+            <ResgatarCodigo titulo="Recebeste um código de oferta?" onAtivado={() => onDesbloquear && onDesbloquear()} />
           </div>
         )}
 
@@ -4239,7 +4249,7 @@ function MaterialCard({ material, desbloqueado, onDesbloquear, desbloqueadoFisic
 /* ---------------------------------------------------------
    Marcar Sessão
 --------------------------------------------------------- */
-function MarcarSessaoScreen({ onBack, onConfirmar }) {
+function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo = 0, onUsouCredito }) {
   const [passo, setPasso] = useState(1); // 1: serviço, 2: profissional, 3: horário
   const [servicoEscolhido, setServicoEscolhido] = useState(null);
   const [mentoras, setMentoras] = useState([]);
@@ -4297,6 +4307,8 @@ function MarcarSessaoScreen({ onBack, onConfirmar }) {
     : [];
   const horariosLivres = horariosDisponiveis.filter((h) => !ocupados.includes(h.chave));
 
+  const usaCiclo = Boolean(servicoEscolhido && (creditos[servicoEscolhido.tipo] || 0) > 0);
+
   const confirmarMarcacao = async () => {
     if (!telemovel.trim() || !horario || !nomeCompleto.trim() || !aceitouConsentimento) return;
     setErro("");
@@ -4327,9 +4339,10 @@ function MarcarSessaoScreen({ onBack, onConfirmar }) {
           user_id: userId,
           mentor_user_id: mentoraEscolhida.user_id,
           tipo: servicoEscolhido.tipo,
-          titulo: descontoValido ? `${servicoEscolhido.titulo} (código de desconto aplicado — 10%)` : servicoEscolhido.titulo,
+          titulo: usaCiclo ? `${servicoEscolhido.titulo} (ciclo de 4 sessões)` : descontoValido ? `${servicoEscolhido.titulo} (código de desconto aplicado — 10%)` : servicoEscolhido.titulo,
           horario: horario.chave,
           estado: "confirmada",
+          pago_com_ciclo: usaCiclo,
         });
       if (error) {
         setErro("Esse horário acabou de ser reservado por outra pessoa. Escolhe outro.");
@@ -4339,6 +4352,12 @@ function MarcarSessaoScreen({ onBack, onConfirmar }) {
         return;
       }
       guardarTelefone(telemovel.trim());
+      if (usaCiclo) {
+        setConfirmado(true);
+        onConfirmar({ tipo: servicoEscolhido.tipo, titulo: servicoEscolhido.titulo, horario: horario.label, data: horario.chave });
+        if (onUsouCredito) onUsouCredito();
+        return;
+      }
       const precoFinal = descontoValido ? precoComDesconto(servicoEscolhido.preco) : servicoEscolhido.preco;
       setEstadoPagamento("a_enviar");
       const resultado = await iniciarPagamentoMBWay("sessao", `${servicoEscolhido.titulo} — ${horario.label}`, precoFinal, telemovel.trim());
@@ -4387,8 +4406,42 @@ function MarcarSessaoScreen({ onBack, onConfirmar }) {
       </div>
 
       {passo === 1 && (
+        <div className="px-6 mb-6 space-y-3">
+          {Object.entries(creditos).filter(([, n]) => n > 0).map(([tipo, n]) => (
+            <div key={tipo} className="rounded-2xl px-4 py-3" style={{ backgroundColor: palette.gold }}>
+              <p className="text-sm font-medium" style={{ color: palette.navy }}>Tens {n} sess{n === 1 ? "ão" : "ões"} de {tipo} do teu ciclo por marcar.</p>
+              <p className="text-xs" style={{ color: palette.navy }}>Escolhe {tipo} em baixo — não pagas nada.</p>
+            </div>
+          ))}
+          <div className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.navy }}>
+            <p className="text-[11px] tracking-[0.2em] font-medium" style={{ color: palette.gold }}>CICLO DE 4 SESSÕES</p>
+            <p className="font-serif text-lg mt-1" style={{ color: palette.creamSoft }}>Compromete-te com o teu processo</p>
+            <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.goldSoft }}>
+              4 sessões ao teu ritmo.{" "}
+              {descontoCiclo > 0 ? (
+                <><span className="line-through">{precoTexto(PRECO_SESSAO * SESSOES_POR_CICLO)}</span> <b>{precoTexto(PRECO_SESSAO * SESSOES_POR_CICLO * (1 - descontoCiclo / 100))}</b> com o teu código ({descontoCiclo}%).</>
+              ) : (
+                <>{precoTexto(PRECO_SESSAO * SESSOES_POR_CICLO)}. Com um código de oferta, tens desconto.</>
+              )}
+            </p>
+            <div className="mt-3 space-y-2">
+              {servicosSessao.filter((s) => s.tipo === "Coaching" || s.tipo === "Mentoria").map((s) => (
+                <BotaoCarrinho
+                  key={s.id}
+                  pequeno
+                  rotulo={`Ciclo de 4 — ${s.tipo}`}
+                  item={{ chave: `ciclo-${s.tipo}`, tipo: "ciclo_sessoes", servicoTipo: s.tipo, sessoes: SESSOES_POR_CICLO, titulo: `Ciclo de 4 sessões — ${s.titulo}`, valor: PRECO_SESSAO * SESSOES_POR_CICLO }}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {passo === 1 && (
         <div className="px-6">
           <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>1. O QUE QUERES?</p>
+
           <div className="space-y-3">
             {servicosSessao.map((s) => (
               <button
@@ -4521,7 +4574,7 @@ function MarcarSessaoScreen({ onBack, onConfirmar }) {
                   className="w-full rounded-full py-3 font-medium text-sm tracking-wide disabled:opacity-60"
                   style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
                 >
-                  {aConfirmar ? "A enviar pedido..." : `Confirmar e pagar · ${descontoValido ? precoComDesconto(servicoEscolhido.preco) : servicoEscolhido.preco}`}
+                  {aConfirmar ? "A enviar pedido..." : usaCiclo ? `Confirmar · usar 1 sessão do ciclo (restam ${creditos[servicoEscolhido.tipo]})` : `Confirmar e pagar · ${descontoValido ? precoComDesconto(servicoEscolhido.preco) : servicoEscolhido.preco}`}
                 </button>
               )}
               {erro && <p className="text-xs text-center" style={{ color: "#B23A3A" }}>{erro}</p>}
@@ -6230,6 +6283,52 @@ function materiaisIncluidosComunidade() {
   return ids;
 }
 
+/* ---------- Códigos de oferta e ciclos de sessões ---------- */
+const PRECO_SESSAO = 30;
+const SESSOES_POR_CICLO = 4;
+
+function ResgatarCodigo({ onAtivado, titulo }) {
+  const [codigo, setCodigo] = useState("");
+  const [estado, setEstado] = useState(null);
+  const [mensagem, setMensagem] = useState("");
+  const ativar = async () => {
+    if (!codigo.trim()) return;
+    setEstado("a_ativar");
+    setMensagem("");
+    const { data, error } = await supabase.rpc("resgatar_codigo", { p_codigo: codigo.trim() });
+    if (error || !data) { setEstado("erro"); setMensagem("Não foi possível ativar o código. Tenta novamente."); return; }
+    setEstado(data.ok ? "ok" : "erro");
+    let msg = data.mensagem;
+    if (data.ok) {
+      const partes = [];
+      if (data.mes_comunidade) partes.push("1 mês de Comunidade oferecido");
+      if (Number(data.desconto_ciclo) > 0) partes.push(`${Number(data.desconto_ciclo)}% de desconto no ciclo de 4 sessões`);
+      if (partes.length) msg += " Tens: " + partes.join(" e ") + ".";
+      if (onAtivado) onAtivado(data);
+    }
+    setMensagem(msg);
+  };
+  return (
+    <div className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.card, border: `1px dashed ${palette.gold}` }}>
+      <p className="text-sm font-medium mb-2" style={{ color: palette.navy }}>{titulo || "Tens um código de oferta?"}</p>
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={codigo}
+          onChange={(e) => setCodigo(e.target.value.toUpperCase())}
+          placeholder="Ex.: WHATSAPP3S"
+          className="flex-1 min-w-0 rounded-xl px-3 py-2.5 text-sm outline-none"
+          style={{ backgroundColor: palette.creamSoft, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
+        />
+        <button onClick={ativar} disabled={estado === "a_ativar"} className="rounded-xl px-4 text-sm font-medium disabled:opacity-60" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>
+          {estado === "a_ativar" ? "…" : "Ativar"}
+        </button>
+      </div>
+      {mensagem && <p className="text-xs mt-2" style={{ color: estado === "ok" ? palette.gold : "#B23A3A" }}>{mensagem}</p>}
+    </div>
+  );
+}
+
 /* ---------- Carrinho e pagamentos (MB WAY, Multibanco, Payshop) ---------- */
 const CarrinhoContext = createContext({ itens: [], adicionar: () => {}, remover: () => {}, limpar: () => {}, abrir: () => {} });
 
@@ -6348,7 +6447,11 @@ function CarrinhoScreen({ onBack, onPagamentoConfirmado }) {
     carrinho.adicionar({ chave: "comunidade", tipo: "comunidade", titulo: "Comunidade 3S — mensalidade", valor: 7.49 });
   };
   const descontoValido = codigoDesconto.trim().toUpperCase() === "COMUNIDADE10";
-  const valorItem = (i) => (descontoValido && (i.tipo === "material") ? i.valor * 0.9 : i.valor);
+  const descontoCiclo = Number(carrinho.descontoCiclo || 0);
+  const valorItem = (i) => {
+    if (i.tipo === "ciclo_sessoes" && descontoCiclo > 0) return i.valor * (1 - descontoCiclo / 100);
+    return descontoValido && i.tipo === "material" ? i.valor * 0.9 : i.valor;
+  };
   const total = carrinho.itens.reduce((s, i) => s + valorItem(i), 0);
   const descricao = carrinho.itens.map((i) => i.titulo).join(" + ");
 
@@ -6357,7 +6460,7 @@ function CarrinhoScreen({ onBack, onPagamentoConfirmado }) {
     if (metodo === "mbway" && !telemovel.trim()) return;
     setErro("");
     setEstado("a_enviar");
-    const itens = carrinho.itens.map((i) => ({ tipo: i.tipo, materialId: i.materialId ?? null, titulo: i.titulo, valor: Number(valorItem(i).toFixed(2)) }));
+    const itens = carrinho.itens.map((i) => ({ tipo: i.tipo, materialId: i.materialId ?? null, cursoId: i.cursoId ?? null, servicoTipo: i.servicoTipo ?? null, sessoes: i.sessoes ?? null, titulo: i.titulo, valor: Number(valorItem(i).toFixed(2)) }));
     try {
       if (metodo === "mbway") guardarTelefone(telemovel.trim());
       const r = await criarPagamento(metodo, total, descricao, telemovel.trim(), itens);
@@ -6436,7 +6539,7 @@ function CarrinhoScreen({ onBack, onPagamentoConfirmado }) {
               <div key={i.chave} className="rounded-2xl px-4 py-3 flex items-center gap-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm" style={{ color: palette.navy }}>{i.titulo}</p>
-                  <p className="text-xs" style={{ color: palette.gold }}>{precoTexto(valorItem(i))}{i.tipo === "comunidade" ? " · 1 mês" : i.tipo === "curso" ? " · curso completo" : ""}</p>
+                  <p className="text-xs" style={{ color: palette.gold }}>{precoTexto(valorItem(i))}{i.tipo === "comunidade" ? " · 1 mês" : i.tipo === "curso" ? " · curso completo" : i.tipo === "ciclo_sessoes" ? (descontoCiclo > 0 ? ` · ${descontoCiclo}% de desconto aplicado` : " · 4 sessões") : ""}</p>
                 </div>
                 <button onClick={() => carrinho.remover(i.chave)} aria-label="Remover"><Trash2 size={16} style={{ color: palette.navySoft }} /></button>
               </div>
@@ -6453,6 +6556,8 @@ function CarrinhoScreen({ onBack, onPagamentoConfirmado }) {
                 </button>
               </div>
             )}
+
+            <ResgatarCodigo onAtivado={carrinho.aoAtivarCodigo} />
 
             <input
               type="text"
@@ -7638,6 +7743,8 @@ export default function App() {
   const [fichaCliente, setFichaCliente] = useState(null);
   const [ecraPublico, setEcraPublico] = useState("montra"); // "montra" | "entrar" | "criar"
   const [naoLidas, setNaoLidas] = useState(0);
+  const [creditosSessoes, setCreditosSessoes] = useState({});
+  const [descontoCiclo, setDescontoCiclo] = useState(0);
   const [carrinhoItens, setCarrinhoItens] = useState(() => {
     try { return JSON.parse(window.localStorage.getItem("escola3s:carrinho") || "[]"); } catch (e) { return []; }
   });
@@ -7698,6 +7805,7 @@ export default function App() {
     let ate = null;
     const materiais = {};
     const cursosPagos = {};
+    const ciclosComprados = {};
     (data || []).forEach((p) => {
       const d = new Date(p.pago_em || p.criado_em);
       const itens = Array.isArray(p.itens) ? p.itens : [];
@@ -7711,6 +7819,7 @@ export default function App() {
       itens.forEach((i) => {
         if (i.tipo === "material" && i.materialId != null) materiais[i.materialId] = true;
         if (i.tipo === "material_fisico" && i.materialId != null) materiais[i.materialId + "-fisico"] = true;
+        if (i.tipo === "ciclo_sessoes" && i.servicoTipo) ciclosComprados[i.servicoTipo] = (ciclosComprados[i.servicoTipo] || 0) + (Number(i.sessoes) || SESSOES_POR_CICLO);
         if (i.tipo === "curso" && i.cursoId != null) {
           cursosPagos[i.cursoId] = true;
           const c = cursos.find((x) => x.id === i.cursoId);
@@ -7718,6 +7827,14 @@ export default function App() {
         }
       });
     });
+    const { data: usadas } = await supabase.from("marcacoes").select("tipo").eq("user_id", session.user.id).eq("pago_com_ciclo", true).neq("estado", "cancelada");
+    const restantes = {};
+    Object.entries(ciclosComprados).forEach(([tipo, n]) => {
+      restantes[tipo] = Math.max(0, n - (usadas || []).filter((m) => m.tipo === tipo).length);
+    });
+    setCreditosSessoes(restantes);
+    const { data: desc } = await supabase.rpc("meu_desconto_ciclo");
+    setDescontoCiclo(Number(desc) || 0);
     setProgresso((p) => {
       const novoAte = ate ? ate.toISOString() : (p.comunidadePagaAte || null);
       const faltaMaterial = Object.keys(materiais).some((k) => !p.materiaisDesbloqueados[k]);
@@ -7743,6 +7860,8 @@ export default function App() {
 
   const carrinho = {
     itens: carrinhoItens,
+    descontoCiclo,
+    aoAtivarCodigo: () => sincronizarCompras(),
     adicionar: (item) => setCarrinhoItens((l) => (l.some((i) => i.chave === item.chave) ? l : [...l, item])),
     remover: (chave) => setCarrinhoItens((l) => l.filter((i) => i.chave !== chave)),
     limpar: () => setCarrinhoItens([]),
@@ -8083,6 +8202,16 @@ export default function App() {
         formadorAutorizado={formadorAcessoCursos.includes(cursoAberto.id)}
       />
     );
+  } else if (secao === "codigo") {
+    content = (
+      <div className="pb-28">
+        <SectionHeader eyebrow="OFERTA" title="Código de oferta" onBack={() => setSecao(null)} />
+        <div className="px-6 space-y-4">
+          <p className="text-sm leading-relaxed" style={{ color: palette.ink }}>Escreve o código que recebeste e carrega em Ativar. As ofertas ficam logo na tua conta.</p>
+          <ResgatarCodigo onAtivado={() => sincronizarCompras()} />
+        </div>
+      </div>
+    );
   } else if (secao === "alunos") {
     content = <CatalogoCursosScreen onBack={() => setSecao(null)} temAcesso={temAcessoCurso} onAbrirCurso={setCursoAberto} onAreaAluno={() => setSecao("aluno")} />;
   } else if (secao === "livros") {
@@ -8149,6 +8278,9 @@ export default function App() {
       <MarcarSessaoScreen
         onBack={() => setSecao(null)}
         onConfirmar={registarSessao}
+        creditos={creditosSessoes}
+        descontoCiclo={descontoCiclo}
+        onUsouCredito={sincronizarCompras}
       />
     );
   } else if (secao === "agenda-mentora") {
