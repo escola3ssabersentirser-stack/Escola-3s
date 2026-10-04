@@ -7412,6 +7412,7 @@ function ArquivoEscolaScreen({ onBack }) {
   const [pagamentos, setPagamentos] = useState([]);
   const [visualizacoes, setVisualizacoes] = useState([]);
   const [eventosOnline, setEventosOnline] = useState([]);
+  const [codigosUsados, setCodigosUsados] = useState([]);
   const [pasta, setPasta] = useState("autorizacoes");
   const [ficheiros, setFicheiros] = useState([]);
   const [aCarregarFicheiro, setACarregarFicheiro] = useState(false);
@@ -7432,6 +7433,8 @@ function ArquivoEscolaScreen({ onBack }) {
       setVisualizacoes(rV.data || []);
       const rE = await supabase.from("eventos_online").select("*").order("inicio", { ascending: true });
       setEventosOnline(rE.data || []);
+      const rCod = await supabase.from("codigos_resgatados").select("*").order("resgatado_em", { ascending: false });
+      setCodigosUsados(rCod.data || []);
       setConsentimentos(rC.data || []);
       setClientes(rCl.data || []);
       setInscricoesEvento(rI.data || []);
@@ -7505,6 +7508,7 @@ function ArquivoEscolaScreen({ onBack }) {
     { id: "fichas", nome: "Fichas", n: clientes.length },
     { id: "inscricoes", nome: "Inscrições", n: inscricoesTodas.length },
     { id: "pagamentos", nome: "Pagamentos", n: pagamentos.length },
+    { id: "codigos", nome: "Códigos", n: codigosUsados.length },
     { id: "visualizacoes", nome: "Quem viu", n: new Set(visualizacoes.map((v) => v.user_id)).size },
     { id: "documentos", nome: "Documentos", n: null },
   ];
@@ -7675,6 +7679,24 @@ function ArquivoEscolaScreen({ onBack }) {
             })}
           </>
         )}
+        {!carregando && tab === "codigos" && (
+          <>
+            <div className="flex items-center justify-between">
+              <p className="text-xs" style={{ color: palette.navySoft }}>Quem usou códigos de oferta</p>
+              {botaoExportar(() => exportarCSV("codigos-usados.csv", ["Data", "Código", "Nome", "Email", "Telefone"],
+                codigosUsados.map((c) => { const pe = pessoa(c.user_id); return [arquivoData(c.resgatado_em), c.codigo, pe.nome, pe.email, pe.telefone]; })))}
+            </div>
+            {codigosUsados.length === 0 && <p className="text-sm" style={{ color: palette.navySoft }}>Ainda ninguém usou um código.</p>}
+            {[...new Set(codigosUsados.map((c) => c.codigo))].map((cod) => (
+              <p key={cod} className="text-xs font-medium" style={{ color: palette.gold }}>{cod}: {codigosUsados.filter((c) => c.codigo === cod).length} pessoa(s)</p>
+            ))}
+            {codigosUsados.filter((c) => { const pe = pessoa(c.user_id); return filtro(`${c.codigo} ${pe.nome} ${pe.email} ${pe.telefone}`); }).map((c) => {
+              const pe = pessoa(c.user_id);
+              return <ArquivoCartao key={`${c.codigo}-${c.user_id}`} titulo={pe.nome || pe.email || "Pessoa sem ficha"} linhas={[`Código ${c.codigo}`, pe.nome ? pe.email : null, pe.telefone, `Usado em ${arquivoData(c.resgatado_em)}`]} />;
+            })}
+          </>
+        )}
+
         {tab === "documentos" && (
           <>
             <p className="text-xs" style={{ color: palette.navySoft }}>Guarda aqui autorizações assinadas, fichas em papel digitalizadas e listas de presenças (PDF ou foto, até 20 MB). Só tu consegues ver estes documentos.</p>
