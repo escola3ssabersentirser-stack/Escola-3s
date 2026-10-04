@@ -7715,6 +7715,20 @@ function ArquivoEscolaScreen({ onBack }) {
   );
 }
 
+function progressoInicial() {
+  return {
+    inscricoesWorkshops: {},
+    sessoesMarcadas: [],
+    materiaisDesbloqueados: {},
+    cursosConcluidos: {},
+    comunidadeDesbloqueada: false,
+    disponibilidade: { dias: [], horas: [], meses: [], linkVideochamada: "" },
+    papel: "aluno",
+    reflexoesComunidade: {},
+    fichaGratisPreenchida: false,
+  };
+}
+
 export default function App() {
   const [session, setSession] = useState(null);
   const [sessaoCarregada, setSessaoCarregada] = useState(false);
@@ -7728,18 +7742,9 @@ export default function App() {
   const [certificadoAberto, setCertificadoAberto] = useState(null);
   const [conversaAberta, setConversaAberta] = useState(null);
 
-  const [progresso, setProgresso] = useState({
-    inscricoesWorkshops: {},
-    sessoesMarcadas: [],
-    materiaisDesbloqueados: {},
-    cursosConcluidos: {},
-    comunidadeDesbloqueada: false,
-    disponibilidade: { dias: [], horas: [], meses: [], linkVideochamada: "" },
-    papel: "aluno",
-    reflexoesComunidade: {},
-    fichaGratisPreenchida: false,
-  });
+  const [progresso, setProgresso] = useState(progressoInicial);
   const [carregado, setCarregado] = useState(false);
+  const [tentativaCarregar, setTentativaCarregar] = useState(0);
   const [formadorAcessoCursos, setFormadorAcessoCursos] = useState([]);
   const [consentimentoEmFalta, setConsentimentoEmFalta] = useState(false);
   const [fichaCliente, setFichaCliente] = useState(null);
@@ -7894,8 +7899,9 @@ export default function App() {
 
   // Carrega o progresso da pessoa a partir da base de dados, assim que há sessão
   useEffect(() => {
+    setCarregado(false);
     if (!session) {
-      setCarregado(false);
+      setProgresso(progressoInicial());
       return;
     }
     let cancelado = false;
@@ -7907,16 +7913,21 @@ export default function App() {
           .eq("user_id", session.user.id)
           .maybeSingle();
 
+        if (error) {
+          // Não foi possível ler os dados (rede fraca, por exemplo): NÃO grava nada por cima e tenta outra vez
+          if (!cancelado) setTimeout(() => setTentativaCarregar((n) => n + 1), 4000);
+          return;
+        }
         if (!cancelado) {
-          const salvo = (!error && data && data.data) ? data.data : {};
-
-          setProgresso((p) => ({
-            ...p,
+          const salvo = (data && data.data) ? data.data : {};
+          const base = progressoInicial();
+          setProgresso({
+            ...base,
             ...salvo,
-            disponibilidade: { ...p.disponibilidade, ...(salvo.disponibilidade || {}) },
-            reflexoesComunidade: { ...p.reflexoesComunidade, ...(salvo.reflexoesComunidade || {}) },
-            papel: salvo.papel || p.papel,
-          }));
+            disponibilidade: { ...base.disponibilidade, ...(salvo.disponibilidade || {}) },
+            reflexoesComunidade: { ...base.reflexoesComunidade, ...(salvo.reflexoesComunidade || {}) },
+            papel: salvo.papel || base.papel,
+          });
         }
 
         // Garante que existe ficha de cliente para esta pessoa
@@ -7943,12 +7954,14 @@ export default function App() {
             );
         }
       } catch (e) {
-        // sem dados guardados ainda — arranca do zero
+        // erro inesperado: não marca como carregado, para não apagar dados guardados
+        if (!cancelado) setTimeout(() => setTentativaCarregar((n) => n + 1), 4000);
+        return;
       }
       if (!cancelado) setCarregado(true);
     })();
     return () => { cancelado = true; };
-  }, [session]);
+  }, [session?.user?.id, tentativaCarregar]);
 
   // Guarda o progresso na base de dados sempre que muda
   useEffect(() => {
