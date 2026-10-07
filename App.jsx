@@ -1491,7 +1491,7 @@ function ComunidadeBloqueada({ onBack, onDesbloquear, terminouEm }) {
     setEstadoPagamento("a_enviar");
     try {
       guardarTelefone(telemovel.trim());
-      const resultado = await iniciarPagamentoMBWay("comunidade", "Comunidade 3S — mensalidade", "7,49€", telemovel.trim());
+      const resultado = await iniciarPagamentoMBWay("comunidade", "Comunidade 3S — mensalidade", "4,99€", telemovel.trim());
       setEstadoPagamento("a_confirmar");
       const pago = await aguardarConfirmacaoPagamento(resultado.pagamento_id);
       if (pago) {
@@ -1521,17 +1521,17 @@ function ComunidadeBloqueada({ onBack, onDesbloquear, terminouEm }) {
             Acesso à Comunidade 3S
           </p>
           <p className="text-sm mt-2 leading-relaxed" style={{ color: palette.goldSoft }}>
-            Tudo o que precisas para o curso do mês, num só valor:
+            Todos os materiais da escola, num só valor:
           </p>
           <div className="text-left text-sm mt-3 space-y-1.5 mx-auto" style={{ color: palette.creamSoft, maxWidth: 280 }}>
-            <p>✓ Caderno de trabalho <span style={{ color: palette.goldSoft }}>(4,99€)</span></p>
-            <p>✓ Livro do aluno <span style={{ color: palette.goldSoft }}>(6,99€)</span></p>
-            <p>✓ Material didático <span style={{ color: palette.goldSoft }}>(2,99€)</span></p>
+            <p>✓ Todos os cadernos de trabalho</p>
+            <p>✓ Todos os livros do aluno</p>
+            <p>✓ Todo o material didático</p>
             <p>✓ Aulas gravadas</p>
             <p>✓ 1 encontro online por mês</p>
           </div>
-          <p className="text-xs mt-4 line-through" style={{ color: palette.goldSoft }}>Em separado: mais de 14,97€</p>
-          <p className="font-serif text-2xl mt-1" style={{ color: palette.gold }}>7,49€ / mês</p>
+          <p className="text-xs mt-4 line-through" style={{ color: palette.goldSoft }}>Os materiais, em separado, valem mais de 500€</p>
+          <p className="font-serif text-2xl mt-1" style={{ color: palette.gold }}>4,99€ / mês</p>
         </div>
 
         <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>PROGRAMA SETEMBRO–DEZEMBRO</p>
@@ -1558,7 +1558,7 @@ function ComunidadeBloqueada({ onBack, onDesbloquear, terminouEm }) {
                 A tua mensalidade terminou a {new Date(terminouEm).toLocaleDateString("pt-PT", { day: "2-digit", month: "long" })}. Renova para continuares.
               </p>
             )}
-            <BotaoCarrinho rotulo="Adicionar 1 mês ao carrinho" item={{ chave: "comunidade", tipo: "comunidade", titulo: "Comunidade 3S — mensalidade", valor: 7.49 }} />
+            <BotaoCarrinho rotulo="Adicionar 1 mês ao carrinho" item={{ chave: "comunidade", tipo: "comunidade", titulo: "Comunidade 3S — mensalidade", valor: 4.99 }} />
             <p className="text-[11px] text-center" style={{ color: palette.navySoft }}>Pagas por MB WAY, Multibanco ou Payshop. Cada pagamento dá acesso durante 1 mês.</p>
             <ResgatarCodigo titulo="Recebeste um código de oferta?" onAtivado={() => onDesbloquear && onDesbloquear()} />
           </div>
@@ -1607,7 +1607,7 @@ function ComunidadeBloqueada({ onBack, onDesbloquear, terminouEm }) {
                   className="w-full rounded-full py-3 font-medium text-sm tracking-wide transition active:scale-[0.98] disabled:opacity-60"
                   style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
                 >
-                  {estadoPagamento === "a_enviar" ? "A enviar pedido..." : "Pagar 7,49€ e entrar"}
+                  {estadoPagamento === "a_enviar" ? "A enviar pedido..." : "Pagar 4,99€ e entrar"}
                 </button>
                 {erroPagamento && <p className="text-xs text-center" style={{ color: "#B23A3A" }}>{erroPagamento}</p>}
               </>
@@ -1885,13 +1885,13 @@ function ComunidadeScreen({ onBack, onOpenCurso, reflexoes, onGuardarReflexao, o
         {mensalidadeAte && new Date(mensalidadeAte) > new Date() ? (
           <div className="rounded-2xl px-4 py-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
             <p className="text-xs" style={{ color: palette.navySoft }}>Mensalidade paga até <b style={{ color: palette.navy }}>{new Date(mensalidadeAte).toLocaleDateString("pt-PT", { day: "2-digit", month: "long" })}</b>.</p>
-            <div className="mt-2"><BotaoCarrinho pequeno rotulo="Renovar mais 1 mês" item={{ chave: "comunidade", tipo: "comunidade", titulo: "Comunidade 3S — mensalidade", valor: 7.49 }} /></div>
+            <div className="mt-2"><BotaoCarrinho pequeno rotulo="Renovar mais 1 mês" item={{ chave: "comunidade", tipo: "comunidade", titulo: "Comunidade 3S — mensalidade", valor: 4.99 }} /></div>
           </div>
         ) : (
           <div className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.navy }}>
             <p className="font-serif text-lg" style={{ color: palette.creamSoft }}>Torna-te membro da Comunidade</p>
-            <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.goldSoft }}>Caderno, livro e material didático do curso do mês, aulas gravadas e 1 encontro online por mês — tudo por 7,49€/mês.</p>
-            <div className="mt-3"><BotaoCarrinho rotulo="Aderir à Comunidade" item={{ chave: "comunidade", tipo: "comunidade", titulo: "Comunidade 3S — mensalidade", valor: 7.49 }} /></div>
+            <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.goldSoft }}>Todos os materiais didáticos, aulas gravadas e 1 encontro online por mês — tudo por 4,99€/mês.</p>
+            <div className="mt-3"><BotaoCarrinho rotulo="Aderir à Comunidade" item={{ chave: "comunidade", tipo: "comunidade", titulo: "Comunidade 3S — mensalidade", valor: 4.99 }} /></div>
           </div>
         )}
       </div>
@@ -6275,7 +6275,15 @@ function BottomNav({ active, onChange, badgeAgenda }) {
 --------------------------------------------------------- */
 
 const MESES_PT = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+function todosMateriaisDigitais() {
+  const ids = {};
+  materiais.forEach((m) => { if (!m.apenasMentor) ids[m.id] = true; });
+  return ids;
+}
 function materiaisIncluidosComunidade() {
+  return todosMateriaisDigitais();
+}
+function materiaisDoMesComunidade() {
   const mes = comunidadeMeses.find((m) => m.mes === MESES_PT[new Date().getMonth()]);
   const curso = mes && mes.formacaoId ? cursos.find((c) => c.id === mes.formacaoId) : null;
   const ids = {};
@@ -6378,7 +6386,7 @@ function BotaoCarrinho({ item, rotulo, pequeno }) {
   const noCarrinho = carrinho.itens.some((i) => i.chave === item.chave);
   const incluidoNoMes = (item.tipo === "material" || item.tipo === "material_fisico") && materiaisIncluidosComunidade()[item.materialId];
   const dica = incluidoNoMes ? (
-    <p className="text-[11px] mt-1.5" style={{ color: palette.gold }}>Incluído na Comunidade deste mês — tudo por 7,49€/mês</p>
+    <p className="text-[11px] mt-1.5" style={{ color: palette.gold }}>Grátis para membros da Comunidade · 4,99€/mês</p>
   ) : null;
   const classe = pequeno
     ? "w-full flex items-center justify-between rounded-lg px-3 py-2 text-xs font-medium"
@@ -6446,7 +6454,7 @@ function CarrinhoScreen({ onBack, onPagamentoConfirmado }) {
   const temComunidadeNoCarrinho = carrinho.itens.some((i) => i.tipo === "comunidade");
   const trocarPelaComunidade = () => {
     itensIncluidos.forEach((i) => carrinho.remover(i.chave));
-    carrinho.adicionar({ chave: "comunidade", tipo: "comunidade", titulo: "Comunidade 3S — mensalidade", valor: 7.49 });
+    carrinho.adicionar({ chave: "comunidade", tipo: "comunidade", titulo: "Comunidade 3S — mensalidade", valor: 4.99 });
   };
   const descontoValido = codigoDesconto.trim().toUpperCase() === "COMUNIDADE10";
   const descontoCiclo = Number(carrinho.descontoCiclo || 0);
@@ -6549,12 +6557,12 @@ function CarrinhoScreen({ onBack, onPagamentoConfirmado }) {
 
             {itensIncluidos.length > 0 && !temComunidadeNoCarrinho && (
               <div className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.navy }}>
-                <p className="font-serif text-lg" style={{ color: palette.creamSoft }}>Fica tudo por 7,49€</p>
+                <p className="font-serif text-lg" style={{ color: palette.creamSoft }}>Fica tudo por 4,99€</p>
                 <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.goldSoft }}>
-                  {itensIncluidos.length === 1 ? "Este material está incluído" : "Estes materiais estão incluídos"} na Comunidade deste mês. Aderindo por 7,49€/mês, ficas com o caderno, o livro e o material didático do curso do mês, as aulas gravadas e 1 encontro online.
+                  {itensIncluidos.length === 1 ? "Este material é gratuito" : "Estes materiais são gratuitos"} para membros da Comunidade. Aderindo por 4,99€/mês, ficas com todos os materiais didáticos da escola, as aulas gravadas e 1 encontro online por mês.
                 </p>
                 <button onClick={trocarPelaComunidade} className="w-full rounded-full py-2.5 mt-3 text-sm font-medium" style={{ backgroundColor: palette.gold, color: palette.navy }}>
-                  Trocar pela Comunidade · 7,49€
+                  Trocar pela Comunidade · 4,99€
                 </button>
               </div>
             )}
@@ -6837,7 +6845,7 @@ function InscricaoEventoPublica({ eventoId }) {
 }
 
 /* ---------- Montra: cursos à venda, livros ---------- */
-const PRECO_CURSO = 14.9;
+const PRECO_CURSO = 7.49;
 const LIVROS_AUTORA_IDS = [12, 13, 14, 15, 16];
 
 function materiaisDoCurso(curso) {
@@ -6953,11 +6961,11 @@ function CursoVendaScreen({ curso, onBack }) {
           <div className="space-y-1.5">
             {inclui.map((t) => <p key={t} className="text-sm" style={{ color: palette.creamSoft }}>✓ {t}</p>)}
           </div>
-          <p className="font-serif text-3xl mt-4" style={{ color: palette.gold }}>{ehComunidade ? "7,49€ / mês" : precoTexto(PRECO_CURSO)}</p>
+          <p className="font-serif text-3xl mt-4" style={{ color: palette.gold }}>{ehComunidade ? "4,99€ / mês" : precoTexto(PRECO_CURSO)}</p>
         </div>
 
         {ehComunidade ? (
-          <BotaoCarrinho rotulo="Aderir à Comunidade" item={{ chave: "comunidade", tipo: "comunidade", titulo: "Comunidade 3S — mensalidade", valor: 7.49 }} />
+          <BotaoCarrinho rotulo="Aderir à Comunidade" item={{ chave: "comunidade", tipo: "comunidade", titulo: "Comunidade 3S — mensalidade", valor: 4.99 }} />
         ) : (
           <BotaoCarrinho rotulo="Comprar o curso" item={{ chave: `curso-${curso.id}`, tipo: "curso", cursoId: curso.id, titulo: `Curso — ${curso.titulo}`, valor: PRECO_CURSO }} />
         )}
@@ -6990,7 +6998,7 @@ function LivrosScreen({ onBack, materiaisDesbloqueados }) {
 
 /* ---------- Montra pública (antes de entrar na app) ---------- */
 function MontraPublica({ onCriarConta, onEntrar, onEscolher }) {
-  const comunidadeItem = { chave: "comunidade", tipo: "comunidade", titulo: "Comunidade 3S — mensalidade", valor: 7.49 };
+  const comunidadeItem = { chave: "comunidade", tipo: "comunidade", titulo: "Comunidade 3S — mensalidade", valor: 4.99 };
   const cursoGratis = cursos.find((c) => c.gratuito);
   const livros = LIVROS_AUTORA_IDS.map((id) => materiais.find((m) => m.id === id)).filter(Boolean);
   const titulo = (eyebrow, texto) => (
@@ -7054,12 +7062,12 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher }) {
           {titulo("COMUNIDADE 3S", "Tudo o que precisas, todos os meses")}
           <div className="rounded-3xl px-5 py-5" style={{ backgroundColor: palette.card, border: `1px solid ${palette.gold}` }}>
             <div className="space-y-1.5">
-              {["Caderno de trabalho do curso do mês", "Livro do aluno", "Material didático", "Aulas gravadas", "1 encontro online por mês", "Partilha e desafios com o grupo"].map((t) => (
+              {["Todos os cadernos de trabalho", "Todos os livros do aluno", "Todo o material didático", "Aulas gravadas", "1 encontro online por mês", "Partilha e desafios com o grupo"].map((t) => (
                 <p key={t} className="text-sm" style={{ color: palette.ink }}><span style={{ color: palette.gold }}>✓</span> {t}</p>
               ))}
             </div>
-            <p className="text-xs mt-4 line-through" style={{ color: palette.navySoft }}>Em separado: mais de 14,97€</p>
-            <p className="font-serif text-3xl" style={{ color: palette.navy }}>7,49€ <span className="text-base" style={{ color: palette.navySoft }}>/ mês</span></p>
+            <p className="text-xs mt-4 line-through" style={{ color: palette.navySoft }}>Os materiais, em separado, valem mais de 500€</p>
+            <p className="font-serif text-3xl" style={{ color: palette.navy }}>4,99€ <span className="text-base" style={{ color: palette.navySoft }}>/ mês</span></p>
             <p className="text-[11px] mt-1" style={{ color: palette.navySoft }}>Sem fidelização: pagas mês a mês.</p>
             <div className="mt-4">{botao("Quero ser membro", () => onEscolher(comunidadeItem))}</div>
           </div>
