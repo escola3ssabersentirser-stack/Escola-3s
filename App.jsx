@@ -1,4 +1,4 @@
-// VERSAO-08-OUT-AVISOS-MARCACOES
+// VERSAO-08-OUT-PRECOS-LIVROS
 import { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "./supabase.js";
 import {
@@ -367,11 +367,11 @@ const materiais = [
   { id: 9, titulo: "Cartas Amor Próprio", formato: "Cartas", preco: "15€", url: "/cartas-amor-proprio.pdf" },
   { id: 10, titulo: "Cartas Relações", formato: "Cartas", preco: "15€", url: "/cartas-relacoes.pdf" },
   { id: 11, titulo: "Ficha — Roda da Vida", formato: "Ficha", preco: "5€", url: "/roda-da-vida.pdf" },
-  { id: 12, titulo: "A Rapariga Descalça", formato: "Livro", preco: "15€", url: "", tambemFisico: true, precoFisico: "22€" },
+  { id: 12, titulo: "A Rapariga Descalça", formato: "Livro", preco: "6,99€", url: "", tambemFisico: true, precoFisico: "22€" },
   { id: 13, titulo: "Amina", formato: "Livro", preco: "6,99€", url: "/amina.pdf", tambemFisico: true, precoFisico: "22€" },
   { id: 14, titulo: "Porta 15", formato: "Livro", preco: "6,99€", url: "/porta-15.pdf", tambemFisico: true, precoFisico: "22€" },
   { id: 15, titulo: "O Último Cadeado", formato: "Livro", preco: "6,99€", url: "/o-ultimo-cadeado.pdf", tambemFisico: true, precoFisico: "22€" },
-  { id: 16, titulo: "O Preço do Silêncio", formato: "Livro", preco: "15€", url: "", tambemFisico: true, precoFisico: "22€" },
+  { id: 16, titulo: "O Preço do Silêncio", formato: "Livro", preco: "6,99€", url: "", tambemFisico: true, precoFisico: "22€" },
   { id: 17, titulo: "Caderno da Pertença", formato: "Caderno", preco: "4,99€", url: "/caderno-pertenca.pdf", tambemFisico: true, precoFisico: "16€" },
   { id: 18, titulo: "Mapa dos Vínculos", formato: "Mapa", preco: "8€", url: "/mapa-vinculos.pdf" },
   { id: 19, titulo: "Caderno dos Cadeados", formato: "Caderno", preco: "4,99€", url: "/caderno-cadeados.pdf", tambemFisico: true, precoFisico: "16€" },
