@@ -1,4 +1,4 @@
-// VERSAO-27-SET-ARQUIVO-PAGAMENTOS-VIDEOS-CRENCAS
+// VERSAO-08-OUT-AVISOS-MARCACOES
 import { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "./supabase.js";
 import {
@@ -537,6 +537,7 @@ const servicosSessao = [
   { id: 1, tipo: "Coaching", titulo: "Sessão de Coaching", descricao: "Clareza e ação para os teus objetivos.", duracao: "50 min", preco: "30€" },
   { id: 2, tipo: "Mentoria", titulo: "Mentoria 3S", descricao: "Orientação próxima para o teu percurso.", duracao: "45 min", preco: "30€" },
   { id: 3, tipo: "Acompanhamento", titulo: "Acompanhamento Individual", descricao: "Sessões regulares para te apoiarem no caminho.", duracao: "50 min", preco: "30€" },
+  { id: 4, tipo: "Experiência", titulo: "Sessão de experiência", descricao: "20 minutos para nos conhecermos e veres se é para ti. Uma por pessoa.", duracao: "20 min", preco: "Grátis", gratis: true },
 ];
 
 const DIAS_SEMANA = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
@@ -4308,6 +4309,17 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
   const horariosLivres = horariosDisponiveis.filter((h) => !ocupados.includes(h.chave));
 
   const usaCiclo = Boolean(servicoEscolhido && (creditos[servicoEscolhido.tipo] || 0) > 0);
+  const eGratis = Boolean(servicoEscolhido && servicoEscolhido.gratis);
+  const [jaUsouExperiencia, setJaUsouExperiencia] = useState(false);
+  useEffect(() => {
+    (async () => {
+      const { data: s } = await supabase.auth.getSession();
+      const uid = s?.session?.user?.id;
+      if (!uid) return;
+      const { data } = await supabase.from("marcacoes").select("id").eq("user_id", uid).eq("tipo", "Experiência").neq("estado", "cancelada").limit(1);
+      setJaUsouExperiencia(Boolean(data && data.length));
+    })();
+  }, []);
 
   const confirmarMarcacao = async () => {
     if (!telemovel.trim() || !horario || !nomeCompleto.trim() || !aceitouConsentimento) return;
@@ -4341,11 +4353,16 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
           tipo: servicoEscolhido.tipo,
           titulo: usaCiclo ? `${servicoEscolhido.titulo} (ciclo de 4 sessões)` : descontoValido ? `${servicoEscolhido.titulo} (código de desconto aplicado — 10%)` : servicoEscolhido.titulo,
           horario: horario.chave,
-          estado: usaCiclo ? "confirmada" : "pendente_pagamento",
+          estado: usaCiclo || eGratis ? "confirmada" : "pendente_pagamento",
           pago_com_ciclo: usaCiclo,
         })
         .select("id")
         .single();
+      if (error && eGratis && /experiencia/i.test(error.message || "")) {
+        setErro("Já usaste a tua sessão de experiência gratuita.");
+        setAConfirmar(false);
+        return;
+      }
       if (error) {
         setErro("Esse horário acabou de ser reservado por outra pessoa. Escolhe outro.");
         await carregarOcupados(mentoraEscolhida.user_id);
@@ -4354,7 +4371,7 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
         return;
       }
       guardarTelefone(telemovel.trim());
-      if (usaCiclo) {
+      if (usaCiclo || eGratis) {
         setConfirmado(true);
         onConfirmar({ tipo: servicoEscolhido.tipo, titulo: servicoEscolhido.titulo, horario: horario.label, data: horario.chave });
         if (onUsouCredito) onUsouCredito();
@@ -4445,7 +4462,7 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
           <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>1. O QUE QUERES?</p>
 
           <div className="space-y-3">
-            {servicosSessao.map((s) => (
+            {servicosSessao.filter((s) => !(s.gratis && jaUsouExperiencia)).map((s) => (
               <button
                 key={s.id}
                 onClick={() => { setServicoEscolhido(s); setPasso(2); }}
@@ -4538,7 +4555,7 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
                 type="tel"
                 value={telemovel}
                 onChange={(e) => setTelemovel(e.target.value)}
-                placeholder="Número de telemóvel (MB WAY)"
+                placeholder={eGratis || usaCiclo ? "Número de telemóvel" : "Número de telemóvel (MB WAY)"}
                 className="w-full rounded-xl px-4 py-2.5 text-sm outline-none"
                 style={{ backgroundColor: palette.creamSoft, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
               />
@@ -4576,7 +4593,7 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
                   className="w-full rounded-full py-3 font-medium text-sm tracking-wide disabled:opacity-60"
                   style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
                 >
-                  {aConfirmar ? "A enviar pedido..." : usaCiclo ? `Confirmar · usar 1 sessão do ciclo (restam ${creditos[servicoEscolhido.tipo]})` : `Confirmar e pagar · ${descontoValido ? precoComDesconto(servicoEscolhido.preco) : servicoEscolhido.preco}`}
+                  {aConfirmar ? "A enviar pedido..." : usaCiclo ? `Confirmar · usar 1 sessão do ciclo (restam ${creditos[servicoEscolhido.tipo]})` : eGratis ? "Confirmar sessão gratuita" : `Confirmar e pagar · ${descontoValido ? precoComDesconto(servicoEscolhido.preco) : servicoEscolhido.preco}`}
                 </button>
               )}
               {erro && <p className="text-xs text-center" style={{ color: "#B23A3A" }}>{erro}</p>}
@@ -7269,6 +7286,75 @@ function MinhasSessoesMarcadas() {
   );
 }
 
+/* ---------- Janela com as marcações do dia (dona e mentoras) ---------- */
+function PopupMarcacoesDoDia({ papel }) {
+  const [sessoes, setSessoes] = useState(null);
+  const [amanha, setAmanha] = useState(0);
+  const [aberto, setAberto] = useState(false);
+  useEffect(() => {
+    (async () => {
+      const { data: s } = await supabase.auth.getSession();
+      const uid = s?.session?.user?.id;
+      if (!uid) return;
+      const d = (offset) => {
+        const x = new Date(); x.setDate(x.getDate() + offset);
+        return `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, "0")}-${String(x.getDate()).padStart(2, "0")}`;
+      };
+      const hoje = d(0), depois = d(1);
+      const chave = `escola3s:popup-marcacoes:${uid}:${hoje}`;
+      try { if (window.localStorage.getItem(chave)) return; } catch (e) {}
+      let q = supabase.from("marcacoes").select("id, titulo, horario, user_id").eq("estado", "confirmada").gte("horario", hoje).lt("horario", d(2)).order("horario", { ascending: true });
+      if (papel !== "dona") q = q.eq("mentor_user_id", uid);
+      const { data: ms } = await q;
+      const lista = ms || [];
+      const deHoje = lista.filter((m) => String(m.horario).startsWith(hoje) && !sessaoJaAcabou(m.horario));
+      const deAmanha = lista.filter((m) => String(m.horario).startsWith(depois)).length;
+      if (deHoje.length === 0 && deAmanha === 0) return;
+      const ids = deHoje.map((m) => m.id);
+      const uids = [...new Set(deHoje.map((m) => m.user_id))];
+      const [{ data: ls }, { data: cs }] = await Promise.all([
+        ids.length ? supabase.from("marcacoes_links").select("marcacao_id, link").in("marcacao_id", ids) : Promise.resolve({ data: [] }),
+        uids.length ? supabase.from("clientes").select("user_id, nome, email, telefone").in("user_id", uids) : Promise.resolve({ data: [] }),
+      ]);
+      setSessoes(deHoje.map((m) => {
+        const c = (cs || []).find((x) => x.user_id === m.user_id);
+        return { ...m, link: (ls || []).find((l) => l.marcacao_id === m.id)?.link, cliente: c?.nome || c?.email || "", telefone: c?.telefone || "" };
+      }));
+      setAmanha(deAmanha);
+      setAberto(true);
+      try { window.localStorage.setItem(chave, "1"); } catch (e) {}
+    })();
+  }, [papel]);
+  if (!aberto || !sessoes) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center" style={{ backgroundColor: "rgba(20,30,55,0.55)" }} onClick={() => setAberto(false)}>
+      <div className="w-full max-w-md rounded-t-3xl sm:rounded-3xl px-5 pt-6 pb-8 max-h-[85vh] overflow-y-auto" style={{ backgroundColor: palette.creamSoft }} onClick={(e) => e.stopPropagation()}>
+        <p className="text-[11px] tracking-[0.25em] font-medium" style={{ color: palette.gold }}>AS TUAS SESSÕES</p>
+        <p className="font-serif text-2xl mt-1" style={{ color: palette.navy }}>
+          {sessoes.length > 0 ? `Hoje tens ${sessoes.length} sess${sessoes.length === 1 ? "ão" : "ões"}` : "Hoje não tens sessões"}
+        </p>
+        <div className="mt-4 space-y-3">
+          {sessoes.map((m) => (
+            <div key={m.id} className="rounded-2xl px-4 py-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.gold}` }}>
+              <p className="font-serif text-lg" style={{ color: palette.navy }}>{String(m.horario).slice(11, 16)} · {m.titulo}</p>
+              {m.cliente && <p className="text-xs" style={{ color: palette.navySoft }}>{m.cliente}{m.telefone ? ` · ${m.telefone}` : ""}</p>}
+              <BotaoLinkSessao link={m.link} />
+            </div>
+          ))}
+        </div>
+        {amanha > 0 && (
+          <p className="text-sm mt-4 rounded-xl px-4 py-3" style={{ backgroundColor: `${palette.gold}1F`, color: palette.navy }}>
+            Amanhã tens {amanha} sess{amanha === 1 ? "ão" : "ões"} marcada{amanha === 1 ? "" : "s"}.
+          </p>
+        )}
+        <button onClick={() => setAberto(false)} className="w-full rounded-full py-3 mt-5 text-sm font-medium" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>
+          Fechar
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function AvisosMentoraInicio({ naoLidas, onVerAgenda, onVerNotificacoes }) {
   const [proxima, setProxima] = useState(null);
   useEffect(() => {
@@ -8402,6 +8488,7 @@ export default function App() {
           <NotificacoesSino onAbrir={() => setSecao("notificacoes")} papel={progresso.papel} />
           <CarrinhoContext.Provider value={carrinho}>
             {content}
+            {(progresso.papel === "dona" || progresso.papel === "mentora") && <PopupMarcacoesDoDia papel={progresso.papel} />}
             {secao !== "carrinho" && !cursoAberto && (
               <button
                 onClick={carrinho.abrir}
