@@ -1,4 +1,4 @@
-// VERSAO-09-OUT-CURSOS-DIVIDIDOS
+// VERSAO-09-OUT-VISUAL
 import { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "./supabase.js";
 import {
@@ -79,16 +79,16 @@ function Brand({ size = "md" }) {
   );
 }
 
-function Wordmark() {
+function Wordmark({ compacto }) {
   return (
     <div
-      className="flex flex-col items-center select-none rounded-3xl py-8 px-6"
-      style={{ backgroundColor: palette.navy }}
+      className={`flex flex-col items-center select-none rounded-3xl ${compacto ? "py-4 px-5" : "py-8 px-6"}`}
+      style={{ background: `linear-gradient(150deg, ${palette.navy} 0%, #24436E 100%)`, boxShadow: "0 10px 30px -12px rgba(27,51,85,0.45)" }}
     >
       <img
         src={LOGO_FULL_TRANSPARENTE}
         alt="Escola 3S — Saber, Sentir, Ser"
-        className="w-48 h-auto object-contain"
+        className={`${compacto ? "w-28" : "w-48"} h-auto object-contain`}
       />
     </div>
   );
@@ -1069,11 +1069,11 @@ const areas = [
 ];
 
 const areasInicio = [
-  { key: "formacao-hub", titulo: "Formação", icon: GraduationCap, full: true },
-  { key: "comunidade", titulo: "Comunidade", icon: Users },
-  { key: "podcast", titulo: "Podcast", icon: Headphones },
-  { key: "marcar", titulo: "Marcar sessão", icon: PenLine },
-  { key: "livros", titulo: "Os meus livros", icon: BookOpen },
+  { key: "formacao-hub", titulo: "Formação", desc: "Cursos, material didático e temas de liderança e comunicação", icon: GraduationCap, full: true },
+  { key: "comunidade", titulo: "Comunidade", desc: "Um tema por mês", icon: Users },
+  { key: "podcast", titulo: "Podcast", desc: "Episódios para ouvir", icon: Headphones },
+  { key: "marcar", titulo: "Marcar sessão", desc: "Coaching e mentoria", icon: PenLine },
+  { key: "livros", titulo: "Os meus livros", desc: "Romances da autora", icon: BookOpen },
 ];
 
 /* ---------------------------------------------------------
@@ -1139,8 +1139,9 @@ function FormacaoHubScreen({ onBack, onAbrir, tema, setTema, temAcesso, onAbrirC
     );
   }
   const cartao = (titulo, desc, Icon, onClick) => (
-    <button onClick={onClick} className="rounded-3xl px-5 py-5 text-left transition active:scale-[0.97] shadow-sm" style={{ backgroundColor: palette.navy }}>
-      <div className="w-12 h-12 rounded-full flex items-center justify-center mb-3" style={{ border: `1.5px solid ${palette.gold}` }}>
+    <button onClick={onClick} className="relative overflow-hidden rounded-3xl px-5 py-5 text-left transition active:scale-[0.97] h-full flex flex-col items-start justify-start" style={{ background: `linear-gradient(150deg, ${palette.navy} 0%, #24436E 100%)`, boxShadow: "0 8px 22px -12px rgba(27,51,85,0.55)" }}>
+      <span className="absolute top-0 left-5 right-5 h-px" style={{ background: `linear-gradient(90deg, transparent, ${palette.gold}, transparent)` }} />
+      <div className="w-11 h-11 rounded-full flex items-center justify-center mb-3" style={{ backgroundColor: `${palette.gold}14`, border: `1.5px solid ${palette.gold}` }}>
         <Icon size={19} strokeWidth={1.6} style={{ color: palette.gold }} />
       </div>
       <p className="font-serif text-lg leading-tight" style={{ color: palette.creamSoft }}>{titulo}</p>
@@ -1164,8 +1165,9 @@ function FormacaoHubScreen({ onBack, onAbrir, tema, setTema, temAcesso, onAbrirC
         <p className="text-[11px] tracking-[0.25em] font-medium" style={{ color: palette.gold }}>TEMAS</p>
         <p className="font-serif text-2xl leading-tight mt-1 mb-4" style={{ color: palette.navy }}>O que queres trabalhar?</p>
         <div className="space-y-2.5">
-          {TEMAS_FORMACAO.map((t) => (
-            <button key={t.chave} onClick={() => setTema(t.chave)} className="w-full flex items-center gap-3 rounded-2xl px-4 py-3.5 text-left" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
+          {TEMAS_FORMACAO.map((t, i) => (
+            <button key={t.chave} onClick={() => setTema(t.chave)} className="w-full flex items-center gap-3 rounded-2xl px-4 py-3.5 text-left transition active:scale-[0.99]" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, boxShadow: "0 2px 8px -4px rgba(27,51,85,0.15)" }}>
+              <span className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 font-serif text-sm" style={{ backgroundColor: palette.navy, color: palette.gold }}>{String(i + 1).padStart(2, "0")}</span>
               <div className="flex-1">
                 <p className="font-serif text-base leading-snug" style={{ color: palette.navy }}>{t.titulo}</p>
                 <p className="text-[11px] mt-0.5 leading-snug" style={{ color: palette.navySoft }}>{t.desc}</p>
@@ -1181,23 +1183,34 @@ function FormacaoHubScreen({ onBack, onAbrir, tema, setTema, temAcesso, onAbrirC
 
 function AreaCard({ area, onOpen, full }) {
   const Icon = area.icon;
+  const destaque = area.full;
   return (
     <button
       onClick={() => onOpen(area.key)}
-      className={`rounded-3xl px-5 py-5 text-left transition active:scale-[0.97] shadow-sm ${full ? "w-full" : ""}`}
+      className={`relative overflow-hidden rounded-3xl px-5 py-5 text-left transition active:scale-[0.97] h-full ${full ? "w-full" : ""}`}
       style={{
-        backgroundColor: palette.navy,
+        background: `linear-gradient(150deg, ${palette.navy} 0%, #24436E 100%)`,
+        boxShadow: "0 8px 22px -12px rgba(27,51,85,0.55)",
       }}
     >
-      <div
-        className="w-12 h-12 rounded-full flex items-center justify-center mb-3"
-        style={{ backgroundColor: "transparent", border: `1.5px solid ${palette.gold}` }}
-      >
-        <Icon size={19} strokeWidth={1.6} style={{ color: palette.gold }} />
+      <span className="absolute top-0 left-5 right-5 h-px" style={{ background: `linear-gradient(90deg, transparent, ${palette.gold}, transparent)` }} />
+      <div className={destaque ? "flex items-center gap-4" : ""}>
+        <div
+          className={`${destaque ? "w-14 h-14" : "w-11 h-11 mb-3"} rounded-full flex items-center justify-center shrink-0`}
+          style={{ backgroundColor: `${palette.gold}14`, border: `1.5px solid ${palette.gold}` }}
+        >
+          <Icon size={destaque ? 22 : 18} strokeWidth={1.6} style={{ color: palette.gold }} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className={`font-serif ${destaque ? "text-2xl" : "text-lg"} leading-tight`} style={{ color: palette.creamSoft }}>
+            {area.titulo}
+          </p>
+          {area.desc && (
+            <p className="text-[11px] mt-1 leading-snug" style={{ color: palette.goldSoft }}>{area.desc}</p>
+          )}
+        </div>
+        {destaque && <ChevronRight size={20} style={{ color: palette.gold }} />}
       </div>
-      <p className="font-serif text-lg leading-tight" style={{ color: palette.creamSoft }}>
-        {area.titulo}
-      </p>
     </button>
   );
 }
@@ -1238,19 +1251,22 @@ function InicioScreen({ onOpen, email, papel, naoLidas, onVerAgenda, onVerNotifi
   const primeiroNome = papel === "dona" ? "Conceição" : (email ? email.split("@")[0] : "");
   return (
     <div className="pb-28">
-      <div className="px-6 pt-10 flex justify-center">
-        <Wordmark />
+      <div className="px-6 pt-8 flex justify-center">
+        <Wordmark compacto />
       </div>
-      <div className="px-6 pt-6 text-center mb-8">
-        <p className="font-serif text-2xl" style={{ color: palette.navy }}>
+      <div className="px-6 pt-6 text-center mb-7">
+        <p className="font-serif text-[28px] leading-tight" style={{ color: palette.navy }}>
           Olá{primeiroNome ? `, ${primeiroNome}` : ""} <span style={{ color: palette.gold }}>♡</span>
         </p>
         <p className="text-sm mt-1.5" style={{ color: palette.navySoft }}>
           O que queres explorar hoje?
         </p>
-        <p className="text-[11px] tracking-[0.2em] font-medium mt-3" style={{ color: palette.gold }}>
-          LIDERAR COMEÇA NA FORMA COMO COMUNICAS
-        </p>
+        <div className="flex flex-col items-center mt-4">
+          <span className="h-px w-10 mb-2" style={{ backgroundColor: palette.gold }} />
+          <p className="text-[10px] tracking-[0.16em] font-medium whitespace-nowrap" style={{ color: palette.gold }}>
+            LIDERAR COMEÇA NA FORMA COMO COMUNICAS
+          </p>
+        </div>
       </div>
       <BannerEncontro />
       {(papel === "dona" || papel === "mentora") && (
@@ -7012,7 +7028,7 @@ function CatalogoCursosScreen({ onBack, temAcesso, onAbrirCurso, onAreaAluno }) 
         key={c.id}
         onClick={() => onAbrirCurso(c)}
         className="w-full text-left rounded-2xl px-4 py-4 transition active:scale-[0.99]"
-        style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}
+        style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, boxShadow: "0 4px 14px -8px rgba(27,51,85,0.25)" }}
       >
         <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{c.titulo}</p>
         {c.promessa && <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{c.promessa}</p>}
@@ -7025,7 +7041,7 @@ function CatalogoCursosScreen({ onBack, temAcesso, onAbrirCurso, onAreaAluno }) 
           ) : (
             <span className="font-serif text-xl" style={{ color: palette.gold }}>{precoTexto(PRECO_CURSO)}</span>
           )}
-          <span className="text-xs flex items-center gap-1" style={{ color: palette.navySoft }}>{acesso ? "" : "Ver o curso"} <ChevronRight size={14} /></span>
+          <span className="text-xs font-medium flex items-center gap-1 rounded-full px-3 py-1.5" style={acesso ? { color: palette.navySoft } : { backgroundColor: palette.navy, color: palette.creamSoft }}>{acesso ? "" : "Ver o curso"} <ChevronRight size={14} /></span>
         </div>
       </button>
     );
@@ -8004,6 +8020,7 @@ export default function App() {
   const [tab, setTab] = useState("inicio");
   const [secao, setSecao] = useState(null);
   const [temaFormacao, setTemaFormacao] = useState(null);
+  useEffect(() => { if (secao !== "formacao-hub") setTemaFormacao(null); }, [secao]);
   const [cursoAberto, setCursoAberto] = useState(null);
   const [clienteAberto, setClienteAberto] = useState(null);
   const [certificadoAberto, setCertificadoAberto] = useState(null);
