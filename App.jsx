@@ -1,4 +1,4 @@
-// VERSAO-08-OUT-PRECOS-MATERIAIS
+// VERSAO-09-OUT-CURSOS-DIVIDIDOS
 import { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "./supabase.js";
 import {
@@ -1029,7 +1029,7 @@ function NovaPasswordScreen({ onConcluido }) {
 /* ---------------------------------------------------------
    Cabeçalho comum
 --------------------------------------------------------- */
-function SectionHeader({ eyebrow, title, onBack }) {
+function SectionHeader({ eyebrow, title, onBack, backLabel }) {
   return (
     <div className="px-6 pt-8 pb-4">
       {onBack && (
@@ -1039,7 +1039,7 @@ function SectionHeader({ eyebrow, title, onBack }) {
           style={{ color: palette.navySoft }}
         >
           <ChevronLeft size={16} />
-          Início
+          {backLabel || "Início"}
         </button>
       )}
       <p className="text-[11px] tracking-[0.25em] font-medium mb-1" style={{ color: palette.gold }}>
@@ -1059,8 +1059,8 @@ const areas = [
   { key: "alunos", titulo: "Alunos", desc: "Cursos das duas escolas", icon: GraduationCap, full: true },
   { key: "aluno", titulo: "Área do Aluno", desc: "Progresso, certificados e materiais", icon: GraduationCap },
   { key: "livros", titulo: "Os meus livros", desc: "Romances de Conceição Alves", icon: BookOpen },
-  { key: "escola-lideranca", titulo: "Escola de Liderança", desc: "Cursos de liderança", icon: BookOpen },
-  { key: "escola-ser", titulo: "Escola do Ser", desc: "Cursos de identidade e ser", icon: BookOpen },
+  { key: "escola-lideranca", titulo: "Escola de Liderança", desc: "Comunicação e liderança de pessoas", icon: BookOpen },
+  { key: "escola-ser", titulo: "Escola do Ser", desc: "A liderança começa em ti", icon: BookOpen },
   { key: "comunidade", titulo: "Comunidade", desc: "Tema, desafio e partilha do mês", icon: Users },
   { key: "workshops", titulo: "Workshops", desc: "Próximas sessões e inscrição", icon: Calendar },
   { key: "podcast", titulo: "Podcast", desc: "Episódios para ouvir", icon: Headphones },
@@ -1069,13 +1069,115 @@ const areas = [
 ];
 
 const areasInicio = [
-  { key: "podcast", titulo: "Podcasts", icon: Headphones },
-  { key: "alunos", titulo: "Aluno", icon: GraduationCap },
+  { key: "formacao-hub", titulo: "Formação", icon: GraduationCap, full: true },
   { key: "comunidade", titulo: "Comunidade", icon: Users },
-  { key: "livros", titulo: "Os meus livros", icon: BookOpen },
-  { key: "material", titulo: "Material didático", icon: Layers },
+  { key: "podcast", titulo: "Podcast", icon: Headphones },
   { key: "marcar", titulo: "Marcar sessão", icon: PenLine },
+  { key: "livros", titulo: "Os meus livros", icon: BookOpen },
 ];
+
+/* ---------------------------------------------------------
+   Formação: cursos, material didático e temas
+--------------------------------------------------------- */
+const TEMAS_FORMACAO = [
+  { chave: "assertiva", titulo: "Comunicação assertiva", desc: "Dizer o que precisa de ser dito, com respeito e clareza.", cursos: [2], materiais: [64, 108, 98, 8] },
+  { chave: "cnv", titulo: "Comunicação não violenta", desc: "Observar, sentir, pedir: comunicar sem atacar nem ceder.", cursos: [], materiais: [107, 98, 123, 124] },
+  { chave: "feedback", titulo: "Feedback e conversas difíceis", desc: "Dar e receber feedback, gerir conflitos e pôr limites.", cursos: [2], materiais: [5, 65, 109, 110, 66, 67] },
+  { chave: "liderar", titulo: "Liderar pessoas", desc: "Que líder sou eu e como crio compromisso na equipa.", cursos: [1], materiais: [71, 68, 69, 70, 97, 99] },
+  { chave: "planos", titulo: "Planos de ação", desc: "Transformar objetivos em passos concretos.", cursos: [], materiais: [4, 101, 100, 96] },
+  { chave: "planeamento", titulo: "Planeamento", desc: "Organizar o tempo, as prioridades e o ano.", cursos: [], materiais: [3, 25, 99, 126] },
+  { chave: "emocoes", titulo: "Gestão emocional", desc: "Sentir antes de reagir: nomear e acolher as emoções.", cursos: [], materiais: [6, 123, 124, 125] },
+  { chave: "mentalidade", titulo: "Crenças e mentalidade", desc: "A liderança começa em ti.", cursos: [7, 8, 9, 10, 11, 12], materiais: [48, 49, 50, 51, 119, 120] },
+];
+
+function FormacaoHubScreen({ onBack, onAbrir, tema, setTema, temAcesso, onAbrirCurso, desbloqueados, onDesbloquear, acessoTotal }) {
+  const temaAberto = TEMAS_FORMACAO.find((t) => t.chave === tema);
+  if (temaAberto) {
+    const listaCursos = temaAberto.cursos.map((id) => cursos.find((c) => c.id === id)).filter(Boolean);
+    const listaMateriais = temaAberto.materiais.map((id) => materiais.find((m) => m.id === id)).filter((m) => m && !m.apenasMentor);
+    return (
+      <div className="pb-28">
+        <SectionHeader eyebrow="FORMAÇÃO · TEMA" title={temaAberto.titulo} onBack={() => setTema(null)} backLabel="Formação" />
+        <p className="px-6 -mt-2 mb-6 text-sm leading-relaxed" style={{ color: palette.navySoft }}>{temaAberto.desc}</p>
+        {listaCursos.length > 0 && (
+          <div className="px-6 mb-6">
+            <p className="text-[11px] tracking-[0.25em] font-medium mb-3" style={{ color: palette.gold }}>CURSOS</p>
+            <div className="space-y-3">
+              {listaCursos.map((c) => (
+                <button key={c.id} onClick={() => onAbrirCurso(c)} className="w-full text-left rounded-2xl px-4 py-4 flex items-center gap-3" style={{ backgroundColor: palette.navy }}>
+                  <div className="flex-1">
+                    <p className="font-serif text-lg leading-snug" style={{ color: palette.creamSoft }}>{c.titulo}</p>
+                    <p className="text-xs mt-1" style={{ color: palette.goldSoft }}>{c.gratuito ? "Grátis" : temAcesso(c) ? "Já tens acesso" : `${precoTexto(PRECO_CURSO)} · ver curso`}</p>
+                  </div>
+                  <ChevronRight size={18} style={{ color: palette.gold }} />
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+        {listaCursos.length === 0 && (
+          <p className="mx-6 px-4 mb-6 text-xs rounded-xl py-3" style={{ backgroundColor: `${palette.gold}1F`, color: palette.navy }}>Curso em vídeo deste tema: em breve. Para já tens aqui o material para trabalhar.</p>
+        )}
+        {listaMateriais.length > 0 && (
+          <div className="px-6">
+            <p className="text-[11px] tracking-[0.25em] font-medium mb-3" style={{ color: palette.gold }}>MATERIAL DIDÁTICO</p>
+            <div className="space-y-3">
+              {listaMateriais.map((m) => (
+                <MaterialCard
+                  key={m.id}
+                  material={m}
+                  desbloqueado={acessoTotal || Boolean(desbloqueados[m.id])}
+                  onDesbloquear={() => onDesbloquear(m.id)}
+                  desbloqueadoFisico={acessoTotal || Boolean(desbloqueados[m.id + "-fisico"])}
+                  onDesbloquearFisico={() => onDesbloquear(m.id + "-fisico")}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+  const cartao = (titulo, desc, Icon, onClick) => (
+    <button onClick={onClick} className="rounded-3xl px-5 py-5 text-left transition active:scale-[0.97] shadow-sm" style={{ backgroundColor: palette.navy }}>
+      <div className="w-12 h-12 rounded-full flex items-center justify-center mb-3" style={{ border: `1.5px solid ${palette.gold}` }}>
+        <Icon size={19} strokeWidth={1.6} style={{ color: palette.gold }} />
+      </div>
+      <p className="font-serif text-lg leading-tight" style={{ color: palette.creamSoft }}>{titulo}</p>
+      <p className="text-xs mt-1 leading-snug" style={{ color: palette.goldSoft }}>{desc}</p>
+    </button>
+  );
+  return (
+    <div className="pb-28">
+      <SectionHeader eyebrow="LIDERANÇA E COMUNICAÇÃO" title="Formação" onBack={onBack} />
+      <div className="px-6 grid grid-cols-2 gap-3">
+        {cartao("Cursos", "Cursos em vídeo, com caderno e certificado", BookOpen, () => onAbrir("alunos"))}
+        {cartao("Material didático", "Fichas, ferramentas e cadernos", Layers, () => onAbrir("material"))}
+      </div>
+      <div className="px-6 mt-3">
+        <button onClick={() => onAbrir("aluno")} className="w-full flex items-center justify-between rounded-2xl px-5 py-3.5" style={{ backgroundColor: palette.card, border: `1px solid ${palette.gold}` }}>
+          <span className="text-sm font-medium" style={{ color: palette.navy }}>O meu progresso e certificados</span>
+          <ChevronRight size={16} style={{ color: palette.gold }} />
+        </button>
+      </div>
+      <div className="px-6 mt-8">
+        <p className="text-[11px] tracking-[0.25em] font-medium" style={{ color: palette.gold }}>TEMAS</p>
+        <p className="font-serif text-2xl leading-tight mt-1 mb-4" style={{ color: palette.navy }}>O que queres trabalhar?</p>
+        <div className="space-y-2.5">
+          {TEMAS_FORMACAO.map((t) => (
+            <button key={t.chave} onClick={() => setTema(t.chave)} className="w-full flex items-center gap-3 rounded-2xl px-4 py-3.5 text-left" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
+              <div className="flex-1">
+                <p className="font-serif text-base leading-snug" style={{ color: palette.navy }}>{t.titulo}</p>
+                <p className="text-[11px] mt-0.5 leading-snug" style={{ color: palette.navySoft }}>{t.desc}</p>
+              </div>
+              <ChevronRight size={16} style={{ color: palette.gold }} />
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function AreaCard({ area, onOpen, full }) {
   const Icon = area.icon;
@@ -1145,6 +1247,9 @@ function InicioScreen({ onOpen, email, papel, naoLidas, onVerAgenda, onVerNotifi
         </p>
         <p className="text-sm mt-1.5" style={{ color: palette.navySoft }}>
           O que queres explorar hoje?
+        </p>
+        <p className="text-[11px] tracking-[0.2em] font-medium mt-3" style={{ color: palette.gold }}>
+          LIDERAR COMEÇA NA FORMA COMO COMUNICAS
         </p>
       </div>
       <BannerEncontro />
@@ -1277,8 +1382,8 @@ function AreaAlunoScreen({ onBack, onOpenCurso, cursosConcluidos, materiaisDesbl
       </div>
 
       {[
-        { id: "ser", nome: "Escola do Ser", frase: "Autoconhecimento, emoções e crescimento pessoal" },
-        { id: "lideranca", nome: "Escola de Liderança", frase: "Liderar pessoas, equipas e conversas" },
+        { id: "lideranca", nome: "Escola de Liderança", frase: "Comunicar, liderar pessoas e conduzir conversas" },
+        { id: "ser", nome: "Escola do Ser", frase: "A liderança começa em ti: autoconhecimento e emoções" },
         { id: "comunidade", nome: "Formações da Comunidade", frase: "A formação de cada mês da Comunidade 3S" },
       ].map((escola) => {
         const lista = cursos.filter((c) => c.escolaId === escola.id);
@@ -3978,7 +4083,7 @@ function MaterialDidaticoScreen({ onBack, desbloqueados, onDesbloquear, acessoTo
 
   return (
     <div className="pb-28">
-      <SectionHeader eyebrow="FICHAS, JOGOS, EBOOKS" title="Material Didático" onBack={onBack} />
+      <SectionHeader eyebrow="FORMAÇÃO" title="Material Didático" onBack={onBack} backLabel="Formação" />
       <div className="px-6 grid grid-cols-1 gap-3">
         {CARTOES_MATERIAL_DIDATICO.map((cartao) => {
           const Icon = cartao.icon;
@@ -6883,14 +6988,51 @@ function incluiCurso(curso) {
   return lista;
 }
 
+const GRUPOS_CURSOS = [
+  {
+    nome: "Liderança",
+    frase: "Liderar pessoas começa na forma como comunicas",
+    sub: [
+      { nome: "Liderar pessoas", ids: [1] },
+      { nome: "Comunicação", ids: [2], emBreve: ["Comunicação Não Violenta"] },
+    ],
+  },
+  {
+    nome: "Escola do Ser",
+    frase: "A liderança começa em ti: autoconhecimento e emoções",
+    sub: [{ nome: null, escolaId: "ser" }],
+  },
+];
+
 function CatalogoCursosScreen({ onBack, temAcesso, onAbrirCurso, onAreaAluno }) {
-  const escolasCatalogo = [
-    { id: "ser", nome: "Escola do Ser", frase: "Autoconhecimento, emoções e crescimento pessoal" },
-    { id: "lideranca", nome: "Escola de Liderança", frase: "Liderar pessoas, equipas e conversas" },
-  ];
+  const cartaoCurso = (c) => {
+    const acesso = temAcesso(c);
+    return (
+      <button
+        key={c.id}
+        onClick={() => onAbrirCurso(c)}
+        className="w-full text-left rounded-2xl px-4 py-4 transition active:scale-[0.99]"
+        style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}
+      >
+        <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{c.titulo}</p>
+        {c.promessa && <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{c.promessa}</p>}
+        <p className="text-[11px] mt-2 leading-relaxed" style={{ color: palette.navySoft }}>{incluiCurso(c).join(" · ")}</p>
+        <div className="flex items-center justify-between mt-3">
+          {acesso ? (
+            <span className="text-xs font-medium flex items-center gap-1" style={{ color: palette.gold }}><CheckCircle2 size={14} /> Tens acesso — entrar</span>
+          ) : c.gratuito ? (
+            <span className="text-xs font-medium" style={{ color: palette.gold }}>Gratuito</span>
+          ) : (
+            <span className="font-serif text-xl" style={{ color: palette.gold }}>{precoTexto(PRECO_CURSO)}</span>
+          )}
+          <span className="text-xs flex items-center gap-1" style={{ color: palette.navySoft }}>{acesso ? "" : "Ver o curso"} <ChevronRight size={14} /></span>
+        </div>
+      </button>
+    );
+  };
   return (
     <div className="pb-28">
-      <SectionHeader eyebrow="ALUNOS" title="Cursos" onBack={onBack} />
+      <SectionHeader eyebrow="FORMAÇÃO" title="Cursos" onBack={onBack} backLabel="Formação" />
       <div className="px-6">
         <button
           onClick={onAreaAluno}
@@ -6904,45 +7046,35 @@ function CatalogoCursosScreen({ onBack, temAcesso, onAbrirCurso, onAreaAluno }) 
           <ChevronRight size={18} style={{ color: palette.navySoft }} />
         </button>
       </div>
-      {escolasCatalogo.map((escola) => {
-        const lista = cursos.filter((c) => c.escolaId === escola.id);
-        if (lista.length === 0) return null;
-        return (
-          <div key={escola.id} className="px-6 mt-8">
-            <div className="rounded-2xl px-5 py-4 mb-3" style={{ backgroundColor: palette.navy }}>
-              <p className="font-serif text-xl" style={{ color: palette.creamSoft }}>{escola.nome}</p>
-              <p className="text-xs mt-0.5" style={{ color: palette.goldSoft }}>{escola.frase}</p>
-            </div>
-            <div className="space-y-3">
-              {lista.map((c) => {
-                const acesso = temAcesso(c);
-                return (
-                  <button
-                    key={c.id}
-                    onClick={() => onAbrirCurso(c)}
-                    className="w-full text-left rounded-2xl px-4 py-4 transition active:scale-[0.99]"
-                    style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}
-                  >
-                    <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{c.titulo}</p>
-                    {c.promessa && <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{c.promessa}</p>}
-                    <p className="text-[11px] mt-2 leading-relaxed" style={{ color: palette.navySoft }}>{incluiCurso(c).join(" · ")}</p>
-                    <div className="flex items-center justify-between mt-3">
-                      {acesso ? (
-                        <span className="text-xs font-medium flex items-center gap-1" style={{ color: palette.gold }}><CheckCircle2 size={14} /> Tens acesso — entrar</span>
-                      ) : c.gratuito ? (
-                        <span className="text-xs font-medium" style={{ color: palette.gold }}>Gratuito</span>
-                      ) : (
-                        <span className="font-serif text-xl" style={{ color: palette.gold }}>{precoTexto(PRECO_CURSO)}</span>
-                      )}
-                      <span className="text-xs flex items-center gap-1" style={{ color: palette.navySoft }}>{acesso ? "" : "Ver o curso"} <ChevronRight size={14} /></span>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
+      {GRUPOS_CURSOS.map((grupo) => (
+        <div key={grupo.nome} className="px-6 mt-8">
+          <div className="rounded-2xl px-5 py-4 mb-4" style={{ backgroundColor: palette.navy }}>
+            <p className="font-serif text-xl" style={{ color: palette.creamSoft }}>{grupo.nome}</p>
+            <p className="text-xs mt-0.5" style={{ color: palette.goldSoft }}>{grupo.frase}</p>
           </div>
-        );
-      })}
+          {grupo.sub.map((sub, i) => {
+            const lista = sub.ids
+              ? sub.ids.map((id) => cursos.find((c) => c.id === id)).filter(Boolean)
+              : cursos.filter((c) => c.escolaId === sub.escolaId);
+            return (
+              <div key={sub.nome || i} className={sub.nome ? "mb-6 pl-3" : "mb-6"} style={sub.nome ? { borderLeft: `2px solid ${palette.gold}` } : undefined}>
+                {sub.nome && (
+                  <p className="text-[11px] tracking-[0.25em] font-medium mb-3" style={{ color: palette.gold }}>{sub.nome.toUpperCase()}</p>
+                )}
+                <div className="space-y-3">
+                  {lista.map(cartaoCurso)}
+                  {(sub.emBreve || []).map((t) => (
+                    <div key={t} className="rounded-2xl px-4 py-4" style={{ border: `1px dashed ${palette.gold}`, backgroundColor: palette.creamSoft }}>
+                      <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{t}</p>
+                      <p className="text-xs mt-1" style={{ color: palette.gold }}>Em breve</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ))}
     </div>
   );
 }
@@ -7046,14 +7178,32 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher }) {
 
         {/* Herói */}
         <div className="px-6 pt-2 pb-8 text-center">
-          <p className="text-[11px] tracking-[0.3em] font-medium" style={{ color: palette.gold }}>SABER · SENTIR · SER</p>
-          <h1 className="font-serif text-4xl leading-tight mt-3" style={{ color: palette.navy }}>Conhece-te. Sente. Lidera a tua vida.</h1>
+          <p className="text-[11px] tracking-[0.3em] font-medium" style={{ color: palette.gold }}>ESCOLA DE LIDERANÇA E COMUNICAÇÃO</p>
+          <h1 className="font-serif text-4xl leading-tight mt-3" style={{ color: palette.navy }}>Liderar começa na forma como comunicas.</h1>
           <p className="text-sm mt-4 leading-relaxed" style={{ color: palette.navySoft }}>
-            Cursos em vídeo, cadernos de trabalho e uma comunidade que te acompanha todos os meses — com a Conceição Alves e a Escola 3S.
+            Para quem lidera equipas, negócios, famílias ou a própria vida. Cursos em vídeo, cadernos de trabalho e uma comunidade que te acompanha todos os meses — com a Conceição Alves.
           </p>
           <div className="mt-6 space-y-2.5">
             {botao("Começar grátis", onCriarConta)}
             <button onClick={onEntrar} className="text-xs underline underline-offset-2" style={{ color: palette.navySoft }}>Já tenho conta</button>
+          </div>
+        </div>
+
+        {/* Método 3S */}
+        <div className="px-6 mb-10">
+          {titulo("O MÉTODO 3S", "Saber, Sentir, Ser")}
+          <div className="space-y-3">
+            {[
+              ["Saber", "Saber o que dizer.", "Ouvir, perguntar, dar feedback e conduzir conversas difíceis."],
+              ["Sentir", "Sentir quem está à tua frente.", "Perceber as emoções do outro, e as tuas, antes de reagir."],
+              ["Ser", "Ser o líder que os outros querem seguir.", "Coerência e exemplo. As pessoas seguem quem tu és, não o cargo."],
+            ].map(([n, f, d]) => (
+              <div key={n} className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
+                <p className="text-[11px] tracking-[0.25em] font-medium" style={{ color: palette.gold }}>{n.toUpperCase()}</p>
+                <p className="font-serif text-lg leading-snug mt-1" style={{ color: palette.navy }}>{f}</p>
+                <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{d}</p>
+              </div>
+            ))}
           </div>
         </div>
 
@@ -7076,7 +7226,7 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher }) {
 
         {/* Comunidade */}
         <div className="px-6 mb-10">
-          {titulo("COMUNIDADE 3S", "Tudo o que precisas, todos os meses")}
+          {titulo("COMUNIDADE 3S", "Um tema de comunicação e liderança por mês")}
           <div className="rounded-3xl px-5 py-5" style={{ backgroundColor: palette.card, border: `1px solid ${palette.gold}` }}>
             <div className="space-y-1.5">
               {["Todos os cadernos de trabalho", "Todos os livros do aluno", "Todo o material didático", "Aulas gravadas", "1 encontro online por mês", "Partilha e desafios com o grupo"].map((t) => (
@@ -7092,8 +7242,8 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher }) {
 
         {/* Cursos */}
         {[
-          { id: "ser", nome: "Escola do Ser", frase: "Autoconhecimento, emoções e crescimento pessoal" },
-          { id: "lideranca", nome: "Escola de Liderança", frase: "Liderar pessoas, equipas e conversas" },
+          { id: "lideranca", nome: "Escola de Liderança", frase: "Comunicar, liderar pessoas e conduzir conversas" },
+          { id: "ser", nome: "Escola do Ser", frase: "A liderança começa em ti: autoconhecimento e emoções" },
         ].map((escola) => {
           const lista = cursos.filter((c) => c.escolaId === escola.id && !c.gratuito);
           if (lista.length === 0) return null;
@@ -7171,11 +7321,11 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher }) {
         {/* Fecho */}
         <div className="px-6">
           <div className="rounded-3xl px-5 py-6 text-center" style={{ backgroundColor: palette.navy }}>
-            <p className="font-serif text-2xl leading-tight" style={{ color: palette.creamSoft }}>Começa hoje, ao teu ritmo.</p>
+            <p className="font-serif text-2xl leading-tight" style={{ color: palette.creamSoft }}>Começa hoje a liderar melhor, ao teu ritmo.</p>
             <p className="text-xs mt-2" style={{ color: palette.goldSoft }}>O primeiro curso é por nossa conta.</p>
             <div className="mt-4">{botao("Criar conta grátis", onCriarConta, true)}</div>
           </div>
-          <p className="text-[11px] text-center mt-6" style={{ color: palette.navySoft }}>Escola 3S · Saber · Sentir · Ser</p>
+          <p className="text-[11px] text-center mt-6" style={{ color: palette.navySoft }}>Escola 3S · Liderança e Comunicação · Saber · Sentir · Ser</p>
         </div>
       </div>
     </div>
@@ -7853,6 +8003,7 @@ export default function App() {
   const [modoNovaPassword, setModoNovaPassword] = useState(false);
   const [tab, setTab] = useState("inicio");
   const [secao, setSecao] = useState(null);
+  const [temaFormacao, setTemaFormacao] = useState(null);
   const [cursoAberto, setCursoAberto] = useState(null);
   const [clienteAberto, setClienteAberto] = useState(null);
   const [certificadoAberto, setCertificadoAberto] = useState(null);
@@ -8343,8 +8494,22 @@ export default function App() {
         </div>
       </div>
     );
+  } else if (secao === "formacao-hub") {
+    content = (
+      <FormacaoHubScreen
+        onBack={() => { setTemaFormacao(null); setSecao(null); }}
+        onAbrir={setSecao}
+        tema={temaFormacao}
+        setTema={setTemaFormacao}
+        temAcesso={temAcessoCurso}
+        onAbrirCurso={setCursoAberto}
+        desbloqueados={materiaisAcesso}
+        onDesbloquear={desbloquearMaterial}
+        acessoTotal={progresso.papel === "dona"}
+      />
+    );
   } else if (secao === "alunos") {
-    content = <CatalogoCursosScreen onBack={() => setSecao(null)} temAcesso={temAcessoCurso} onAbrirCurso={setCursoAberto} onAreaAluno={() => setSecao("aluno")} />;
+    content = <CatalogoCursosScreen onBack={() => setSecao("formacao-hub")} temAcesso={temAcessoCurso} onAbrirCurso={setCursoAberto} onAreaAluno={() => setSecao("aluno")} />;
   } else if (secao === "livros") {
     content = <LivrosScreen onBack={() => setSecao(null)} materiaisDesbloqueados={materiaisAcesso} />;
   } else if (secao === "aluno") {
@@ -8398,7 +8563,7 @@ export default function App() {
   } else if (secao === "material") {
     content = (
       <MaterialDidaticoScreen
-        onBack={() => setSecao(null)}
+        onBack={() => setSecao("formacao-hub")}
         desbloqueados={materiaisAcesso}
         onDesbloquear={desbloquearMaterial}
         acessoTotal={progresso.papel === "dona"}
