@@ -325,6 +325,43 @@
   .ext .go{color:var(--coral); font-weight:600; flex-shrink:0;}
 
   @media (prefers-reduced-motion: reduce){ *{transition:none !important; animation:none !important;} }
+  a.primary{display:block; box-sizing:border-box; width:100%; background:var(--coral); color:#fff; border:none; border-radius:14px; padding:13px; font-size:14px; font-weight:600; text-align:center; text-decoration:none;}
+  a.ghost{display:block; box-sizing:border-box; width:100%; background:transparent; border:1.5px solid var(--line); color:var(--ink); border-radius:14px; padding:12px; font-size:14px; text-align:center; text-decoration:none;}
+  a.small{display:inline-block; width:auto; padding:7px 12px; font-size:12.5px; border-radius:10px;}
+  a.sess-go{margin-top:8px; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  /* v3 */
+  header.top{padding-bottom:58px;}
+  .hc::before{display:none;}
+  #desafioPT{display:none;}
+  #desafioHome .ch-btn.ghost{display:none;}
+  #desafioHome .ch-actions:empty{display:none;}
+  .sec-head{display:flex; align-items:center; justify-content:space-between; margin:16px 4px 8px;}
+  .sec-head h3{font-size:15px; margin:0;}
+  .gps-cta{width:100%; display:flex; align-items:center; gap:12px; border:none; cursor:pointer; background:var(--navy); color:#fff; border-radius:var(--radius); padding:14px 16px; margin-bottom:12px; box-shadow:0 6px 18px -8px rgba(27,42,74,.55); font-family:inherit;}
+  .gps-cta b{display:block; font-family:'Baloo 2',sans-serif; font-size:16px; font-weight:600;}
+  .gps-cta span span, .gps-cta span:not(.gps-ic):not(.pal-go) > span{display:block; font-size:12px; opacity:.8;}
+  .gps-ic{width:40px; height:40px; border-radius:12px; background:rgba(196,154,90,.2); display:flex; align-items:center; justify-content:center; font-size:19px; flex-shrink:0;}
+  .gps-cta .pal-go{color:var(--gold);}
+  .pal{width:100%; display:flex; align-items:center; gap:12px; text-align:left; border:none; cursor:pointer; background:var(--card); color:var(--ink); border-radius:18px; padding:12px 14px; margin-bottom:8px; box-shadow:0 3px 12px var(--shadow); font-family:inherit;}
+  .pal-date{width:48px; flex-shrink:0; text-align:center; border-radius:12px; background:#F2E5D1; color:#8A6430; font-size:11px; text-transform:uppercase; letter-spacing:.5px; padding:6px 0;}
+  .pal-date b{display:block; font-size:20px; line-height:1.1; letter-spacing:0;}
+  .pal-body{flex:1; min-width:0;}
+  .pal-t{display:block; font-weight:600; font-size:14.5px;}
+  .pal-go{color:var(--ink-faint); font-size:22px; line-height:1; flex-shrink:0;}
+  .row-acts{display:flex; flex-wrap:wrap; gap:6px; margin-top:6px;}
+  .row-acts:empty{display:none;}
+  .com-btn{font-size:12px;}
+  .com{background:var(--bg,#F6EFE4); border-radius:14px; padding:10px 12px; margin-bottom:8px; font-size:14px; position:relative;}
+  .com.mine{background:#EEF3EF;}
+  .com-who{font-size:11.5px; color:var(--ink-soft); margin-bottom:2px; font-weight:600;}
+  .com-del{position:absolute; right:8px; top:8px; background:none; border:none; color:var(--ink-faint); font-size:11.5px; cursor:pointer;}
+  .sess-go{display:inline-block; margin-top:8px; text-decoration:none;}
+  .nov{border:1.5px solid #EAD7B8;}
+  .nov-n{display:inline-flex; min-width:22px; height:22px; padding:0 6px; border-radius:99px; background:#B5483E; color:#fff; font-size:12px; align-items:center; justify-content:center; margin-left:4px; vertical-align:middle;}
+  .nov-item{width:100%; display:flex; align-items:center; gap:10px; text-align:left; background:none; border:none; border-top:1px solid var(--line); padding:10px 0; cursor:pointer; color:var(--ink); font-family:inherit; font-size:14px;}
+  .nov-ic{width:34px; height:34px; border-radius:10px; background:#F2E5D1; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .nov-sub{display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .nav-dot{position:absolute; top:-2px; right:8px; min-width:17px; height:17px; padding:0 4px; border-radius:99px; background:#B5483E; color:#fff; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center;}
 </style>
 </head>
 <body>
@@ -3221,6 +3258,346 @@ async function guardarLote(){
 (function(){ const _ra=renderAll; renderAll=function(){ const r=_ra.apply(this, arguments);
   try{ if(ME && !document.getElementById('gpsOverlay')){ const g=gpsLoad(); if(g && g.inicio){ abrirGps(); } } }catch(e){}
   return r; }; })();
+
+/* =========================================================
+   VERSÃO 3: palestras online, comentários, link/morada nas
+   sessões, novidades e início mais arrumado
+   ========================================================= */
+
+/* ---------- carregar dados novos ---------- */
+const _loadAllV3 = loadAll;
+loadAll = async function(){
+  await _loadAllV3();
+  const desde = new Date(Date.now()-60*864e5).toISOString();
+  const res = await Promise.all([
+    sb.from('mov_palestras').select('id,criador_id,titulo,descricao,inicio,duracao,acesso,created_at').gte('inicio', desde).order('inicio'),
+    sb.from('mov_palestras_inscricoes').select('*'),
+    sb.from('mov_comentarios').select('*').order('created_at'),
+    sb.from('mov_estado').select('visto_em').eq('user_id', ME),
+    sb.from('mov_sessoes').select('id,link,morada,created_at,estado').neq('estado','cancelada'),
+    sb.from('mov_notas_coach').select('id,atleta_id,coach_id,texto,created_at').eq('atleta_id', ME),
+  ]);
+  const ok = i => (res[i] && !res[i].error && res[i].data) || [];
+  S.palestras = ok(0); S.palIns = ok(1); S.comentarios = ok(2);
+  S.vistoEm = (ok(3)[0] || {}).visto_em || null;
+  const extraS = {}; ok(4).forEach(s => extraS[s.id] = s);
+  (S.sessions || []).forEach(s => { const e = extraS[s.id] || {}; s.link = e.link || ''; s.morada = e.morada || ''; s.created = e.created_at || null; });
+  S.notasMe = ok(5);
+};
+
+/* ---------- utilitários ---------- */
+function nomeDe(id){ if(id===ME) return 'Tu'; const p=(S.people||{})[id]; return p ? p.name : 'Coach'; }
+function linkSeguro(u){ u=(u||'').trim(); return /^https:\/\/[^\s"'<>]+$/i.test(u) ? u : ''; }
+function mapsLink(m){ return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(m); }
+function quandoTxt(iso){ const d=new Date(iso); return d.toLocaleDateString('pt-PT',{weekday:'long', day:'numeric', month:'long'})+' · '+d.toLocaleTimeString('pt-PT',{hour:'2-digit', minute:'2-digit'}); }
+function podeGerirPalestras(){ return isCoach() || IS_MOD; }
+
+/* =========================================================
+   COMENTÁRIOS em treinos e refeições
+   ========================================================= */
+function comsDe(tipo, id){ return (S.comentarios||[]).filter(c=>c.alvo_tipo===tipo && c.alvo_id===id); }
+function comBtn(tipo, id, atleta){
+  if(!id || !atleta) return '';
+  const n=comsDe(tipo,id).length;
+  return `<button class="ghost small com-btn" onclick="event.stopPropagation(); openComentarios('${tipo}','${id}','${atleta}')">💬 ${n? n+(n===1?' comentário':' comentários') : 'Comentar'}</button>`;
+}
+let COM_ALVO=null;
+function openComentarios(tipo, id, atleta){
+  COM_ALVO={tipo, id, atleta};
+  const lista=comsDe(tipo,id);
+  const sobre = tipo==='treino' ? 'este treino' : 'esta refeição';
+  const html = `${lista.length ? lista.map(c=>`<div class="com ${c.autor_id===ME?'mine':''}"><div class="com-who">${esc(nomeDe(c.autor_id))} · ${new Date(c.created_at).toLocaleDateString('pt-PT',{day:'numeric',month:'short'})}</div><div>${esc(c.texto)}</div>${c.autor_id===ME?`<button class="com-del" onclick="apagarComentario('${c.id}')">Apagar</button>`:''}</div>`).join('')
+      : `<div class="empty" style="padding:12px;">Ainda não há comentários sobre ${sobre}.</div>`}
+    <label for="comIn" style="margin-top:10px;">${isCoach()?'Comentário para o atleta':'Escreve ao coach'}</label>
+    <textarea id="comIn" maxlength="1000" placeholder="${isCoach()?'Ex.: Ótimo ritmo na subida! No próximo, aquece 10 min antes.':'Ex.: Senti dor no joelho no fim. É normal?'}"></textarea>
+    <button class="primary" onclick="enviarComentario()">Enviar</button>`;
+  if(sheetOpen()) removeSheet();
+  openSheet('Comentários', html);
+}
+async function enviarComentario(){
+  const t=document.getElementById('comIn').value.trim(); if(!t){ toast('Escreve o comentário'); return; }
+  const a=COM_ALVO; if(!a) return;
+  if(a.atleta!==ME && !isCoach()){ toast('Só o coach pode comentar aqui'); return; }
+  if(a.atleta===ME && !S.coach && !isCoach()){ toast('Liga-te primeiro a um coach para ele ver os teus comentários'); return; }
+  try{ await q(sb.from('mov_comentarios').insert({autor_id:ME, atleta_id:a.atleta, alvo_tipo:a.tipo, alvo_id:a.id, texto:t})); }catch(e){ return; }
+  await refresh(); openComentarios(a.tipo, a.id, a.atleta); toast('Comentário enviado');
+}
+async function apagarComentario(id){
+  try{ await q(sb.from('mov_comentarios').delete().eq('id', id)); }catch(e){ return; }
+  await refresh(); if(COM_ALVO) openComentarios(COM_ALVO.tipo, COM_ALVO.id, COM_ALVO.atleta);
+}
+
+/* lista de treinos com comentários */
+function renderLogs(){
+  const box=document.getElementById('logList'); if(!box) return;
+  const logs=[...S.logs].sort((a,b)=>b.date.localeCompare(a.date));
+  box.innerHTML = logs.length ? logs.map(l=>`<div class="list-row" style="align-items:flex-start;">
+      <div class="left" style="align-items:flex-start;"><span class="sport" style="width:38px;height:38px;font-size:17px;">${SPORTS[l.sport].ic}</span>
+        <div style="min-width:0;"><div style="font-weight:600;">${esc(l.title||SPORTS[l.sport].name)}</div><div class="tiny">${niceDate(l.date)} · ${fmtDur(l.min)}${paceTxt(l)?' · '+paceTxt(l):''}${l.desnivel?' · +'+Math.round(l.desnivel)+' m':''}${l.meetId?' · em grupo':''}</div>
+        <div class="row-acts">${l.percurso?`<button class="ghost small" onclick="openRoute('${l.id}')">Ver percurso</button>`:''}${(S.coach||comsDe('treino',l.id).length)?comBtn('treino',l.id,ME):''}</div></div></div>
+      <div style="text-align:right; flex-shrink:0;"><div class="num" style="font-weight:600;">${Number(l.km).toLocaleString('pt-PT')} km</div><div style="font-size:15px;">${FEELINGS[(l.feel||3)-1]}</div></div>
+    </div>`).join('') : `<div class="empty">Ainda sem atividades.<br>Grava ou regista o teu primeiro treino.</div>`;
+}
+
+/* refeições com comentários */
+const _mealRowBase = mealRow;
+mealRow = function(m, own){
+  const h=_mealRowBase(m, own);
+  if(!m || !m.id || !m.user_id) return h;
+  const mostrar = isCoach() || S.coach || comsDe('refeicao', m.id).length;
+  if(!mostrar) return h;
+  return h.replace(/<\/div>\s*<\/div>\s*<div style="text-align:right; flex-shrink:0;">/, `<div class="row-acts">${comBtn('refeicao', m.id, m.user_id)}</div></div></div><div style="text-align:right; flex-shrink:0;">`);
+};
+
+/* ficha do atleta (coach): treinos com comentários */
+const _openAthleteBase = openAthlete;
+openAthlete = function(id){
+  _openAthleteBase(id);
+  const a=(S.athletes||[]).find(x=>x.id===id); if(!a || !a.share.treinos) return;
+  const h3=[...document.querySelectorAll('#sheetHost .card h3')].find(x=>x.textContent.trim()==='Últimos treinos'); if(!h3) return;
+  const logs=[...a.logs].sort((x,y)=>y.date.localeCompare(x.date)).slice(0,8);
+  h3.parentNode.innerHTML = `<h3>Últimos treinos</h3>${logs.length?logs.map(l=>`<div class="list-row" style="align-items:flex-start;"><div class="left" style="align-items:flex-start;"><span class="sport" style="width:36px;height:36px;font-size:16px;">${SPORTS[l.sport].ic}</span><div><div style="font-weight:600;">${nm(l.km)} km · ${fmtDur(l.min)}</div><div class="tiny">${niceDate(l.date)}${paceTxt(l)?' · '+paceTxt(l):''}${l.desnivel?' · +'+Math.round(l.desnivel)+' m':''}</div>
+    <div class="row-acts">${l.percurso?`<button class="ghost small" onclick="removeSheet(); openRoute('${l.id}','${a.id}')">Ver percurso</button>`:''}${comBtn('treino', l.id, a.id)}</div></div></div><span style="font-size:16px;">${FEELINGS[(l.feel||3)-1]}</span></div>`).join(''):'<div class="empty" style="padding:10px;">Sem treinos registados.</div>'}`;
+};
+
+/* =========================================================
+   SESSÕES: link da reunião e morada
+   ========================================================= */
+function openSession(){
+  if(!isCoach() && !S.coach){ toast('Liga-te primeiro a um coach (no fim do painel PT 3S)'); return; }
+  const types = ['Sessão experimental · 20 min (gratuita)','Coaching desportivo','Mentoria 3S · Saber · Sentir · Ser','Avaliação física e plano'];
+  const ath = isCoach() ? (S.athletes.length? `<label for="sAth">Atleta</label><select id="sAth">${S.athletes.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('')}</select>` : '<p class="muted">Ainda não tens atletas ligados.</p>') : '';
+  const hasTrial = !isCoach() && S.sessions.some(s=>s.type.startsWith('Sessão experimental'));
+  openSheet(isCoach()?'Marcar sessão':'Marcar sessão com o '+cN(), `<div class="card">
+    ${ath}
+    <label for="sType">Tipo de sessão</label><select id="sType">${types.filter(t=>!(hasTrial&&t.startsWith('Sessão experimental'))).map(t=>`<option>${t}</option>`).join('')}</select>
+    <div class="two"><div><label for="sDate">Dia</label><input id="sDate" type="date" min="${addDays(1)}" value="${addDays(3)}"></div>
+    <div><label for="sTime">Hora</label><input id="sTime" type="time" value="19:00"></div></div>
+    <label for="sMode">Como</label><select id="sMode" onchange="sessModo()"><option>Online</option><option>Presencial</option></select>
+    <div id="sLinkBox">${isCoach()?`<label for="sLink">Link da reunião (Zoom, Meet, Teams…)</label><input id="sLink" type="url" inputmode="url" placeholder="https://meet.google.com/…">`:`<p class="tiny" style="margin:6px 0 0;">O coach envia-te o link da reunião quando confirmar.</p>`}</div>
+    <div id="sMoradaBox" hidden><label for="sMorada">${isCoach()?'Morada ou ponto de encontro':'Onde te dá jeito? (opcional)'}</label><input id="sMorada" maxlength="200" placeholder="Ex.: Parque da Cidade, entrada norte"></div>
+    <label for="sTopic">O que queres trabalhar?</label><textarea id="sTopic" placeholder="Ex.: preparar a minha primeira prova de trail"></textarea>
+    <button class="primary" onclick="saveSession()">${isCoach()?'Marcar':'Pedir sessão'}</button></div>`);
+}
+function sessModo(){ const on=document.getElementById('sMode').value==='Online'; document.getElementById('sLinkBox').hidden=!on; document.getElementById('sMoradaBox').hidden=on; }
+async function saveSession(){
+  const g=id=>{ const e=document.getElementById(id); return e? e.value.trim() : ''; };
+  const atleta = isCoach() ? g('sAth') : ME, coach = isCoach() ? ME : S.coach.coachId;
+  if(!atleta){ toast('Escolhe o atleta'); return; }
+  const modo=g('sMode'), linkIn=g('sLink'), link=linkSeguro(linkIn);
+  if(modo==='Online' && linkIn && !link){ toast('O link tem de começar por https://'); return; }
+  try{ await q(sb.from('mov_sessoes').insert({atleta_id:atleta, coach_id:coach, tipo:g('sType'), data:g('sDate')||addDays(3), hora:g('sTime')||'19:00', modo, tema:g('sTopic')||null,
+    estado:isCoach()?'confirmada':'pedida', link: modo==='Online' ? (link||null) : null, morada: modo==='Presencial' ? (g('sMorada')||null) : null})); }catch(e){ return; }
+  closeSheet(); await refresh(); toast(isCoach()?'Sessão marcada':'Pedido enviado ao coach');
+}
+function editarSessao(id){
+  const s=S.sessions.find(x=>x.id===id); if(!s) return;
+  const on=s.mode==='Online';
+  openSheet(on?'Link da reunião':'Local da sessão', `<div class="card">
+    <p class="muted" style="margin-top:0;">${esc(s.type)} · ${niceDate(s.date)} · ${esc(s.time)}${s.athlete?' · '+esc(s.athlete):''}</p>
+    ${on?`<label for="eLink">Link (Zoom, Meet, Teams…)</label><input id="eLink" type="url" inputmode="url" value="${esc(s.link||'')}" placeholder="https://meet.google.com/…">`
+        :`<label for="eMorada">Morada ou ponto de encontro</label><input id="eMorada" maxlength="200" value="${esc(s.morada||'')}" placeholder="Ex.: Parque da Cidade, entrada norte">`}
+    <button class="primary" onclick="guardarSessaoExtra('${id}', ${on})">${s.status==='pedida'&&isCoach()?'Guardar e confirmar':'Guardar'}</button></div>`);
+}
+async function guardarSessaoExtra(id, on){
+  const s=S.sessions.find(x=>x.id===id); const upd={};
+  if(on){ const v=document.getElementById('eLink').value.trim(), l=linkSeguro(v); if(v && !l){ toast('O link tem de começar por https://'); return; } upd.link=l||null; }
+  else upd.morada=document.getElementById('eMorada').value.trim()||null;
+  if(isCoach() && s && s.status==='pedida') upd.estado='confirmada';
+  try{ await q(sb.from('mov_sessoes').update(upd).eq('id', id)); }catch(e){ return; }
+  closeSheet(); await refresh(); toast('Guardado');
+}
+function renderCoaching(){
+  const today=addDays(0);
+  const up=S.sessions.filter(s=>s.date>=today).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+  const past=S.sessions.filter(s=>s.date<today).sort((a,b)=>b.date.localeCompare(a.date));
+  const row=s=>{
+    const fut=s.date>=today, on=s.mode==='Online';
+    const ond = on ? (s.link ? (fut?`<a class="primary small sess-go" href="${esc(s.link)}" target="_blank" rel="noopener">Entrar na reunião ↗</a>`:'') : (fut?`<div class="tiny" style="margin-top:4px;">${isCoach()?'Falta o link da reunião.':'O link aparece aqui quando o coach o enviar.'}</div>`:''))
+                   : (s.morada ? `<a class="ghost small sess-go" href="${mapsLink(s.morada)}" target="_blank" rel="noopener">📍 ${esc(s.morada)}</a>` : (fut&&isCoach()?`<div class="tiny" style="margin-top:4px;">Falta indicar o local.</div>`:''));
+    return `<div class="list-row" style="align-items:flex-start;"><div class="left" style="align-items:flex-start;"><span class="sport" style="width:40px;height:40px;font-size:16px;">${on?'💻':'🤝'}</span><div style="min-width:0;"><div style="font-weight:600;">${esc(s.type)}</div><div class="tiny">${niceDate(s.date)} · ${esc(s.time)} · ${esc(s.mode)}${isCoach()&&s.athlete?' · '+esc(s.athlete):''}</div>${s.topic?`<div class="tiny" style="margin-top:2px;">${esc(s.topic)}</div>`:''}${ond}</div></div>
+      <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end; flex-shrink:0;"><span class="badge ${s.status==='confirmada'?'mint':'coral'}">${s.status==='confirmada'?'Confirmada':'Pedida'}</span>
+      ${(isCoach()&&fut)?`<button class="${s.status==='pedida'?'primary small mintbtn':'ghost small'}" onclick="editarSessao('${s.id}')">${s.status==='pedida'?'Confirmar':(on?'Link':'Local')}</button>`:''}
+      ${fut?`<button class="ghost small" onclick="cancelSession('${s.id}')">Desmarcar</button>`:''}</div></div>`;
+  };
+  document.getElementById('pane-coaching').innerHTML = `
+    ${isCoach()?'':`<div class="card"><div class="row" style="justify-content:flex-start; gap:12px; margin-bottom:10px;"><span class="av" style="width:46px;height:46px;font-size:16px;border:none;background:var(--navy);color:#fff;">${esc(initials(COACH.name))}</span><div><b>${esc(COACH.name)}</b><div class="tiny">${esc(COACH.title)}</div></div></div>
+      <div class="meta">${COACH.bio.map(b=>`<span class="badge">${esc(b)}</span>`).join('')}</div></div>`}
+    <button class="primary" style="margin-bottom:12px;" onclick="openSession()">${isCoach()?'Marcar sessão com atleta':'Marcar sessão'}</button>
+    <div class="card"><h3>Próximas sessões</h3>${up.length?up.map(row).join(''):'<div class="empty" style="padding:10px;">Sem sessões marcadas.</div>'}</div>
+    ${past.length?`<div class="card"><h3>Sessões anteriores</h3>${past.map(row).join('')}</div>`:''}
+    ${(!isCoach()&&S.coachNotes.length)?`<div class="card"><h3>Notas do coach</h3>${[...S.coachNotes].reverse().map(n=>`<div class="note"><div class="from">${niceDate(n.date)}</div>${esc(n.text)}</div>`).join('')}</div>`:''}`;
+}
+
+/* =========================================================
+   PALESTRAS ONLINE
+   ========================================================= */
+function palFim(p){ return new Date(p.inicio).getTime() + (p.duracao||60)*60000; }
+function palInscrito(p){ return (S.palIns||[]).some(i=>i.palestra_id===p.id && i.user_id===ME); }
+function palInscritos(p){ return (S.palIns||[]).filter(i=>i.palestra_id===p.id); }
+function palCard(p){
+  const agora=Date.now(), ini=new Date(p.inicio).getTime(), fim=palFim(p), aDecorrer=agora>=ini-15*60000 && agora<=fim, passou=agora>fim;
+  const ins=palInscrito(p), meu=p.criador_id===ME;
+  const estado = aDecorrer ? '<span class="badge red">A decorrer</span>' : passou ? '<span class="badge">Já aconteceu</span>' : ins ? '<span class="badge mint">Inscrita/o ✓</span>' : '';
+  return `<button class="pal" onclick="openPalestra('${p.id}')">
+    <span class="pal-date"><b>${new Date(p.inicio).getDate()}</b>${new Date(p.inicio).toLocaleDateString('pt-PT',{month:'short'}).replace('.','')}</span>
+    <span class="pal-body"><span class="pal-t">${esc(p.titulo)}</span>
+      <span class="tiny" style="display:block;">${new Date(p.inicio).toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'})} · ${p.duracao} min${p.acesso==='pago'?' · planos PT 3S':''}${meu?' · '+palInscritos(p).length+' inscritos':''}</span>
+      ${estado?`<span class="meta" style="margin-top:4px;">${estado}</span>`:''}</span><span class="pal-go">›</span></button>`;
+}
+function renderPalestrasHome(){
+  const el=document.getElementById('palestrasHome'); if(!el) return;
+  const agora=Date.now(), L=(S.palestras||[]);
+  const prox=L.filter(p=>palFim(p)>=agora).slice(0,3);
+  const gravadas=L.filter(p=>palFim(p)<agora).slice(-2).reverse();
+  if(!prox.length && !gravadas.length && !podeGerirPalestras()){ el.innerHTML=''; return; }
+  el.innerHTML = `<div class="sec-head"><h3>Palestras online</h3>${podeGerirPalestras()?`<button class="ghost small" onclick="formPalestra()">+ Nova</button>`:''}</div>
+    ${prox.length? prox.map(palCard).join('') : `<div class="card empty" style="padding:14px;">${podeGerirPalestras()?'Ainda não marcaste nenhuma palestra. Carrega em "+ Nova".':'Sem palestras marcadas.'}</div>`}
+    ${gravadas.length? `<div class="tiny" style="margin:10px 4px 6px;">Anteriores</div>`+gravadas.map(palCard).join('') : ''}`;
+}
+async function openPalestra(id){
+  const p=(S.palestras||[]).find(x=>x.id===id); if(!p) return;
+  const ins=palInscrito(p), meu=p.criador_id===ME, gere=meu||IS_MOD;
+  let links={link:null, gravacao:null};
+  if(ins || gere){ const {data}=await sb.rpc('mov_palestra_links',{p_id:id}); if(data && data[0]) links=data[0]; }
+  const agora=Date.now(), ini=new Date(p.inicio).getTime(), fim=palFim(p), aberta=agora>=ini-15*60000 && agora<=fim, passou=agora>fim;
+  const gcal='https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(p.titulo)+'&dates='+new Date(ini).toISOString().replace(/[-:]|\.\d{3}/g,'')+'/'+new Date(fim).toISOString().replace(/[-:]|\.\d{3}/g,'')+'&details='+encodeURIComponent('Palestra online Movimento 3S. O link está na app.');
+  const L=linkSeguro(links.link), G=linkSeguro(links.gravacao);
+  let acoes='';
+  if(passou){ acoes = G ? `<a class="primary" style="display:block; text-align:center;" href="${esc(G)}" target="_blank" rel="noopener">▶ Ver gravação</a>` : `<p class="muted" style="text-align:center;">${ins||gere?'A gravação ainda não está disponível.':'Esta palestra já aconteceu.'}</p>`; }
+  else if(ins || gere){
+    acoes = aberta && L ? `<a class="primary" style="display:block; text-align:center;" href="${esc(L)}" target="_blank" rel="noopener">Entrar na palestra ↗</a>`
+      : `<div class="note" style="margin:0 0 10px;"><div class="from">${L?'Link pronto':'Link'}</div>${L?'O botão para entrar aparece aqui 15 minutos antes do início.':'O link aparece aqui antes do início.'}</div>`;
+    acoes += `<a class="ghost" style="display:block; text-align:center; margin-top:8px;" href="${gcal}" target="_blank" rel="noopener">📅 Pôr no Google Calendar</a>`;
+    if(ins && !meu) acoes += `<button class="ghost" style="width:100%; margin-top:8px;" onclick="sairPalestra('${id}')">Cancelar inscrição</button>`;
+  } else acoes = `<button class="primary" style="width:100%;" onclick="inscreverPalestra('${id}')">Inscrever-me</button>${p.acesso==='pago'?'<p class="tiny" style="text-align:center;">Para quem tem um plano PT 3S.</p>':''}`;
+  const inscritos=palInscritos(p);
+  openSheet('Palestra online', `<div class="goal-top" style="margin-bottom:12px;"><div class="eyebrow">${passou?'Já aconteceu':'Palestra online'}</div><h2>${esc(p.titulo)}</h2>
+      <div style="font-size:13px; opacity:.85; position:relative; z-index:1;">${quandoTxt(p.inicio)} · ${p.duracao} min · com ${esc(p.criador_id===ME?'contigo':nomeDe(p.criador_id))}</div></div>
+    ${p.descricao?`<div class="card"><div style="white-space:pre-line;">${esc(p.descricao)}</div></div>`:''}
+    <div class="card">${acoes}</div>
+    ${gere?`<div class="card"><h3>Inscritos (${inscritos.length})</h3>${inscritos.length?inscritos.map(i=>`<div class="list-row"><span>${esc(nomeDe(i.user_id))}</span><span class="tiny">${new Date(i.created_at).toLocaleDateString('pt-PT')}</span></div>`).join(''):'<div class="empty" style="padding:8px;">Ainda ninguém se inscreveu.</div>'}
+      <div class="two" style="margin-top:12px;"><button class="ghost" style="margin:0;" onclick="formPalestra('${id}')">Editar</button><button class="ghost" style="margin:0; color:#B5483E;" onclick="pedirApagarPalestra('${id}')">Apagar</button></div>
+      <div id="palApagar" hidden style="margin-top:10px;"><p class="tiny">Apagar esta palestra? As inscrições também desaparecem.</p><button class="primary" style="background:#B5483E;" onclick="apagarPalestra('${id}')">Sim, apagar</button></div></div>`:''}`);
+}
+async function inscreverPalestra(id){
+  const {error}=await sb.from('mov_palestras_inscricoes').insert({palestra_id:id, user_id:ME});
+  if(error){ toast(/plano pago/.test(error.message)?'Esta palestra é para quem tem um plano PT 3S':'Não foi possível: '+error.message); return; }
+  await refresh(); removeSheet(); openPalestra(id); toast('Inscrição feita 🎉');
+}
+async function sairPalestra(id){
+  try{ await q(sb.from('mov_palestras_inscricoes').delete().eq('palestra_id',id).eq('user_id',ME)); }catch(e){ return; }
+  await refresh(); removeSheet(); openPalestra(id); toast('Inscrição cancelada');
+}
+function pedirApagarPalestra(){ const b=document.getElementById('palApagar'); if(b) b.hidden=false; }
+async function apagarPalestra(id){
+  try{ await q(sb.from('mov_palestras').delete().eq('id',id)); }catch(e){ return; }
+  closeSheet(); await refresh(); toast('Palestra apagada');
+}
+async function formPalestra(id){
+  const p=id? (S.palestras||[]).find(x=>x.id===id) : null;
+  let links={link:'', gravacao:''};
+  if(p){ const {data}=await sb.rpc('mov_palestra_links',{p_id:id}); if(data && data[0]) links={link:data[0].link||'', gravacao:data[0].gravacao||''}; }
+  const d=p? new Date(p.inicio) : null;
+  const dv=d? ymd(d) : addDays(7), hv=d? pad(d.getHours())+':'+pad(d.getMinutes()) : '21:00';
+  if(sheetOpen()) removeSheet();
+  openSheet(p?'Editar palestra':'Nova palestra online', `<div class="card">
+    <label for="pTit">Título</label><input id="pTit" maxlength="140" value="${esc(p?p.titulo:'')}" placeholder="Ex.: Como preparar o teu primeiro trail">
+    <label for="pDesc">Descrição</label><textarea id="pDesc" maxlength="2000" placeholder="O que vão aprender, para quem é…">${esc(p?p.descricao||'':'')}</textarea>
+    <div class="two"><div><label for="pData">Dia</label><input id="pData" type="date" value="${dv}"></div><div><label for="pHora">Hora</label><input id="pHora" type="time" value="${hv}"></div></div>
+    <div class="two"><div><label for="pDur">Duração (min)</label><input id="pDur" type="number" min="10" max="600" value="${p?p.duracao:60}"></div>
+      <div><label for="pAcesso">Para quem</label><select id="pAcesso"><option value="todos" ${!p||p.acesso==='todos'?'selected':''}>Todos</option><option value="pago" ${p&&p.acesso==='pago'?'selected':''}>Planos PT 3S</option></select></div></div>
+    <label for="pLink">Link da palestra (Zoom, Meet, YouTube…)</label><input id="pLink" type="url" inputmode="url" value="${esc(links.link)}" placeholder="https://…">
+    <p class="tiny" style="margin:4px 0 0;">Só quem se inscreve vê o link.</p>
+    ${p?`<label for="pGrav">Link da gravação (depois da palestra)</label><input id="pGrav" type="url" inputmode="url" value="${esc(links.gravacao)}" placeholder="https://…">`:''}
+    <button class="primary" style="margin-top:12px;" onclick="guardarPalestra(${p?`'${id}'`:'null'})">${p?'Guardar':'Marcar palestra'}</button></div>`);
+}
+async function guardarPalestra(id){
+  const g=x=>{ const e=document.getElementById(x); return e? e.value.trim() : ''; };
+  const titulo=g('pTit'); if(!titulo){ toast('Escreve o título'); return; }
+  const dt=new Date(g('pData')+'T'+(g('pHora')||'21:00')); if(isNaN(dt)){ toast('Escolhe o dia e a hora'); return; }
+  const dur=Math.min(600, Math.max(10, Number(g('pDur'))||60));
+  const lk=g('pLink'), L=linkSeguro(lk); if(lk && !L){ toast('O link tem de começar por https://'); return; }
+  const row={titulo, descricao:g('pDesc')||null, inicio:dt.toISOString(), duracao:dur, acesso:g('pAcesso')||'todos', link:L||null};
+  if(id){ const gv=g('pGrav'), G=linkSeguro(gv); if(gv && !G){ toast('O link da gravação tem de começar por https://'); return; } row.gravacao=G||null; }
+  try{
+    if(id) await q(sb.from('mov_palestras').update(row).eq('id', id));
+    else await q(sb.from('mov_palestras').insert({...row, criador_id:ME}));
+  }catch(e){ return; }
+  closeSheet(); await refresh(); toast(id?'Palestra atualizada':'Palestra marcada 🎤');
+}
+
+/* =========================================================
+   NOVIDADES
+   ========================================================= */
+function novidades(){
+  const desde = S.vistoEm ? new Date(S.vistoEm).getTime() : Date.now()-7*864e5;
+  const novo = t => t && new Date(t).getTime() > desde;
+  const L=[];
+  (S.notasMe||[]).filter(n=>novo(n.created_at)).forEach(n=>L.push({t:n.created_at, ic:'📝', txt:'Nova nota do coach', sub:n.texto, fn:"openPane('coaching')", view:'treino'}));
+  (S.comentarios||[]).filter(c=>c.autor_id!==ME && novo(c.created_at)).forEach(c=>L.push({t:c.created_at, ic:'💬', txt:(isCoach()?nomeDe(c.autor_id)+' comentou ':'O coach comentou ')+(c.alvo_tipo==='treino'?'um treino':'uma refeição'), sub:c.texto, fn:`openComentarios('${c.alvo_tipo}','${c.alvo_id}','${c.atleta_id}')`}));
+  (S.sessions||[]).filter(s=>novo(s.created) && s.date>=addDays(0) && (isCoach()? s.status==='pedida' : s.status==='confirmada')).forEach(s=>L.push({t:s.created, ic:'📅', txt:isCoach()?'Pedido de sessão de '+(s.athlete||'atleta'):'Sessão marcada: '+niceDate(s.date)+' às '+s.time, sub:s.type, fn:"goView('treino'); openPane('coaching')"}));
+  (S.palestras||[]).filter(p=>p.criador_id!==ME && novo(p.created_at) && palFim(p)>Date.now()).forEach(p=>L.push({t:p.created_at, ic:'🎤', txt:'Nova palestra online', sub:p.titulo+' · '+quandoTxt(p.inicio), fn:`openPalestra('${p.id}')`}));
+  return L.sort((a,b)=>b.t.localeCompare(a.t));
+}
+function renderNovidades(){
+  const L=novidades(), el=document.getElementById('novidadesHome');
+  const nb=document.querySelector('nav.bottom button[data-v="inicio"]');
+  if(nb){ let d=nb.querySelector('.nav-dot'); if(L.length){ if(!d){ d=document.createElement('span'); d.className='nav-dot'; nb.style.position='relative'; nb.appendChild(d); } d.textContent=L.length>9?'9+':L.length; } else if(d) d.remove(); }
+  if(!el) return;
+  if(!L.length){ el.innerHTML=''; return; }
+  el.innerHTML = `<div class="card nov"><div class="row" style="margin-bottom:6px;"><h3 style="margin:0;">Novidades <span class="nov-n">${L.length}</span></h3><button class="ghost small" onclick="marcarVisto()">Marcar como visto</button></div>
+    ${L.slice(0,4).map(n=>`<button class="nov-item" onclick="${n.fn}"><span class="nov-ic">${n.ic}</span><span style="min-width:0; flex:1;"><span style="display:block; font-weight:600;">${esc(n.txt)}</span><span class="tiny nov-sub">${esc(n.sub||'')}</span></span><span class="pal-go">›</span></button>`).join('')}
+    ${L.length>4?`<div class="tiny" style="text-align:center; margin-top:6px;">e mais ${L.length-4}</div>`:''}</div>`;
+}
+async function marcarVisto(){
+  const agora=new Date().toISOString();
+  try{
+    if(S.hasEstado) await q(sb.from('mov_estado').update({visto_em:agora}).eq('user_id', ME));
+    else await q(sb.from('mov_estado').upsert({user_id:ME, visto_em:agora}));
+  }catch(e){ return; }
+  S.vistoEm=agora; S.hasEstado=true; renderNovidades();
+}
+
+/* =========================================================
+   INÍCIO mais arrumado + botões só onde fazem falta
+   ========================================================= */
+function arrumarInicio(){
+  const sec=document.getElementById('v-inicio'); if(!sec || sec.dataset.v3) return; sec.dataset.v3='1';
+  const frase=document.getElementById('fraseDia');
+  const nov=document.createElement('div'); nov.id='novidadesHome'; frase.after(nov);
+  const gps=document.createElement('button'); gps.className='gps-cta'; gps.setAttribute('onclick','abrirGps()');
+  gps.innerHTML='<span class="gps-ic">📍</span><span style="flex:1; text-align:left;"><b>Gravar treino</b><span>GPS do telemóvel: percurso, km e ritmo</span></span><span class="pal-go">›</span>';
+  nov.after(gps);
+  const acts=sec.querySelector('.actions'); if(acts) gps.after(acts);
+  const pal=document.createElement('div'); pal.id='palestrasHome'; (acts||gps).after(pal);
+  const ativ=document.getElementById('atividadesHome'); if(ativ){ sec.appendChild(ativ); }
+  const heads=[...sec.querySelectorAll(':scope > .row')];
+  heads.forEach(h=>{ const t=(h.querySelector('h3')||{}).textContent||''; if(/próximos encontros/.test(t)) h.id='homeMineHead'; if(/Perto de ti/.test(t)) h.id='homeNearHead'; });
+}
+const _renderHomeV3 = renderHome;
+renderHome = function(){
+  arrumarInicio();
+  _renderHomeV3();
+  const up=upcoming(), mine=up.filter(m=>m.going.includes('me')), near=up.filter(m=>!m.going.includes('me'));
+  const toLog=S.meets.filter(m=>isPast(m) && m.going.includes('me') && !m.logged);
+  const vazio=!mine.length && !near.length && !toLog.length;
+  const mh=document.getElementById('homeMineHead'), nh=document.getElementById('homeNearHead');
+  if(mh) mh.querySelector('h3').textContent = vazio ? 'Encontros' : 'Os meus próximos encontros';
+  if(vazio){ document.getElementById('homeMine').innerHTML=`<div class="card empty">Ainda não há encontros perto de ti.<br>Diz que estás livre ou cria o primeiro.</div>`; }
+  else if(!mine.length && !toLog.length){ document.getElementById('homeMine').innerHTML=`<div class="card empty" style="padding:14px;">Ainda não te juntaste a nenhum. Vê os que há perto de ti.</div>`; }
+  if(nh) nh.hidden = vazio || !near.length; document.getElementById('homeNear').hidden = vazio || !near.length;
+  renderPalestrasHome(); renderNovidades();
+};
+const _renderMotivV3 = renderMotiv;
+renderMotiv = function(){
+  _renderMotivV3();
+  const c=document.querySelector('#desafioHome .challenge'); if(c){ c.style.cursor='pointer'; c.onclick=e=>{ if(!e.target.closest('button')) openDesafio(); }; }
+};
+const _goViewV3 = goView;
+goView = function(v, fh){ _goViewV3(v, fh); document.getElementById('backTop').hidden = true; };
+const _openPaneV3 = openPane;
+openPane = function(p, fh){ _openPaneV3(p, fh); document.getElementById('backTop').hidden = !p; };
 
 /* ---------- (antigo) apagar ---------- */
 function askReset(){ document.getElementById('resetConfirm').hidden=false; }
