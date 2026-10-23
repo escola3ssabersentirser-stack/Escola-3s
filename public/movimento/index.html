@@ -384,8 +384,8 @@
       <div class="only-atleta">
       <label for="lgLevel">Nível</label>
       <select id="lgLevel"><option>Iniciante</option><option>Médio</option><option>Avançado</option></select>
-      <div class="note" style="margin:4px 0 10px; font-size:13px;"><div class="from">O teu coach</div>No 3S Movimento, o coach da Escola 3S acompanha os teus treinos e o teu plano para te ajudar a evoluir.</div>
-      <label style="display:flex; gap:10px; align-items:flex-start; font-size:13px; color:var(--ink); margin-bottom:12px;"><input id="lgConsent" type="checkbox" style="width:auto; margin:2px 0 0; accent-color:var(--navy); transform:scale(1.2);"><span>Aceito que o coach veja também o meu peso, medidas e dados de saúde (sono, energia, dores). Posso mudar isto quando quiser.</span></label>
+      <div class="note" style="margin:4px 0 10px; font-size:13px;"><div class="from">O teu coach</div>No 3S Movimento, o coach acompanha-te de perto: vê os teus treinos, o teu corpo, a tua saúde, a tua alimentação e o teu humor, para te ajudar a evoluir.</div>
+      <label style="display:flex; gap:10px; align-items:flex-start; font-size:13px; color:var(--ink); margin-bottom:12px;"><input id="lgConsent" type="checkbox" style="width:auto; margin:2px 0 0; accent-color:var(--navy); transform:scale(1.2);"><span>Aceito que o coach do 3S Movimento veja e acompanhe todos os meus dados: treinos, plano, corpo (peso e medidas), saúde (sono, energia, dores), alimentação e humor. É necessário para usar o PT 3S. Posso retirar esta autorização quando quiser.</span></label>
       </div>
     </div>
     <button class="primary" id="authBtn" onclick="doAuth()">Entrar</button>
@@ -1286,15 +1286,15 @@ function coachCardHtml(){
       <button class="primary" onclick="connectCoach()">Ligar ao coach</button>
       <p class="tiny" style="margin:8px 0 0;">Pede o código ao teu coach. Depois escolhes o que ele pode ver.</p></div>`;
   }
-  const sh=S.coach.share;
+  const sh=S.coach.share, total=sh.corpo&&sh.saude;
   return `<div class="card"><h3>O teu coach</h3>
-    <div class="row" style="justify-content:flex-start; gap:12px; margin-bottom:8px;"><span class="av" style="width:46px;height:46px;font-size:16px;border:none;background:var(--navy);color:#fff;">${esc(initials(COACH.name))}</span><div><b>${esc(COACH.name)}</b><div class="tiny">${esc(COACH.title)} · ligado</div></div></div>
+    <div class="row" style="justify-content:flex-start; gap:12px; margin-bottom:8px;"><span class="av" style="width:46px;height:46px;font-size:16px;border:none;background:var(--navy);color:#fff;">${esc(initials(COACH.name))}</span><div><b>${esc(COACH.name)}</b><div class="tiny">${esc(COACH.title)} · ${total?'a acompanhar-te':'acompanhamento por autorizar'}</div></div></div>
     <div class="meta" style="margin-bottom:8px;">${bio}</div>
-    <div class="tiny" style="margin:6px 0 2px;">O que o coach pode ver:</div>
-    <div class="toggle-row"><span>Plano e treinos</span><span class="badge mint">Sempre partilhado</span></div>
-    <div class="toggle-row"><span>Corpo (peso e medidas)</span><input type="checkbox" ${sh.corpo?'checked':''} onchange="setShare('corpo',this.checked)"></div>
-    <div class="toggle-row"><span>Saúde (sono, energia, dores)</span><input type="checkbox" ${sh.saude?'checked':''} onchange="setShare('saude',this.checked)"></div>
-    <p class="tiny" style="margin:8px 0 0;">Podes ligar ou desligar o corpo e a saúde quando quiseres.</p></div>`;
+    ${total?`<div class="tiny" style="margin:6px 0 4px;">O coach acompanha:</div><div class="meta">${['Treinos e plano','Corpo','Saúde','Alimentação','Mente'].map(x=>`<span class="badge mint">✓ ${x}</span>`).join('')}</div>
+      <button class="ghost" style="font-size:13px;" onclick="askRetirar()">Retirar autorização</button>
+      <div id="retirarBox" hidden class="note" style="margin-top:8px;">Sem autorização, o coach deixa de ver o teu corpo, saúde, alimentação e humor, e o PT 3S fica limitado. <div class="two" style="margin-top:8px;"><button class="primary small" style="background:var(--red);" onclick="setConsent(false)">Retirar</button><button class="ghost small" style="margin:0;" onclick="document.getElementById('retirarBox').hidden=true">Cancelar</button></div></div>`
+      :`<p class="muted" style="margin:6px 0 10px;">Para usares o PT 3S completo, autoriza o coach a acompanhar-te.</p><button class="primary" onclick="setConsent(true)">Autorizar acompanhamento</button>`}
+  </div>`;
 }
 function connectCoach(){
   const c=document.getElementById('coachCode').value.trim().toUpperCase();
@@ -1746,7 +1746,7 @@ async function loadAll(){
   const mapHealth = h=>({id:h.id, date:h.data, sleep:h.sono!=null?Number(h.sono):null, energy:h.energia, hr:h.fc, pain:h.dor, painWhere:h.dor_onde||''});
   S.body = corpo.filter(c=>c.user_id===ME).map(mapBody);
   S.health = saude.filter(h=>h.user_id===ME).map(mapHealth);
-  S.mind = mente.map(m=>({id:m.id, date:m.data, mood:m.humor}));
+  S.mind = mente.filter(m=>m.user_id===ME).map(m=>({id:m.id, date:m.data, mood:m.humor}));
   const est = estado.find(e=>e.user_id===ME);
   S.goal = est ? est.objetivo : null;
   S.planDone = est ? (est.plano_feito||{}) : {};
@@ -1780,6 +1780,7 @@ async function loadAll(){
         logs: treinos.filter(t=>t.user_id===l.atleta_id).map(mapLog),
         body: corpo.filter(c=>c.user_id===l.atleta_id).map(mapBody),
         health: saude.filter(h=>h.user_id===l.atleta_id).map(mapHealth),
+        mind: mente.filter(m=>m.user_id===l.atleta_id).map(m=>({date:m.data, mood:m.humor})), intencoes: e ? (e.intencoes||{}) : {},
         notes: notas.filter(n=>n.atleta_id===l.atleta_id).map(n=>({date:n.created_at.slice(0,10), text:n.texto}))};
     });
   } else S.athletes = [];
@@ -1810,6 +1811,7 @@ async function doAuth(){
       const name=document.getElementById('lgName').value.trim();
       if(!name){ toast('Escreve o teu nome'); return; }
       if(pass.length<8){ toast('A palavra-passe precisa de pelo menos 8 caracteres'); return; }
+      if(contaTipo==='atleta' && !document.getElementById('lgConsent').checked){ toast('Para usar o PT 3S tens de aceitar o acompanhamento do coach'); document.getElementById('lgConsent').focus(); return; }
       const {data, error} = await sb.auth.signUp({email, password:pass, options:{emailRedirectTo: location.origin+location.pathname}});
       if(error){ toast(authErr(error)); return; }
       try{ localStorage.setItem('mov_perfil_pendente', JSON.stringify(profileFromForm())); }catch(e){}
@@ -1971,6 +1973,18 @@ async function connectCoach(){
   await refresh(); toast('Ligado ao coach '+COACH.name.split(' ')[0]);
 }
 async function disconnectCoach(){ await q(sb.from('mov_coach_ligacoes').delete().eq('atleta_id',ME)); await refresh(); toast('Desligado do coach'); }
+function askRetirar(){ document.getElementById('retirarBox').hidden=false; }
+async function setConsent(v){
+  await q(sb.from('mov_coach_ligacoes').update({partilha_corpo:v, partilha_saude:v}).eq('atleta_id',ME));
+  await q(sb.from('mov_perfis').update({consentimento_coach:v}).eq('user_id',ME));
+  closeSheetIfOpen(); await refresh(); toast(v?'Obrigado! O coach passa a acompanhar-te':'Autorização retirada');
+}
+function closeSheetIfOpen(){ if(sheetOpen()) closeSheet(); }
+function consentHtml(){
+  return `<div class="goal-top"><div class="eyebrow">O teu coach</div><h2>Autoriza o acompanhamento</h2>
+    <div style="font-size:13.5px; opacity:.9; position:relative; z-index:1; line-height:1.5;">No PT 3S, o coach ${esc(COACH.name)} acompanha os teus treinos, o teu corpo, a tua saúde, a tua alimentação e o teu humor para te dar um plano à tua medida. Para isso precisa da tua autorização.</div>
+    <button class="primary small" style="background:var(--gold); margin-top:12px; position:relative; z-index:1;" onclick="setConsent(true)">Autorizo</button></div>`;
+}
 async function setShare(k,v){
   const col={treinos:'partilha_treinos', corpo:'partilha_corpo', saude:'partilha_saude'}[k];
   await q(sb.from('mov_coach_ligacoes').update({[col]:v}).eq('atleta_id',ME)); S.coach.share[k]=v;
@@ -2037,6 +2051,7 @@ function openAthlete(id){
     ${a.share.corpo? `<h3 style="margin:6px 4px 10px;">Corpo</h3>`+bodyPaneHtml(a.body,false) : '<div class="card empty">Este atleta não partilha as medições do corpo.</div>'}
     ${a.share.saude? `<h3 style="margin:6px 4px 10px;">Saúde</h3>`+healthPaneHtml(a.health,false) : '<div class="card empty">Este atleta não partilha os dados de saúde.</div>'}
     ${athleteNutriHtml(a)}
+    ${athleteMindHtml(a)}
   `);
   fillPhotos(document.getElementById('sheetHost'));
 }
@@ -2439,6 +2454,16 @@ async function saveEditPlanos(){
 }
 
 /* ---------- coach: nutrição do atleta ---------- */
+function athleteMindHtml(a){
+  if(!a.share.saude) return '';
+  const ult=[...(a.mind||[])].sort((x,y)=>y.date.localeCompare(x.date)).slice(0,7).reverse();
+  const it=(a.intencoes||{})[ymd(mondayOf(new Date()))];
+  const refl=(a.logs||[]).filter(l=>l.answer).sort((x,y)=>y.date.localeCompare(x.date)).slice(0,3);
+  return `<h3 style="margin:6px 4px 10px;">Mente</h3><div class="card">
+    <div class="list-row"><span class="muted">Humor dos últimos dias</span><span style="font-size:18px;">${ult.length?ult.map(m=>FEELINGS[m.mood-1]).join(' '):'—'}</span></div>
+    <div class="list-row"><span class="muted">Intenção da semana</span><span style="text-align:right;">${it?esc(it):'—'}</span></div>
+    ${refl.map(l=>`<div class="reflect" style="margin-top:8px;"><div class="tiny">${niceDate(l.date)} · ${esc(l.question||'')}</div><div style="margin-top:4px;">${esc(l.answer)}</div></div>`).join('')}</div>`;
+}
 function athleteNutriHtml(a){
   if(!a.share.saude) return '<div class="card empty">Este atleta não partilha a alimentação.</div>';
   if(!a.nutri) return '<div class="card empty">Este atleta ainda não criou o perfil alimentar.</div>';
@@ -2484,6 +2509,9 @@ function hc(key, o){
 function miniBar(pct){ return `<div class="hc-bar"><span style="width:${Math.max(0,Math.min(100,pct))}%"></span></div>`; }
 
 function renderHub(){
+  if(!isCoach() && S.coach && !(S.coach.share.corpo && S.coach.share.saude)){
+    document.getElementById('todayCard').innerHTML=consentHtml(); document.getElementById('hubGrid').innerHTML=''; document.getElementById('hubCoach').innerHTML=coachCardHtml(); const d=document.getElementById('desafioPT'); if(d) d.innerHTML=''; return;
+  }
   const plan=buildPlan(S.goal, S.logs), today=addDays(0);
   const todays=plan.flatMap(w=>w.sessions).filter(s=>s.date===today);
 
@@ -2813,7 +2841,7 @@ function start(){
   document.getElementById('loginScreen').hidden=true;
   document.getElementById('app').hidden=false;
   ptInit(); save();
-  document.getElementById('donaCard').hidden = !IS_DONA;
+  document.getElementById('donaCard').hidden = !(IS_DONA || IS_MOD);
   const ptBtn=document.querySelector('nav.bottom button[data-v="treino"]'); if(ptBtn) ptBtn.lastChild.textContent = isInst() ? 'Instituição' : 'PT 3S';
   try{ history.replaceState({view:'inicio'}, ''); }catch(e){}
   goView('inicio', true);
