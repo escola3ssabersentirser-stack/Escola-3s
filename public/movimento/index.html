@@ -581,7 +581,7 @@
         <p class="muted" style="margin:-4px 0 10px;">A pessoa tem de criar conta na app primeiro. Depois escreve aqui o email dela.</p>
         <label for="mkEmail">Email da conta do coach</label><input id="mkEmail" type="email" placeholder="email@exemplo.pt">
         <label for="mkTitle">Título</label><input id="mkTitle" value="Coach desportivo certificado">
-        <label for="mkBio">Apresentação (separada por vírgulas)</label><input id="mkBio" value="Coach certificado, Ironman, Paraquedista e formador de recrutas, Liderança e formação de equipas corporativas">
+        <label for="mkBio">Apresentação (separada por vírgulas)</label><input id="mkBio" value="Coach desportivo certificado, Corrida, trilhos, bicicleta e pilates, Acompanhamento personalizado">
         <label style="display:flex; gap:10px; align-items:center; font-size:13px; color:var(--ink); margin-bottom:12px;"><input id="mkPrincipal" type="checkbox" checked style="width:auto; margin:0; accent-color:var(--navy); transform:scale(1.2);"><span>Coach principal: acompanha todos os atletas e modera os encontros</span></label>
         <button class="primary" onclick="makeCoach()">Dar acesso de coach</button>
         <p class="tiny" id="mkResult" style="margin:10px 0 0;"></p>
@@ -1118,9 +1118,9 @@ function initPickMap(ll){
    + acesso do coach
    ========================================================= */
 let COACH = {
-  name:'Valter Canhita', code:'3S-VC01',
+  name:'Coach desportivo', code:'3S-VC01',
   title:'Coach desportivo certificado',
-  bio:['Coach certificado','Ironman','Paraquedista e formador de recrutas','Liderança e formação de equipas corporativas'],
+  bio:['Coach desportivo certificado','Corrida, trilhos, bicicleta e pilates','Acompanhamento personalizado'],
 };
 const GOAL_SPORTS = ['corrida','trilho','bike'];
 const BASE = { corrida:{Iniciante:3,'Médio':6,'Avançado':10}, trilho:{Iniciante:5,'Médio':8,'Avançado':12},
@@ -1276,7 +1276,7 @@ function renderHub(){
   const lastM=[...S.mind].sort((a,b)=>b.date.localeCompare(a.date))[0];
   let cards='';
   if(isCoach()) cards+=hubCard('atletas','c2','Os meus atletas', `${(S.athletes||[]).length} atletas ligados · código ${COACH.code}`, true);
-  cards+=hubCard('coaching','c1','Sessões de coaching', next? `Próxima: ${niceDate(next.date)}, ${esc(next.time)}` : (isCoach()?'A tua agenda de sessões':'Marca com o coach '+COACH.name.split(' ')[0]));
+  cards+=hubCard('coaching','c1','Sessões de coaching', next? `Próxima: ${niceDate(next.date)}, ${esc(next.time)}` : (isCoach()?'A tua agenda de sessões':'Marca com o '+cN()));
   cards+=hubCard('plano','c2','Plano de treino', S.goal? `${pg.done} de ${pg.total} treinos feitos` : 'Define o teu objetivo');
   cards+=hubCard('saude','c3','Saúde', lastH? `Sono ${nm(lastH.sleep)} h · energia ${lastH.energy}/5` : 'Sono, energia e dores');
   cards+=hubCard('corpo','c4','Corpo', lastBody&&lastBody.weight? `${nm(lastBody.weight)} kg${lastBody.muscle?' · músculo '+nm(lastBody.muscle)+' kg':''}` : 'Peso, massa muscular, medidas');
@@ -1312,7 +1312,7 @@ function connectCoach(){
   if(c!==COACH.code){ toast('Código errado. Confirma com o teu coach.'); return; }
   S.coach={code:c, share:{treinos:true, corpo:false, saude:false}, since:addDays(0)};
   if(!S.coachNotes.length) S.coachNotes.push({date:addDays(0), text:'Bem-vinda/o! Define o teu objetivo no Plano de treino e marca a primeira sessão comigo. Vamos com calma e com consistência.'});
-  save(); renderTreino(); toast('Ligado ao coach '+COACH.name.split(' ')[0]);
+  save(); renderTreino(); toast('Ligado ao '+cN());
 }
 function disconnectCoach(){ S.coach=null; save(); renderTreino(); toast('Desligado do coach'); }
 function setShare(k,v){ S.coach.share[k]=v; save(); toast(v?'O coach passa a ver isto':'O coach deixa de ver isto'); }
@@ -1384,7 +1384,7 @@ function renderPlan(){
     <div style="font-size:12px; opacity:.8; margin-top:6px; position:relative; z-index:1;">Semana ${wi+1} de ${plan.length} · ${pg.done} de ${pg.total} treinos feitos até hoje</div>
   </div>`;
   const notes=[...S.coachNotes].reverse().slice(0,1);
-  document.getElementById('coachNote').innerHTML = (S.coach && notes.length) ? notes.map(n=>`<div class="note"><div class="from">Nota do coach ${esc(COACH.name)} · ${niceDate(n.date)}</div>${esc(n.text)}</div>`).join('') : '';
+  document.getElementById('coachNote').innerHTML = (S.coach && notes.length) ? notes.map(n=>`<div class="note"><div class="from">Nota do ${esc(cN())} · ${niceDate(n.date)}</div>${esc(n.text)}</div>`).join('') : '';
   const wk=plan[wi];
   document.getElementById('planWeek').innerHTML = `<div class="card"><div class="row" style="margin-bottom:4px;"><h3 style="margin:0;">Esta semana</h3>${wk.recovery?'<span class="badge mint">Semana de recuperação</span>':''}${wk.last&&G.type==='prova'?'<span class="badge coral">Semana da prova</span>':''}</div>${wk.sessions.map(s=>sessHtml(s,S.planDone,S.logs,true)).join('')}</div>`;
   // sugestão para o treino longo
@@ -1588,7 +1588,7 @@ function openSession(){
   const types = ['Sessão experimental · 20 min (gratuita)','Coaching desportivo','Mentoria 3S · Saber · Sentir · Ser','Avaliação física e plano'];
   const ath = isCoach() ? `<label for="sAth">Atleta</label><select id="sAth">${(S.athletes||[]).map(a=>`<option>${esc(a.name)}</option>`).join('')}</select>` : '';
   const hasTrial = !isCoach() && S.sessions.some(s=>s.type.startsWith('Sessão experimental'));
-  openSheet(isCoach()?'Marcar sessão':'Marcar sessão com '+COACH.name.split(' ')[0], `<div class="card">
+  openSheet(isCoach()?'Marcar sessão':'Marcar sessão com o '+cN(), `<div class="card">
     ${ath}
     <label for="sType">Tipo de sessão</label><select id="sType">${types.filter(t=>!(hasTrial&&t.startsWith('Sessão experimental'))).map(t=>`<option>${t}</option>`).join('')}</select>
     <div class="two"><div><label for="sDate">Dia</label><input id="sDate" type="date" min="${addDays(1)}" value="${addDays(3)}"></div>
@@ -1976,13 +1976,14 @@ async function saveMood(n){ await q(sb.from('mov_mente').upsert({user_id:ME, dat
 async function saveIntent(){ const week=ymd(mondayOf(new Date())); S.intentions=S.intentions||{}; S.intentions[week]=document.getElementById('intentIn').value.trim(); await saveEstado(); toast('Intenção guardada'); }
 
 /* ---------- coach (lado do atleta) ---------- */
-const COACH_DESTAQUE = {name:'Valter Canhita', code:'', title:'Coach desportivo certificado',
-  bio:['Coach certificado','Ironman','Paraquedista e formador de recrutas','Liderança e formação de equipas corporativas']};
+function cN(){ const n=(COACH&&COACH.name)||''; return (!n || /^coach/i.test(n)) ? 'coach desportivo' : 'coach '+n.split(' ')[0]; }
+const COACH_DESTAQUE = {name:'Coach desportivo', code:'', title:'Coach desportivo certificado',
+  bio:['Coach desportivo certificado','Corrida, trilhos, bicicleta e pilates','Acompanhamento personalizado']};
 async function connectCoach(){
   const c=document.getElementById('coachCode').value.trim(); if(!c){ toast('Escreve o código do coach'); return; }
   const {error}=await sb.rpc('mov_ligar_coach',{p_codigo:c});
   if(error){ toast(error.message.includes('inválido')?'Código errado. Confirma com o teu coach.':'Não foi possível ligar: '+error.message); return; }
-  await refresh(); toast('Ligado ao coach '+COACH.name.split(' ')[0]);
+  await refresh(); toast('Ligado ao '+cN());
 }
 async function disconnectCoach(){ await q(sb.from('mov_coach_ligacoes').delete().eq('atleta_id',ME)); await refresh(); toast('Desligado do coach'); }
 function askRetirar(){ document.getElementById('retirarBox').hidden=false; }
@@ -1994,7 +1995,7 @@ async function setConsent(v){
 function closeSheetIfOpen(){ if(sheetOpen()) closeSheet(); }
 function consentHtml(){
   return `<div class="goal-top"><div class="eyebrow">O teu coach</div><h2>Autoriza o acompanhamento</h2>
-    <div style="font-size:13.5px; opacity:.9; position:relative; z-index:1; line-height:1.5;">No PT 3S, o coach ${esc(COACH.name)} acompanha os teus treinos, o teu corpo, a tua saúde, a tua alimentação e o teu humor para te dar um plano à tua medida. Para isso precisa da tua autorização.</div>
+    <div style="font-size:13.5px; opacity:.9; position:relative; z-index:1; line-height:1.5;">No PT 3S, o ${esc(cN())} acompanha os teus treinos, o teu corpo, a tua saúde, a tua alimentação e o teu humor para te dar um plano à tua medida. Para isso precisa da tua autorização.</div>
     <button class="primary small" style="background:var(--gold); margin-top:12px; position:relative; z-index:1;" onclick="setConsent(true)">Autorizo</button></div>`;
 }
 async function setShare(k,v){
@@ -2010,7 +2011,7 @@ function openSession(){
   const types = ['Sessão experimental · 20 min (gratuita)','Coaching desportivo','Mentoria 3S · Saber · Sentir · Ser','Avaliação física e plano'];
   const ath = isCoach() ? (S.athletes.length? `<label for="sAth">Atleta</label><select id="sAth">${S.athletes.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('')}</select>` : '<p class="muted">Ainda não tens atletas ligados.</p>') : '';
   const hasTrial = !isCoach() && S.sessions.some(s=>s.type.startsWith('Sessão experimental'));
-  openSheet(isCoach()?'Marcar sessão':'Marcar sessão com '+COACH.name.split(' ')[0], `<div class="card">
+  openSheet(isCoach()?'Marcar sessão':'Marcar sessão com o '+cN(), `<div class="card">
     ${ath}
     <label for="sType">Tipo de sessão</label><select id="sType">${types.filter(t=>!(hasTrial&&t.startsWith('Sessão experimental'))).map(t=>`<option>${t}</option>`).join('')}</select>
     <div class="two"><div><label for="sDate">Dia</label><input id="sDate" type="date" min="${addDays(1)}" value="${addDays(3)}"></div>
@@ -2594,7 +2595,7 @@ function renderHub(){
   const next=(S.sessions||[]).filter(s=>s.date>=today).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time))[0];
   cards+=hc('coaching',{wide:true, title:'Sessões de coaching',
     metric: next? `${niceDate(next.date)}`:null, unit: next? ` · ${esc(next.time)}`:'',
-    sub: next? `${esc(next.type)} · ${esc(next.mode)}${next.status==='pedida'?' · à espera de confirmação':''}` : (isCoach()? 'A tua agenda de sessões' : `Com o coach ${esc(COACH.name)}`),
+    sub: next? `${esc(next.type)} · ${esc(next.mode)}${next.status==='pedida'?' · à espera de confirmação':''}` : (isCoach()? 'A tua agenda de sessões' : `Com o ${esc(cN())}`),
     act: isCoach()? 'Marcar sessão' : (next? 'Ver sessões':'Marcar sessão'), actFn: next&&!isCoach()? "openPane('coaching')" : 'openSession()'});
 
   document.getElementById('hubGrid').innerHTML=cards;

@@ -520,8 +520,8 @@ const workshops = [
 ];
 
 const escolas = [
-  { id: "lideranca", nome: "Escola de Liderança" },
-  { id: "ser", nome: "Escola do Ser" },
+  { id: "lideranca", nome: "Liderança 3S" },
+  { id: "ser", nome: "Desenvolvimento 3S" },
 ];
 
 const podcastPorEscola = {
@@ -1059,8 +1059,8 @@ const areas = [
   { key: "alunos", titulo: "Alunos", desc: "Cursos das duas escolas", icon: GraduationCap, full: true },
   { key: "aluno", titulo: "Área do Aluno", desc: "Progresso, certificados e materiais", icon: GraduationCap },
   { key: "livros", titulo: "Os meus livros", desc: "Romances de Conceição Alves", icon: BookOpen },
-  { key: "escola-lideranca", titulo: "Escola de Liderança", desc: "Comunicação e liderança de pessoas", icon: BookOpen },
-  { key: "escola-ser", titulo: "Escola do Ser", desc: "A liderança começa em ti", icon: BookOpen },
+  { key: "escola-lideranca", titulo: "Liderança 3S", desc: "Comunicação e liderança de pessoas", icon: BookOpen },
+  { key: "escola-ser", titulo: "Desenvolvimento 3S", desc: "Autoconhecimento, emoções e crenças", icon: BookOpen },
   { key: "comunidade", titulo: "Comunidade", desc: "Tema, desafio e partilha do mês", icon: Users },
   { key: "workshops", titulo: "Workshops", desc: "Próximas sessões e inscrição", icon: Calendar },
   { key: "podcast", titulo: "Podcast", desc: "Episódios para ouvir", icon: Headphones },
@@ -1247,27 +1247,33 @@ function AreasGrid({ onOpen, lista }) {
 /* ---------------------------------------------------------
    As duas áreas da Escola 3S: Liderança 3S e Movimento 3S
 --------------------------------------------------------- */
-function EscolasDuplas({ publico }) {
+function EscolasDuplas({ publico, onAbrir }) {
   const irLideranca = () => { const el = document.getElementById("lideranca-3s"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); };
-  return (
-    <div className="px-6 mb-7">
-      <div className="grid grid-cols-2 gap-3">
-        <button onClick={irLideranca} className="relative overflow-hidden rounded-3xl px-4 py-4 text-left transition active:scale-[0.97]"
-          style={{ background: `linear-gradient(150deg, ${palette.navy} 0%, #24436E 100%)`, boxShadow: "0 8px 22px -12px rgba(27,51,85,0.55)" }}>
-          <span className="inline-block text-[9px] tracking-[0.14em] font-semibold rounded-full px-2 py-0.5 mb-2" style={{ backgroundColor: `${palette.gold}26`, color: palette.gold }}>{publico ? "VER ↓" : "ESTÁS AQUI ↓"}</span>
-          <p className="font-serif text-xl leading-tight" style={{ color: palette.creamSoft }}>Liderança <span style={{ color: palette.gold }}>3S</span></p>
-          <p className="text-[11px] mt-1 leading-snug" style={{ color: palette.goldSoft }}>Comunicação, líderes e equipas</p>
-          <p className="text-[10px] mt-2" style={{ color: palette.creamSoft, opacity: 0.75 }}>com Conceição Alves</p>
-        </button>
-        <a href="/movimento/" className="relative overflow-hidden rounded-3xl px-4 py-4 text-left transition active:scale-[0.97] block"
-          style={{ backgroundColor: palette.gold, boxShadow: "0 8px 22px -12px rgba(198,162,83,0.7)" }}>
-          <span className="inline-block text-[9px] tracking-[0.14em] font-semibold rounded-full px-2 py-0.5 mb-2" style={{ backgroundColor: `${palette.navy}1A`, color: palette.navy }}>ABRIR ›</span>
-          <p className="font-serif text-xl leading-tight" style={{ color: palette.navy }}>Movimento <span style={{ color: "#fff" }}>3S</span></p>
-          <p className="text-[11px] mt-1 leading-snug" style={{ color: palette.navy }}>Trilhos, corrida, bicicleta e pilates</p>
-          <p className="text-[10px] mt-2" style={{ color: palette.navy, opacity: 0.75 }}>com Valter Canhita</p>
-        </a>
+  const abrir = (k) => (onAbrir ? onAbrir(k) : irLideranca());
+  const Card = ({ titulo, desc, por, fundo, cor, destaque, etiqueta, onClick, href }) => {
+    const conteudo = (
+      <div className="flex items-center gap-3">
+        <div className="flex-1 min-w-0">
+          <p className="font-serif text-2xl leading-tight" style={{ color: cor }}>{titulo} <span style={{ color: destaque }}>3S</span></p>
+          <p className="text-[12px] mt-0.5 leading-snug" style={{ color: cor, opacity: 0.85 }}>{desc}</p>
+          <p className="text-[10px] mt-1.5 tracking-[0.08em]" style={{ color: cor, opacity: 0.7 }}>{por}</p>
+        </div>
+        <span className="text-[10px] tracking-[0.14em] font-semibold rounded-full px-2.5 py-1 shrink-0" style={{ backgroundColor: `${destaque}26`, color: destaque }}>{etiqueta}</span>
       </div>
-      <p className="text-[11px] text-center mt-2" style={{ color: palette.navySoft }}>{publico ? "Uma só conta dá acesso às duas escolas." : "A mesma conta serve para as duas."}</p>
+    );
+    const cls = "block w-full rounded-3xl px-5 py-4 text-left transition active:scale-[0.98]";
+    const st = { background: fundo, boxShadow: "0 8px 22px -12px rgba(27,51,85,0.5)" };
+    return href ? <a href={href} className={cls} style={st}>{conteudo}</a> : <button onClick={onClick} className={cls} style={st}>{conteudo}</button>;
+  };
+  return (
+    <div className="px-6 mb-7 space-y-3">
+      <Card titulo="Liderança" desc="Comunicação, líderes e equipas" por="COM CONCEIÇÃO ALVES" etiqueta={publico ? "VER ↓" : "ABRIR ›"}
+        fundo={`linear-gradient(150deg, ${palette.navy} 0%, #24436E 100%)`} cor={palette.creamSoft} destaque={palette.gold} onClick={() => abrir("lideranca-3s")} />
+      <Card titulo="Movimento" desc="Trilhos, corrida, bicicleta e pilates" por="COM COACH DESPORTIVO" etiqueta="ABRIR ›"
+        fundo={palette.gold} cor={palette.navy} destaque="#FFFFFF" href="/movimento/" />
+      <Card titulo="Desenvolvimento" desc="Autoconhecimento, emoções e crenças" por="COM CONCEIÇÃO ALVES" etiqueta={publico ? "VER ↓" : "ABRIR ›"}
+        fundo={palette.card} cor={palette.navy} destaque={palette.gold} onClick={() => abrir("desenvolvimento-3s")} />
+      <p className="text-[11px] text-center" style={{ color: palette.navySoft }}>Uma só conta dá acesso às três escolas.</p>
     </div>
   );
 }
@@ -1278,6 +1284,82 @@ function DivisorArea({ texto, id }) {
       <span className="h-px flex-1" style={{ backgroundColor: palette.gold, opacity: 0.5 }} />
       <p className="text-[10px] tracking-[0.18em] font-semibold" style={{ color: palette.navy }}>{texto}</p>
       <span className="h-px flex-1" style={{ backgroundColor: palette.gold, opacity: 0.5 }} />
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------
+   Liderança 3S: a escola da Conceição, com tudo de liderança
+--------------------------------------------------------- */
+const areasLideranca = [
+  { key: "marcar", titulo: "Marcar sessões", desc: "Coaching e mentoria individual com a Conceição", icon: PenLine, full: true },
+  { key: "escola-lideranca", titulo: "Cursos de liderança", desc: "Comunicar e liderar pessoas", icon: GraduationCap },
+  { key: "workshops", titulo: "Workshops", desc: "Próximas sessões e inscrição", icon: Calendar },
+];
+const areasDesenvolvimento = [
+  { key: "escola-ser", titulo: "Cursos de desenvolvimento", desc: "Autoconhecimento, emoções e crenças limitantes", icon: GraduationCap, full: true },
+  { key: "marcar", titulo: "Sessão de coaching", desc: "Individual", icon: PenLine },
+  { key: "livros", titulo: "Livros da autora", desc: "Romances de Conceição Alves", icon: BookOpen },
+];
+
+function EscolaHubScreen({ onBack, onOpen, eyebrow, nome, frase, por, lista }) {
+  const [primeiro, ...resto] = lista;
+  return (
+    <div className="pb-28">
+      <div className="px-6 pt-6">
+        <button onClick={onBack} className="flex items-center gap-1.5" style={{ color: palette.navySoft }}>
+          <ChevronLeft size={18} />
+          <span className="text-sm">Escola 3S</span>
+        </button>
+      </div>
+      <div className="px-6 pt-4 pb-6">
+        <div className="rounded-3xl px-5 py-6 text-center" style={{ background: `linear-gradient(150deg, ${palette.navy} 0%, #24436E 100%)` }}>
+          <p className="text-[10px] tracking-[0.25em] font-semibold" style={{ color: palette.gold }}>{eyebrow}</p>
+          <p className="font-serif text-4xl leading-tight mt-2" style={{ color: palette.creamSoft }}>{nome} <span style={{ color: palette.gold }}>3S</span></p>
+          <p className="text-sm mt-2 leading-relaxed" style={{ color: palette.goldSoft }}>{frase}</p>
+          <p className="text-[11px] mt-3" style={{ color: palette.creamSoft, opacity: 0.8 }}>{por}</p>
+        </div>
+      </div>
+      <div className="px-6 space-y-3">
+        <AreaCard area={primeiro} onOpen={onOpen} full />
+        <div className="grid grid-cols-2 gap-3">
+          {resto.map((a) => <AreaCard key={a.key} area={a} onOpen={onOpen} />)}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const areasEscolaComuns = [
+  { key: "formacao-hub", titulo: "Formação", desc: "Cursos, temas e material", icon: GraduationCap },
+  { key: "podcast", titulo: "Podcast", desc: "Episódios para ouvir", icon: Headphones },
+  { key: "comunidade", titulo: "Comunidade", desc: "Um tema por mês", icon: Users },
+  { key: "produtos", titulo: "Produtos", desc: "Livros, cadernos e material", icon: ShoppingBag },
+];
+
+const produtosLista = [
+  { key: "material", titulo: "Material didático", desc: "Cadernos de trabalho, fichas, jogos e ebooks", icon: Layers, full: true },
+  { key: "livros", titulo: "Livros", desc: "Os livros da Conceição Alves", icon: BookOpen },
+  { key: "carrinho", titulo: "O meu carrinho", desc: "Rever e pagar", icon: ShoppingBag },
+];
+
+function ProdutosScreen({ onBack, onOpen }) {
+  const [primeiro, ...resto] = produtosLista;
+  return (
+    <div className="pb-28">
+      <div className="px-6 pt-6">
+        <button onClick={onBack} className="flex items-center gap-1.5" style={{ color: palette.navySoft }}>
+          <ChevronLeft size={18} />
+          <span className="text-sm">Escola 3S</span>
+        </button>
+      </div>
+      <SectionHeader eyebrow="ESCOLA 3S" title="Produtos" />
+      <div className="px-6 space-y-3">
+        <AreaCard area={primeiro} onOpen={onOpen} full />
+        <div className="grid grid-cols-2 gap-3">
+          {resto.map((a) => <AreaCard key={a.key} area={a} onOpen={onOpen} />)}
+        </div>
+      </div>
     </div>
   );
 }
@@ -1303,7 +1385,7 @@ function InicioScreen({ onOpen, email, papel, naoLidas, onVerAgenda, onVerNotifi
           </p>
         </div>
       </div>
-      <EscolasDuplas />
+      <EscolasDuplas onAbrir={onOpen} />
       <BannerEncontro />
       {(papel === "dona" || papel === "mentora") && (
         <div className="px-6 mb-6">
@@ -1332,8 +1414,12 @@ function InicioScreen({ onOpen, email, papel, naoLidas, onVerAgenda, onVerNotifi
           </button>
         </div>
       )}
-      <DivisorArea id="lideranca-3s" texto="LIDERANÇA 3S · COM CONCEIÇÃO ALVES" />
-      <AreasGrid onOpen={onOpen} lista={areasInicio} />
+      <DivisorArea texto="TUDO DA ESCOLA 3S" />
+      <div className="px-6">
+        <div className="grid grid-cols-2 gap-3">
+          {areasEscolaComuns.map((a) => <AreaCard key={a.key} area={a} onOpen={onOpen} />)}
+        </div>
+      </div>
       <div className="px-6 mt-5">
         <button
           onClick={() => onOpen("codigo")}
@@ -1435,8 +1521,8 @@ function AreaAlunoScreen({ onBack, onOpenCurso, cursosConcluidos, materiaisDesbl
       </div>
 
       {[
-        { id: "lideranca", nome: "Escola de Liderança", frase: "Comunicar, liderar pessoas e conduzir conversas" },
-        { id: "ser", nome: "Escola do Ser", frase: "A liderança começa em ti: autoconhecimento e emoções" },
+        { id: "lideranca", nome: "Liderança 3S", frase: "Comunicar, liderar pessoas e conduzir conversas" },
+        { id: "ser", nome: "Desenvolvimento 3S", frase: "A liderança começa em ti: autoconhecimento e emoções" },
         { id: "comunidade", nome: "Formações da Comunidade", frase: "A formação de cada mês da Comunidade 3S" },
       ].map((escola) => {
         const lista = cursos.filter((c) => c.escolaId === escola.id);
@@ -3871,7 +3957,7 @@ function FerramentasDesenvolvimentoPessoalScreen({ onBack }) {
             <DP_Logo3S size={36} />
             <div>
               <div style={{ fontFamily: DP_serif, fontSize: 21, color: DP_COLORS.ink, lineHeight: 1.1 }}>
-                Escola do Ser
+                Desenvolvimento 3S
               </div>
               <div style={{ fontSize: 12.5, color: DP_COLORS.inkSoft, fontStyle: "italic" }}>
                 Ferramentas de Desenvolvimento Pessoal
@@ -3969,7 +4055,7 @@ function FerramentasCoachingScreen({ onBack }) {
                   lineHeight: 1.1,
                 }}
               >
-                Escola de Liderança
+                Liderança 3S
               </div>
               <div style={{ fontSize: 12.5, color: FL_COLORS.inkSoft, fontStyle: "italic" }}>
                 Ferramentas de Coaching, PNL e Comunicação
@@ -4042,14 +4128,14 @@ const CARTOES_MATERIAL_DIDATICO = [
   },
   {
     chave: "lideranca",
-    titulo: "Escola de Liderança",
+    titulo: "Liderança 3S",
     desc: "Ferramentas de coaching, PNL e comunicação",
     icon: BookOpen,
     ids: [96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110],
   },
   {
     chave: "ser",
-    titulo: "Escola do Ser",
+    titulo: "Desenvolvimento 3S",
     desc: "Ferramentas de desenvolvimento pessoal",
     icon: Layers,
     ids: [111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126],
@@ -7051,7 +7137,7 @@ const GRUPOS_CURSOS = [
     ],
   },
   {
-    nome: "Escola do Ser",
+    nome: "Desenvolvimento 3S",
     frase: "A liderança começa em ti: autoconhecimento e emoções",
     sub: [{ nome: null, escolaId: "ser" }],
   },
@@ -7232,8 +7318,8 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher }) {
         {/* Escola 3S: duas escolas */}
         <div className="px-6 pt-2 pb-5 text-center">
           <p className="text-[11px] tracking-[0.3em] font-medium" style={{ color: palette.gold }}>ESCOLA 3S · SABER · SENTIR · SER</p>
-          <h1 className="font-serif text-4xl leading-tight mt-3" style={{ color: palette.navy }}>Duas escolas, um só método.</h1>
-          <p className="text-sm mt-3 leading-relaxed" style={{ color: palette.navySoft }}>Liderar pessoas e cuidar do corpo pedem o mesmo: saber, sentir e ser.</p>
+          <h1 className="font-serif text-4xl leading-tight mt-3" style={{ color: palette.navy }}>Três escolas, um só método.</h1>
+          <p className="text-sm mt-3 leading-relaxed" style={{ color: palette.navySoft }}>Liderar pessoas, cuidar do corpo e crescer por dentro pedem o mesmo: saber, sentir e ser.</p>
         </div>
         <EscolasDuplas publico />
 
@@ -7304,8 +7390,8 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher }) {
 
         {/* Cursos */}
         {[
-          { id: "lideranca", nome: "Escola de Liderança", frase: "Comunicar, liderar pessoas e conduzir conversas" },
-          { id: "ser", nome: "Escola do Ser", frase: "A liderança começa em ti: autoconhecimento e emoções" },
+          { id: "lideranca", nome: "Liderança 3S", frase: "Comunicar, liderar pessoas e conduzir conversas" },
+          { id: "ser", nome: "Desenvolvimento 3S", frase: "A liderança começa em ti: autoconhecimento e emoções" },
         ].map((escola) => {
           const lista = cursos.filter((c) => c.escolaId === escola.id && !c.gratuito);
           if (lista.length === 0) return null;
@@ -8529,7 +8615,7 @@ export default function App() {
       />
     );
   } else if (secao === "carrinho") {
-    content = <CarrinhoScreen onBack={() => setSecao(null)} onPagamentoConfirmado={sincronizarCompras} />;
+    content = <CarrinhoScreen onBack={() => setSecao("produtos")} onPagamentoConfirmado={sincronizarCompras} />;
   } else if (cursoAberto && !temAcessoCurso(cursoAberto)) {
     content = <CursoVendaScreen curso={cursoAberto} onBack={() => setCursoAberto(null)} />;
   } else if (cursoAberto && cursoAberto.gratuito && progresso.papel !== "dona" && fichaCliente && !(fichaCliente.nome && fichaCliente.telefone)) {
@@ -8573,8 +8659,16 @@ export default function App() {
     );
   } else if (secao === "alunos") {
     content = <CatalogoCursosScreen onBack={() => setSecao("formacao-hub")} temAcesso={temAcessoCurso} onAbrirCurso={setCursoAberto} onAreaAluno={() => setSecao("aluno")} />;
+  } else if (secao === "lideranca-3s") {
+    content = <EscolaHubScreen onBack={() => setSecao(null)} onOpen={setSecao} lista={areasLideranca}
+      eyebrow="ESCOLA 3S" nome="Liderança" frase="Liderar começa na forma como comunicas." por="com Conceição Alves · Coach de líderes e equipas" />;
+  } else if (secao === "desenvolvimento-3s") {
+    content = <EscolaHubScreen onBack={() => setSecao(null)} onOpen={setSecao} lista={areasDesenvolvimento}
+      eyebrow="ESCOLA 3S" nome="Desenvolvimento" frase="A mudança começa em ti." por="com Conceição Alves" />;
+  } else if (secao === "produtos") {
+    content = <ProdutosScreen onBack={() => setSecao(null)} onOpen={setSecao} />;
   } else if (secao === "livros") {
-    content = <LivrosScreen onBack={() => setSecao(null)} materiaisDesbloqueados={materiaisAcesso} />;
+    content = <LivrosScreen onBack={() => setSecao("produtos")} materiaisDesbloqueados={materiaisAcesso} />;
   } else if (secao === "aluno") {
     content = (
       <AreaAlunoScreen
@@ -8614,15 +8708,15 @@ export default function App() {
   } else if (secao === "mensagens") {
     content = <MensagensListaScreen onBack={() => setSecao("comunidade")} onAbrirConversa={setConversaAberta} />;
   } else if (secao === "workshops") {
-    content = <WorkshopsScreen onBack={() => setSecao(null)} inscricoes={progresso.inscricoesWorkshops} onToggleInscricao={toggleInscricao} />;
+    content = <WorkshopsScreen onBack={() => setSecao("lideranca-3s")} inscricoes={progresso.inscricoesWorkshops} onToggleInscricao={toggleInscricao} />;
   } else if (secao === "podcast") {
     content = <PodcastScreen onBack={() => setSecao(null)} souDona={progresso.papel === "dona"} />;
   } else if (secao === "formacao") {
     content = <FormacaoScreen onBack={() => setSecao(null)} onOpenCurso={setCursoAberto} cursosConcluidos={progresso.cursosConcluidos} />;
   } else if (secao === "escola-lideranca") {
-    content = <FormacaoScreen onBack={() => setSecao(null)} onOpenCurso={setCursoAberto} cursosConcluidos={progresso.cursosConcluidos} escolaFixa="lideranca" />;
+    content = <FormacaoScreen onBack={() => setSecao("lideranca-3s")} onOpenCurso={setCursoAberto} cursosConcluidos={progresso.cursosConcluidos} escolaFixa="lideranca" />;
   } else if (secao === "escola-ser") {
-    content = <FormacaoScreen onBack={() => setSecao(null)} onOpenCurso={setCursoAberto} cursosConcluidos={progresso.cursosConcluidos} escolaFixa="ser" />;
+    content = <FormacaoScreen onBack={() => setSecao("desenvolvimento-3s")} onOpenCurso={setCursoAberto} cursosConcluidos={progresso.cursosConcluidos} escolaFixa="ser" />;
   } else if (secao === "material") {
     content = (
       <MaterialDidaticoScreen
@@ -8635,7 +8729,7 @@ export default function App() {
   } else if (secao === "marcar") {
     content = (
       <MarcarSessaoScreen
-        onBack={() => setSecao(null)}
+        onBack={() => setSecao("lideranca-3s")}
         onConfirmar={registarSessao}
         creditos={creditosSessoes}
         descontoCiclo={descontoCiclo}
