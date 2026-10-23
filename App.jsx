@@ -1245,8 +1245,43 @@ function AreasGrid({ onOpen, lista }) {
 }
 
 /* ---------------------------------------------------------
-   Ecrã: Início
+   As duas áreas da Escola 3S: Liderança 3S e Movimento 3S
 --------------------------------------------------------- */
+function EscolasDuplas({ publico }) {
+  const irLideranca = () => { const el = document.getElementById("lideranca-3s"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); };
+  return (
+    <div className="px-6 mb-7">
+      <div className="grid grid-cols-2 gap-3">
+        <button onClick={irLideranca} className="relative overflow-hidden rounded-3xl px-4 py-4 text-left transition active:scale-[0.97]"
+          style={{ background: `linear-gradient(150deg, ${palette.navy} 0%, #24436E 100%)`, boxShadow: "0 8px 22px -12px rgba(27,51,85,0.55)" }}>
+          <span className="inline-block text-[9px] tracking-[0.14em] font-semibold rounded-full px-2 py-0.5 mb-2" style={{ backgroundColor: `${palette.gold}26`, color: palette.gold }}>{publico ? "VER ↓" : "ESTÁS AQUI ↓"}</span>
+          <p className="font-serif text-xl leading-tight" style={{ color: palette.creamSoft }}>Liderança <span style={{ color: palette.gold }}>3S</span></p>
+          <p className="text-[11px] mt-1 leading-snug" style={{ color: palette.goldSoft }}>Comunicação, líderes e equipas</p>
+          <p className="text-[10px] mt-2" style={{ color: palette.creamSoft, opacity: 0.75 }}>com Conceição Alves</p>
+        </button>
+        <a href="/movimento/" className="relative overflow-hidden rounded-3xl px-4 py-4 text-left transition active:scale-[0.97] block"
+          style={{ backgroundColor: palette.gold, boxShadow: "0 8px 22px -12px rgba(198,162,83,0.7)" }}>
+          <span className="inline-block text-[9px] tracking-[0.14em] font-semibold rounded-full px-2 py-0.5 mb-2" style={{ backgroundColor: `${palette.navy}1A`, color: palette.navy }}>ABRIR ›</span>
+          <p className="font-serif text-xl leading-tight" style={{ color: palette.navy }}>Movimento <span style={{ color: "#fff" }}>3S</span></p>
+          <p className="text-[11px] mt-1 leading-snug" style={{ color: palette.navy }}>Trilhos, corrida, bicicleta e pilates</p>
+          <p className="text-[10px] mt-2" style={{ color: palette.navy, opacity: 0.75 }}>com Valter Canhita</p>
+        </a>
+      </div>
+      <p className="text-[11px] text-center mt-2" style={{ color: palette.navySoft }}>{publico ? "Uma só conta dá acesso às duas escolas." : "A mesma conta serve para as duas."}</p>
+    </div>
+  );
+}
+
+function DivisorArea({ texto, id }) {
+  return (
+    <div id={id} className="px-6 mb-3 flex items-center gap-2" style={{ scrollMarginTop: 16 }}>
+      <span className="h-px flex-1" style={{ backgroundColor: palette.gold, opacity: 0.5 }} />
+      <p className="text-[10px] tracking-[0.18em] font-semibold" style={{ color: palette.navy }}>{texto}</p>
+      <span className="h-px flex-1" style={{ backgroundColor: palette.gold, opacity: 0.5 }} />
+    </div>
+  );
+}
+
 function InicioScreen({ onOpen, email, papel, naoLidas, onVerAgenda, onVerNotificacoes, onVerPainel }) {
   const primeiroNome = papel === "dona" ? "Conceição" : (email ? email.split("@")[0] : "");
   return (
@@ -1259,15 +1294,16 @@ function InicioScreen({ onOpen, email, papel, naoLidas, onVerAgenda, onVerNotifi
           Olá{primeiroNome ? `, ${primeiroNome}` : ""} <span style={{ color: palette.gold }}>♡</span>
         </p>
         <p className="text-sm mt-1.5" style={{ color: palette.navySoft }}>
-          O que queres explorar hoje?
+          Por onde queres começar hoje?
         </p>
         <div className="flex flex-col items-center mt-4">
           <span className="h-px w-10 mb-2" style={{ backgroundColor: palette.gold }} />
           <p className="text-[10px] tracking-[0.16em] font-medium whitespace-nowrap" style={{ color: palette.gold }}>
-            LIDERAR COMEÇA NA FORMA COMO COMUNICAS
+            ESCOLA 3S · SABER · SENTIR · SER
           </p>
         </div>
       </div>
+      <EscolasDuplas />
       <BannerEncontro />
       {(papel === "dona" || papel === "mentora") && (
         <div className="px-6 mb-6">
@@ -1296,6 +1332,7 @@ function InicioScreen({ onOpen, email, papel, naoLidas, onVerAgenda, onVerNotifi
           </button>
         </div>
       )}
+      <DivisorArea id="lideranca-3s" texto="LIDERANÇA 3S · COM CONCEIÇÃO ALVES" />
       <AreasGrid onOpen={onOpen} lista={areasInicio} />
       <div className="px-6 mt-5">
         <button
@@ -7192,10 +7229,19 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher }) {
 
         <div className="pt-6"><BannerEncontro /></div>
 
-        {/* Herói */}
+        {/* Escola 3S: duas escolas */}
+        <div className="px-6 pt-2 pb-5 text-center">
+          <p className="text-[11px] tracking-[0.3em] font-medium" style={{ color: palette.gold }}>ESCOLA 3S · SABER · SENTIR · SER</p>
+          <h1 className="font-serif text-4xl leading-tight mt-3" style={{ color: palette.navy }}>Duas escolas, um só método.</h1>
+          <p className="text-sm mt-3 leading-relaxed" style={{ color: palette.navySoft }}>Liderar pessoas e cuidar do corpo pedem o mesmo: saber, sentir e ser.</p>
+        </div>
+        <EscolasDuplas publico />
+
+        {/* Herói Liderança 3S */}
+        <DivisorArea id="lideranca-3s" texto="LIDERANÇA 3S" />
         <div className="px-6 pt-2 pb-8 text-center">
-          <p className="text-[11px] tracking-[0.3em] font-medium" style={{ color: palette.gold }}>ESCOLA DE LIDERANÇA E COMUNICAÇÃO</p>
-          <h1 className="font-serif text-4xl leading-tight mt-3" style={{ color: palette.navy }}>Liderar começa na forma como comunicas.</h1>
+          <p className="text-[11px] tracking-[0.3em] font-medium" style={{ color: palette.gold }}>LIDERANÇA E COMUNICAÇÃO</p>
+          <h2 className="font-serif text-3xl leading-tight mt-3" style={{ color: palette.navy }}>Liderar começa na forma como comunicas.</h2>
           <p className="text-sm mt-4 leading-relaxed" style={{ color: palette.navySoft }}>
             Para quem lidera equipas, negócios, famílias ou a própria vida. Cursos em vídeo, cadernos de trabalho e uma comunidade que te acompanha todos os meses — com a Conceição Alves.
           </p>
