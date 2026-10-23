@@ -1,0 +1,9 @@
+{
+  "rewrites": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "movimento.escola-3s.pt" }],
+      "destination": "/movimento/:path*"
+    }
+  ]
+}

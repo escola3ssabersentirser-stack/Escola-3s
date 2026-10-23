@@ -1,10 +1,10 @@
 {
-  "id": "/movimento/",
+  "id": "movimento-3s",
   "name": "Movimento 3S",
   "short_name": "Movimento 3S",
   "description": "Encontros desportivos e registo de treinos da Escola 3S",
-  "start_url": "/movimento/",
-  "scope": "/movimento/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#1B2A4A",
   "theme_color": "#1B2A4A",
