@@ -224,7 +224,7 @@
   .opt-grid button{border:1.5px solid var(--line); background:var(--card); border-radius:12px; padding:10px 4px; font-size:13px; cursor:pointer; color:var(--ink);}
   .opt-grid button.on{background:var(--navy); color:#fff; border-color:var(--navy);}
 
-  .hub{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;}
+  .hub{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; align-items:stretch;}
   .hub-card{background:var(--card); border:none; box-shadow:0 3px 12px var(--shadow); border-radius:var(--radius); padding:14px; text-align:left; cursor:pointer; color:var(--ink); display:flex; flex-direction:column; gap:8px; min-height:132px;}
   .hub-card.wide{grid-column:1 / -1; min-height:0; flex-direction:row; align-items:center;}
   .hub-card .hi{width:40px; height:40px; border-radius:13px; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
@@ -244,6 +244,48 @@
   .toggle-row input{width:auto; margin:0; accent-color:var(--navy); transform:scale(1.25);}
   .note{background:var(--coral-soft); border-radius:16px; padding:12px 14px; margin-bottom:12px; font-size:14px; line-height:1.5;}
   .note .from{font-size:11.5px; font-weight:600; color:#8A6430; margin-bottom:3px;}
+
+  /* Cartões v2, frase do dia, desafio */
+  nav.bottom .ic svg{width:22px; height:22px; display:block;}
+  .action .ic svg{width:22px; height:22px;}
+  .action.free .ic{color:var(--mint);} .action.create .ic{color:var(--coral);}
+  .hc{position:relative; overflow:hidden; background:var(--card); border-radius:22px; padding:14px 14px 12px; box-shadow:0 3px 12px var(--shadow); cursor:pointer; display:flex; flex-direction:column; gap:10px; min-height:168px; color:var(--ink); transition:transform .15s;}
+  .hc:active{transform:scale(.98);}
+  .hc::before{content:''; position:absolute; right:-28px; top:-28px; width:96px; height:96px; border-radius:50%; background:var(--tone-soft); opacity:.9;}
+  .hc.wide{grid-column:1 / -1; min-height:0;}
+  .hc-top{display:flex; align-items:center; gap:9px; position:relative;}
+  .hc-ico{width:34px; height:34px; border-radius:11px; background:var(--tone); color:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .hc-ico svg{width:19px; height:19px;}
+  .hc-lbl{font-family:'Baloo 2',sans-serif; font-weight:600; font-size:15px; line-height:1.15; flex:1; min-width:0;}
+  .hc-go{font-size:22px; color:var(--tone); line-height:1; opacity:.7;}
+  .hc-body{position:relative; display:flex; flex-direction:column; gap:5px;}
+  .hc-metric{font-family:'Baloo 2',sans-serif; font-weight:700; font-size:27px; line-height:1; color:var(--tone);}
+  .hc-metric small{font-size:13px; font-weight:600; color:var(--ink-soft); margin-left:2px;}
+  .hc-sub{font-size:12.5px; color:var(--ink-soft); line-height:1.35;}
+  .hc-bar{height:7px; border-radius:6px; background:var(--tone-soft, var(--line)); overflow:hidden; flex:1;}
+  .hc-bar span{display:block; height:100%; border-radius:6px; background:var(--tone, var(--gold)); transition:width .4s;}
+  .hc-dots{display:flex; gap:6px; margin-top:4px; flex-wrap:wrap;}
+  .hc-dot{width:26px; height:26px; border-radius:50%; border:1.5px solid var(--tone-soft); background:var(--card); color:var(--ink-soft); font-size:11px; font-weight:600; display:flex; align-items:center; justify-content:center;}
+  .hc-dot.on{background:var(--tone); border-color:var(--tone); color:#fff;}
+  .hc-dot.today{border-color:var(--gold); border-width:2px;}
+  .hc-act{position:relative; margin-top:auto; align-self:flex-start; border:none; border-radius:999px; padding:7px 13px; font-size:12.5px; font-weight:600; background:var(--tone-soft); color:var(--tone); cursor:pointer; font-family:inherit;}
+  .quote{display:flex; gap:10px; align-items:flex-start; background:var(--card); border-radius:var(--radius); padding:14px 16px; margin-bottom:12px; box-shadow:0 3px 12px var(--shadow); border-left:4px solid var(--gold);}
+  .q-mark{font-family:'Baloo 2',serif; font-size:44px; line-height:.8; color:var(--gold); margin-top:2px;}
+  .q-txt{font-family:'Baloo 2',sans-serif; font-size:16.5px; font-weight:600; line-height:1.3; color:var(--ink); text-wrap:balance;}
+  .q-by{font-size:11px; letter-spacing:1.2px; text-transform:uppercase; color:var(--ink-soft); margin-top:4px;}
+  .challenge{--tone:#B3843F; --tone-soft:#F2E5D1; background:linear-gradient(0deg, var(--card), var(--card)); border:1.5px solid #EAD7B8; border-radius:var(--radius); padding:14px 16px; margin-bottom:12px; box-shadow:0 3px 12px var(--shadow);}
+  .challenge.done{--tone:#4F8466; --tone-soft:#E2EDE5; border-color:#BFD9C8;}
+  .ch-top{display:flex; justify-content:space-between; gap:8px; align-items:center;}
+  .ch-eyebrow{font-size:11px; letter-spacing:1.2px; text-transform:uppercase; color:var(--tone); font-weight:600;}
+  .ch-days{font-size:12px; color:var(--ink-soft); flex-shrink:0;}
+  .ch-title{font-family:'Baloo 2',sans-serif; font-weight:700; font-size:19px; margin:4px 0 2px;}
+  .ch-desc{font-size:13.5px; color:var(--ink-soft); line-height:1.4;}
+  .ch-prog{display:flex; align-items:center; gap:10px; margin:10px 0 2px;}
+  .ch-count{font-weight:600; font-size:13px; flex-shrink:0;}
+  .ch-actions{display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;}
+  .ch-btn{border:none; border-radius:999px; padding:8px 14px; font-size:13px; font-weight:600; background:var(--tone); color:#fff; cursor:pointer; font-family:inherit;}
+  .ch-btn.ghost{background:var(--tone-soft); color:var(--tone);}
+  .ch-btn:disabled{opacity:.6; cursor:default;}
 
   /* Mapa */
   #mapBox{height:calc(100vh - 330px); min-height:360px; border-radius:var(--radius); overflow:hidden; box-shadow:0 3px 12px var(--shadow); margin-bottom:12px; z-index:1; position:relative;}
@@ -339,6 +381,7 @@
   <main>
     <!-- INÍCIO -->
     <section id="v-inicio" class="active">
+      <div id="fraseDia"></div>
       <div class="card">
         <div class="row" style="margin-bottom:10px;">
           <h3 style="margin:0;">Meta desta semana</h3>
@@ -351,12 +394,14 @@
         <div class="bar-bg"><div class="bar-fill" id="wkBar" style="width:0%"></div></div>
       </div>
 
+      <div id="desafioHome"></div>
+
       <div class="actions">
         <button class="action free" onclick="openFree()">
-          <span class="ic">🟢</span><span class="t">Estou livre</span><span class="s">Diz quando podes e encontra companhia</span>
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4M9 15l2 2 4-4"/></svg></span><span class="t">Estou livre</span><span class="s">Diz quando podes e encontra companhia</span>
         </button>
         <button class="action create" onclick="openCreate()">
-          <span class="ic">➕</span><span class="t">Criar encontro</span><span class="s">Marca dia, hora e ponto de encontro</span>
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></span><span class="t">Criar encontro</span><span class="s">Marca dia, hora e ponto de encontro</span>
         </button>
       </div>
 
@@ -374,8 +419,8 @@
     <section id="v-encontros">
       <div class="chips" id="sportFilter"></div>
       <div class="actions">
-        <button class="action free" onclick="openFree()"><span class="ic">🟢</span><span class="t">Estou livre</span><span class="s">Quem está disponível</span></button>
-        <button class="action create" onclick="openCreate()"><span class="ic">➕</span><span class="t">Criar encontro</span><span class="s">Novo encontro</span></button>
+        <button class="action free" onclick="openFree()"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4M9 15l2 2 4-4"/></svg></span><span class="t">Estou livre</span><span class="s">Quem está disponível</span></button>
+        <button class="action create" onclick="openCreate()"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></span><span class="t">Criar encontro</span><span class="s">Novo encontro</span></button>
       </div>
       <div id="meetList"></div>
       <div class="card">
@@ -414,6 +459,7 @@
       <!-- PAINEL -->
       <div id="treinoHub">
         <div id="todayCard"></div>
+        <div id="desafioPT"></div>
         <div class="hub" id="hubGrid"></div>
         <div id="hubCoach"></div>
       </div>
@@ -517,11 +563,11 @@
   </main>
 
   <nav class="bottom">
-    <button data-v="inicio" class="on" onclick="goView('inicio')"><span class="ic">🏠</span>Início</button>
-    <button data-v="encontros" onclick="goView('encontros')"><span class="ic">🤝</span>Encontros</button>
-    <button data-v="mapa" onclick="goView('mapa')"><span class="ic">🗺️</span>Mapa</button>
-    <button data-v="treino" onclick="goView('treino')"><span class="ic">💪</span>PT 3S</button>
-    <button data-v="perfil" onclick="goView('perfil')"><span class="ic">👤</span>Perfil</button>
+    <button data-v="inicio" class="on" onclick="goView('inicio')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg></span>Início</button>
+    <button data-v="encontros" onclick="goView('encontros')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M2.5 19c.6-3 2.8-5 5.5-5s4.9 2 5.5 5M12.5 15.2c.9-.8 2.1-1.2 3.5-1.2 2.7 0 4.9 2 5.5 5"/></svg></span>Encontros</button>
+    <button data-v="mapa" onclick="goView('mapa')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg></span>Mapa</button>
+    <button data-v="treino" onclick="goView('treino')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5v11M3.5 9v6M17.5 6.5v11M20.5 9v6M6.5 12h11"/></svg></span>PT 3S</button>
+    <button data-v="perfil" onclick="goView('perfil')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4.2-6 8-6s7 2 8 6"/></svg></span>Perfil</button>
   </nav>
 </div>
 
@@ -685,7 +731,7 @@ function upcoming(){ return S.meets.filter(m=>!isPast(m)).sort((a,b)=>(a.date+a.
 function renderAll(){
   if(!S) return;
   document.getElementById('greet').textContent = 'Olá, '+S.me.name.split(' ')[0];
-  renderWeek(); renderHome(); renderMeets(); renderLogs(); renderProfile(); renderTreino(); renderPlanoCard();
+  renderWeek(); renderHome(); renderMeets(); renderLogs(); renderProfile(); renderTreino(); renderPlanoCard(); renderMotiv();
 }
 function weekLogs(){ const ws=weekStart(); return S.logs.filter(l=>parseDate(l.date)>=ws); }
 function renderWeek(){
@@ -2039,7 +2085,7 @@ loadAll = async function(){
     q(sb.from('mov_ia_uso').select('tipo,created_at').gte('created_at', new Date(new Date().setUTCHours(0,0,0,0)).toISOString())),
     q(sb.from('mov_planos').select('*').eq('ativo', true).order('ordem')),
     q(sb.from('mov_pedidos_plano').select('*').order('created_at', {ascending:false})),
-    q(sb.from('mov_estado').select('user_id,plano_alimentar').eq('user_id', ME)),
+    q(sb.from('mov_estado').select('user_id,plano_alimentar,desafios').eq('user_id', ME)),
   ]);
   const meuPerfil = await q(sb.from('mov_perfis').select('plano').eq('user_id', ME).maybeSingle());
   S.nutri = nutri.find(n=>n.user_id===ME) || null;
@@ -2049,6 +2095,7 @@ loadAll = async function(){
   S.meuPlano = (meuPerfil && meuPerfil.plano) || 'gratis';
   S.pedidos = pedidos;
   S.mealPlan = (est[0] && est[0].plano_alimentar) || null;
+  S.desafios = (est[0] && est[0].desafios) || {};
   (S.athletes||[]).forEach(a=>{ a.nutri = nutri.find(n=>n.user_id===a.id) || null; a.meals = refs.filter(r=>r.user_id===a.id); });
   if(IS_MOD){
     const ids=[...new Set(pedidos.map(p=>p.user_id))];
@@ -2381,6 +2428,229 @@ function athleteNutriHtml(a){
     <div class="card"><div class="list-row"><span class="muted">Alergias e intolerâncias</span><span style="text-align:right;">${esc([...(a.nutri.alergias||[]),...(a.nutri.intolerancias||[])].join(', ')||'Nenhuma')}</span></div>
       <div class="list-row"><span class="muted">Condições de saúde</span><span style="text-align:right;">${esc((a.nutri.condicoes||[]).join(', ')||'Nenhuma')}</span></div></div>
     <div class="card"><h3>Últimas refeições</h3>${ult.length?ult.map(m=>mealRow(m,false).replace('<div style="font-weight:600;">',`<div style="font-weight:600;">${niceDate(m.data)} · `)).join(''):'<div class="empty" style="padding:10px;">Sem refeições registadas.</div>'}</div>`;
+}
+
+/* =========================================================
+   CARTÕES DO PAINEL PT 3S (versão 2): número em destaque,
+   progresso e ação direta em cada cartão
+   ========================================================= */
+const TONS = {
+  plano:   ['#1B2A4A','#E7EAF1'],
+  nutricao:['#A8772F','#F4E7D3'],
+  corpo:   ['#6A4C8A','#EFE7F6'],
+  saude:   ['#3F7A5A','#E1EEE6'],
+  mente:   ['#3D6A8F','#E3EDF6'],
+  coaching:['#B5603E','#F7E4DA'],
+  atletas: ['#1B2A4A','#E7EAF1'],
+};
+function hc(key, o){
+  const [tone, soft] = TONS[key];
+  return `<div class="hc ${o.wide?'wide':''}" role="button" tabindex="0" style="--tone:${tone}; --tone-soft:${soft};" onclick="openPane('${key}')" onkeydown="if(event.key==='Enter')openPane('${key}')">
+    <div class="hc-top"><span class="hc-ico">${ICONS[key]}</span><span class="hc-lbl">${o.title}</span><span class="hc-go" aria-hidden="true">›</span></div>
+    <div class="hc-body">
+      ${o.metric!=null?`<div class="hc-metric num">${o.metric}${o.unit?`<small>${o.unit}</small>`:''}</div>`:''}
+      ${o.sub?`<div class="hc-sub">${o.sub}</div>`:''}
+      ${o.extra||''}
+    </div>
+    ${o.act?`<button class="hc-act" onclick="event.stopPropagation(); ${o.actFn}">${o.act}</button>`:''}
+  </div>`;
+}
+function miniBar(pct){ return `<div class="hc-bar"><span style="width:${Math.max(0,Math.min(100,pct))}%"></span></div>`; }
+
+function renderHub(){
+  const plan=buildPlan(S.goal, S.logs), today=addDays(0);
+  const todays=plan.flatMap(w=>w.sessions).filter(s=>s.date===today);
+
+  // cartão de hoje (destaque)
+  let tc='';
+  if(todays.length){
+    const s=todays[0], ok=sessionDone(s,S.planDone,S.logs);
+    tc = `<div class="goal-top"><div class="eyebrow">Treino de hoje</div><h2>${esc(s.title)}</h2><div style="font-size:13px; opacity:.85; position:relative; z-index:1;">${esc(s.desc)}</div>
+      <div style="display:flex; gap:8px; margin-top:12px; position:relative; z-index:1;"><button class="primary small" style="background:var(--gold);" onclick="doSession('${s.key}')">${ok?'Feito ✓':'Marcar como feito'}</button><button class="ghost small" style="color:#fff; border-color:rgba(255,255,255,.3);" onclick="openPane('plano')">Ver plano</button></div></div>`;
+  } else if(!S.goal && !isCoach()){
+    tc = `<div class="goal-top"><div class="eyebrow">O teu PT online</div><h2>Qual é o teu objetivo?</h2><div style="font-size:13px; opacity:.85; position:relative; z-index:1;">Uma prova ou ganhar forma. A app cria o teu plano de treino semana a semana.</div><button class="primary small" style="background:var(--gold); margin-top:12px;" onclick="openGoalForm()">Definir objetivo</button></div>`;
+  }
+  document.getElementById('todayCard').innerHTML = tc;
+
+  let cards='';
+  // coach: atletas
+  if(isCoach()){
+    const pend=(S.pedidos||[]).filter(p=>p.estado==='pendente').length;
+    cards+=hc('atletas',{wide:true, title:'Os meus atletas', metric:(S.athletes||[]).length, unit:' atletas',
+      sub: pend? `${pend} ${pend===1?'pedido de plano':'pedidos de plano'} à espera` : 'Planos, treinos e alimentação de cada atleta', act:'Ver atletas', actFn:"openPane('atletas')"});
+  }
+
+  // plano de treino (largo): pontos da semana
+  if(S.goal){
+    const wi=Math.max(0,currentWeek(plan)), wk=plan[wi]||{sessions:[]};
+    const feitos=wk.sessions.filter(s=>sessionDone(s,S.planDone,S.logs)).length;
+    const prox=wk.sessions.find(s=>s.date>=today && !sessionDone(s,S.planDone,S.logs));
+    const dots=`<div class="hc-dots">${wk.sessions.map(s=>{ const d=parseDate(s.date); return `<span class="hc-dot ${sessionDone(s,S.planDone,S.logs)?'on':''} ${s.date===today?'today':''}" title="${esc(s.title)}">${WD[(d.getDay()+6)%7].slice(0,1)}</span>`; }).join('')}</div>`;
+    const quando = S.goal.type==='prova' ? `${daysUntil(S.goal.date)} dias para ${esc(S.goal.name)}` : `Semana ${wi+1} de ${plan.length}`;
+    cards+=hc('plano',{wide:true, title:'Plano de treino', metric:`${feitos}/${wk.sessions.length}`, unit:' esta semana',
+      sub: `${quando}${prox?` · Próximo: ${esc(prox.title)}`:''}`, extra:dots, act:'Ver semana', actFn:"openPane('plano')"});
+  } else {
+    cards+=hc('plano',{wide:true, title:'Plano de treino', sub:'Diz qual é o teu objetivo e a app cria o plano para ti.', act:'Definir objetivo', actFn:'openGoalForm()'});
+  }
+
+  // nutrição
+  const kHoje=somar(mealsDoDia(S.meals||[], today)).kcal, aN=S.nutri? nutriAlvo(S.nutri,S.body):null;
+  if(!S.nutri) cards+=hc('nutricao',{title:'Nutrição', sub:'Fotografa o prato e vê as calorias.', act:'Começar', actFn:"openPane('nutricao')"});
+  else cards+=hc('nutricao',{title:'Nutrição', metric:Math.round(kHoje), unit: aN&&aN.kcal? ` / ${aN.kcal}`:' kcal',
+    sub: aN&&aN.kcal? (kHoje<=aN.kcal? `Faltam ${Math.round(aN.kcal-kHoje)} kcal hoje` : `Mais ${Math.round(kHoje-aN.kcal)} kcal hoje`) : 'kcal hoje',
+    extra: aN&&aN.kcal? miniBar(kHoje/aN.kcal*100) : '', act:'📷 Prato', actFn:"openPane('nutricao'); startMealPhoto()"});
+
+  // corpo
+  const pesos=[...(S.body||[])].filter(b=>b.weight).sort((a,b)=>a.date.localeCompare(b.date));
+  const ult=pesos[pesos.length-1], dif= pesos.length>1 ? ult.weight-pesos[0].weight : null;
+  cards+=hc('corpo',{title:'Corpo', metric: ult? nm(ult.weight):null, unit: ult?' kg':'',
+    sub: ult? (dif!==null && Math.abs(dif)>=0.1 ? `${dif>0?'+':''}${nm(dif)} kg desde o início` : `Registado ${niceDate(ult.date).toLowerCase()}`) : 'Peso, massa muscular e medidas',
+    act:'+ Peso', actFn:'openBody()'});
+
+  // saúde
+  const hHoje=(S.health||[]).find(h=>h.date===today), lastH=[...(S.health||[])].sort((a,b)=>b.date.localeCompare(a.date))[0];
+  cards+=hc('saude',{title:'Saúde', metric: lastH&&lastH.sleep? nm(lastH.sleep):null, unit: lastH&&lastH.sleep?' h sono':'',
+    sub: hHoje? `Energia ${hHoje.energy}/5${hHoje.pain?' · com dor':''}` : 'Como dormiste? Como estás?',
+    act: hHoje? 'Atualizar':'Registar dia', actFn:'openHealth()'});
+
+  // mente
+  const mHoje=(S.mind||[]).find(m=>m.date===today);
+  cards+=hc('mente',{title:'Mente', metric: mHoje? FEELINGS[mHoje.mood-1] : null,
+    sub: mHoje? 'O teu humor de hoje' : 'Como te sentes hoje?', act:'Respirar 2 min', actFn:"openPane('mente')"});
+
+  // sessões de coaching (largo)
+  const next=(S.sessions||[]).filter(s=>s.date>=today).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time))[0];
+  cards+=hc('coaching',{wide:true, title:'Sessões de coaching',
+    metric: next? `${niceDate(next.date)}`:null, unit: next? ` · ${esc(next.time)}`:'',
+    sub: next? `${esc(next.type)} · ${esc(next.mode)}${next.status==='pedida'?' · à espera de confirmação':''}` : (isCoach()? 'A tua agenda de sessões' : `Com o coach ${esc(COACH.name)}`),
+    act: isCoach()? 'Marcar sessão' : (next? 'Ver sessões':'Marcar sessão'), actFn: next&&!isCoach()? "openPane('coaching')" : 'openSession()'});
+
+  document.getElementById('hubGrid').innerHTML=cards;
+  document.getElementById('hubCoach').innerHTML = isCoach() ? '' : coachCardHtml();
+}
+
+/* =========================================================
+   FRASE DO DIA e DESAFIO DA SEMANA
+   ========================================================= */
+const FRASES = [
+  ['Ser','Não precisas de ser rápida/o. Precisas de aparecer.'],
+  ['Sentir','O corpo agradece cada passo que lhe dás hoje.'],
+  ['Saber','Pequenos treinos repetidos valem mais do que um treino perfeito.'],
+  ['Ser','A disciplina é lembrares-te do que queres quando te apetece desistir.'],
+  ['Sentir','Respira fundo. Começar devagar também é começar.'],
+  ['Saber','Descansar faz parte do plano. É aí que o corpo fica mais forte.'],
+  ['Ser','Hoje, compete só com quem eras ontem.'],
+  ['Sentir','Repara no que o teu corpo já consegue fazer, não só no que lhe falta.'],
+  ['Saber','Um trilho conhece-se passo a passo, não de uma só vez.'],
+  ['Ser','A pessoa que vai à prova é construída nos treinos que ninguém vê.'],
+  ['Sentir','Treinar com outras pessoas transforma o esforço em alegria.'],
+  ['Saber','Hidratação, sono e comida a horas: o treino que não se vê.'],
+  ['Ser','Não esperes pela motivação. Começa, e ela aparece pelo caminho.'],
+  ['Sentir','Cansaço bom é aquele que te deixa orgulhosa/o de ti.'],
+  ['Saber','Ouve o teu corpo: dor não é fraqueza, é informação.'],
+  ['Ser','Cada "não me apetece" que vences é uma vitória sobre ti.'],
+  ['Sentir','Um sorriso a meio da subida torna-a mais leve.'],
+  ['Saber','Consistência bate intensidade. Sempre.'],
+  ['Ser','Tu decides o ritmo. O importante é não parares de caminhar.'],
+  ['Sentir','Agradece às tuas pernas: levam-te a sítios incríveis.'],
+  ['Saber','Planear o treino de amanhã hoje é meio caminho andado.'],
+  ['Ser','Liderar começa por ti: pelo exemplo que dás a ti própria/o.'],
+  ['Sentir','A natureza é o melhor ginásio e o melhor terapeuta.'],
+  ['Saber','Mais vale um treino curto feito do que um longo adiado.'],
+  ['Ser','Acreditar em ti também se treina.'],
+  ['Sentir','Celebra as pequenas conquistas. Elas somam-se.'],
+  ['Saber','O progresso não é uma linha reta. Os dias maus também contam.'],
+  ['Ser','Comprometer-te contigo é a promessa mais importante.'],
+  ['Sentir','Movimento é energia. Mexe-te e sente a diferença.'],
+  ['Saber','Aquecer bem é a melhor forma de evitar lesões.'],
+  ['Ser','Ninguém treina sozinho. Hoje, convida alguém.'],
+];
+function fraseDoDia(){
+  const d=new Date(); const n=Math.floor((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()) - Date.UTC(2026,0,1))/864e5);
+  return FRASES[((n % FRASES.length)+FRASES.length)%FRASES.length];
+}
+
+const DESAFIOS = [
+  {id:'treinos3', pilar:'Ser', titulo:'3 treinos esta semana', desc:'Regista pelo menos 3 treinos, de qualquer modalidade.', medida:'treinos', meta:3},
+  {id:'km15', pilar:'Ser', titulo:'15 km na semana', desc:'Soma 15 km entre caminhadas, corridas, trilhos ou bike.', medida:'km', meta:15},
+  {id:'grupo1', pilar:'Sentir', titulo:'Treinar em grupo', desc:'Vai a um encontro e regista-o como treino.', medida:'encontros', meta:1},
+  {id:'sono5', pilar:'Saber', titulo:'Dormir bem 5 noites', desc:'Regista 5 noites com 7 horas de sono ou mais.', medida:'sono', meta:5},
+  {id:'humor7', pilar:'Sentir', titulo:'Uma semana a ouvir-te', desc:'Regista como te sentes todos os dias da semana.', medida:'humor', meta:7},
+  {id:'refeicoes5', pilar:'Saber', titulo:'Comer com atenção', desc:'Regista as refeições em 5 dias da semana.', medida:'refeicoes', meta:5},
+  {id:'agua5', pilar:'Saber', titulo:'1,5 L de água por dia', desc:'Marca os dias em que bebeste pelo menos 1,5 litros de água.', medida:'manual', meta:5},
+  {id:'forca2', pilar:'Ser', titulo:'Força 2 vezes', desc:'Faz 2 treinos de força (agachamentos, pranchas, pontes).', medida:'manual', meta:2},
+  {id:'gratidao5', pilar:'Sentir', titulo:'Gratidão depois do treino', desc:'Em 5 dias, escreve uma coisa boa do teu treino ou do teu dia.', medida:'manual', meta:5},
+  {id:'semrelogio', pilar:'Sentir', titulo:'Um treino sem relógio', desc:'Faz um treino só pelo prazer, sem olhar para o tempo nem para o ritmo.', medida:'manual', meta:1},
+  {id:'convidar', pilar:'Ser', titulo:'Convida alguém', desc:'Traz uma pessoa nova para um encontro ou para treinar contigo.', medida:'manual', meta:1},
+  {id:'alongar5', pilar:'Saber', titulo:'Alongar 5 dias', desc:'10 minutos de alongamentos em 5 dias da semana.', medida:'manual', meta:5},
+  {id:'zonaconforto', pilar:'Ser', titulo:'Sair da zona de conforto', desc:'Experimenta uma modalidade ou um trilho onde nunca foste.', medida:'manual', meta:1},
+  {id:'escadas5', pilar:'Ser', titulo:'Escadas em vez do elevador', desc:'Marca os dias em que trocaste o elevador pelas escadas.', medida:'manual', meta:5},
+  {id:'natureza', pilar:'Sentir', titulo:'Um treino na natureza', desc:'Faz um treino num trilho, na praia ou à beira-rio, sem auscultadores.', medida:'manual', meta:1},
+  {id:'treinos4', pilar:'Ser', titulo:'4 treinos esta semana', desc:'Desafio para quem já tem ritmo: 4 treinos registados.', medida:'treinos', meta:4},
+];
+function semanaKey(){ return ymd(mondayOf(new Date())); }
+function desafioDaSemana(){
+  const k=semanaKey(), escolhido=(S.desafios||{})[k] && S.desafios[k].id;
+  if(escolhido){ const d=DESAFIOS.find(x=>x.id===escolhido); if(d) return d; }
+  const n=Math.floor((parseDate(k)-Date.UTC(2026,0,5))/(7*864e5));
+  return DESAFIOS[((n % DESAFIOS.length)+DESAFIOS.length)%DESAFIOS.length];
+}
+function progressoDesafio(d){
+  const ws=semanaKey(), fim=ymd(plusDays(parseDate(ws),6)), naSemana=x=>x>=ws && x<=fim;
+  const logs=(S.logs||[]).filter(l=>naSemana(l.date));
+  switch(d.medida){
+    case 'treinos': return logs.length;
+    case 'km': return Math.round(logs.reduce((a,l)=>a+Number(l.km||0),0)*10)/10;
+    case 'encontros': return logs.filter(l=>l.meetId).length;
+    case 'sono': return (S.health||[]).filter(h=>naSemana(h.date) && Number(h.sleep)>=7).length;
+    case 'humor': return (S.mind||[]).filter(m=>naSemana(m.date)).length;
+    case 'refeicoes': return new Set((S.meals||[]).filter(m=>naSemana(m.data)).map(m=>m.data)).size;
+    default: return (((S.desafios||{})[ws]||{}).dias||[]).length;
+  }
+}
+function desafioHtml(compact){
+  const d=desafioDaSemana(), p=progressoDesafio(d), ok=p>=d.meta, pct=Math.min(100,Math.round(p/d.meta*100));
+  const k=semanaKey(), diasMarc=((S.desafios||{})[k]||{}).dias||[], hoje=addDays(0), marcadoHoje=diasMarc.includes(hoje);
+  const fimTxt = (()=>{ const r=6-((new Date().getDay()+6)%7); return r===0?'Último dia':`Faltam ${r} ${r===1?'dia':'dias'}`; })();
+  return `<div class="challenge ${ok?'done':''}">
+    <div class="ch-top"><span class="ch-eyebrow">Desafio da semana · ${d.pilar}</span><span class="ch-days">${ok?'Conseguido! 🎉':fimTxt}</span></div>
+    <div class="ch-title">${esc(d.titulo)}</div>
+    ${compact?'':`<div class="ch-desc">${esc(d.desc)}</div>`}
+    <div class="ch-prog"><div class="hc-bar"><span style="width:${pct}%"></span></div><span class="num ch-count">${nm(p)} / ${d.meta}${d.medida==='km'?' km':''}</span></div>
+    <div class="ch-actions">
+      ${d.medida==='manual' && !ok ? `<button class="ch-btn" onclick="marcarDesafio()" ${marcadoHoje?'disabled':''}>${marcadoHoje?'Marcado hoje ✓':'Fiz hoje'}</button>` : ''}
+      ${!compact?`<button class="ch-btn ghost" onclick="trocarDesafio()">Trocar desafio</button>`:`<button class="ch-btn ghost" onclick="openDesafio()">Ver desafio</button>`}
+    </div>
+  </div>`;
+}
+function openDesafio(){ openSheet('Desafio da semana', desafioHtml(false)+`<p class="tiny" style="text-align:center; margin-top:12px;">Os desafios de treinos, quilómetros, encontros, sono, humor e refeições contam sozinhos com o que registas na app.</p>`); }
+async function saveDesafios(){
+  await q(sb.from('mov_estado').upsert({user_id:ME, objetivo:S.goal, plano_feito:S.planDone||{}, intencoes:S.intentions||{}, meta_km:S.goalKm||15, desafios:S.desafios||{}, updated_at:new Date().toISOString()}));
+}
+async function marcarDesafio(){
+  const k=semanaKey(); S.desafios=S.desafios||{}; const cur=S.desafios[k]||{id:desafioDaSemana().id, dias:[]};
+  cur.id=cur.id||desafioDaSemana().id; cur.dias=[...new Set([...(cur.dias||[]), addDays(0)])]; S.desafios[k]=cur;
+  await saveDesafios(); renderAll(); if(sheetOpen()){ removeSheet(); openDesafio(); }
+  const d=desafioDaSemana(); toast(progressoDesafio(d)>=d.meta?'Desafio conseguido! 🎉':'Boa! Mais um dia');
+}
+function trocarDesafio(){
+  const atual=desafioDaSemana().id;
+  if(sheetOpen()) removeSheet();
+  openSheet('Escolhe o desafio', DESAFIOS.map(d=>`<button class="meet" onclick="escolherDesafio('${d.id}')" style="${d.id===atual?'border:2px solid var(--gold);':''}">
+    <span class="body"><span class="tiny" style="display:block; text-transform:uppercase; letter-spacing:.8px; color:var(--gold);">${d.pilar}</span><span class="t" style="display:block">${esc(d.titulo)}</span><span class="where" style="display:block; white-space:normal;">${esc(d.desc)}</span></span></button>`).join(''));
+}
+async function escolherDesafio(id){
+  const k=semanaKey(); S.desafios=S.desafios||{}; S.desafios[k]={id, dias:[]};
+  await saveDesafios(); closeSheet(); renderAll(); toast('Desafio escolhido');
+}
+function fraseHtml(){
+  const [pilar, txt]=fraseDoDia();
+  return `<div class="quote"><span class="q-mark" aria-hidden="true">“</span><div><div class="q-txt">${esc(txt)}</div><div class="q-by">Frase do dia · ${pilar}</div></div></div>`;
+}
+function renderMotiv(){
+  const f=document.getElementById('fraseDia'); if(f) f.innerHTML=fraseHtml();
+  const c=document.getElementById('desafioHome'); if(c) c.innerHTML=desafioHtml(true);
+  const t=document.getElementById('desafioPT'); if(t) t.innerHTML=desafioHtml(false);
 }
 
 /* ---------- (antigo) apagar ---------- */
