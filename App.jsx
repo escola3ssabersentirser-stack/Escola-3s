@@ -1246,7 +1246,7 @@ function AreasGrid({ onOpen, lista }) {
 }
 
 /* ---------------------------------------------------------
-   As duas áreas da Escola 3S: Liderança 3S e Movimento 3S
+   As escolas da Escola 3S: Liderança 3S e Desenvolvimento 3S
 --------------------------------------------------------- */
 function EscolasDuplas({ publico, onAbrir }) {
   const irLideranca = () => { const el = document.getElementById("lideranca-3s"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); };
@@ -1269,11 +1269,9 @@ function EscolasDuplas({ publico, onAbrir }) {
     <div className={`px-6 space-y-3 ${publico ? "mb-7" : "mb-6"}`}>
       <Card titulo="Liderança" desc="Comunicação, líderes e equipas" por="COM CONCEIÇÃO ALVES" etiqueta={publico ? "VER ↓" : "ABRIR ›"}
         fundo={`linear-gradient(150deg, ${palette.navy} 0%, #24436E 100%)`} cor={palette.creamSoft} destaque={palette.gold} onClick={() => abrir("lideranca-3s")} />
-      <Card titulo="Movimento" desc="Trilhos, corrida, bicicleta e pilates" por="COM COACH DESPORTIVO" etiqueta="ABRIR ›"
-        fundo={palette.gold} cor={palette.navy} destaque="#FFFFFF" href="/movimento/" />
       <Card titulo="Desenvolvimento" desc="Autoconhecimento, emoções e crenças" por="COM CONCEIÇÃO ALVES" etiqueta={publico ? "VER ↓" : "ABRIR ›"}
         fundo={palette.card} cor={palette.navy} destaque={palette.gold} onClick={() => abrir("desenvolvimento-3s")} />
-      {publico && <p className="text-[11px] text-center" style={{ color: palette.navySoft }}>Uma só conta dá acesso às três escolas.</p>}
+      {publico && <p className="text-[11px] text-center" style={{ color: palette.navySoft }}>Uma só conta dá acesso às duas escolas.</p>}
     </div>
   );
 }
@@ -7300,8 +7298,8 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher }) {
         {/* Escola 3S: duas escolas */}
         <div className="px-6 pt-2 pb-5 text-center">
           <p className="text-[11px] tracking-[0.3em] font-medium" style={{ color: palette.gold }}>ESCOLA 3S · SABER · SENTIR · SER</p>
-          <h1 className="font-serif text-4xl leading-tight mt-3" style={{ color: palette.navy }}>Três escolas, um só método.</h1>
-          <p className="text-sm mt-3 leading-relaxed" style={{ color: palette.navySoft }}>Liderar pessoas, cuidar do corpo e crescer por dentro pedem o mesmo: saber, sentir e ser.</p>
+          <h1 className="font-serif text-4xl leading-tight mt-3" style={{ color: palette.navy }}>Duas escolas, um só método.</h1>
+          <p className="text-sm mt-3 leading-relaxed" style={{ color: palette.navySoft }}>Liderar pessoas e crescer por dentro pedem o mesmo: saber, sentir e ser.</p>
         </div>
         <EscolasDuplas publico />
 
