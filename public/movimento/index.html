@@ -509,11 +509,12 @@
             <button class="primary mintbtn" id="tStart" onclick="timerToggle()">Começar</button>
             <button class="ghost" style="margin:0;" onclick="timerFinish()">Terminar e registar</button>
           </div>
-          <p class="tiny" style="margin:10px 0 0;">Mantém a app aberta durante o treino.</p>
+          <p class="tiny" style="margin:10px 0 0;">Para treinos sem percurso, como pilates. Mantém a app aberta.</p>
+          <button class="primary" style="width:100%; margin:12px 0 0; background:var(--gold); color:var(--navy);" onclick="abrirGps()">📍 Gravar com GPS: percurso, km e ritmo</button>
         </div>
-        <input type="file" id="gpxFile" accept=".gpx,.tcx,.fit,application/gpx+xml,application/xml,text/xml" hidden onchange="onImportFile(this)">
-        <div class="two" style="margin-bottom:6px;"><button class="primary" onclick="openLog()">Registar treino</button><button class="ghost" style="margin:0;" onclick="startImport()">⤓ Importar treino</button></div>
-        <p class="tiny" style="text-align:center; margin:0 0 14px;">Importa o ficheiro GPX ou TCX do teu relógio, Strava, Garmin, Komoot ou Wikiloc.</p>
+        <input type="file" id="gpxFile" accept=".gpx,.tcx,.fit,application/gpx+xml,application/xml,text/xml" multiple hidden onchange="onImportFile(this)">
+        <div class="two" style="margin-bottom:6px;"><button class="ghost" style="margin:0;" onclick="openLog()">Registar treino</button><button class="ghost" style="margin:0;" onclick="startImport()">⤓ Importar treino</button></div>
+        <p class="tiny" style="text-align:center; margin:0 0 14px;">Importa o ficheiro GPX ou TCX do teu relógio, Strava, Garmin, Komoot ou Wikiloc. Podes escolher vários de uma vez.</p>
         <div class="card"><h3>Os meus recordes</h3><div id="records"></div></div>
         <div class="card"><h3>Todos os treinos</h3><div id="logList"></div></div>
         <div id="planNext"></div>
@@ -3045,6 +3046,181 @@ function evolucaoHtml(){
 function renderEvo(){ const el=document.getElementById('pane-evolucao'); if(el){ evoAlvo=null; el.innerHTML=evolucaoHtml(); } }
 function reEvo(){ if(evoAlvo){ const b=document.getElementById('evoSheet'); if(b) b.innerHTML=evolucaoHtml(); } else renderEvo(); }
 function openEvoAtleta(id){ evoAlvo=id; const a=(S.athletes||[]).find(x=>x.id===id); removeSheet(); openSheet('Evolução · '+(a?a.name.split(' ')[0]:''), `<div id="evoSheet">${evolucaoHtml()}</div>`); }
+
+/* =========================================================
+   GRAVAR TREINO COM O GPS DO TELEMÓVEL (grátis, sem relógio)
+   ========================================================= */
+const GPS_KEY='mov3s:gps';
+let GPS=null, gpsWatch=null, gpsTimer=null, gpsLock=null;
+function gpsLoad(){ try{ const r=localStorage.getItem(GPS_KEY); return r?JSON.parse(r):null; }catch(e){ return null; } }
+function gpsStore(){ try{ if(GPS) localStorage.setItem(GPS_KEY, JSON.stringify(GPS)); else localStorage.removeItem(GPS_KEY); }catch(e){} }
+function gpsElapsed(){ if(!GPS || !GPS.inicio) return 0; const fim = GPS.pausaDesde || Date.now(); return Math.max(0, fim-GPS.inicio-(GPS.pausado||0)); }
+function gpsFmt(ms){ const s=Math.floor(ms/1000), h=Math.floor(s/3600), m=Math.floor(s%3600/60), x=s%60; return (h?h+':'+pad(m):m)+':'+pad(x); }
+function gpsRitmo(){
+  const k=GPS.km, min=gpsElapsed()/60000; if(!(k>0.05) || !(min>0)) return '—';
+  if(GPS.sport==='bike') return nm(Math.round(k/(min/60)*10)/10)+' km/h';
+  const p=min/k; return Math.floor(p)+':'+pad(Math.round((p%1)*60))+' /km';
+}
+function abrirGps(){
+  if(!('geolocation' in navigator)){ toast('Este telemóvel não deixa usar o GPS no navegador'); return; }
+  const ativo=gpsLoad(); if(ativo && ativo.inicio){ GPS=ativo; gpsEcra(); gpsLigar(); return; }
+  GPS={sport:'corrida', inicio:0, pausado:0, pausaDesde:0, km:0, sub:0, pts:[], ultimo:null, precisao:null};
+  gpsEcra();
+}
+function gpsEcra(){
+  let el=document.getElementById('gpsOverlay');
+  if(!el){ el=document.createElement('div'); el.id='gpsOverlay'; document.body.appendChild(el); }
+  el.style.cssText='position:fixed; inset:0; z-index:9000; background:var(--navy); color:#fff; display:flex; flex-direction:column; padding:22px 20px calc(22px + env(safe-area-inset-bottom)); overflow:auto;';
+  const a=GPS.inicio>0, pausa=!!GPS.pausaDesde;
+  const sports=['trilho','corrida','bike'];
+  el.innerHTML=`
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <div style="font-size:12px; letter-spacing:1.6px; text-transform:uppercase; color:var(--gold);">Gravar treino · GPS</div>
+      ${a?'':`<button onclick="gpsFechar()" style="background:none; border:1px solid rgba(255,255,255,.3); color:#fff; border-radius:99px; padding:6px 14px; font-size:13px;">Fechar</button>`}
+    </div>
+    ${a?'':`<div style="margin-top:18px; font-size:14px; opacity:.85;">Escolhe a atividade</div>
+      <div style="display:flex; gap:8px; margin-top:10px;">${sports.map(s=>`<button onclick="GPS.sport='${s}'; gpsEcra();" style="flex:1; padding:12px 6px; border-radius:14px; font-size:14px; border:1.5px solid ${GPS.sport===s?'var(--gold)':'rgba(255,255,255,.25)'}; background:${GPS.sport===s?'rgba(196,154,90,.18)':'transparent'}; color:#fff;">${SPORTS[s].ic||''} ${SPORTS[s].name}</button>`).join('')}</div>`}
+    ${a?`<div style="margin-top:8px; font-size:15px;">${SPORTS[GPS.sport].ic||''} ${SPORTS[GPS.sport].name}${pausa?' · <b style="color:var(--gold)">em pausa</b>':''}</div>`:''}
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:20px 0;">
+      <div class="num" id="gpsTempo" style="font-size:64px; font-weight:600; line-height:1;">${gpsFmt(gpsElapsed())}</div>
+      <div style="font-size:12px; opacity:.7; margin-top:4px;">tempo</div>
+      <div style="display:flex; gap:34px; margin-top:28px;">
+        <div><div class="num" id="gpsKm" style="font-size:34px; font-weight:600;">${nm(Math.round(GPS.km*100)/100)}</div><div style="font-size:12px; opacity:.7;">km</div></div>
+        <div><div class="num" id="gpsRitmo" style="font-size:34px; font-weight:600;">${gpsRitmo()}</div><div style="font-size:12px; opacity:.7;">${GPS.sport==='bike'?'velocidade':'ritmo'}</div></div>
+      </div>
+      <div id="gpsSinal" style="margin-top:22px; font-size:13px; opacity:.8;">${gpsSinalTxt()}</div>
+    </div>
+    <div style="font-size:12px; opacity:.75; text-align:center; margin-bottom:12px; line-height:1.45;">Deixa a app aberta e o ecrã ligado durante o treino.<br>Se bloqueares o telemóvel, a gravação para.</div>
+    ${a ? `<div style="display:flex; gap:10px;">
+        <button onclick="${pausa?'gpsRetomar()':'gpsPausar()'}" style="flex:1; padding:16px; border-radius:99px; font-size:16px; font-weight:600; border:1.5px solid var(--gold); background:transparent; color:#fff;">${pausa?'Retomar':'Pausa'}</button>
+        <button onclick="gpsTerminar()" style="flex:1; padding:16px; border-radius:99px; font-size:16px; font-weight:600; border:none; background:var(--gold); color:var(--navy);">Terminar</button></div>`
+      : `<button onclick="gpsComecar()" style="width:100%; padding:17px; border-radius:99px; font-size:17px; font-weight:600; border:none; background:var(--gold); color:var(--navy);">Começar</button>`}`;
+}
+function gpsSinalTxt(){
+  if(!GPS.inicio) return 'O GPS liga-se quando carregares em Começar.';
+  const p=GPS.precisao; if(p==null) return '📡 À procura de sinal GPS…';
+  return p<=15?'📡 Sinal GPS bom':p<=35?'📡 Sinal GPS razoável':'📡 Sinal GPS fraco · vai para céu aberto';
+}
+function gpsAtualizar(){
+  const t=document.getElementById('gpsTempo'); if(!t || !GPS) return;
+  t.textContent=gpsFmt(gpsElapsed());
+  document.getElementById('gpsKm').textContent=nm(Math.round(GPS.km*100)/100);
+  document.getElementById('gpsRitmo').textContent=gpsRitmo();
+  document.getElementById('gpsSinal').textContent=gpsSinalTxt();
+}
+async function gpsEcraLigado(){ try{ if('wakeLock' in navigator && !gpsLock && document.visibilityState==='visible'){ gpsLock=await navigator.wakeLock.request('screen'); gpsLock.addEventListener('release',()=>{ gpsLock=null; }); } }catch(e){} }
+document.addEventListener('visibilitychange',()=>{ if(GPS && GPS.inicio && document.visibilityState==='visible') gpsEcraLigado(); });
+function gpsLigar(){
+  if(gpsWatch==null) gpsWatch=navigator.geolocation.watchPosition(gpsPonto, gpsErro, {enableHighAccuracy:true, maximumAge:0, timeout:20000});
+  if(!gpsTimer) gpsTimer=setInterval(gpsAtualizar, 1000);
+  gpsEcraLigado();
+}
+function gpsDesligar(){
+  if(gpsWatch!=null){ navigator.geolocation.clearWatch(gpsWatch); gpsWatch=null; }
+  if(gpsTimer){ clearInterval(gpsTimer); gpsTimer=null; }
+  if(gpsLock){ try{ gpsLock.release(); }catch(e){} gpsLock=null; }
+}
+function gpsErro(e){
+  if(e && e.code===1){ toast('Sem autorização para o GPS. Ativa a localização para esta página.'); }
+  else { GPS && (GPS.precisao=null); gpsAtualizar(); }
+}
+function gpsPonto(pos){
+  if(!GPS || !GPS.inicio) return;
+  const c=pos.coords; GPS.precisao=Math.round(c.accuracy||999);
+  if(GPS.pausaDesde || c.accuracy>35){ gpsAtualizar(); return; }
+  const p={lat:c.latitude, lng:c.longitude, ele:(c.altitude!=null && isFinite(c.altitude))?c.altitude:null, t:pos.timestamp||Date.now()};
+  const u=GPS.ultimo;
+  if(u){
+    const d=km(u.lat,u.lng,p.lat,p.lng), dt=(p.t-u.t)/1000;
+    if(d*1000 < Math.max(4, c.accuracy*0.5)) { gpsAtualizar(); return; }      // ruído parado
+    if(dt>0 && d*1000/dt > 30) { gpsAtualizar(); return; }                    // salto impossível
+    if(!u.novoTroco) GPS.km+=d;
+    if(p.ele!=null && u.ele!=null){ const de=p.ele-u.ele; if(de>=3) GPS.sub+=de; }
+  }
+  GPS.ultimo={...p, novoTroco:false};
+  GPS.pts.push([Math.round(p.lat*1e5)/1e5, Math.round(p.lng*1e5)/1e5]);
+  if(GPS.pts.length>4000) GPS.pts=GPS.pts.filter((x,i)=>i%2===0);
+  gpsStore(); gpsAtualizar();
+}
+function gpsComecar(){ GPS.inicio=Date.now(); GPS.pausado=0; GPS.pausaDesde=0; gpsStore(); gpsEcra(); gpsLigar(); }
+function gpsPausar(){ GPS.pausaDesde=Date.now(); gpsStore(); gpsEcra(); }
+function gpsRetomar(){ if(GPS.pausaDesde){ GPS.pausado+=Date.now()-GPS.pausaDesde; GPS.pausaDesde=0; } if(GPS.ultimo) GPS.ultimo.novoTroco=true; gpsStore(); gpsEcra(); }
+function gpsFechar(){ gpsDesligar(); GPS=null; gpsStore(); const el=document.getElementById('gpsOverlay'); if(el) el.remove(); }
+function gpsTerminar(){
+  const el=document.getElementById('gpsOverlay');
+  const box=document.createElement('div');
+  box.style.cssText='position:fixed; inset:0; z-index:9100; background:rgba(0,0,0,.55); display:flex; align-items:flex-end;';
+  box.innerHTML=`<div style="background:#fff; color:var(--ink); width:100%; border-radius:22px 22px 0 0; padding:22px 20px calc(22px + env(safe-area-inset-bottom));">
+    <div style="font-size:18px; font-weight:600; margin-bottom:6px;">Terminar o treino?</div>
+    <div style="font-size:14px; color:var(--muted,#666); margin-bottom:16px;">${gpsFmt(gpsElapsed())} · ${nm(Math.round(GPS.km*100)/100)} km</div>
+    <button class="primary" style="width:100%;" onclick="gpsGuardar()">Terminar e guardar</button>
+    <button class="ghost" style="width:100%; margin-top:8px;" onclick="this.closest('div[style]').parentNode.remove()">Continuar a treinar</button>
+    <button class="ghost" style="width:100%; margin-top:8px; color:#B5483E; border-color:#E8C4BF;" onclick="gpsDescartar()">Apagar este treino</button></div>`;
+  box.id='gpsConfirm'; document.body.appendChild(box);
+}
+function gpsDescartar(){ const c=document.getElementById('gpsConfirm'); if(c) c.remove(); gpsFechar(); toast('Treino apagado'); }
+function gpsGuardar(){
+  const c=document.getElementById('gpsConfirm'); if(c) c.remove();
+  if(GPS.pausaDesde){ GPS.pausado+=Date.now()-GPS.pausaDesde; GPS.pausaDesde=0; }
+  const min=Math.max(1, Math.round(gpsElapsed()/60000)), kmT=Math.round(GPS.km*100)/100;
+  const pts=GPS.pts, step=Math.max(1, Math.ceil(pts.length/300));
+  const percurso=pts.length>=2 ? pts.filter((p,i)=>i%step===0 || i===pts.length-1) : null;
+  const t={sport:GPS.sport, km:kmT, min, desnivel:Math.round(GPS.sub), percurso, data:ymd(new Date(GPS.inicio)), origem:'gpx', nome:'Gravado com o GPS do telemóvel'};
+  gpsFechar();
+  openLog(null, min, {sport:t.sport, km:t.km, date:t.data, gpx: percurso ? t : null});
+}
+function gpsRetomarAviso(){
+  const g=gpsLoad(); if(!g || !g.inicio) return '';
+  return `<div class="card" style="border:2px solid var(--gold);"><b>Tens um treino a ser gravado</b><div class="tiny" style="margin:4px 0 10px;">${esc(SPORTS[g.sport].name)} · começou às ${new Date(g.inicio).toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'})}</div>
+    <button class="primary" style="width:100%;" onclick="abrirGps()">Voltar ao treino</button></div>`;
+}
+
+/* ---------- importar vários ficheiros de uma vez ---------- */
+let IMPORT_LOTE=[];
+async function onImportFile(input){
+  const files=[...(input.files||[])]; input.value=''; if(!files.length) return;
+  if(files.length===1){
+    const f=files[0];
+    if(f.size>15*1024*1024){ toast('Ficheiro demasiado grande'); return; }
+    if(/\.fit$/i.test(f.name)){ toast('Ficheiros .FIT ainda não são lidos. Exporta o treino como GPX.'); return; }
+    try{ const t=parseTrack(await f.text(), f.name); if(t.data>addDays(0)) t.data=addDays(0); openLog(null, t.min||'', {sport:t.sport, km:t.km, date:t.data, gpx:t}); }
+    catch(e){ toast(e.message||'Não foi possível ler o ficheiro'); }
+    return;
+  }
+  const lidos=[], falhas=[];
+  for(const f of files.slice(0,40)){
+    if(f.size>15*1024*1024 || /\.fit$/i.test(f.name)){ falhas.push(f.name); continue; }
+    try{ const t=parseTrack(await f.text(), f.name); if(t.data>addDays(0)) t.data=addDays(0);
+      t.repetido=(S.logs||[]).some(l=>l.date===t.data && Math.abs(Number(l.km||0)-t.km)<0.1);
+      t.escolhido=!t.repetido; lidos.push(t);
+    }catch(e){ falhas.push(f.name); }
+  }
+  lidos.sort((a,b)=>a.data<b.data?-1:1); IMPORT_LOTE=lidos;
+  if(!lidos.length){ toast('Nenhum dos ficheiros tem um percurso que se consiga ler'); return; }
+  openSheet('Importar '+lidos.length+' treinos', importLoteHtml(falhas));
+}
+function importLoteHtml(falhas){
+  const n=IMPORT_LOTE.filter(t=>t.escolhido).length;
+  return `<p class="muted" style="margin-top:0;">Confirma a modalidade de cada treino. Os que já estavam registados vêm desmarcados.</p>
+    ${IMPORT_LOTE.map((t,i)=>`<div class="card" style="padding:12px 14px; margin-bottom:8px; ${t.escolhido?'':'opacity:.6;'}">
+      <label style="display:flex; gap:10px; align-items:center; margin:0;"><input type="checkbox" style="width:auto; margin:0;" ${t.escolhido?'checked':''} onchange="IMPORT_LOTE[${i}].escolhido=this.checked; document.getElementById('loteBtn').textContent='Guardar '+IMPORT_LOTE.filter(x=>x.escolhido).length+' treinos'; this.closest('.card').style.opacity=this.checked?1:.6;">
+        <span style="flex:1;"><b>${niceDate(t.data)}</b> · ${nm(t.km)} km · ${fmtDur(t.min)}${t.repetido?' <span class="tiny" style="color:#B5483E;">já registado?</span>':''}</span></label>
+      <select style="margin:8px 0 0;" onchange="IMPORT_LOTE[${i}].sport=this.value">${['trilho','corrida','bike'].map(s=>`<option value="${s}" ${t.sport===s?'selected':''}>${SPORTS[s].name}</option>`).join('')}</select>
+    </div>`).join('')}
+    ${falhas&&falhas.length?`<p class="tiny">Não foi possível ler: ${falhas.map(esc).join(', ')}</p>`:''}
+    <button class="primary" id="loteBtn" style="width:100%;" onclick="guardarLote()">Guardar ${n} treinos</button>`;
+}
+async function guardarLote(){
+  const sel=IMPORT_LOTE.filter(t=>t.escolhido); if(!sel.length){ toast('Escolhe pelo menos um treino'); return; }
+  const rows=sel.map(t=>({user_id:ME, modalidade:t.sport, km:t.km||0, minutos:t.min||0, data:t.data, desnivel:Math.min(20000,t.desnivel||0), percurso:t.percurso, origem:t.origem==='tcx'?'tcx':'gpx'}));
+  try{ await q(sb.from('mov_treinos').insert(rows)); }catch(e){ return; }
+  IMPORT_LOTE=[]; closeSheet(); await refresh(); toast(sel.length+' treinos guardados 💪');
+}
+
+/* retomar automaticamente um treino que estava a ser gravado */
+(function(){ const _ra=renderAll; renderAll=function(){ const r=_ra.apply(this, arguments);
+  try{ if(ME && !document.getElementById('gpsOverlay')){ const g=gpsLoad(); if(g && g.inicio){ abrirGps(); } } }catch(e){}
+  return r; }; })();
 
 /* ---------- (antigo) apagar ---------- */
 function askReset(){ document.getElementById('resetConfirm').hidden=false; }
