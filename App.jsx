@@ -30,6 +30,7 @@ import {
   Plus,
   Trash2,
   ShoppingBag,
+  Gift,
   Lock,
 } from "lucide-react";
 
@@ -1256,7 +1257,6 @@ function EscolasDuplas({ publico, onAbrir }) {
         <div className="flex-1 min-w-0">
           <p className="font-serif text-2xl leading-tight" style={{ color: cor }}>{titulo} <span style={{ color: destaque }}>3S</span></p>
           <p className="text-[12px] mt-0.5 leading-snug" style={{ color: cor, opacity: 0.85 }}>{desc}</p>
-          <p className="text-[10px] mt-1.5 tracking-[0.08em]" style={{ color: cor, opacity: 0.7 }}>{por}</p>
         </div>
         <span className="text-[10px] tracking-[0.14em] font-semibold rounded-full px-2.5 py-1 shrink-0" style={{ backgroundColor: `${destaque}26`, color: destaque }}>{etiqueta}</span>
       </div>
@@ -1266,14 +1266,14 @@ function EscolasDuplas({ publico, onAbrir }) {
     return href ? <a href={href} className={cls} style={st}>{conteudo}</a> : <button onClick={onClick} className={cls} style={st}>{conteudo}</button>;
   };
   return (
-    <div className="px-6 mb-7 space-y-3">
+    <div className={`px-6 space-y-3 ${publico ? "mb-7" : "mb-6"}`}>
       <Card titulo="Liderança" desc="Comunicação, líderes e equipas" por="COM CONCEIÇÃO ALVES" etiqueta={publico ? "VER ↓" : "ABRIR ›"}
         fundo={`linear-gradient(150deg, ${palette.navy} 0%, #24436E 100%)`} cor={palette.creamSoft} destaque={palette.gold} onClick={() => abrir("lideranca-3s")} />
       <Card titulo="Movimento" desc="Trilhos, corrida, bicicleta e pilates" por="COM COACH DESPORTIVO" etiqueta="ABRIR ›"
         fundo={palette.gold} cor={palette.navy} destaque="#FFFFFF" href="/movimento/" />
       <Card titulo="Desenvolvimento" desc="Autoconhecimento, emoções e crenças" por="COM CONCEIÇÃO ALVES" etiqueta={publico ? "VER ↓" : "ABRIR ›"}
         fundo={palette.card} cor={palette.navy} destaque={palette.gold} onClick={() => abrir("desenvolvimento-3s")} />
-      <p className="text-[11px] text-center" style={{ color: palette.navySoft }}>Uma só conta dá acesso às três escolas.</p>
+      {publico && <p className="text-[11px] text-center" style={{ color: palette.navySoft }}>Uma só conta dá acesso às três escolas.</p>}
     </div>
   );
 }
@@ -1331,16 +1331,17 @@ function EscolaHubScreen({ onBack, onOpen, eyebrow, nome, frase, por, lista }) {
 }
 
 const areasEscolaComuns = [
-  { key: "formacao-hub", titulo: "Formação", desc: "Cursos, temas e material", icon: GraduationCap },
-  { key: "podcast", titulo: "Podcast", desc: "Episódios para ouvir", icon: Headphones },
-  { key: "comunidade", titulo: "Comunidade", desc: "Um tema por mês", icon: Users },
-  { key: "produtos", titulo: "Produtos", desc: "Livros, cadernos e material", icon: ShoppingBag },
+  { key: "formacao-hub", titulo: "Formação", icon: GraduationCap },
+  { key: "podcast", titulo: "Podcast", icon: Headphones },
+  { key: "comunidade", titulo: "Comunidade", icon: Users },
+  { key: "produtos", titulo: "Produtos", icon: ShoppingBag },
 ];
 
 const produtosLista = [
   { key: "material", titulo: "Material didático", desc: "Cadernos de trabalho, fichas, jogos e ebooks", icon: Layers, full: true },
   { key: "livros", titulo: "Livros", desc: "Os livros da Conceição Alves", icon: BookOpen },
   { key: "carrinho", titulo: "O meu carrinho", desc: "Rever e pagar", icon: ShoppingBag },
+  { key: "codigo", titulo: "Código de oferta", desc: "Tenho um código", icon: Gift },
 ];
 
 function ProdutosScreen({ onBack, onOpen }) {
@@ -1371,22 +1372,17 @@ function InicioScreen({ onOpen, email, papel, naoLidas, onVerAgenda, onVerNotifi
       <div className="px-6 pt-8 flex justify-center">
         <Wordmark compacto />
       </div>
-      <div className="px-6 pt-6 text-center mb-7">
+      <div className="px-6 pt-6 text-center mb-6">
         <p className="font-serif text-[28px] leading-tight" style={{ color: palette.navy }}>
           Olá{primeiroNome ? `, ${primeiroNome}` : ""} <span style={{ color: palette.gold }}>♡</span>
         </p>
-        <p className="text-sm mt-1.5" style={{ color: palette.navySoft }}>
-          Por onde queres começar hoje?
-        </p>
-        <div className="flex flex-col items-center mt-4">
-          <span className="h-px w-10 mb-2" style={{ backgroundColor: palette.gold }} />
-          <p className="text-[10px] tracking-[0.16em] font-medium whitespace-nowrap" style={{ color: palette.gold }}>
-            ESCOLA 3S · SABER · SENTIR · SER
-          </p>
+      </div>
+      <div className="px-6 mb-3">
+        <div className="grid grid-cols-2 gap-3">
+          {areasEscolaComuns.map((a) => <AreaCard key={a.key} area={a} onOpen={onOpen} />)}
         </div>
       </div>
       <EscolasDuplas onAbrir={onOpen} />
-      <BannerEncontro />
       {(papel === "dona" || papel === "mentora") && (
         <div className="px-6 mb-6">
           <button
@@ -1414,21 +1410,7 @@ function InicioScreen({ onOpen, email, papel, naoLidas, onVerAgenda, onVerNotifi
           </button>
         </div>
       )}
-      <DivisorArea texto="TUDO DA ESCOLA 3S" />
-      <div className="px-6">
-        <div className="grid grid-cols-2 gap-3">
-          {areasEscolaComuns.map((a) => <AreaCard key={a.key} area={a} onOpen={onOpen} />)}
-        </div>
-      </div>
-      <div className="px-6 mt-5">
-        <button
-          onClick={() => onOpen("codigo")}
-          className="w-full rounded-2xl px-5 py-4 text-center text-sm font-medium"
-          style={{ border: `1px dashed ${palette.gold}`, color: palette.navy, backgroundColor: palette.card }}
-        >
-          🎁 Tenho um código de oferta
-        </button>
-      </div>
+      <BannerEncontro />
     </div>
   );
 }
