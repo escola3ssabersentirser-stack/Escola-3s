@@ -302,6 +302,9 @@
   .at-li::before{content:'•'; position:absolute; left:6px; color:var(--gold); font-weight:700;}
   .at-li.ok::before{content:'✓'; left:2px; color:var(--mint);}
 
+  .evo-h{font-size:17px; margin:16px 4px 10px;}
+  .evo-filters{margin-bottom:6px;}
+
   /* Mapa */
   #mapBox{height:calc(100vh - 330px); min-height:360px; border-radius:var(--radius); overflow:hidden; box-shadow:0 3px 12px var(--shadow); margin-bottom:12px; z-index:1; position:relative;}
   #pickMap{height:220px; border-radius:16px; overflow:hidden; margin-bottom:6px; border:1.5px solid var(--line);}
@@ -508,7 +511,9 @@
           </div>
           <p class="tiny" style="margin:10px 0 0;">Mantém a app aberta durante o treino.</p>
         </div>
-        <button class="primary" style="margin-bottom:14px;" onclick="openLog()">Registar treino</button>
+        <input type="file" id="gpxFile" accept=".gpx,.tcx,.fit,application/gpx+xml,application/xml,text/xml" hidden onchange="onImportFile(this)">
+        <div class="two" style="margin-bottom:6px;"><button class="primary" onclick="openLog()">Registar treino</button><button class="ghost" style="margin:0;" onclick="startImport()">⤓ Importar treino</button></div>
+        <p class="tiny" style="text-align:center; margin:0 0 14px;">Importa o ficheiro GPX ou TCX do teu relógio, Strava, Garmin, Komoot ou Wikiloc.</p>
         <div class="card"><h3>Os meus recordes</h3><div id="records"></div></div>
         <div class="card"><h3>Todos os treinos</h3><div id="logList"></div></div>
         <div id="planNext"></div>
@@ -521,6 +526,8 @@
       <div id="pane-corpo" class="pane" hidden></div>
       <!-- MENTE -->
       <div id="pane-mente" class="pane" hidden></div>
+      <!-- EVOLUÇÃO -->
+      <div id="pane-evolucao" class="pane" hidden></div>
       <!-- NUTRIÇÃO -->
       <div id="pane-nutricao" class="pane" hidden></div>
       <!-- ATLETAS (coach) -->
@@ -792,7 +799,7 @@ function renderLogs(){
   const logs=[...S.logs].sort((a,b)=>b.date.localeCompare(a.date));
   box.innerHTML = logs.length ? logs.map(l=>`<div class="list-row">
       <div class="left"><span class="sport" style="width:38px;height:38px;font-size:17px;">${SPORTS[l.sport].ic}</span>
-        <div style="min-width:0;"><div style="font-weight:600;">${esc(l.title||SPORTS[l.sport].name)}</div><div class="tiny">${niceDate(l.date)} · ${fmtDur(l.min)}${paceTxt(l)?' · '+paceTxt(l):''}${l.meetId?' · em grupo':''}</div></div></div>
+        <div style="min-width:0;"><div style="font-weight:600;">${esc(l.title||SPORTS[l.sport].name)}</div><div class="tiny">${niceDate(l.date)} · ${fmtDur(l.min)}${paceTxt(l)?' · '+paceTxt(l):''}${l.desnivel?' · +'+Math.round(l.desnivel)+' m':''}${l.meetId?' · em grupo':''}</div>${l.percurso?`<button class="ghost small" style="margin-top:6px;" onclick="openRoute('${l.id}')">Ver percurso</button>`:''}</div></div>
       <div style="text-align:right;"><div class="num" style="font-weight:600;">${Number(l.km).toLocaleString('pt-PT')} km</div><div style="font-size:15px;">${FEELINGS[(l.feel||3)-1]}</div></div>
     </div>`).join('') : `<div class="empty">Ainda sem atividades.<br>Regista o teu primeiro treino ou encontro.</div>`;
 }
@@ -969,10 +976,11 @@ function openLog(meetId, minutes, preset){
   logPreset = preset||null; const P=preset||{};
   logEffort=3; logFeel=4;
   const q=REFLECTIONS[Math.floor(Math.random()*REFLECTIONS.length)];
-  openSheet(m?'Como correu?':'Registar atividade', `
+  openSheet(m?'Como correu?':(P.gpx?'Treino importado':'Registar atividade'), `
+    ${P.gpx?`<div id="gpxMap" style="height:200px; border-radius:18px; overflow:hidden; margin-bottom:10px;"></div><div class="note" style="margin-bottom:12px;"><div class="from">Lido do ficheiro ${esc(P.gpx.nome||'')}</div>${nm(P.gpx.km)} km · ${fmtDur(P.gpx.min)} · desnível +${P.gpx.desnivel} m. Confirma a atividade e guarda.</div>`:''}
     <div class="card">
       ${m?`<p style="margin:0 0 12px;"><b>${esc(m.title)}</b><br><span class="tiny">${niceDate(m.date)} · com ${m.going.length-1} ${m.going.length-1===1?'pessoa':'pessoas'}</span></p>`:''}
-      <label for="lSport">Modalidade</label><select id="lSport">${sportOptions(m?m.sport:(P.sport||S.me.sports[0]||'caminhada'))}</select>
+      <label for="lSport">Modalidade</label><select id="lSport">${sportOptions(m?m.sport:(P.sport||S.me.sports[0]||'trilho'))}</select>
       <div class="two"><div><label for="lKm">Distância (km)</label><input id="lKm" type="number" min="0" step="0.1" value="${m?m.km:(P.km||'')}" placeholder="0"></div>
         <div><label for="lMin">Tempo (min)</label><input id="lMin" type="number" min="1" step="1" value="${minutes||(m?m.dur:'')}" placeholder="0"></div></div>
       <label for="lDate">Dia</label><input id="lDate" type="date" value="${m?m.date:(P.date||addDays(0))}" max="${addDays(0)}">
@@ -985,6 +993,7 @@ function openLog(meetId, minutes, preset){
     <textarea id="lAnswer" placeholder="Escreve aqui, só tu vês"></textarea>
     <button class="primary" onclick="saveLog('${m?m.id:''}', '${esc(q).replace(/'/g,'&#39;')}')">Guardar atividade</button>
   `);
+  if(P.gpx) drawRoute('gpxMap', P.gpx.percurso);
 }
 function setEffort(n){ logEffort=n; document.querySelectorAll('#effortBox button').forEach((b,i)=>b.classList.toggle('on', i+1===n)); }
 function setFeel(n){ logFeel=n; document.querySelectorAll('#feelBox button').forEach((b,i)=>b.classList.toggle('on', i+1===n)); }
@@ -1129,6 +1138,7 @@ const ICONS = {
   plano:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4M8 14l2 2 4-4"/></svg>',
   saude:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/><path d="M5 12h3l2-3 3 6 2-3h4"/></svg>',
   corpo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M8.5 10a5 5 0 0 1 7 0M12 10l1.5-2"/></svg>',
+  evolucao:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16"/><path d="M5 15l4-5 4 3 6-7"/><path d="M15 6h4v4"/></svg>',
   nutricao:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h16a8 8 0 0 1-16 0z"/><path d="M12 13c0-4 2-7 6-8M9 9c0-2 1-3 2-4"/></svg>',
   mente:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 4c-2 3-2 13 0 16M4 12h16"/></svg>',
   atletas:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M2.5 19c.6-3 2.8-5 5.5-5s4.9 2 5.5 5M12.5 15.2c.9-.8 2.1-1.2 3.5-1.2 2.7 0 4.9 2 5.5 5"/></svg>',
@@ -1227,7 +1237,7 @@ function openPane(p, fromHistory){
   window.scrollTo(0,0);
   renderTreino();
 }
-const PANE_TITLES={coaching:'Sessões de coaching', plano:'Plano de treino', saude:'Saúde', corpo:'Corpo', mente:'Mente', nutricao:'Nutrição', atletas:'Os meus atletas'};
+const PANE_TITLES={coaching:'Sessões de coaching', plano:'Plano de treino', saude:'Saúde', corpo:'Corpo', mente:'Mente', nutricao:'Nutrição', evolucao:'Evolução', atletas:'Os meus atletas'};
 
 /* ---------- render principal ---------- */
 function renderTreino(){
@@ -1240,6 +1250,7 @@ function renderTreino(){
   if(currentPane==='corpo') renderBody();
   if(currentPane==='mente') renderMind();
   if(currentPane==='nutricao') renderNutri();
+  if(currentPane==='evolucao') renderEvo();
   if(currentPane==='atletas') renderAthletes();
 }
 function hubCard(key, cls, title, sub, wide){
@@ -1739,7 +1750,7 @@ async function loadAll(){
       logged: loggedMeets.has(e.id)};
   });
   S.free = disp.map(d=>({id:d.id, who:mapId(d.user_id), sport:d.modalidade, date:d.data, from:(d.de||'').slice(0,5), to:(d.ate||'').slice(0,5), zone:d.zona||''}));
-  const mapLog = t=>({id:t.id, sport:t.modalidade, km:Number(t.km), min:Number(t.minutos), date:t.data, effort:t.esforco, feel:t.sentir,
+  const mapLog = t=>({id:t.id, sport:t.modalidade, km:Number(t.km), min:Number(t.minutos), date:t.data, effort:t.esforco, feel:t.sentir, desnivel:t.desnivel!=null?Number(t.desnivel):null, percurso:t.percurso||null,
       question:t.pergunta, answer:t.resposta, meetId:t.encontro_id, key:t.sessao_key, title:(S.meets.find(m=>m.id===t.encontro_id)||{}).title||null});
   S.logs = myLogs.map(mapLog);
   const mapBody = c=>({id:c.id, date:c.data, weight:c.peso!=null?Number(c.peso):null, fat:c.gordura!=null?Number(c.gordura):null, muscle:c.musculo!=null?Number(c.musculo):null, waist:c.cintura!=null?Number(c.cintura):null});
@@ -1921,7 +1932,8 @@ async function saveLog(meetId, question){
   if(!(km>0) && !(min>0)){ toast('Indica a distância ou o tempo'); return; }
   const ta=document.createElement('textarea'); ta.innerHTML=question;
   await q(sb.from('mov_treinos').insert({user_id:ME, modalidade:g('lSport'), km:km||0, minutos:min||0, data:g('lDate')||addDays(0), esforco:logEffort, sentir:logFeel,
-    pergunta:ta.value, resposta:g('lAnswer')||null, encontro_id:meetId||null, sessao_key:(logPreset&&logPreset.key)||null}));
+    pergunta:ta.value, resposta:g('lAnswer')||null, encontro_id:meetId||null, sessao_key:(logPreset&&logPreset.key)||null,
+    ...(logPreset&&logPreset.gpx ? {desnivel:logPreset.gpx.desnivel, percurso:logPreset.gpx.percurso, origem:logPreset.gpx.origem} : {origem:'manual'})}));
   if(logPreset && logPreset.key){ S.planDone=S.planDone||{}; S.planDone[logPreset.key]=true; await saveEstado(); }
   logPreset=null;
   closeSheet(); await refresh();
@@ -2039,14 +2051,14 @@ function openAthlete(id){
     ${a.goal? `<div class="goal-top"><div class="eyebrow">${a.goal.type==='prova'?'Objetivo · prova':'Objetivo · ganhar forma'}</div>
       <h2>${a.goal.type==='prova'?esc(a.goal.name)+' · '+nm(a.goal.km)+' km':SPORTS[a.goal.sport].name+', '+a.goal.days+'× por semana'}</h2>
       <div style="font-size:13px; opacity:.85; position:relative; z-index:1;">${a.goal.type==='prova'?daysUntil(a.goal.date)+' dias para a prova · ':''}Semana ${wi+1} de ${plan.length} · ${pg.done} de ${pg.total} treinos feitos</div>
-      ${a.share.treinos?`<div style="display:flex; gap:8px; margin-top:10px; position:relative; z-index:1;"><button class="ghost small" style="color:#fff; border-color:rgba(255,255,255,.3);" onclick="openFullPlan(S.athletes.find(x=>x.id==='${a.id}').goal, S.athletes.find(x=>x.id==='${a.id}').logs, S.athletes.find(x=>x.id==='${a.id}').done, '${esc(a.name.split(' ')[0])}', false)">Plano completo</button><button class="ghost small" style="color:#fff; border-color:rgba(255,255,255,.3);" onclick="adjustAthlete('${a.id}')">Ajustar plano</button></div>`:''}</div>`
+      ${a.share.treinos?`<div style="display:flex; gap:8px; margin-top:10px; position:relative; z-index:1;"><button class="ghost small" style="color:#fff; border-color:rgba(255,255,255,.3);" onclick="openFullPlan(S.athletes.find(x=>x.id==='${a.id}').goal, S.athletes.find(x=>x.id==='${a.id}').logs, S.athletes.find(x=>x.id==='${a.id}').done, '${esc(a.name.split(' ')[0])}', false)">Plano completo</button><button class="ghost small" style="color:#fff; border-color:rgba(255,255,255,.3);" onclick="adjustAthlete('${a.id}')">Ajustar plano</button><button class="ghost small" style="color:#fff; border-color:rgba(255,255,255,.3);" onclick="openEvoAtleta('${a.id}')">Evolução</button></div>`:''}</div>`
       : '<div class="card empty">Este atleta ainda não definiu objetivo.</div>'}
     <div class="card"><h3>Nota para ${esc(a.name.split(' ')[0])}</h3>
       ${a.notes.slice(-3).reverse().map(n=>`<div class="note"><div class="from">${niceDate(n.date)}</div>${esc(n.text)}</div>`).join('')}
       <textarea id="noteIn" placeholder="Ex.: Boa semana! No sábado faz o longo mais devagar."></textarea>
       <button class="primary" onclick="sendNote('${a.id}')">Enviar nota</button></div>
     ${a.share.treinos? (wk?`<div class="card"><h3>Esta semana</h3>${wk.sessions.map(s=>sessHtml(s,a.done||{},a.logs,false)).join('')}</div>`:'')+
-      `<div class="card"><h3>Últimos treinos</h3>${logs.length?logs.map(l=>`<div class="list-row"><div class="left"><span class="sport" style="width:36px;height:36px;font-size:16px;">${SPORTS[l.sport].ic}</span><div><div style="font-weight:600;">${nm(l.km)} km · ${fmtDur(l.min)}</div><div class="tiny">${niceDate(l.date)}${paceTxt(l)?' · '+paceTxt(l):''}</div></div></div><span style="font-size:16px;">${FEELINGS[(l.feel||3)-1]}</span></div>`).join(''):'<div class="empty" style="padding:10px;">Sem treinos registados.</div>'}</div>`
+      `<div class="card"><h3>Últimos treinos</h3>${logs.length?logs.map(l=>`<div class="list-row"><div class="left"><span class="sport" style="width:36px;height:36px;font-size:16px;">${SPORTS[l.sport].ic}</span><div><div style="font-weight:600;">${nm(l.km)} km · ${fmtDur(l.min)}</div><div class="tiny">${niceDate(l.date)}${paceTxt(l)?' · '+paceTxt(l):''}${l.desnivel?' · +'+Math.round(l.desnivel)+' m':''}</div>${l.percurso?`<button class="ghost small" style="margin-top:6px;" onclick="removeSheet(); openRoute('${l.id}','${a.id}')">Ver percurso</button>`:''}</div></div><span style="font-size:16px;">${FEELINGS[(l.feel||3)-1]}</span></div>`).join(''):'<div class="empty" style="padding:10px;">Sem treinos registados.</div>'}</div>`
       :'<div class="card empty">Este atleta não partilha os treinos.</div>'}
     ${a.share.corpo? `<h3 style="margin:6px 4px 10px;">Corpo</h3>`+bodyPaneHtml(a.body,false) : '<div class="card empty">Este atleta não partilha as medições do corpo.</div>'}
     ${a.share.saude? `<h3 style="margin:6px 4px 10px;">Saúde</h3>`+healthPaneHtml(a.health,false) : '<div class="card empty">Este atleta não partilha os dados de saúde.</div>'}
@@ -2493,6 +2505,7 @@ const TONS = {
   mente:   ['#3D6A8F','#E3EDF6'],
   coaching:['#B5603E','#F7E4DA'],
   atletas: ['#1B2A4A','#E7EAF1'],
+  evolucao:['#2F6F8F','#E1EEF4'],
 };
 function hc(key, o){
   const [tone, soft] = TONS[key];
@@ -2547,6 +2560,11 @@ function renderHub(){
     cards+=hc('plano',{wide:true, title:'Plano de treino', sub:'Diz qual é o teu objetivo e a app cria o plano para ti.', act:'Definir objetivo', actFn:'openGoalForm()'});
   }
 
+  // evolução
+  { const d28=addDays(-27), l28=(S.logs||[]).filter(l=>l.date>=d28), km28=l28.reduce((a,l)=>a+Number(l.km||0),0);
+    const pw=[...(S.body||[])].filter(b=>b.weight).sort((a,b)=>a.date.localeCompare(b.date)), dp= pw.length>1? pw[pw.length-1].weight-pw[0].weight : null;
+    cards+=hc('evolucao',{wide:true, title:'Evolução', metric:nm(km28), unit:' km em 4 semanas',
+      sub:`${l28.length} ${l28.length===1?'treino':'treinos'}${dp!=null&&Math.abs(dp)>=0.1?` · peso ${dp>0?'+':''}${nm(dp)} kg`:''} · gráficos de treinos, alimentação e corpo`, act:'Ver gráficos', actFn:"openPane('evolucao')"}); }
   // nutrição
   const kHoje=somar(mealsDoDia(S.meals||[], today)).kcal, aN=S.nutri? nutriAlvo(S.nutri,S.body):null;
   if(!S.nutri) cards+=hc('nutricao',{title:'Nutrição', sub:'Fotografa o prato e vê as calorias.', act:'Começar', actFn:"openPane('nutricao')"});
@@ -2831,6 +2849,201 @@ function instGestaoHtml(){
   if(!insts.length) return '';
   return `<h3 style="margin-top:14px;">Instituições</h3>${insts.map(([id,p])=>`<div class="list-row"><div style="min-width:0;"><b>${esc(p.name)}</b><div class="tiny">${esc(INST_TIPOS[p.instTipo]||'')} · ${esc(p.zone||'')}${p.instContacto?' · '+esc(p.instContacto):''}</div></div>${p.verificado?`<button class="ghost small" onclick="verificarInst('${id}', false)">Retirar ✓</button>`:`<button class="primary small mintbtn" onclick="verificarInst('${id}', true)">Verificar</button>`}</div>`).join('')}`;
 }
+
+/* =========================================================
+   IMPORTAR TREINO (ficheiros GPX e TCX do relógio ou de apps)
+   ========================================================= */
+function startImport(){ document.getElementById('gpxFile').click(); }
+function parseTrack(text, nome){
+  const doc=new DOMParser().parseFromString(text, 'application/xml');
+  if(doc.getElementsByTagName('parsererror').length) throw new Error('Este ficheiro não é um GPX ou TCX válido.');
+  const pts=[]; let origem='gpx', tipo='';
+  const gpxPts=doc.getElementsByTagName('trkpt');
+  if(gpxPts.length){
+    for(const p of gpxPts){ const t=p.getElementsByTagName('time')[0], e=p.getElementsByTagName('ele')[0];
+      pts.push({lat:+p.getAttribute('lat'), lng:+p.getAttribute('lon'), ele:e?+e.textContent:null, t:t?Date.parse(t.textContent):null}); }
+    const ty=doc.getElementsByTagName('type')[0]; tipo=ty? ty.textContent.toLowerCase() : '';
+  } else {
+    origem='tcx';
+    const tps=doc.getElementsByTagName('Trackpoint');
+    for(const p of tps){ const la=p.getElementsByTagName('LatitudeDegrees')[0], lo=p.getElementsByTagName('LongitudeDegrees')[0]; if(!la||!lo) continue;
+      const t=p.getElementsByTagName('Time')[0], e=p.getElementsByTagName('AltitudeMeters')[0];
+      pts.push({lat:+la.textContent, lng:+lo.textContent, ele:e?+e.textContent:null, t:t?Date.parse(t.textContent):null}); }
+    const act=doc.getElementsByTagName('Activity')[0]; tipo=act? (act.getAttribute('Sport')||'').toLowerCase() : '';
+  }
+  const ok=pts.filter(p=>isFinite(p.lat)&&isFinite(p.lng));
+  if(ok.length<2) throw new Error('O ficheiro não tem um percurso com pontos de GPS.');
+  let dist=0, sub=0, lastEle=null;
+  for(let i=1;i<ok.length;i++){ dist+=km(ok[i-1].lat,ok[i-1].lng,ok[i].lat,ok[i].lng); }
+  for(const p of ok){ if(p.ele==null||!isFinite(p.ele)) continue; if(lastEle==null){ lastEle=p.ele; continue; } const d=p.ele-lastEle; if(Math.abs(d)>=3){ if(d>0) sub+=d; lastEle=p.ele; } }
+  const ts=ok.map(p=>p.t).filter(Boolean), min = ts.length>1 ? (Math.max(...ts)-Math.min(...ts))/60000 : 0;
+  const vel = min>0 ? dist/(min/60) : 0;
+  let sport='corrida';
+  if(/bik|cycl|ride|bici/.test(tipo)) sport='bike';
+  else if(/hik|walk|trek|camin|trilh/.test(tipo)) sport='trilho';
+  else if(/run|corr/.test(tipo)) sport='corrida';
+  else if(vel>16) sport='bike';
+  else if(vel>0 && vel<6.5) sport='trilho';
+  const step=Math.max(1, Math.ceil(ok.length/300));
+  const percurso=ok.filter((p,i)=>i%step===0 || i===ok.length-1).map(p=>[Math.round(p.lat*1e5)/1e5, Math.round(p.lng*1e5)/1e5]);
+  const data = ts.length ? ymd(new Date(Math.min(...ts))) : addDays(0);
+  return {sport, km:Math.round(dist*100)/100, min:Math.round(min), desnivel:Math.round(sub), percurso, data, origem, nome};
+}
+async function onImportFile(input){
+  const f=input.files && input.files[0]; input.value=''; if(!f) return;
+  if(f.size>15*1024*1024){ toast('Ficheiro demasiado grande'); return; }
+  if(/\.fit$/i.test(f.name)){ toast('Ficheiros .FIT ainda não são lidos. Exporta o treino como GPX.'); return; }
+  try{
+    const t=parseTrack(await f.text(), f.name);
+    if(t.data>addDays(0)) t.data=addDays(0);
+    openLog(null, t.min||'', {sport:t.sport, km:t.km, date:t.data, gpx:t});
+  }catch(e){ toast(e.message||'Não foi possível ler o ficheiro'); }
+}
+function drawRoute(elId, percurso){
+  const el=document.getElementById(elId); if(!el || !percurso || percurso.length<2) return;
+  if(typeof L==='undefined'){ el.innerHTML='<div class="empty">Mapa indisponível sem internet.</div>'; return; }
+  const m=L.map(el,{zoomControl:false, attributionControl:false, dragging:true});
+  baseTiles().addTo(m);
+  const line=L.polyline(percurso,{color:'#C49A5A', weight:4}).addTo(m);
+  L.circleMarker(percurso[0],{radius:6, color:'#fff', weight:2, fillColor:'#4F8466', fillOpacity:1}).addTo(m);
+  L.circleMarker(percurso[percurso.length-1],{radius:6, color:'#fff', weight:2, fillColor:'#B5483E', fillOpacity:1}).addTo(m);
+  setTimeout(()=>{ m.invalidateSize(); m.fitBounds(line.getBounds(),{padding:[16,16]}); },80);
+}
+function openRoute(logId, athleteId){
+  const src = athleteId ? ((S.athletes||[]).find(a=>a.id===athleteId)||{}).logs||[] : S.logs;
+  const l=src.find(x=>x.id===logId); if(!l || !l.percurso) return;
+  openSheet(SPORTS[l.sport].name+' · '+niceDate(l.date), `<div id="routeMap" style="height:320px; border-radius:18px; overflow:hidden; margin-bottom:12px;"></div>
+    <div class="stat3"><div class="rec"><div class="l">Distância</div><div class="v">${nm(l.km)} km</div></div><div class="rec"><div class="l">Tempo</div><div class="v">${fmtDur(l.min)}</div></div><div class="rec"><div class="l">Desnível +</div><div class="v">${l.desnivel!=null?Math.round(l.desnivel)+' m':'—'}</div></div></div>
+    ${paceTxt(l)?`<p class="muted" style="text-align:center;">Ritmo médio: ${paceTxt(l)}</p>`:''}`);
+  drawRoute('routeMap', l.percurso);
+}
+
+/* =========================================================
+   EVOLUÇÃO: gráficos de treinos, alimentação e corpo
+   ========================================================= */
+let evoSemanas=8, evoSport='todas', evoAlvo=null; // evoAlvo = id do atleta (coach) ou null (eu)
+function evoDados(){
+  if(evoAlvo){ const a=(S.athletes||[]).find(x=>x.id===evoAlvo)||{}; return {nome:a.name, logs:a.logs||[], meals:a.meals||[], body:a.body||[], nutri:a.nutri||null, share:a.share||{}}; }
+  return {nome:null, logs:S.logs||[], meals:S.meals||[], body:S.body||[], nutri:S.nutri||null, share:{treinos:true, corpo:true, saude:true}};
+}
+function fmtMin(m){ m=Math.round(m); return m>=60? Math.floor(m/60)+'h'+String(m%60).padStart(2,'0') : m+' min'; }
+function fmtPace(p){ const mm=Math.floor(p), ss=Math.round((p-mm)*60); return mm+':'+String(ss===60?59:ss).padStart(2,'0'); }
+
+/* --- gráfico de barras (uma série, com linha de alvo opcional) --- */
+function barSvg(rows, o){
+  const W=340, H=150, L=34, R=8, T=14, B=24, n=rows.length; if(!n) return '';
+  const maxV=Math.max(o.target||0, ...rows.map(r=>r.v), 1)*1.12;
+  const bw=(W-L-R)/n, gap=Math.min(6, bw*0.28), y=v=>T+(H-T-B)*(1-v/maxV);
+  const ticks=[0, maxV/2/1.12, maxV/1.12].map(v=>Math.round(v));
+  let s=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(o.aria)}">`;
+  ticks.forEach(t=>{ s+=`<line x1="${L}" x2="${W-R}" y1="${y(t)}" y2="${y(t)}" stroke="var(--line)" stroke-width="1"/><text x="${L-6}" y="${y(t)+3.5}" font-size="9.5" text-anchor="end" fill="var(--ink-soft)">${o.tickFmt?o.tickFmt(t):t}</text>`; });
+  rows.forEach((r,i)=>{
+    const x=L+i*bw+gap/2, w=bw-gap, top=y(r.v), h=Math.max(0,(H-B)-top);
+    const over = o.target && r.v>o.target*1.1;
+    if(h>0) s+=`<path d="M${x} ${H-B} V${top+Math.min(4,h)} Q${x} ${top} ${x+Math.min(4,w/2)} ${top} H${x+w-Math.min(4,w/2)} Q${x+w} ${top} ${x+w} ${top+Math.min(4,h)} V${H-B}Z" fill="${over?'var(--coral)':o.color}" opacity="${r.dim?0.45:1}"><title>${esc(r.title)}</title></path>`;
+    else s+=`<rect x="${x}" y="${H-B-1}" width="${w}" height="1" fill="var(--line)"><title>${esc(r.title)}</title></rect>`;
+    if(i===0 || i===n-1 || n<=8) s+=`<text x="${x+w/2}" y="${H-8}" font-size="9.5" text-anchor="middle" fill="var(--ink-soft)">${esc(r.label)}</text>`;
+  });
+  if(o.target){ s+=`<line x1="${L}" x2="${W-R}" y1="${y(o.target)}" y2="${y(o.target)}" stroke="var(--ink)" stroke-width="1.2" stroke-dasharray="4 4"/><text x="${L+4}" y="${y(o.target)-4}" font-size="9.5" text-anchor="start" fill="var(--ink)">alvo ${o.target}</text>`; }
+  const last=rows[n-1]; if(last && last.v>0) s+=`<text x="${L+(n-1)*bw+bw/2}" y="${y(last.v)-5}" font-size="10" font-weight="600" text-anchor="middle" fill="var(--ink)">${o.valFmt?o.valFmt(last.v):last.v}</text>`;
+  return s+'</svg>';
+}
+/* --- gráfico de linha (uma série, banda opcional) --- */
+function lineSvg(pts, o){
+  pts=pts.filter(p=>p.v!=null && isFinite(p.v)).sort((a,b)=>a.date.localeCompare(b.date));
+  if(pts.length<2) return `<div class="empty" style="padding:14px;">${o.vazio||'São precisos pelo menos 2 registos para ver a evolução.'}</div>`;
+  const W=340, H=150, L=34, R=10, T=14, B=24;
+  let lo=Math.min(...pts.map(p=>p.v)), hi=Math.max(...pts.map(p=>p.v));
+  if(o.band){ lo=Math.min(lo,o.band[0]); hi=Math.max(hi,o.band[1]); }
+  if(hi-lo<1){ lo-=1; hi+=1; } const pad=(hi-lo)*0.12; lo-=pad; hi+=pad;
+  const t0=parseDate(pts[0].date), t1=parseDate(pts[pts.length-1].date), span=Math.max(864e5,t1-t0);
+  const X=d=>L+(parseDate(d)-t0)/span*(W-L-R), Y=v=> o.invert ? T+(H-T-B)*(v-lo)/(hi-lo) : T+(H-T-B)*(1-(v-lo)/(hi-lo));
+  const fmt=o.fmt||(v=>nm(v));
+  let s=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(o.aria)}">`;
+  if(o.band){ const y1=Y(o.band[1]), y0=Y(o.band[0]); s+=`<rect x="${L}" y="${Math.min(y0,y1)}" width="${W-L-R}" height="${Math.abs(y0-y1)}" fill="var(--mint-soft)"/><text x="${L+4}" y="${Math.min(y0,y1)+11}" font-size="9" fill="var(--mint)">${esc(o.bandLabel||'')}</text>`; }
+  [lo+pad, (lo+hi)/2, hi-pad].forEach(v=>{ s+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${L-6}" y="${Y(v)+3.5}" font-size="9.5" text-anchor="end" fill="var(--ink-soft)">${fmt(v)}</text>`; });
+  const d=pts.map((p,i)=>(i?'L':'M')+X(p.date).toFixed(1)+' '+Y(p.v).toFixed(1)).join(' ');
+  s+=`<path d="${d}" fill="none" stroke="${o.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+  pts.forEach((p,i)=>{ const last=i===pts.length-1; s+=`<circle cx="${X(p.date).toFixed(1)}" cy="${Y(p.v).toFixed(1)}" r="${last?5:3.2}" fill="${o.color}" stroke="var(--card)" stroke-width="2"><title>${esc(niceDate(p.date)+': '+fmt(p.v)+(o.unit?' '+o.unit:''))}</title></circle>`; });
+  const f=x=>{const q=parseDate(x); return q.getDate()+' '+MONTHS[q.getMonth()];};
+  const lp=pts[pts.length-1];
+  s+=`<text x="${L}" y="${H-8}" font-size="9.5" fill="var(--ink-soft)">${f(pts[0].date)}</text><text x="${W-R}" y="${H-8}" font-size="9.5" text-anchor="end" fill="var(--ink-soft)">${f(lp.date)}</text>`;
+  s+=`<text x="${Math.min(X(lp.date), W-R-2)}" y="${Y(lp.v)-9}" font-size="10.5" font-weight="600" text-anchor="end" fill="var(--ink)">${fmt(lp.v)}${o.unit?' '+o.unit:''}</text>`;
+  return s+'</svg>';
+}
+function deltaBadge(pts, unit, goodDown){
+  pts=pts.filter(p=>p.v!=null).sort((a,b)=>a.date.localeCompare(b.date)); if(pts.length<2) return '';
+  const d=pts[pts.length-1].v-pts[0].v; if(Math.abs(d)<0.05) return `<span class="badge">sem mudança</span>`;
+  const good = goodDown==null ? null : (goodDown? d<0 : d>0);
+  return `<span class="badge ${good==null?'':good?'mint':'coral'}">${d>0?'▲ +':'▼ '}${nm(d)} ${unit}</span>`;
+}
+
+/* --- ecrã --- */
+function evolucaoHtml(){
+  const D=evoDados(), N=evoSemanas, hoje=addDays(0), seg0=mondayOf(new Date());
+  const semanas=[]; for(let i=N-1;i>=0;i--){ const ini=plusDays(seg0,-7*i); semanas.push({ini:ymd(ini), fim:ymd(plusDays(ini,6)), label:(i===0?'esta':ini.getDate()+'/'+(ini.getMonth()+1))}); }
+  const desde=semanas[0].ini;
+  const logs=D.logs.filter(l=>l.date>=desde && (evoSport==='todas' || l.sport===evoSport));
+  const kmT=logs.reduce((a,l)=>a+Number(l.km||0),0), minT=logs.reduce((a,l)=>a+Number(l.min||0),0);
+  const porSem=semanas.map(w=>{ const ls=logs.filter(l=>l.date>=w.ini && l.date<=w.fim); return {w, km:ls.reduce((a,l)=>a+Number(l.km||0),0), min:ls.reduce((a,l)=>a+Number(l.min||0),0), n:ls.length}; });
+  const corridas=D.logs.filter(l=>l.date>=desde && ['corrida'].includes(l.sport) && l.km>0.5 && l.min>0).map(l=>({date:l.date, v:l.min/l.km}));
+  const bikes=D.logs.filter(l=>l.date>=desde && l.sport==='bike' && l.km>1 && l.min>0).map(l=>({date:l.date, v:l.km/(l.min/60)}));
+  // alimentação
+  const alvo = D.nutri ? nutriAlvo(D.nutri, D.body) : null, dias=Math.min(30, N*7);
+  const kcalDias=[]; for(let i=dias-1;i>=0;i--){ const d=addDays(-i), ms=mealsDoDia(D.meals,d), t=somar(ms); kcalDias.push({d, v:Math.round(t.kcal), n:ms.length}); }
+  const comReg=kcalDias.filter(x=>x.n>0), mediaK=comReg.length? Math.round(comReg.reduce((a,x)=>a+x.v,0)/comReg.length):null;
+  const prot=comReg.length? Math.round(D.meals.filter(m=>comReg.some(c=>c.d===m.data)).reduce((a,m)=>a+Number(m.proteina||0),0)/comReg.length):null;
+  // corpo
+  const B=D.body.filter(b=>b.date>=addDays(-Math.max(90,N*7)));
+  const peso=B.map(b=>({date:b.date, v:b.weight})), musc=B.map(b=>({date:b.date, v:b.muscle})), gord=B.map(b=>({date:b.date, v:b.fat}));
+  const alt=D.nutri && D.nutri.altura_cm ? Number(D.nutri.altura_cm)/100 : null;
+  const band = alt ? [Math.round(18.5*alt*alt*10)/10, Math.round(24.9*alt*alt*10)/10] : null;
+  const ultPeso=[...peso].filter(p=>p.v).sort((a,b)=>b.date.localeCompare(a.date))[0];
+  const imc = alt && ultPeso ? ultPeso.v/(alt*alt) : null;
+  const sportChips=[['todas','Todas'],...Object.entries(SPORTS_BASE).map(([k,s])=>[k,s.name])];
+
+  return `
+    <div class="evo-filters">
+      <div class="chips" style="margin:0;">${[[4,'4 semanas'],[8,'8 semanas'],[12,'3 meses'],[26,'6 meses']].map(([v,t])=>`<button class="chip ${evoSemanas===v?'on':''}" onclick="evoSemanas=${v}; reEvo()">${t}</button>`).join('')}</div>
+    </div>
+    ${D.share.treinos?`
+    <h3 class="evo-h">Treinos</h3>
+    <div class="chips" style="margin-bottom:10px;">${sportChips.map(([k,t])=>`<button class="chip ${evoSport===k?'on':''}" onclick="evoSport='${k}'; reEvo()">${t}</button>`).join('')}</div>
+    <div class="stat3">
+      <div class="rec"><div class="l">Distância</div><div class="v">${nm(kmT)} km</div></div>
+      <div class="rec"><div class="l">Tempo</div><div class="v">${fmtMin(minT)}</div></div>
+      <div class="rec"><div class="l">Treinos</div><div class="v">${logs.length}</div></div>
+    </div>
+    <div class="card"><h3>Distância por semana</h3>${barSvg(porSem.map(x=>({label:x.w.label, v:Math.round(x.km*10)/10, title:`Semana de ${niceDate(x.w.ini)}: ${nm(x.km)} km em ${x.n} treinos`})),{color:'var(--navy)', aria:'Quilómetros por semana', valFmt:v=>nm(v)+' km'})}</div>
+    <div class="card"><h3>Tempo de treino por semana</h3>${barSvg(porSem.map(x=>({label:x.w.label, v:Math.round(x.min), title:`Semana de ${niceDate(x.w.ini)}: ${fmtMin(x.min)}`})),{color:'var(--gold)', aria:'Minutos de treino por semana', tickFmt:v=>v>=60?Math.round(v/60)+'h':v, valFmt:fmtMin})}</div>
+    ${(evoSport==='todas'||evoSport==='corrida')?`<div class="card"><div class="row"><h3 style="margin:0;">Ritmo na corrida</h3>${deltaBadge(corridas,'min/km',true)}</div><p class="tiny" style="margin:2px 0 6px;">Minutos por quilómetro. Quanto mais alto no gráfico, mais rápido.</p>${lineSvg(corridas,{color:'#B5603E', aria:'Ritmo por corrida', invert:true, fmt:fmtPace, unit:'/km', vazio:'Regista pelo menos 2 corridas com distância e tempo.'})}</div>`:''}
+    ${(evoSport==='todas'||evoSport==='bike')&&bikes.length?`<div class="card"><div class="row"><h3 style="margin:0;">Velocidade na bicicleta</h3>${deltaBadge(bikes,'km/h',false)}</div>${lineSvg(bikes,{color:'var(--navy)', aria:'Velocidade média por saída de bicicleta', unit:'km/h'})}</div>`:''}
+    `:'<div class="card empty">Treinos não partilhados.</div>'}
+
+    ${D.share.saude?`
+    <h3 class="evo-h">Alimentação</h3>
+    <div class="stat3">
+      <div class="rec"><div class="l">Média por dia</div><div class="v">${mediaK!=null?mediaK+' kcal':'—'}</div></div>
+      <div class="rec"><div class="l">Alvo diário</div><div class="v">${alvo&&alvo.kcal?alvo.kcal+' kcal':'—'}</div></div>
+      <div class="rec"><div class="l">Proteína/dia</div><div class="v">${prot!=null?prot+' g':'—'}</div></div>
+    </div>
+    <div class="card"><h3>Calorias por dia</h3><p class="tiny" style="margin:2px 0 6px;">Últimos ${dias} dias. A tracejado, o alvo diário${alvo&&alvo.kcal?'':' (define o perfil alimentar e o peso para o ver)'}. Os dias a laranja passaram mais de 10% do alvo.</p>
+      ${comReg.length? barSvg(kcalDias.map(x=>({label:x.d.slice(8)+'/'+Number(x.d.slice(5,7)), v:x.v, dim:x.n===0, title:`${niceDate(x.d)}: ${x.v} kcal (${x.n} refeições)`})),{color:'var(--gold)', target: alvo&&alvo.kcal? alvo.kcal : null, aria:'Calorias por dia'}) : '<div class="empty" style="padding:14px;">Ainda sem refeições registadas.</div>'}</div>
+    `:''}
+
+    ${D.share.corpo?`
+    <h3 class="evo-h">Corpo</h3>
+    ${imc?`<div class="card"><div class="row"><div><div class="tiny">IMC (índice de massa corporal)</div><div class="big num">${nm(imc)}</div></div><span class="badge ${imc<18.5?'coral':imc<25?'mint':imc<30?'coral':'red'}">${imc<18.5?'Abaixo do intervalo saudável':imc<25?'Intervalo saudável':imc<30?'Acima do intervalo saudável':'Bem acima do intervalo saudável'}</span></div>
+      <p class="tiny" style="margin:8px 0 0;">Para ${nm(alt*100,0)} cm de altura, o peso saudável vai de <b>${nm(band[0])} a ${nm(band[1])} kg</b> (IMC 18,5 a 24,9). O IMC não distingue músculo de gordura: quem tem muita massa muscular pode ter IMC alto e estar saudável.</p></div>`:(alt?'':'<p class="tiny" style="margin:0 4px 10px;">Indica a altura no perfil alimentar para ver o IMC e o intervalo de peso saudável.</p>')}
+    <div class="card"><div class="row"><h3 style="margin:0;">Peso</h3>${deltaBadge(peso,'kg',null)}</div>${lineSvg(peso,{color:'var(--navy)', aria:'Evolução do peso', unit:'kg', band, bandLabel: band?'peso saudável para a altura':''})}</div>
+    <div class="card"><div class="row"><h3 style="margin:0;">Massa muscular</h3>${deltaBadge(musc,'kg',false)}</div>${lineSvg(musc,{color:'#6A4C8A', aria:'Evolução da massa muscular', unit:'kg', vazio:'Regista a massa muscular (balança com bioimpedância) em pelo menos 2 dias.'})}</div>
+    <div class="card"><div class="row"><h3 style="margin:0;">Gordura corporal</h3>${deltaBadge(gord,'%',true)}</div>${lineSvg(gord,{color:'#B5603E', aria:'Evolução da gordura corporal', unit:'%', vazio:'Regista a percentagem de gordura em pelo menos 2 dias.'})}</div>
+    `:''}
+    <p class="tiny" style="text-align:center; margin:4px 8px 12px;">Toca num ponto ou numa barra para ver o valor.</p>`;
+}
+function renderEvo(){ const el=document.getElementById('pane-evolucao'); if(el){ evoAlvo=null; el.innerHTML=evolucaoHtml(); } }
+function reEvo(){ if(evoAlvo){ const b=document.getElementById('evoSheet'); if(b) b.innerHTML=evolucaoHtml(); } else renderEvo(); }
+function openEvoAtleta(id){ evoAlvo=id; const a=(S.athletes||[]).find(x=>x.id===id); removeSheet(); openSheet('Evolução · '+(a?a.name.split(' ')[0]:''), `<div id="evoSheet">${evolucaoHtml()}</div>`); }
 
 /* ---------- (antigo) apagar ---------- */
 function askReset(){ document.getElementById('resetConfirm').hidden=false; }
