@@ -167,7 +167,7 @@
   .hero h1 em{font-style:normal; color:var(--gold);}
   .hero p{margin:0; font-size:14.5px; line-height:1.5; opacity:.82; max-width:30ch; position:relative; z-index:2;}
   .hero-sports{display:flex; gap:8px; margin-top:16px; position:relative; z-index:2; flex-wrap:wrap;}
-  .hero-sports span{border:1px solid rgba(255,255,255,.28); border-radius:999px; padding:5px 12px; font-size:12px; letter-spacing:.3px;}
+  .hero-sports button{border:1px solid rgba(255,255,255,.35); background:rgba(255,255,255,.08); color:#fff; border-radius:999px; padding:7px 13px; font-size:13px; cursor:pointer; font-family:inherit;}
   .hero .scene{display:block; width:calc(100% + 44px); max-width:none; height:auto; margin:-6px -22px 0; position:relative; z-index:1;}
   .hero .walker{animation:walk 9s ease-in-out infinite alternate;}
   @keyframes walk{from{transform:translateX(0);} to{transform:translateX(26px);}}
@@ -287,6 +287,21 @@
   .ch-btn.ghost{background:var(--tone-soft); color:var(--tone);}
   .ch-btn:disabled{opacity:.6; cursor:default;}
 
+  .conta-pick{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px;}
+  .conta-pick button{border:1.5px solid var(--line); background:var(--card); border-radius:14px; padding:10px; text-align:left; cursor:pointer; color:var(--ink); font-family:inherit; display:flex; flex-direction:column; gap:3px;}
+  .conta-pick button b{font-size:13.5px;} .conta-pick button span{font-size:11.5px; color:var(--ink-soft); line-height:1.3;}
+  .conta-pick button.on{border-color:var(--navy); background:var(--navy-soft); box-shadow:inset 0 0 0 1px var(--navy);}
+  .badge.inst{background:var(--navy); color:#fff;}
+  .at-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;}
+  .at-tile{position:relative; overflow:hidden; border:none; border-radius:20px; padding:14px; text-align:left; cursor:pointer; background:var(--tone-soft); color:var(--ink); display:flex; flex-direction:column; gap:4px; font-family:inherit; min-height:118px;}
+  .at-tic{font-size:26px;} .at-tn{font-family:'Baloo 2',sans-serif; font-weight:700; font-size:17px; color:var(--tone);} .at-ts{font-size:12px; color:var(--ink-soft); line-height:1.3;}
+  .at-hero{display:flex; gap:12px; align-items:center; background:var(--tone-soft); border-radius:20px; padding:14px 16px; margin-bottom:12px;}
+  .at-ic{font-size:38px;} .at-lema{font-family:'Baloo 2',sans-serif; font-weight:700; font-size:19px; color:var(--tone); line-height:1.2;}
+  .at-li{position:relative; padding:6px 0 6px 22px; font-size:14px; line-height:1.4; border-bottom:1px solid var(--line);}
+  .at-li:last-child{border-bottom:none;}
+  .at-li::before{content:'•'; position:absolute; left:6px; color:var(--gold); font-weight:700;}
+  .at-li.ok::before{content:'✓'; left:2px; color:var(--mint);}
+
   /* Mapa */
   #mapBox{height:calc(100vh - 330px); min-height:360px; border-radius:var(--radius); overflow:hidden; box-shadow:0 3px 12px var(--shadow); margin-bottom:12px; z-index:1; position:relative;}
   #pickMap{height:220px; border-radius:16px; overflow:hidden; margin-bottom:6px; border:1.5px solid var(--line);}
@@ -324,7 +339,8 @@
     </div>
     <h1>Ninguém treina <em>sozinho.</em></h1>
     <p>Encontra companhia para mexer o corpo, regista cada passo e cresce com o método Saber · Sentir · Ser.</p>
-    <div class="hero-sports"><span>Trilhos</span><span>Caminhada</span><span>Corrida</span><span>Natação</span><span>Bike</span><span>Geocaching</span><span>e mais 6</span></div>
+    <div class="hero-sports"><button type="button" onclick="openAtividade('trilho')">⛰️ Trilhos</button><button type="button" onclick="openAtividade('corrida')">🏃 Corrida</button><button type="button" onclick="openAtividade('bike')">🚴 Bicicleta</button><button type="button" onclick="openAtividade('pilates')">🧘 Pilates</button></div>
+    <p style="font-size:12px; opacity:.7; margin:8px 0 0; position:relative; z-index:2;">Toca numa atividade para conheceres as vantagens.</p>
     <svg class="scene" viewBox="0 0 400 170" aria-hidden="true">
       <circle cx="318" cy="58" r="30" fill="#C49A5A" opacity=".95"/>
       <path d="M0 120 L70 62 L118 98 L178 40 L250 108 L300 76 L400 128 L400 170 L0 170Z" fill="#2C3E6B"/>
@@ -353,14 +369,24 @@
       <label for="lgPass">Palavra-passe</label><input id="lgPass" type="password" autocomplete="current-password" placeholder="Mínimo 8 caracteres">
     </div>
     <div id="signupFields" hidden>
-      <label for="lgName">O teu nome</label><input id="lgName" placeholder="Ex.: Conceição" autocomplete="given-name">
-      <label for="lgZone">Zona</label><input id="lgZone" placeholder="Ex.: Ponte da Barca">
-      <label>Modalidades de que gostas</label>
+      <label>Quem és?</label>
+      <div class="conta-pick" id="lgConta"><button type="button" class="on" onclick="setContaTipo('atleta')"><b>Sou atleta</b><span>Quero treinar e juntar-me a encontros</span></button><button type="button" onclick="setContaTipo('instituicao')"><b>Sou instituição desportiva</b><span>Clube, ginásio, associação ou organizador</span></button></div>
+      <label for="lgName" id="lgNameLbl">O teu nome</label><input id="lgName" placeholder="Ex.: Conceição" autocomplete="given-name">
+      <div class="only-inst" hidden><label for="lgInstTipo">Tipo de instituição</label><select id="lgInstTipo"><option value="clube">Clube</option><option value="ginasio">Ginásio / estúdio</option><option value="associacao">Associação</option><option value="escola">Escola de desporto</option><option value="eventos">Organizador de eventos</option><option value="empresa">Empresa</option></select></div>
+      <label for="lgZone">Localidade</label><input id="lgZone" placeholder="Ex.: Ponte da Barca">
+      <label id="lgSportsLbl">Atividades de que gostas</label>
       <div class="pick" id="lgSports"></div>
+      <div class="only-inst" hidden>
+        <label for="lgInstCont">Contacto público (email ou telefone)</label><input id="lgInstCont" maxlength="120" placeholder="Ex.: geral@clube.pt">
+        <label for="lgInstSite">Site ou rede social (opcional)</label><input id="lgInstSite" maxlength="200" placeholder="Ex.: instagram.com/clube">
+        <label for="lgInstDesc">Apresentação curta</label><textarea id="lgInstDesc" maxlength="600" placeholder="O que fazem, para quem, onde treinam"></textarea>
+      </div>
+      <div class="only-atleta">
       <label for="lgLevel">Nível</label>
       <select id="lgLevel"><option>Iniciante</option><option>Médio</option><option>Avançado</option></select>
       <div class="note" style="margin:4px 0 10px; font-size:13px;"><div class="from">O teu coach</div>No 3S Movimento, o coach da Escola 3S acompanha os teus treinos e o teu plano para te ajudar a evoluir.</div>
       <label style="display:flex; gap:10px; align-items:flex-start; font-size:13px; color:var(--ink); margin-bottom:12px;"><input id="lgConsent" type="checkbox" style="width:auto; margin:2px 0 0; accent-color:var(--navy); transform:scale(1.2);"><span>Aceito que o coach veja também o meu peso, medidas e dados de saúde (sono, energia, dores). Posso mudar isto quando quiser.</span></label>
+      </div>
     </div>
     <button class="primary" id="authBtn" onclick="doAuth()">Entrar</button>
     <button class="ghost" style="border:none; font-size:13px; color:var(--ink-soft);" onclick="forgotPass()">Esqueci-me da palavra-passe</button>
@@ -405,7 +431,8 @@
         </button>
       </div>
 
-      <div class="row" style="margin:6px 4px 8px;"><h3 style="font-size:15px;">Os meus próximos encontros</h3></div>
+      <div id="atividadesHome"></div>
+      <div class="row" style="margin:14px 4px 8px;"><h3 style="font-size:15px;">Os meus próximos encontros</h3></div>
       <div id="homeMine"></div>
 
       <div class="row" style="margin:14px 4px 8px;">
@@ -445,7 +472,6 @@
       <div class="card">
         <h3>Explorar esta zona</h3>
         <p class="tiny" style="margin:-4px 0 6px;">Abre noutros sites a zona que está no centro do mapa.</p>
-        <a class="ext" id="lnkGeo" href="https://www.geocaching.com/play/map" target="_blank" rel="noopener"><span>Geocaching<span class="tiny">Caches perto deste ponto. Pede para entrar com uma conta Geocaching (é gratuita) ou abre a app Geocaching, se a tiveres.</span></span><span class="go">Abrir ↗</span></a>
         <a class="ext" id="lnkTrails" href="https://www.google.com/maps/search/trilhos+pedestres" target="_blank" rel="noopener"><span>Percursos pedestres<span class="tiny">Trilhos oficiais e pequenas rotas (PR) na zona</span></span><span class="go">Abrir ↗</span></a>
         <a class="ext" href="https://gotrail.run/calendario-trail-running/portugal" target="_blank" rel="noopener"><span>Provas de trail<span class="tiny">Calendário de trails em Portugal, com filtro por região</span></span><span class="go">Abrir ↗</span></a>
         <a class="ext" href="https://www.intervals.icu/events/PT/" target="_blank" rel="noopener"><span>Corridas e provas<span class="tiny">Calendário de corridas, BTT e triatlo em Portugal</span></span><span class="go">Abrir ↗</span></a>
@@ -500,6 +526,9 @@
       <!-- ATLETAS (coach) -->
       <div id="pane-atletas" class="pane" hidden></div>
     </section>
+
+    <!-- INSTITUIÇÃO -->
+    <section id="v-inst"></section>
 
     <!-- PERFIL -->
     <section id="v-perfil">
@@ -581,20 +610,14 @@
    Próximo passo: ligar ao Supabase para os encontros serem partilhados.
    ========================================================= */
 
-const SPORTS = {
-  trilho:   {name:'Trilho',    ic:'⛰️'},
-  caminhada:{name:'Caminhada', ic:'🚶'},
-  corrida:  {name:'Corrida',   ic:'🏃'},
-  natacao:  {name:'Natação',   ic:'🏊'},
-  bike:     {name:'Bike',      ic:'🚴'},
-  geocaching:{name:'Geocaching', ic:'📦'},
-  orientacao:{name:'Orientação', ic:'🧭'},
-  canoagem: {name:'Canoagem/SUP', ic:'🛶'},
-  btt:      {name:'BTT',       ic:'🚵'},
-  escalada: {name:'Escalada',  ic:'🧗'},
-  yoga:     {name:'Yoga ao ar livre', ic:'🧘'},
-  prova:    {name:'Prova em grupo', ic:'🏅'},
+const SPORTS_BASE = {
+  trilho:  {name:'Trilhos',   ic:'⛰️'},
+  corrida: {name:'Corrida',   ic:'🏃'},
+  bike:    {name:'Bicicleta', ic:'🚴'},
+  pilates: {name:'Pilates',   ic:'🧘'},
 };
+// atividades antigas guardadas na base de dados continuam a aparecer sem erro
+const SPORTS = new Proxy(SPORTS_BASE, {get:(t,k)=> (k in t ? t[k] : (typeof k==='string' ? {name:'Outra atividade', ic:'🏅'} : undefined))});
 const LEVELS = ['Iniciante','Médio','Avançado'];
 const FEELINGS = ['😣','😕','🙂','😊','🤩'];
 const REFLECTIONS = [
@@ -667,7 +690,7 @@ function seed(me){
 }
 
 /* ---------- entrada ---------- */
-let pickSports = new Set(['caminhada','trilho']);
+let pickSports = new Set(['trilho','corrida']);
 function renderLoginSports(){
   const box=document.getElementById('lgSports');
   box.innerHTML = Object.entries(SPORTS).map(([k,s])=>`<button type="button" class="${pickSports.has(k)?'on':''}" onclick="togglePick('${k}')">${s.name}</button>`).join('');
@@ -687,14 +710,15 @@ function createProfile(){
 }
 
 /* ---------- navegação ---------- */
-const TITLES={inicio:'Início', encontros:'Encontros', mapa:'Mapa', treino:'PT 3S', perfil:'Perfil'};
+const TITLES={inicio:'Início', encontros:'Encontros', mapa:'Mapa', treino:'PT 3S', perfil:'Perfil', inst:'A minha instituição'};
 let currentView='inicio';
 function goView(v, fromHistory){
+  if(v==='treino' && isInst()) v='inst';
   if(!fromHistory && v!==currentView){ try{ history.pushState({view:v}, ''); }catch(e){} }
   currentView=v;
   document.getElementById('backTop').hidden = (v==='inicio');
   document.querySelectorAll('main section').forEach(s=>s.classList.toggle('active', s.id==='v-'+v));
-  document.querySelectorAll('nav.bottom button').forEach(b=>b.classList.toggle('on', b.dataset.v===v));
+  document.querySelectorAll('nav.bottom button').forEach(b=>b.classList.toggle('on', b.dataset.v===v || (v==='inst' && b.dataset.v==='treino')));
   document.getElementById('viewTitle').textContent = TITLES[v];
   window.scrollTo(0,0);
   renderAll();
@@ -708,7 +732,7 @@ function firstName(id){ return id==='me' ? 'Tu' : person(id).name.split(' ')[0];
 function meetCard(m){
   const sp=SPORTS[m.sport], left=m.spots-m.going.length, mine=m.going.includes('me');
   const avs=m.going.slice(0,5).map(id=>`<span class="av ${id==='me'?'me':''}">${esc(initials(person(id).name))}</span>`).join('');
-  let badges=`<span class="badge">${esc(m.level)}</span><span class="badge num">${m.km} km</span>`;
+  const hp=person(m.host); let badges=(hp && hp.tipo==='instituicao' ? `<span class="badge inst">🏛 ${esc(hp.name)}${hp.verificado?' ✓':''}</span>` : '') + `<span class="badge">${esc(m.level)}</span>` + (Number(m.km)>0 ? `<span class="badge num">${m.km} km</span>` : '');
   if(distOf(m)!==null) badges+=`<span class="badge mint">📍 ${distTxt(m)}</span>`;
   if(mine) badges+=`<span class="badge mint">Vais</span>`;
   else if(left<=0) badges+=`<span class="badge red">Cheio</span>`;
@@ -874,13 +898,13 @@ function openCreate(prefill){
   prefill=prefill||{};
   openSheet('Criar encontro', `
     <div class="card">
-      <label for="cSport">Modalidade</label><select id="cSport">${sportOptions(prefill.sport||S.me.sports[0]||'caminhada')}</select>
+      <label for="cSport">Atividade</label><select id="cSport" onchange="document.getElementById('cKmBox').hidden=this.value==='pilates'">${sportOptions(prefill.sport||S.me.sports[0]||'trilho')}</select>
       <label for="cTitle">Nome do encontro</label><input id="cTitle" placeholder="Ex.: Caminhada ao pôr do sol" value="${esc(prefill.title||'')}">
       <div class="two"><div><label for="cDate">Dia</label><input id="cDate" type="date" value="${prefill.date||addDays(1)}" min="${addDays(0)}"></div>
         <div><label for="cTime">Hora</label><input id="cTime" type="time" value="${prefill.time||'09:00'}"></div></div>
       <label for="cPlace">Ponto de encontro (local público)</label><input id="cPlace" placeholder="Ex.: Ponte medieval, Ponte da Barca" value="${esc(prefill.place||'')}">
       <label>Marca o ponto no mapa <span id="pickHint">(toca no mapa)</span></label><div id="pickMap"></div><p class="tiny" style="margin:0 0 10px;">As linhas coloridas são trilhos marcados.</p>
-      <div class="two"><div><label for="cKm">Distância (km)</label><input id="cKm" type="number" min="0" step="0.5" value="5"></div>
+      <div class="two"><div id="cKmBox" ${(prefill.sport||S.me.sports[0])==='pilates'?'hidden':''}><label for="cKm">Distância (km)</label><input id="cKm" type="number" min="0" step="0.5" value="5"></div>
         <div><label for="cDur">Duração (min)</label><input id="cDur" type="number" min="10" step="5" value="60"></div></div>
       <div class="two"><div><label for="cLevel">Nível</label><select id="cLevel">${levelOptions(S.me.level)}</select></div>
         <div><label for="cSpots">Vagas</label><input id="cSpots" type="number" min="2" max="50" value="8"></div></div>
@@ -1064,7 +1088,6 @@ function distTxt(m){ const d=distOf(m); if(d===null) return ''; return d<1? 'a m
 function updateExtLinks(){
   if(!map) return;
   const c=map.getCenter(), lat=c.lat.toFixed(4), lng=c.lng.toFixed(4), z=Math.max(11,map.getZoom());
-  document.getElementById('lnkGeo').href=`https://www.geocaching.com/play/map?lat=${lat}&lng=${lng}&zoom=${z}`;
   document.getElementById('lnkTrails').href=`https://www.google.com/maps/search/percursos+pedestres/@${lat},${lng},${z}z`;
 }
 
@@ -1090,7 +1113,7 @@ let COACH = {
   title:'Coach desportivo certificado',
   bio:['Coach certificado','Ironman','Paraquedista e formador de recrutas','Liderança e formação de equipas corporativas'],
 };
-const GOAL_SPORTS = ['corrida','trilho','caminhada','bike','natacao'];
+const GOAL_SPORTS = ['corrida','trilho','bike'];
 const BASE = { corrida:{Iniciante:3,'Médio':6,'Avançado':10}, trilho:{Iniciante:5,'Médio':8,'Avançado':12},
   caminhada:{Iniciante:4,'Médio':7,'Avançado':10}, bike:{Iniciante:15,'Médio':30,'Avançado':50}, natacao:{Iniciante:0.5,'Médio':1,'Avançado':2} };
 const PATTERNS = {
@@ -1134,7 +1157,7 @@ function plusDays(d,n){ const x=new Date(d); x.setDate(x.getDate()+n); return x;
 function buildPlan(goal, logs){
   if(!goal) return [];
   const sport=goal.sport, lvl=goal.level||'Iniciante';
-  const base=(BASE[sport]||BASE.caminhada)[lvl];
+  const base=(BASE[sport]||BASE.trilho)[lvl];
   const raceDay = goal.type==='prova' && goal.date ? parseDate(goal.date) : plusDays(new Date(), 56);
   const start = mondayOf(new Date());
   let W = Math.ceil((raceDay - start)/(7*864e5)); W = Math.max(2, Math.min(30, W));
@@ -1179,7 +1202,7 @@ function makeSession(goal, w, date, type, km){
     natacao:{facil:'Nado contínuo fácil, foca-te na técnica.', qualidade:'Séries: 8×50 m forte com 30 s de pausa.', longo:'Nado contínuo longo, ritmo calmo.'},
   }[sp] || {};
   let title, desc;
-  if(type==='forca'){ title='Força e mobilidade · 25 min'; desc='3 voltas: 12 agachamentos, 10 lunges por perna, 30 s de prancha, 12 pontes de glúteo. Termina com 5 min de alongamentos.'; }
+  if(type==='forca'){ title='Força e mobilidade ou Pilates · 25 min'; desc='Uma aula de Pilates ou 3 voltas: 12 agachamentos, 10 lunges por perna, 30 s de prancha, 12 pontes de glúteo. Termina com 5 min de alongamentos.'; }
   else if(type==='prova'){ title=`${goal.name||'Prova'} · ${nm(k)} km`; desc='Dia da prova! Começa devagar, bebe água e aproveita. 🏅'; }
   else { title=`${SPORTS[sp].name} · ${nm(k)} km`; desc=D[type]||''; }
   return {key:`${w}-${date}-${type}`, w, date, type, km:k, sport:sp, title, desc};
@@ -1657,7 +1680,7 @@ function adjKm(id,v){ const a=S.athletes.find(x=>x.id===id); a.goal.km=Number(v)
 const SUPABASE_URL = 'https://hspekqrhttxeckghtryi.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhzcGVrcXJodHR4ZWNrZ2h0cnlpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyNTc2OTQsImV4cCI6MjEwMzgzMzY5NH0.2MKWYnUYWbxJqogSzpsfbkVHD_J0QqqMse-duNtj_GI';
 const sb = (window.supabase && window.supabase.createClient) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
-const PERFIL_COLS = 'user_id,nome,zona,nivel,modalidades,papel,titulo,bio';
+const PERFIL_COLS = 'user_id,nome,zona,nivel,modalidades,papel,titulo,bio,tipo_conta,inst_tipo,inst_contacto,inst_site,inst_descricao,verificado';
 let ME = null;        // id da conta com sessão
 let IS_DONA = false;
 let IS_MOD = false;
@@ -1700,8 +1723,9 @@ async function loadAll(){
   const loc=myLoc();
   S = S || {};
   S.me = { id:'me', uid:ME, name:mine.nome, zone:mine.zona||'', level:mine.nivel, sports:(mine.modalidades&&mine.modalidades.length)?mine.modalidades:['caminhada'],
-           role:mine.papel, titulo:mine.titulo, bio:mine.bio||[], lat:loc?loc[0]:null, lng:loc?loc[1]:null };
-  S.people={}; perfis.forEach(p=>{ if(p.user_id!==ME) S.people[p.user_id]={name:p.nome, zone:p.zona||'', level:p.nivel, role:p.papel}; });
+           role:mine.papel, titulo:mine.titulo, bio:mine.bio||[], lat:loc?loc[0]:null, lng:loc?loc[1]:null,
+           tipo:mine.tipo_conta||'atleta', instTipo:mine.inst_tipo, instContacto:mine.inst_contacto, instSite:mine.inst_site, instDesc:mine.inst_descricao, verificado:mine.verificado };
+  S.people={}; perfis.forEach(p=>{ if(p.user_id!==ME) S.people[p.user_id]={name:p.nome, zone:p.zona||'', level:p.nivel, role:p.papel, tipo:p.tipo_conta||'atleta', instTipo:p.inst_tipo, instContacto:p.inst_contacto, verificado:p.verificado}; });
 
   const myLogs = treinos.filter(t=>t.user_id===ME);
   const loggedMeets = new Set(myLogs.map(t=>t.encontro_id).filter(Boolean));
@@ -1814,7 +1838,9 @@ async function forgotPass(){
 function showAuthMsg(t){ const b=document.getElementById('authMsg'); b.textContent=t; b.hidden=false; }
 function profileFromForm(){
   return {nome:document.getElementById('lgName').value.trim(), zona:document.getElementById('lgZone').value.trim(),
-          nivel:document.getElementById('lgLevel').value, modalidades:[...pickSports], consentimento_coach:!!(document.getElementById('lgConsent')||{}).checked};
+          nivel:document.getElementById('lgLevel').value, modalidades:[...pickSports], consentimento_coach: contaTipo==='atleta' && !!(document.getElementById('lgConsent')||{}).checked,
+          tipo_conta:contaTipo, ...(contaTipo==='instituicao' ? {inst_tipo:document.getElementById('lgInstTipo').value, inst_contacto:document.getElementById('lgInstCont').value.trim()||null,
+          inst_site:document.getElementById('lgInstSite').value.trim()||null, inst_descricao:document.getElementById('lgInstDesc').value.trim()||null} : {})};
 }
 async function afterLogin(user){
   ME=user.id;
@@ -1854,7 +1880,7 @@ async function saveMeet(){
   const sport=g('cSport'), place=g('cPlace');
   if(!place){ document.getElementById('cPlace').focus(); toast('Indica o ponto de encontro'); return; }
   await q(sb.from('mov_encontros').insert({host_id:ME, modalidade:sport, titulo:g('cTitle')||SPORTS[sport].name+' em grupo', data:g('cDate')||addDays(1), hora:g('cTime')||'09:00',
-    local:place, nivel:g('cLevel'), km:Number(g('cKm'))||0, duracao:Number(g('cDur'))||60, vagas:Math.max(2,Number(g('cSpots'))||8),
+    local:place, nivel:g('cLevel'), km: sport==='pilates' ? 0 : (Number(g('cKm'))||0), duracao:Number(g('cDur'))||60, vagas:Math.max(2,Number(g('cSpots'))||8),
     aprovacao:g('cApproval')==='1', levar:g('cBring')||null, lat:pickLL?pickLL[0]:null, lng:pickLL?pickLL[1]:null}));
   closeSheet(); await refresh(); toast('Encontro publicado');
 }
@@ -2392,7 +2418,7 @@ function renderPlanoCard(){
   const pend=(S.pedidos||[]).filter(x=>x.estado==='pendente');
   g.innerHTML=`<h3>Gestão de planos</h3>
     ${pend.length? pend.map(x=>{ const u=(S.planoDe||{})[x.user_id]||{nome:'Atleta'}; return `<div class="list-row"><div style="min-width:0;"><b>${esc(u.nome)}</b><div class="tiny">Quer: ${esc(nomePlano(x.plano_id))} · ${niceDate(x.created_at.slice(0,10))}</div></div><span style="display:flex; gap:6px; flex-shrink:0;"><button class="primary small mintbtn" onclick="ativarPlano('${x.user_id}','${x.plano_id}','${x.id}')">Ativar</button><button class="ghost small" onclick="recusarPedido('${x.id}')">Recusar</button></span></div>`; }).join('') : '<p class="muted" style="margin:0 0 6px;">Sem pedidos pendentes.</p>'}
-    <button class="ghost" onclick="openEditPlanos()">Editar preços e limites</button>`;
+    <button class="ghost" onclick="openEditPlanos()">Editar preços e limites</button>${instGestaoHtml()}`;
 }
 async function ativarPlano(u,p,id){ const {error}=await sb.rpc('mov_definir_plano',{p_user:u, p_plano:p, p_pedido:id}); if(error){ toast('Erro: '+error.message); return; } await refresh(); toast('Plano ativado'); }
 async function recusarPedido(id){ const {error}=await sb.rpc('mov_recusar_pedido',{p_pedido:id}); if(error){ toast('Erro: '+error.message); return; } await refresh(); toast('Pedido recusado'); }
@@ -2649,8 +2675,133 @@ function fraseHtml(){
 }
 function renderMotiv(){
   const f=document.getElementById('fraseDia'); if(f) f.innerHTML=fraseHtml();
+  const ah=document.getElementById('atividadesHome'); if(ah) ah.innerHTML=atividadesHtml();
+  const wk=document.getElementById('wkKm'); if(wk) wk.closest('.card').hidden = isInst();
+  if(isInst()){ const c=document.getElementById('desafioHome'); if(c) c.innerHTML=''; renderInst(); return; }
   const c=document.getElementById('desafioHome'); if(c) c.innerHTML=desafioHtml(true);
   const t=document.getElementById('desafioPT'); if(t) t.innerHTML=desafioHtml(false);
+}
+
+/* =========================================================
+   ATIVIDADES (visão geral e vantagens), CONTAS DE INSTITUIÇÃO
+   ========================================================= */
+const ATIVIDADES = {
+  trilho: {nome:'Trilhos', cor:'#3F7A5A', soft:'#E1EEE6',
+    lema:'Caminhar na natureza, ao teu ritmo.',
+    resumo:'Percursos a pé por montanha, floresta, rio ou costa. Do passeio de 5 km em família à travessia de um dia inteiro, cada trilho escolhe-se pela distância e pelo desnível.',
+    vantagens:['Melhora a resistência do coração e dos pulmões','Fortalece pernas, glúteos e o centro do corpo (core)','Treina o equilíbrio e a coordenação em terreno irregular','Impacto mais suave nas articulações do que a corrida','Estar na natureza ajuda a baixar o stress e a clarear a cabeça','Ótimo para conhecer pessoas e lugares novos'],
+    paraQuem:'Para todos os níveis. Começa por percursos curtos e marcados (pequenas rotas, PR) de 5 a 8 km e pouco desnível.',
+    comecar:['Escolhe um trilho marcado e curto','Vai com alguém ou num encontro da app','Aumenta a distância aos poucos, de semana para semana'],
+    levar:['Calçado com boa sola (de trilho ou caminhada)','Mochila com água e um lanche','Roupa por camadas e corta-vento','Telemóvel com bateria e o percurso descarregado'],
+    cuidados:['Vê a meteorologia antes de saíres','Diz a alguém onde vais e a que horas contas voltar','Respeita a sinalização e não saias do trilho'],
+    tres:{Saber:'Ler o mapa, conhecer o percurso e o teu limite.', Sentir:'Respirar o ar da montanha e notar o corpo a responder.', Ser:'Chegar ao fim e saber que foste capaz.'},
+    plano:true},
+  corrida: {nome:'Corrida', cor:'#B5603E', soft:'#F7E4DA',
+    lema:'Só precisas de sapatilhas e vontade.',
+    resumo:'Correr na estrada, em parques, na ecovia ou em terra batida. Serve para ganhar forma, aliviar a cabeça ou preparar uma prova, dos 5 km à maratona.',
+    vantagens:['Fortalece o coração e melhora a capacidade respiratória','Ajuda a controlar o peso e a glicemia','Fortalece ossos e músculos das pernas','Liberta endorfinas: melhora o humor e o sono','Faz-se em pouco tempo, a qualquer hora e em qualquer lado','Dá objetivos claros: uma prova, um tempo, uma distância'],
+    paraQuem:'Para quem quer resultados com pouco tempo. Quem está a começar deve alternar correr e andar.',
+    comecar:['3 vezes por semana: 1 minuto a correr, 2 a andar, durante 20 minutos','Aumenta o tempo a correr pouco a pouco, sem pressa','Define um objetivo, por exemplo uma prova de 5 km'],
+    levar:['Sapatilhas de corrida confortáveis','Roupa técnica que não retenha suor','Colete refletor ou luz ao fim do dia'],
+    cuidados:['Aquece 5 a 10 minutos antes de começar','Aumenta a distância semanal de forma gradual','Uma dor que não passa é sinal para parar e pedir ajuda'],
+    tres:{Saber:'Conhecer o teu ritmo e treinar com método.', Sentir:'A cabeça mais leve a cada quilómetro.', Ser:'Cumprir o compromisso contigo, mesmo quando custa.'},
+    plano:true},
+  bike: {nome:'Bicicleta', cor:'#1B2A4A', soft:'#E7EAF1',
+    lema:'Mais longe, com menos impacto.',
+    resumo:'Estrada, ecopistas, BTT na serra ou passeios pela cidade. A bicicleta leva-te a distâncias maiores e protege as articulações.',
+    vantagens:['Treino cardiovascular com muito pouco impacto nas articulações','Fortalece pernas e glúteos','Boa opção para quem tem excesso de peso ou recupera de lesões (com indicação médica)','Permite conhecer mais território numa só saída','Pode ser também o teu meio de transporte','Em grupo, o pelotão torna tudo mais fácil'],
+    paraQuem:'Para todos, desde que saibas andar de bicicleta com confiança. Começa por percursos planos e ecopistas.',
+    comecar:['Voltas planas de 30 a 60 minutos','Ajusta bem a altura do selim','Junta-te a um encontro para aprender o percurso'],
+    levar:['Capacete (sempre)','Luzes dianteira e traseira','Câmara de ar, bomba e água','Óculos e luvas para saídas mais longas'],
+    cuidados:['Verifica travões e pneus antes de sair','Cumpre o Código da Estrada e sinaliza as manobras','Usa roupa visível'],
+    tres:{Saber:'Conhecer a tua bicicleta e o percurso.', Sentir:'O vento, a paisagem, a liberdade.', Ser:'Ir mais longe do que pensavas.'},
+    plano:true},
+  pilates: {nome:'Pilates', cor:'#6A4C8A', soft:'#EFE7F6',
+    lema:'Força, postura e respiração.',
+    resumo:'Exercícios controlados no tapete que trabalham o centro do corpo, a postura e a flexibilidade, sempre ligados à respiração. É o complemento perfeito para quem corre, pedala ou faz trilhos.',
+    vantagens:['Fortalece o core e protege a coluna','Melhora a postura e alivia tensões nas costas','Aumenta a flexibilidade e a mobilidade','Ajuda a prevenir lesões na corrida, na bike e nos trilhos','Treina a concentração e a respiração consciente','Baixo impacto: adapta-se a todas as idades'],
+    paraQuem:'Para todos os níveis e idades. Ideal como treino de força e mobilidade 1 a 2 vezes por semana.',
+    comecar:['2 sessões por semana de 20 a 40 minutos','Começa pelos exercícios básicos e com poucas repetições','Faz em grupo para corrigir a técnica'],
+    levar:['Tapete','Roupa confortável','Água'],
+    cuidados:['Movimentos lentos e controlados, sem dor','Avisa o instrutor se tiveres lesões','Na gravidez, só com acompanhamento profissional'],
+    tres:{Saber:'Conhecer o teu corpo, músculo a músculo.', Sentir:'A respiração a guiar o movimento.', Ser:'Equilíbrio por dentro e por fora.'},
+    plano:false},
+};
+function isInst(){ return S && S.me && S.me.tipo==='instituicao'; }
+function openAtividade(k){
+  const a=ATIVIDADES[k]; if(!a) return;
+  const logged = !!(S && S.me && S.me.uid);
+  const lista=(t,arr)=>`<div class="card"><h3>${t}</h3>${arr.map(x=>`<div class="at-li">${esc(x)}</div>`).join('')}</div>`;
+  const ctas = logged
+    ? `<div class="two"><button class="primary" onclick="verEncontrosDe('${k}')">Ver encontros</button>${a.plano && !isInst() ? `<button class="ghost" style="margin:0;" onclick="closeSheet(); goView('treino'); setTimeout(openGoalForm,60)">Criar o meu plano</button>` : `<button class="ghost" style="margin:0;" onclick="closeSheet(); openCreate({sport:'${k}'})">Criar encontro</button>`}</div>`
+    : `<button class="primary" onclick="closeSheet(); setAuthMode('criar'); document.getElementById('lgEmail').focus()">Criar conta grátis</button>`;
+  openSheet(a.nome, `
+    <div class="at-hero" style="--tone:${a.cor}; --tone-soft:${a.soft};"><div class="at-ic">${SPORTS[k].ic}</div><div><div class="at-lema">${esc(a.lema)}</div></div></div>
+    <p style="font-size:14.5px; line-height:1.55; margin:0 0 12px;">${esc(a.resumo)}</p>
+    <div class="card"><h3>Vantagens</h3>${a.vantagens.map(v=>`<div class="at-li ok">${esc(v)}</div>`).join('')}</div>
+    <div class="card"><h3>Para quem é</h3><p style="margin:0; font-size:14px; line-height:1.5;">${esc(a.paraQuem)}</p></div>
+    ${lista('Como começar', a.comecar)}
+    ${lista('O que levar', a.levar)}
+    ${lista('Cuidados', a.cuidados)}
+    <div class="card"><h3>Saber · Sentir · Ser</h3>${Object.entries(a.tres).map(([p,t])=>`<div class="list-row"><b style="color:var(--gold); width:64px; flex-shrink:0;">${p}</b><span style="flex:1;">${esc(t)}</span></div>`).join('')}</div>
+    <p class="tiny" style="margin:0 4px 12px;">A Organização Mundial da Saúde recomenda pelo menos 150 a 300 minutos de atividade física moderada por semana para adultos. Se tens algum problema de saúde, fala com o teu médico antes de começar.</p>
+    ${ctas}`);
+}
+function verEncontrosDe(k){ closeSheet(); filter=k; goView('encontros'); }
+function atividadesHtml(){
+  return `<div class="row" style="margin:6px 4px 8px;"><h3 style="font-size:15px;">As atividades</h3></div>
+    <div class="at-grid">${Object.entries(ATIVIDADES).map(([k,a])=>`<button class="at-tile" style="--tone:${a.cor}; --tone-soft:${a.soft};" onclick="openAtividade('${k}')"><span class="at-tic">${SPORTS[k].ic}</span><span class="at-tn">${a.nome}</span><span class="at-ts">${esc(a.lema)}</span></button>`).join('')}</div>`;
+}
+
+/* ---------- instituições ---------- */
+const INST_TIPOS = {clube:'Clube', ginasio:'Ginásio / estúdio', associacao:'Associação', escola:'Escola de desporto', eventos:'Organizador de eventos', empresa:'Empresa'};
+let contaTipo='atleta';
+function setContaTipo(t){
+  contaTipo=t;
+  document.querySelectorAll('#lgConta button').forEach((b,i)=>b.classList.toggle('on',(i===1)===(t==='instituicao')));
+  document.querySelectorAll('.only-atleta').forEach(e=>e.hidden = t!=='atleta');
+  document.querySelectorAll('.only-inst').forEach(e=>e.hidden = t!=='instituicao');
+  document.getElementById('lgNameLbl').textContent = t==='instituicao' ? 'Nome da instituição' : 'O teu nome';
+  document.getElementById('lgName').placeholder = t==='instituicao' ? 'Ex.: Clube de Montanha de Ponte da Barca' : 'Ex.: Conceição';
+  document.getElementById('lgSportsLbl').textContent = t==='instituicao' ? 'Atividades que organizam' : 'Atividades de que gostas';
+}
+function renderInst(){
+  const box=document.getElementById('v-inst'); if(!box) return;
+  const me=S.me, minhos=S.meets.filter(m=>m.host==='me').sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+  const prox=minhos.filter(m=>!isPast(m)), pass=minhos.filter(m=>isPast(m));
+  const inscritos=prox.reduce((a,m)=>a+m.going.length-1,0);
+  box.innerHTML=`<div class="goal-top"><div class="eyebrow">${esc(INST_TIPOS[me.instTipo]||'Instituição')}${me.verificado?' · verificada ✓':''}</div><h2>${esc(me.name)}</h2>
+      <div style="font-size:13px; opacity:.85; position:relative; z-index:1;">${esc(me.zone||'')}${me.sports.length?' · '+me.sports.map(s=>SPORTS[s].name).join(', '):''}</div></div>
+    ${me.verificado?'':'<div class="note"><div class="from">Verificação</div>A Escola 3S vai confirmar a tua instituição. Até lá, os teus eventos aparecem sem o selo de verificada.</div>'}
+    <div class="stat3"><div class="rec"><div class="l">Próximos eventos</div><div class="v">${prox.length}</div></div><div class="rec"><div class="l">Inscritos</div><div class="v">${inscritos}</div></div><div class="rec"><div class="l">Já realizados</div><div class="v">${pass.length}</div></div></div>
+    <button class="primary" style="margin-bottom:12px;" onclick="openCreate({sport:'${me.sports[0]||'trilho'}'})">Criar evento ou treino aberto</button>
+    <div class="card"><h3>Os nossos próximos eventos</h3>${prox.length? prox.map(m=>`<div class="list-row" style="cursor:pointer;" onclick="openMeet('${m.id}')"><div class="left"><span class="sport" style="width:40px;height:40px;font-size:18px;">${SPORTS[m.sport].ic}</span><div style="min-width:0;"><div style="font-weight:600;">${esc(m.title)}</div><div class="tiny">${niceDate(m.date)} · ${esc(m.time)}</div></div></div><span class="badge ${m.going.length-1>=m.spots-1?'red':'mint'} num">${m.going.length-1} inscritos</span></div>`).join('') : '<div class="empty" style="padding:10px;">Ainda sem eventos. Cria o primeiro: aparece a todos os atletas da zona.</div>'}</div>
+    <div class="card"><h3>Sobre nós</h3>
+      <p style="margin:0 0 8px; font-size:14px; line-height:1.5;">${esc(me.instDesc||'Sem descrição.')}</p>
+      ${me.instContacto?`<div class="list-row"><span class="muted">Contacto</span><span style="user-select:all;">${esc(me.instContacto)}</span></div>`:''}
+      ${me.instSite?`<div class="list-row"><span class="muted">Site</span><a href="${esc(/^https?:/.test(me.instSite)?me.instSite:'https://'+me.instSite)}" target="_blank" rel="noopener">${esc(me.instSite)}</a></div>`:''}
+      <button class="ghost" onclick="openInstEdit()">Editar dados</button></div>`;
+}
+function openInstEdit(){
+  const me=S.me;
+  openSheet('Dados da instituição', `<div class="card">
+    <label for="ieTipo">Tipo</label><select id="ieTipo">${Object.entries(INST_TIPOS).map(([k,v])=>`<option value="${k}" ${k===me.instTipo?'selected':''}>${v}</option>`).join('')}</select>
+    <label for="ieZona">Localidade</label><input id="ieZona" value="${esc(me.zone||'')}">
+    <label for="ieDesc">Descrição</label><textarea id="ieDesc" maxlength="600">${esc(me.instDesc||'')}</textarea>
+    <label for="ieCont">Contacto público (email ou telefone)</label><input id="ieCont" maxlength="120" value="${esc(me.instContacto||'')}">
+    <label for="ieSite">Site ou rede social</label><input id="ieSite" maxlength="200" value="${esc(me.instSite||'')}">
+    <button class="primary" onclick="saveInstEdit()">Guardar</button></div>`);
+}
+async function saveInstEdit(){
+  const g=id=>document.getElementById(id).value.trim();
+  await q(sb.from('mov_perfis').update({inst_tipo:g('ieTipo'), zona:g('ieZona')||null, inst_descricao:g('ieDesc')||null, inst_contacto:g('ieCont')||null, inst_site:g('ieSite')||null}).eq('user_id',ME));
+  closeSheet(); await refresh(); toast('Dados guardados');
+}
+async function verificarInst(id, ok){ const {error}=await sb.rpc('mov_verificar_instituicao',{p_user:id, p_ok:ok}); if(error){ toast('Erro: '+error.message); return; } await refresh(); toast(ok?'Instituição verificada':'Verificação retirada'); }
+function instGestaoHtml(){
+  const insts=Object.entries(S.people||{}).filter(([id,p])=>p.tipo==='instituicao');
+  if(!insts.length) return '';
+  return `<h3 style="margin-top:14px;">Instituições</h3>${insts.map(([id,p])=>`<div class="list-row"><div style="min-width:0;"><b>${esc(p.name)}</b><div class="tiny">${esc(INST_TIPOS[p.instTipo]||'')} · ${esc(p.zone||'')}${p.instContacto?' · '+esc(p.instContacto):''}</div></div>${p.verificado?`<button class="ghost small" onclick="verificarInst('${id}', false)">Retirar ✓</button>`:`<button class="primary small mintbtn" onclick="verificarInst('${id}', true)">Verificar</button>`}</div>`).join('')}`;
 }
 
 /* ---------- (antigo) apagar ---------- */
@@ -2663,6 +2814,7 @@ function start(){
   document.getElementById('app').hidden=false;
   ptInit(); save();
   document.getElementById('donaCard').hidden = !IS_DONA;
+  const ptBtn=document.querySelector('nav.bottom button[data-v="treino"]'); if(ptBtn) ptBtn.lastChild.textContent = isInst() ? 'Instituição' : 'PT 3S';
   try{ history.replaceState({view:'inicio'}, ''); }catch(e){}
   goView('inicio', true);
 }
