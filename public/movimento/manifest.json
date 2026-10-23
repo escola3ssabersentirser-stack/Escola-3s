@@ -1,6 +1,6 @@
 {
-  "name": "3S Movimento",
-  "short_name": "3S Movimento",
+  "name": "Movimento 3S",
+  "short_name": "Movimento 3S",
   "description": "Encontros desportivos e registo de treinos da Escola 3S",
   "start_url": "./index.html",
   "scope": "./",
