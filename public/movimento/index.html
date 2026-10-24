@@ -335,6 +335,13 @@
   .av-ic{width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:13px; flex-shrink:0; margin-top:1px;}
   .av-top{display:flex; justify-content:space-between; gap:8px; align-items:baseline; margin-bottom:2px;}
   .av-src{margin-top:8px;} .av-src summary{font-size:12.5px; color:var(--ink-soft); cursor:pointer;}
+  .agua{display:flex; align-items:center; gap:10px; background:#EEF4F8; border-radius:16px; padding:10px;}
+  .agua-b{width:44px; height:44px; border-radius:50%; border:none; background:#fff; color:#2F6E95; font-size:24px; font-weight:600; cursor:pointer; flex-shrink:0; box-shadow:0 2px 6px rgba(0,0,0,.08);}
+  .agua-b.mais{background:#2F6E95; color:#fff;}
+  .agua-v{flex:1; text-align:center;}
+  #aguaCopos{display:flex; flex-wrap:wrap; gap:4px; justify-content:center; margin-bottom:4px;}
+  .copo{width:14px; height:20px; border:2px solid #9DBBD0; border-top:none; border-radius:0 0 5px 5px; display:inline-block;}
+  .copo.on{background:linear-gradient(0deg,#4A90BF 75%, transparent 75%); border-color:#4A90BF;}
   /* v3 */
   header.top{padding-bottom:58px;}
   .hc::before{display:none;}
@@ -3738,6 +3745,68 @@ hc = function(key, o){
 /* sem objetivo: o cartão de topo já pede o objetivo; o cartão do plano leva aos treinos */
 const _hcDedup = hc;
 hc = function(key, o){ if(key==='plano' && S && !S.goal && !isCoach()) o={...o, title:'Plano de treino', sub:'Gravar com GPS, registar ou importar treinos. O plano aparece quando definires o objetivo.', act:'Os meus treinos', actFn:"openPane('plano')"}; return _hcDedup(key, o); };
+/* =========================================================
+   ÁGUA: contador de copos no registo do dia (250 ml por copo)
+   ========================================================= */
+const COPO_ML = 250;
+const _loadAllAgua = loadAll;
+loadAll = async function(){
+  await _loadAllAgua();
+  const {data} = await sb.from('mov_saude').select('user_id,data,agua_ml');
+  const k = r => r.user_id+'|'+r.data, m = {};
+  (data||[]).forEach(r => m[k(r)] = r.agua_ml);
+  (S.health||[]).forEach(h => { h.water = m[ME+'|'+h.date] ?? null; });
+  (S.athletes||[]).forEach(a => (a.health||[]).forEach(h => { h.water = m[a.id+'|'+h.date] ?? null; }));
+};
+let hCopos = 0;
+const _openHealthAgua = openHealth;
+openHealth = function(){
+  _openHealthAgua();
+  const t = (S.health||[]).find(h=>h.date===addDays(0)) || {};
+  hCopos = t.water ? Math.round(t.water/COPO_ML) : 0;
+  const box = document.createElement('div');
+  box.innerHTML = `<label>Água hoje</label><div class="agua"><button type="button" class="agua-b" onclick="mudaCopos(-1)" aria-label="Menos um copo">−</button>
+    <div class="agua-v"><div id="aguaCopos">${aguaCoposHtml()}</div><div class="tiny" id="aguaTxt"></div></div>
+    <button type="button" class="agua-b mais" onclick="mudaCopos(1)" aria-label="Mais um copo">+</button></div>
+    <p class="tiny" style="margin:4px 0 10px;">Cada toque no + é um copo de 250 ml. Conta água, chá e sopa.</p>`;
+  const en = document.getElementById('hEn'); const lbl = en && en.previousElementSibling;
+  (lbl || en).before(...box.childNodes);
+  mudaCopos(0);
+};
+function aguaCoposHtml(){ const n=Math.min(hCopos,12); return Array.from({length:Math.max(8,n)},(_,i)=>`<span class="copo ${i<n?'on':''}"></span>`).join(''); }
+function mudaCopos(d){
+  hCopos = Math.max(0, Math.min(30, hCopos+d));
+  const c=document.getElementById('aguaCopos'); if(c) c.innerHTML=aguaCoposHtml();
+  const t=document.getElementById('aguaTxt'); if(t) t.textContent = hCopos ? `${hCopos} ${hCopos===1?'copo':'copos'} · ${nm(hCopos*COPO_ML/1000)} L` : 'Ainda nenhum copo';
+}
+async function saveHealth(){
+  const v=id=>{ const x=document.getElementById(id).value; return x===''?null:Number(x); };
+  const r={user_id:ME, data:addDays(0), sono:v('hS'), fc:v('hHr'), energia:hEnergy, dor:document.getElementById('hPain').checked, dor_onde:(document.getElementById('hPWi')||{}).value||null, agua_ml: hCopos ? hCopos*COPO_ML : null};
+  try{ await q(sb.from('mov_saude').upsert(r, {onConflict:'user_id,data'})); }catch(e){ return; }
+  closeSheet(); await refresh();
+  toast(r.dor?'Guardado. Treina com cuidado hoje.':(r.energia<=2||(r.sono&&r.sono<6))?'Guardado. Hoje um treino leve é boa ideia.':'Guardado 💚');
+}
+/* avaliação: água */
+function aguaAvalHtml(src, tu){
+  const dias=(src.health||[]).filter(h=>daysUntil(h.date)>=-6 && Number(h.water)>0).map(h=>Number(h.water));
+  if(dias.length<3) return avalLinha('falta','Água', dias.length+' de 7 dias', `Para avaliar, conta os copos de água pelo menos 3 dias por semana${tu?' (em Saúde → Registar dia)':''}.`);
+  const med=dias.reduce((a,b)=>a+b,0)/dias.length/1000;
+  const est = med<1.2 ? 'mau' : med<1.5 ? 'atencao' : 'bom';
+  const txt = med<1.2 ? 'Bebes pouco. A recomendação geral é cerca de 1,5 a 2 L de água por dia, mais nos dias de treino e de calor. Mesmo pouca desidratação baixa o rendimento e a concentração.'
+    : med<1.5 ? 'Um pouco abaixo do recomendado (1,5 a 2 L por dia). Deixa uma garrafa à vista e bebe um copo a cada refeição.'
+    : 'Dentro do recomendado (1,5 a 2 L por dia). Nos dias de treino, junta cerca de meio litro por cada hora de exercício.';
+  return avalLinha(est,'Água', nm(Math.round(med*10)/10)+' L/dia', txt);
+}
+FONTES_AVAL.push(['Autoridade Europeia para a Segurança dos Alimentos (EFSA, 2010)', 'ingestão diária de água: cerca de 2 L para mulheres e 2,5 L para homens, incluindo a água dos alimentos']);
+const _avaliacaoAgua = avaliacao3S;
+avaliacao3S = function(src, opts){
+  const h=_avaliacaoAgua(src, opts);
+  if(opts && opts.sono===false) return h;
+  const linha=aguaAvalHtml(src, !(opts&&opts.outro));
+  const i=h.indexOf('<div class="av-row">', h.indexOf('<div class="av-row">')+1);
+  return i>0 ? h.slice(0,i)+linha+h.slice(i) : h.replace('<details class="av-src">', linha+'<details class="av-src">');
+};
+
 /* ---------- (antigo) apagar ---------- */
 function askReset(){ document.getElementById('resetConfirm').hidden=false; }
 function doReset(){ try{ localStorage.removeItem(KEY); }catch(e){} S=null; location.reload(); }
