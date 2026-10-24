@@ -1,7 +1,7 @@
 {
   "id": "movimento-3s",
-  "name": "Movimento 3S",
-  "short_name": "Movimento 3S",
+  "name": "V.C Coach",
+  "short_name": "V.C Coach",
   "description": "Encontros desportivos e registo de treinos da Escola 3S",
   "start_url": "./",
   "scope": "./",
