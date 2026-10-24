@@ -159,7 +159,7 @@
 
   /* Entrada */
   #loginScreen{width:100%; max-width:440px; min-height:100%; display:flex; flex-direction:column;}
-  .hero{flex-shrink:0; background:var(--navy); color:#fff; border-radius:0 0 36px 36px; padding:calc(26px + env(safe-area-inset-top,0px)) 22px 0; position:relative; overflow:hidden;}
+  .hero{flex-shrink:0; background:linear-gradient(180deg,#141F38 0%,#1B2A4A 45%,#24396A 100%); color:#fff; border-radius:0 0 36px 36px; padding:calc(26px + env(safe-area-inset-top,0px)) 22px 0; position:relative; overflow:hidden;}
   .hero-brand .mark-img{width:84px; height:84px; border-radius:20px; box-shadow:0 6px 16px rgba(0,0,0,.25); flex-shrink:0;}
   .hero-brand{display:flex; align-items:center; gap:10px; position:relative; z-index:2;}
   .hero-logo{width:42px; height:42px; border-radius:14px; background:var(--coral); display:flex; align-items:center; justify-content:center; font-family:'Baloo 2',sans-serif; font-weight:700; font-size:17px; color:#fff;}
@@ -168,8 +168,8 @@
   .hero h1 em{font-style:normal; color:var(--gold);}
   .hero p{margin:0; font-size:14.5px; line-height:1.5; opacity:.82; max-width:30ch; position:relative; z-index:2;}
   .hero-sports{display:flex; gap:8px; margin-top:16px; position:relative; z-index:2; flex-wrap:wrap;}
-  .hero-sports button{border:1px solid rgba(255,255,255,.35); background:rgba(255,255,255,.08); color:#fff; border-radius:999px; padding:7px 13px; font-size:13px; cursor:pointer; font-family:inherit;}
-  .hero .scene{display:block; width:calc(100% + 44px); max-width:none; height:auto; margin:-6px -22px 0; position:relative; z-index:1;}
+  .hero-sports button{border:1px solid rgba(255,255,255,.22); background:rgba(255,255,255,.1); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); color:#fff; border-radius:999px; padding:7px 13px; font-size:13px; cursor:pointer; font-family:inherit;}
+  .hero .scene{display:block; width:calc(100% + 44px); max-width:none; height:auto; margin:-28px -22px 0; position:relative; z-index:1;}
   .hero .walker{animation:walk 9s ease-in-out infinite alternate;}
   @keyframes walk{from{transform:translateX(0);} to{transform:translateX(26px);}}
   .hero .mark{width:58px; height:58px; flex-shrink:0;}
@@ -342,6 +342,12 @@
   #aguaCopos{display:flex; flex-wrap:wrap; gap:4px; justify-content:center; margin-bottom:4px;}
   .copo{width:14px; height:20px; border:2px solid #9DBBD0; border-top:none; border-radius:0 0 5px 5px; display:inline-block;}
   .copo.on{background:linear-gradient(0deg,#4A90BF 75%, transparent 75%); border-color:#4A90BF;}
+  .alim-gt{margin:10px 0 6px; text-transform:uppercase; letter-spacing:.6px;}
+  .alim-chips{display:flex; flex-wrap:wrap; gap:6px;}
+  .alim{border:1.5px solid var(--line); background:#fff; color:var(--ink); border-radius:99px; padding:7px 12px; font-size:13px; cursor:pointer; font-family:inherit;}
+  .alim.on{border-color:var(--gold); background:#F6EBD9; font-weight:600;}
+  .qty{display:flex; align-items:center; gap:8px; flex-shrink:0;}
+  .qty button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:#fff; font-size:18px; cursor:pointer; color:var(--ink);}
   /* v3 */
   header.top{padding-bottom:58px;}
   .hc::before{display:none;}
@@ -390,17 +396,45 @@
     <p>Encontra companhia para mexer o corpo, regista cada passo e cresce com o método Saber · Sentir · Ser.</p>
     <div class="hero-sports"><button type="button" onclick="openAtividade('trilho')">⛰️ Trilhos</button><button type="button" onclick="openAtividade('corrida')">🏃 Corrida</button><button type="button" onclick="openAtividade('bike')">🚴 Bicicleta</button><button type="button" onclick="openAtividade('pilates')">🧘 Pilates</button></div>
     <p style="font-size:12px; opacity:.7; margin:8px 0 0; position:relative; z-index:2;">Toca numa atividade para conheceres as vantagens.</p>
-    <svg class="scene" viewBox="0 0 400 170" aria-hidden="true">
-      <circle cx="318" cy="58" r="30" fill="#C49A5A" opacity=".95"/>
-      <path d="M0 120 L70 62 L118 98 L178 40 L250 108 L300 76 L400 128 L400 170 L0 170Z" fill="#2C3E6B"/>
-      <path d="M178 40 L198 58 L188 60 L172 54Z" fill="#F6EEE4" opacity=".6"/>
-      <path d="M70 62 L84 74 L76 75 L64 68Z" fill="#F6EEE4" opacity=".5"/>
-      <path d="M0 140 Q80 110 160 132 T320 126 T400 120 L400 170 L0 170Z" fill="#3A5185"/>
-      <path d="M-10 146 C80 136 120 134 190 138 S300 150 410 128" fill="none" stroke="#C49A5A" stroke-width="3" stroke-dasharray="2 9" stroke-linecap="round"/>
-      <g class="walker">
-        <g transform="translate(118 104)"><circle r="5" fill="#fff"/><path d="M0 5 L0 18 M0 9 L-6 14 M0 9 L6 13 M0 18 L-5 27 M0 18 L5 27" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none"/></g>
-        <g transform="translate(146 108)"><circle r="5" fill="#C49A5A"/><path d="M0 5 L0 18 M0 9 L-6 13 M0 9 L6 14 M0 18 L-6 26 M0 18 L4 27" stroke="#C49A5A" stroke-width="3" stroke-linecap="round" fill="none"/></g>
-        <g transform="translate(172 111)"><circle r="4.5" fill="#F6EEE4"/><path d="M0 4.5 L0 16 M0 8 L-5 12 M0 8 L5 12 M0 16 L-4 24 M0 16 L4 24" stroke="#F6EEE4" stroke-width="2.6" stroke-linecap="round" fill="none"/></g>
+    <svg class="scene" viewBox="0 0 400 220" aria-hidden="true">
+      <defs>
+        <radialGradient id="scGlow" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#E9C58A" stop-opacity=".55"/><stop offset=".55" stop-color="#C49A5A" stop-opacity=".18"/><stop offset="1" stop-color="#C49A5A" stop-opacity="0"/></radialGradient>
+        <linearGradient id="scFar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3A5488"/><stop offset="1" stop-color="#26395F"/></linearGradient>
+        <linearGradient id="scMid" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A6AA3"/><stop offset="1" stop-color="#2E4777"/></linearGradient>
+        <linearGradient id="scNear" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5B7DB5"/><stop offset="1" stop-color="#3B5A8F"/></linearGradient>
+        <linearGradient id="scMist" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6EEE4" stop-opacity="0"/><stop offset="1" stop-color="#F6EEE4" stop-opacity=".16"/></linearGradient>
+      </defs>
+      <g fill="#F6EEE4" opacity=".5"><circle cx="372" cy="30" r="1.1"/><circle cx="250" cy="46" r=".8"/><circle cx="390" cy="58" r=".8"/></g>
+      <circle cx="306" cy="74" r="62" fill="url(#scGlow)"/>
+      <circle cx="306" cy="74" r="27" fill="#D9AE6A"/>
+      <path d="M0 132 L48 98 L82 116 L140 62 L184 98 L222 80 L268 112 L322 70 L372 102 L400 92 L400 220 L0 220Z" fill="url(#scFar)"/>
+      <path d="M140 62 L156 76 L148 78 L136 70Z M322 70 L336 82 L328 84 L316 78Z" fill="#F6EEE4" opacity=".55"/>
+      <rect x="0" y="96" width="400" height="60" fill="url(#scMist)"/>
+      <path d="M0 156 L60 120 L104 140 L170 100 L232 140 L292 118 L352 146 L400 132 L400 220 L0 220Z" fill="url(#scMid)"/>
+      <path d="M170 100 L184 111 L177 113 L165 106Z" fill="#F6EEE4" opacity=".45"/>
+      <path d="M0 178 C70 160 130 158 200 168 S330 160 400 150 L400 220 L0 220Z" fill="url(#scNear)"/>
+      <path d="M0 196 C90 184 170 186 250 192 S360 192 400 186 L400 220 L0 220Z" fill="#6A8CC1" opacity=".55"/>
+      <path d="M236 132 C226 146 196 150 190 160 S214 176 170 186 S70 196 20 214" fill="none" stroke="#D9AE6A" stroke-width="2.4" stroke-dasharray="1.5 7" stroke-linecap="round" opacity=".95"/>
+      <g class="walker" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <g transform="translate(96 168)" stroke="#F6EEE4">
+          <circle cx="0" cy="-30" r="4.6" fill="#F6EEE4" stroke="none"/>
+          <path d="M-5 -24 h7 a3 3 0 0 1 3 3 v9 h-11Z" fill="#9DB4D6" stroke="none"/>
+          <path d="M1 -24 L-1 -10" stroke-width="5.5"/>
+          <path d="M-1 -10 L-6 0 M-1 -10 L5 -1" stroke-width="3.6"/>
+          <path d="M0 -21 L7 -14 L10 0" stroke-width="2.6"/><path d="M10 -14 L12 2" stroke-width="1.4" stroke="#D9AE6A"/>
+        </g>
+        <g transform="translate(130 172)" stroke="#D9AE6A">
+          <circle cx="2" cy="-31" r="4.6" fill="#D9AE6A" stroke="none"/>
+          <path d="M1 -24 L-2 -11" stroke-width="5.5"/>
+          <path d="M-2 -11 L-9 -4 L-12 1 M-2 -11 L6 -5 L9 2" stroke-width="3.6"/>
+          <path d="M0 -21 L-6 -15 L-2 -12 M1 -21 L7 -17 L10 -21" stroke-width="2.6"/>
+        </g>
+        <g transform="translate(160 176)" stroke="#FFFFFF">
+          <circle cx="0" cy="-27" r="4.2" fill="#FFFFFF" stroke="none"/>
+          <path d="M0 -21 L0 -9" stroke-width="5"/>
+          <path d="M0 -9 L-5 0 M0 -9 L5 0" stroke-width="3.2"/>
+          <path d="M0 -18 L-6 -11 M0 -18 L6 -12" stroke-width="2.4"/>
+        </g>
       </g>
     </svg>
   </div>
@@ -3805,6 +3839,134 @@ avaliacao3S = function(src, opts){
   const linha=aguaAvalHtml(src, !(opts&&opts.outro));
   const i=h.indexOf('<div class="av-row">', h.indexOf('<div class="av-row">')+1);
   return i>0 ? h.slice(0,i)+linha+h.slice(i) : h.replace('<details class="av-src">', linha+'<details class="av-src">');
+};
+
+/* =========================================================
+   REFEIÇÕES SEM IA: escolher alimentos de uma lista com
+   valores médios por porção (sem fotos)
+   ========================================================= */
+// [nome, porção, kcal, proteína g, hidratos g, gordura g, grupo]
+const ALIMENTOS = [
+  ['Pão (papo-seco)','1 unidade',135,4.5,27,1,'Pequeno-almoço e lanche'],
+  ['Pão integral','2 fatias',150,7,25,2,'Pequeno-almoço e lanche'],
+  ['Torrada com manteiga','1 torrada',190,4,25,8,'Pequeno-almoço e lanche'],
+  ['Manteiga ou margarina','1 colher de chá',36,0,0,4,'Pequeno-almoço e lanche'],
+  ['Queijo','2 fatias',105,7.5,0,8,'Pequeno-almoço e lanche'],
+  ['Fiambre','2 fatias',35,6,0.5,1,'Pequeno-almoço e lanche'],
+  ['Ovo','1 ovo',75,6.5,0.5,5,'Pequeno-almoço e lanche'],
+  ['Leite meio-gordo','1 copo (250 ml)',115,8,12,4,'Pequeno-almoço e lanche'],
+  ['Bebida vegetal','1 copo (250 ml)',100,3,12,4,'Pequeno-almoço e lanche'],
+  ['Iogurte natural','1 iogurte',75,5,6,3.5,'Pequeno-almoço e lanche'],
+  ['Iogurte proteico','1 iogurte',100,15,6,0.5,'Pequeno-almoço e lanche'],
+  ['Flocos de aveia','4 colheres de sopa',150,5,25,3,'Pequeno-almoço e lanche'],
+  ['Cereais','1 taça',150,3,33,1,'Pequeno-almoço e lanche'],
+  ['Fruta (maçã, pera, laranja…)','1 peça',70,0.5,17,0,'Pequeno-almoço e lanche'],
+  ['Banana','1 banana',105,1.3,27,0.4,'Pequeno-almoço e lanche'],
+  ['Frutos secos','1 mão-cheia',180,6,5,16,'Pequeno-almoço e lanche'],
+  ['Barra de cereais','1 barra',100,2,17,3,'Pequeno-almoço e lanche'],
+  ['Sopa de legumes','1 prato',90,3,14,2.5,'Almoço e jantar'],
+  ['Salada ou legumes','1 prato',40,2,7,0.3,'Almoço e jantar'],
+  ['Arroz','1 prato raso',195,4,42,0.5,'Almoço e jantar'],
+  ['Massa','1 prato raso',235,8,46,1.5,'Almoço e jantar'],
+  ['Batata cozida','2 batatas médias',170,4,38,0.2,'Almoço e jantar'],
+  ['Batata frita','1 dose',470,5,55,25,'Almoço e jantar'],
+  ['Feijão ou grão','1 concha',180,11,28,1.5,'Almoço e jantar'],
+  ['Frango ou peru grelhado','1 bife / 1 peito',250,45,0,7,'Almoço e jantar'],
+  ['Carne de vaca','1 bife',300,40,0,15,'Almoço e jantar'],
+  ['Carne de porco','1 bife / 2 costeletas',330,38,0,19,'Almoço e jantar'],
+  ['Peixe branco','1 posta / 1 filete',165,35,0,2,'Almoço e jantar'],
+  ['Salmão ou peixe gordo','1 posta',310,32,0,20,'Almoço e jantar'],
+  ['Bacalhau','1 posta',160,36,0,1,'Almoço e jantar'],
+  ['Atum em lata','1 lata',105,23,0,1,'Almoço e jantar'],
+  ['Tofu ou seitan','1 dose',150,16,4,8,'Almoço e jantar'],
+  ['Azeite','1 colher de sopa',120,0,0,13.5,'Almoço e jantar'],
+  ['Pizza','2 fatias',550,22,66,20,'Fora de casa e doces'],
+  ['Hambúrguer no pão','1 unidade',500,26,40,25,'Fora de casa e doces'],
+  ['Francesinha','1 unidade',1100,60,70,60,'Fora de casa e doces'],
+  ['Sandes mista','1 sandes',300,15,30,12,'Fora de casa e doces'],
+  ['Bolo ou pastel','1 unidade',300,4,40,14,'Fora de casa e doces'],
+  ['Pastel de nata','1 unidade',230,3,28,12,'Fora de casa e doces'],
+  ['Chocolate','3 quadrados',160,2,17,9,'Fora de casa e doces'],
+  ['Refrigerante','1 lata',140,0,35,0,'Bebidas'],
+  ['Sumo natural','1 copo',110,1,25,0,'Bebidas'],
+  ['Cerveja','1 imperial',85,0.6,7,0,'Bebidas'],
+  ['Vinho','1 copo',125,0,4,0,'Bebidas'],
+  ['Café com açúcar','1 café',20,0,5,0,'Bebidas'],
+  ['Batido de proteína','1 dose',120,24,3,1.5,'Bebidas'],
+];
+let refSel = {};
+function openManualMeal(){
+  refSel = {};
+  if(sheetOpen()) removeSheet();
+  const grupos=[...new Set(ALIMENTOS.map(a=>a[6]))];
+  openSheet('Registar refeição', `<div class="card">
+    <label for="mmTipo">Refeição</label><select id="mmTipo">${Object.entries(REF_TIPOS).map(([k,v])=>`<option value="${k}" ${k===tipoPorHora()?'selected':''}>${v}</option>`).join('')}</select>
+    <label for="mmBusca">O que comeste? Toca nos alimentos</label><input id="mmBusca" placeholder="Procurar (ex.: arroz, ovo, sopa)" oninput="filtraAlim(this.value)">
+    <div id="alimLista">${grupos.map(g=>`<div class="alim-g" data-g="${esc(g)}"><div class="tiny alim-gt">${esc(g)}</div><div class="alim-chips">${ALIMENTOS.map((a,i)=>a[6]===g?`<button type="button" class="alim" data-i="${i}" data-n="${esc(a[0].toLowerCase())}" onclick="addAlim(${i})">${esc(a[0])}</button>`:'').join('')}</div></div>`).join('')}</div>
+  </div>
+  <div class="card" id="alimSel"></div>
+  <div class="card"><label for="mmOutro" style="margin-top:0;">Outra coisa que não está na lista (opcional)</label>
+    <div class="two"><div><input id="mmOutro" placeholder="Ex.: empada de frango"></div><div><input id="mmOutroK" type="number" min="0" max="3000" placeholder="kcal (se souberes)"></div></div></div>
+  <button class="primary" onclick="saveManualMeal()">Guardar refeição</button>
+  <p class="tiny" style="text-align:center;">Os valores são médios para porções normais. Servem para ter uma ideia, não são exatos.</p>`);
+  renderAlimSel();
+}
+function filtraAlim(t){
+  t=(t||'').toLowerCase().trim();
+  document.querySelectorAll('#alimLista .alim').forEach(b=>b.hidden = !!t && !b.dataset.n.includes(t));
+  document.querySelectorAll('#alimLista .alim-g').forEach(g=>g.hidden = ![...g.querySelectorAll('.alim')].some(b=>!b.hidden));
+}
+function addAlim(i){ refSel[i]=(refSel[i]||0)+1; renderAlimSel(); }
+function mudaAlim(i,d){ refSel[i]=Math.max(0,Math.round(((refSel[i]||0)+d)*2)/2); if(!refSel[i]) delete refSel[i]; renderAlimSel(); }
+function totaisRef(){
+  const t={kcal:0,proteina:0,hidratos:0,gordura:0};
+  Object.entries(refSel).forEach(([i,q])=>{ const a=ALIMENTOS[i]; t.kcal+=a[2]*q; t.proteina+=a[3]*q; t.hidratos+=a[4]*q; t.gordura+=a[5]*q; });
+  const ok=Number((document.getElementById('mmOutroK')||{}).value)||0; t.kcal+=ok;
+  return t;
+}
+function renderAlimSel(){
+  const el=document.getElementById('alimSel'); if(!el) return;
+  document.querySelectorAll('#alimLista .alim').forEach(b=>b.classList.toggle('on', !!refSel[b.dataset.i]));
+  const ids=Object.keys(refSel);
+  if(!ids.length){ el.innerHTML='<div class="empty" style="padding:8px;">Ainda não escolheste nada.</div>'; return; }
+  const t=totaisRef();
+  el.innerHTML = ids.map(i=>{ const a=ALIMENTOS[i], q=refSel[i];
+    return `<div class="list-row"><div style="min-width:0;"><div style="font-weight:600;">${esc(a[0])}</div><div class="tiny">${q===1?'':nm(q)+' × '}${esc(a[1])} · ${Math.round(a[2]*q)} kcal</div></div>
+      <div class="qty"><button type="button" onclick="mudaAlim(${i},-0.5)" aria-label="Menos">−</button><span class="num">${nm(q)}</span><button type="button" onclick="mudaAlim(${i},0.5)" aria-label="Mais">+</button></div></div>`; }).join('')
+    + `<div class="row" style="margin-top:10px;"><b>Total</b><span class="num"><b>${Math.round(t.kcal)} kcal</b> · ${Math.round(t.proteina)} g proteína</span></div>`;
+}
+async function saveManualMeal(){
+  const ids=Object.keys(refSel), outro=(document.getElementById('mmOutro')||{}).value||'', outroK=Number((document.getElementById('mmOutroK')||{}).value)||0;
+  if(!ids.length && !outro.trim()){ toast('Escolhe pelo menos um alimento'); return; }
+  const alimentos = ids.map(i=>{ const a=ALIMENTOS[i], q=refSel[i]; return {nome:a[0], quantidade:(q===1?'':nm(q)+' × ')+a[1], kcal:Math.round(a[2]*q), proteina:Math.round(a[3]*q*10)/10, hidratos:Math.round(a[4]*q*10)/10, gordura:Math.round(a[5]*q*10)/10}; });
+  if(outro.trim()) alimentos.push({nome:outro.trim().slice(0,80), kcal:outroK||0});
+  const t=totaisRef();
+  try{ await q(sb.from('mov_refeicoes').insert({user_id:ME, data:addDays(0), tipo:document.getElementById('mmTipo').value, alimentos, alertas:[],
+    kcal:Math.round(t.kcal), proteina:Math.round(t.proteina), hidratos:Math.round(t.hidratos), gordura:Math.round(t.gordura)})); }catch(e){ return; }
+  closeSheet(); await refresh(); toast('Refeição guardada');
+}
+/* sem leitura por IA: tirar botões de foto e do plano gerado */
+startMealPhoto = function(){ openManualMeal(); };
+mealPlanHtml = function(){ return ''; };
+const _renderNutriSemIA = renderNutri;
+renderNutri = function(){
+  _renderNutriSemIA();
+  const box=document.getElementById('pane-nutricao'); if(!box || !S.nutri) return;
+  const dois=box.querySelector('.two button.primary[onclick="startMealPhoto()"]');
+  if(dois){ const wrap=dois.parentNode; wrap.outerHTML='<button class="primary" style="margin-bottom:12px;" onclick="openManualMeal()">+ Registar refeição</button>'; }
+  const fotos=[...box.querySelectorAll('p.tiny')].find(p=>/Fotos hoje|análise por fotos/.test(p.textContent)); if(fotos) fotos.remove();
+};
+const _nutriSetupSemIA = nutriSetupHtml;
+nutriSetupHtml = function(p, inline){
+  let h=_nutriSetupSemIA(p, inline);
+  h=h.replace('Fotografa o prato e a app calcula as calorias e dá-te dicas de acordo com o teu objetivo, a tua saúde e as tuas alergias.','Regista o que comes e a app calcula as calorias e diz-te se estás a comer bem para o teu objetivo.');
+  h=h.replace(/<label style="display:flex; gap:10px; align-items:flex-start; font-size:13px; color:var\(--ink\); margin:4px 0 12px;"><input id="nConsent"[\s\S]*?<\/label>/, '<input id="nConsent" type="checkbox" hidden>');
+  return h;
+};
+const _hcSemIA = hc;
+hc = function(key, o){
+  if(key==='nutricao'){ o={...o}; if(o.sub==='Fotografa o prato e vê as calorias.') o.sub='Regista o que comes e vê as calorias.'; if(o.act==='📷 Prato'){ o.act='+ Refeição'; o.actFn="openPane('nutricao'); openManualMeal()"; } }
+  return _hcSemIA(key, o);
 };
 
 /* ---------- (antigo) apagar ---------- */
