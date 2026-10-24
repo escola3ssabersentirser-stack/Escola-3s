@@ -330,6 +330,11 @@
   a.ghost{display:block; box-sizing:border-box; width:100%; background:transparent; border:1.5px solid var(--line); color:var(--ink); border-radius:14px; padding:12px; font-size:14px; text-align:center; text-decoration:none;}
   a.small{display:inline-block; width:auto; padding:7px 12px; font-size:12.5px; border-radius:10px;}
   a.sess-go{margin-top:8px; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .aval{border:1.5px solid #D9E6DC;}
+  .av-row{display:flex; gap:10px; align-items:flex-start; padding:10px 0; border-top:1px solid var(--line);}
+  .av-ic{width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:13px; flex-shrink:0; margin-top:1px;}
+  .av-top{display:flex; justify-content:space-between; gap:8px; align-items:baseline; margin-bottom:2px;}
+  .av-src{margin-top:8px;} .av-src summary{font-size:12.5px; color:var(--ink-soft); cursor:pointer;}
   /* v3 */
   header.top{padding-bottom:58px;}
   .hc::before{display:none;}
@@ -3596,6 +3601,143 @@ goView = function(v, fh){ _goViewV3(v, fh); document.getElementById('backTop').h
 const _openPaneV3 = openPane;
 openPane = function(p, fh){ _openPaneV3(p, fh); document.getElementById('backTop').hidden = !p; };
 
+/* =========================================================
+   AVALIAÇÃO 3S: sono e alimentação comparados com as
+   recomendações científicas (últimos 7 dias)
+   ========================================================= */
+const FONTES_AVAL = [
+  ['National Sleep Foundation (Hirshkowitz et al., 2015)', 'horas de sono recomendadas por idade'],
+  ['AASM e Sleep Research Society (Watson et al., 2015)', 'adultos: 7 horas ou mais por noite'],
+  ['Sono e o atleta, consenso de especialistas (Walsh et al., BJSM 2021)', 'atletas e recuperação'],
+  ['ACSM, Academy of Nutrition and Dietetics e Dietitians of Canada (2016)', 'proteína, hidratos e gordura para quem treina'],
+  ['Comité Olímpico Internacional, consenso REDs (2023)', 'riscos de comer pouco para o treino que se faz'],
+];
+function sonoAlvo(idade){
+  if(idade!=null && idade<14) return {min:9, max:11, txt:'9 a 11 h'};
+  if(idade!=null && idade<18) return {min:8, max:10, txt:'8 a 10 h'};
+  if(idade!=null && idade>=65) return {min:7, max:8, txt:'7 a 8 h'};
+  return {min:7, max:9, txt:'7 a 9 h'};
+}
+function avalLinha(estado, titulo, valor, texto){
+  const cor={bom:['#E2EDE5','#3E7457','✓'], atencao:['#F6E7CF','#9A6A22','!'], mau:['#F5DEDA','#A2443A','!'], falta:['#ECE8E1','#7A7468','?']}[estado];
+  return `<div class="av-row"><span class="av-ic" style="background:${cor[0]}; color:${cor[1]};">${cor[2]}</span>
+    <div style="flex:1; min-width:0;"><div class="av-top"><b>${titulo}</b><span class="num" style="color:${cor[1]}; font-weight:700;">${valor}</span></div><div class="tiny" style="line-height:1.45;">${texto}</div></div></div>`;
+}
+function avaliacao3S(src, opts){
+  opts=opts||{};
+  const nutri=src.nutri||null, idade = nutri && nutri.nascimento ? idadeDe(nutri.nascimento) : null;
+  const tu = !opts.outro;
+  let html='';
+  if(opts.sono!==false){
+    // ---------- sono ----------
+    const al=sonoAlvo(idade), atleta = (src.logs||[]).filter(l=>daysUntil(l.date)>=-13).length>=4;
+    const noites=(src.health||[]).filter(h=>daysUntil(h.date)>=-6 && Number(h.sleep)>0).map(h=>Number(h.sleep));
+    let s='';
+    if(noites.length<3){
+      s=avalLinha('falta','Sono', noites.length+' de 7 noites', `Para avaliar, regista as horas de sono pelo menos 3 noites por semana${tu?' (em Saúde → Registar dia)':''}.`);
+    } else {
+      const med=noites.reduce((a,b)=>a+b,0)/noites.length, curtas=noites.filter(n=>n<6).length;
+      const dp=Math.sqrt(noites.reduce((a,n)=>a+(n-med)**2,0)/noites.length);
+      let est, txt;
+      if(med<al.min-1 || curtas>=3){ est='mau'; txt=`${tu?'Estás':'Está'} a dormir bastante menos do que o recomendado para ${idade!=null&&idade<18?'esta idade':'adultos'} (${al.txt}). Dormir pouco de forma repetida baixa o rendimento, a recuperação e aumenta o risco de lesão.`; }
+      else if(med<al.min){ est='atencao'; txt=`Um pouco abaixo do recomendado (${al.txt}). Tenta deitar-te 30 minutos mais cedo durante uma semana.`; }
+      else if(med>al.max+1){ est='atencao'; txt=`Acima do habitual (${al.txt}). Se acordas cansada/o mesmo dormindo muito, vale a pena falar com o médico.`; }
+      else { est='bom'; txt=`Dentro do recomendado (${al.txt}).${atleta&&med<8?' Para quem treina com regularidade, os especialistas sugerem apontar para 8 h ou mais para recuperar melhor.':''}`; }
+      if(dp>1.25) txt+=' Os horários variam muito de noite para noite: manter horas parecidas para deitar e acordar também conta.';
+      if(curtas && est!=='mau') txt+=` ${curtas} ${curtas===1?'noite':'noites'} com menos de 6 h.`;
+      s=avalLinha(est,'Sono', nm(Math.round(med*10)/10)+' h/noite', txt);
+    }
+    html+=s;
+  }
+  if(opts.comida!==false){
+    // ---------- alimentação ----------
+    const ms=(src.meals||[]).filter(m=>daysUntil(m.data)>=-6);
+    const dias={}; ms.forEach(m=>{ (dias[m.data]=dias[m.data]||[]).push(m); });
+    const diasOk=Object.values(dias).filter(l=>l.length>=2);
+    if(!nutri){ html+=avalLinha('falta','Alimentação','—', `Para avaliar, preenche o perfil alimentar${tu?' em Nutrição':''} e regista as refeições com foto.`); }
+    else if(idade!=null && idade<18){ html+=avalLinha('falta','Alimentação','—','Para menores de 18 anos a app não avalia quantidades. O melhor é acompanhar com um nutricionista.'); }
+    else if(diasOk.length<3){ html+=avalLinha('falta','Alimentação', diasOk.length+' de 7 dias', 'Para avaliar, regista pelo menos 2 refeições por dia em 3 dias da semana. Com poucos registos a avaliação engana.'); }
+    else {
+      const alvo=nutriAlvo(nutri, src.body||[]);
+      const tot=diasOk.map(l=>somar(l)), n=tot.length, med=k=>tot.reduce((a,t)=>a+t[k],0)/n;
+      const kcal=med('kcal'), prot=med('proteina'), hid=med('hidratos'), gord=med('gordura');
+      const peso=alvo && alvo.peso;
+      if(alvo && alvo.kcal){
+        const r=kcal/alvo.kcal;
+        const est = r<0.8 ? 'mau' : r<0.9 ? 'atencao' : r>1.15 ? 'atencao' : 'bom';
+        const txt = r<0.8 ? `Muito abaixo do que o corpo gasta com o treino (alvo ${alvo.kcal} kcal). Comer pouco durante semanas tira energia, atrasa a recuperação e pode afetar hormonas e ossos. Confirma se registaste tudo.`
+          : r<0.9 ? `Um pouco abaixo do alvo (${alvo.kcal} kcal).`
+          : r>1.15 ? `Acima do alvo (${alvo.kcal} kcal) para o teu objetivo.` : `Perto do alvo diário (${alvo.kcal} kcal).`;
+        html+=avalLinha(est,'Energia', Math.round(kcal)+' kcal/dia', txt);
+      }
+      if(peso){
+        const gk=prot/peso, lo=1.2, hi=2.0;
+        html+=avalLinha(gk<lo?(gk<0.8?'mau':'atencao'):gk>2.2?'atencao':'bom','Proteína', nm(Math.round(gk*10)/10)+' g/kg',
+          gk<0.8 ? `Abaixo até do mínimo para a população em geral (0,8 g por kg). Para quem treina recomenda-se 1,2 a 2,0 g por kg por dia: junta ovos, peixe, carne, leguminosas ou iogurte a cada refeição.`
+          : gk<lo ? `Para quem treina recomenda-se 1,2 a 2,0 g por kg de peso por dia. Junta uma fonte de proteína a cada refeição.`
+          : gk>2.2 ? 'Acima do que é necessário para a maioria de quem treina (até 2,0 g por kg). Não traz benefício extra.' : 'Dentro do recomendado para quem treina (1,2 a 2,0 g por kg).');
+        const at=nutri.atividade, hmin= at==='alta'?5:3, hmax= at==='alta'?7:5, hk=hid/peso;
+        html+=avalLinha(hk<hmin?'atencao':hk>hmax+1?'atencao':'bom','Hidratos de carbono', nm(Math.round(hk*10)/10)+' g/kg',
+          hk<hmin-0.5 ? `Abaixo do recomendado para o teu nível de treino (${hmin} a ${hmax} g por kg). São o combustível principal do treino: arroz, massa, batata, pão, aveia e fruta.`
+          : hk<hmin ? `Ligeiramente abaixo do recomendado para o teu nível de treino (${hmin} a ${hmax} g por kg). Junta um pouco mais de arroz, batata, pão ou fruta nos dias de treino.`
+          : hk>hmax+1 ? `Acima do recomendado para o teu nível de treino (${hmin} a ${hmax} g por kg).` : `Adequado ao teu nível de treino (${hmin} a ${hmax} g por kg).`);
+      }
+      const pg = kcal>0 ? gord*9/kcal*100 : 0;
+      if(kcal>0) html+=avalLinha(pg<20||pg>35?'atencao':'bom','Gordura', Math.round(pg)+'% da energia',
+        pg<20 ? 'Abaixo de 20%. A gordura boa (azeite, frutos secos, abacate, peixe gordo) é precisa para as hormonas e algumas vitaminas.'
+        : pg>35 ? 'Acima de 35% da energia. Tenta trocar fritos e molhos por azeite em cru e grelhados.' : 'Dentro do intervalo recomendado (20 a 35% da energia).');
+      if(alvo && alvo.temCondicao) html+=`<div class="safety" style="margin-top:8px;">Tens uma condição de saúde registada. As indicações do teu médico ou nutricionista estão acima destas.</div>`;
+      html+=`<p class="tiny" style="margin:6px 0 0;">Com base em ${n} ${n===1?'dia':'dias'} com refeições registadas. Os valores vêm das fotos e são aproximados.</p>`;
+    }
+  }
+  return `<div class="card aval"><div class="row" style="margin-bottom:4px;"><h3 style="margin:0;">${opts.titulo||'Avaliação 3S'}</h3><span class="tiny">últimos 7 dias</span></div>
+    <p class="tiny" style="margin:0 0 8px;">Comparado com as recomendações científicas para a idade e o treino.</p>
+    ${html}
+    <details class="av-src"><summary>Em que se baseia</summary>${FONTES_AVAL.map(f=>`<div class="tiny" style="margin-top:4px;">• <b>${f[0]}</b>: ${f[1]}</div>`).join('')}
+      <div class="tiny" style="margin-top:6px;">É uma orientação geral e não substitui o médico ou o nutricionista.</div></details></div>`;
+}
+
+/* no painel Saúde (a própria pessoa) */
+const _renderHealthAval = renderHealth;
+renderHealth = function(){
+  _renderHealthAval();
+  const p=document.getElementById('pane-saude'); if(!p) return;
+  const first=p.querySelector('.card');
+  const box=document.createElement('div'); box.innerHTML=avaliacao3S({health:S.health, meals:S.meals, body:S.body, nutri:S.nutri, logs:S.logs});
+  if(first) first.after(box.firstElementChild); else p.prepend(box.firstElementChild);
+};
+/* no painel Nutrição: só a parte da alimentação */
+const _renderNutriAval = renderNutri;
+renderNutri = function(){
+  _renderNutriAval();
+  const p=document.getElementById('pane-nutricao'); if(!p || !S.nutri) return;
+  const box=document.createElement('div'); box.innerHTML=avaliacao3S({meals:S.meals, body:S.body, nutri:S.nutri, logs:S.logs}, {sono:false, titulo:'Estou a comer bem?'});
+  const cards=p.querySelectorAll(':scope > .card'); const ref=cards[1]||cards[0];
+  if(ref) ref.after(box.firstElementChild); else p.append(box.firstElementChild);
+};
+/* na ficha do atleta (coach) */
+const _openAthleteAval = openAthlete;
+openAthlete = function(id){
+  _openAthleteAval(id);
+  const a=(S.athletes||[]).find(x=>x.id===id); if(!a || !a.share.saude) return;
+  const h=[...document.querySelectorAll('#sheetHost h3')].find(x=>x.textContent.trim()==='Saúde'); if(!h) return;
+  const box=document.createElement('div'); box.innerHTML=avaliacao3S({health:a.health, meals:a.meals, body:a.body, nutri:a.nutri, logs:a.logs}, {outro:true});
+  h.before(box.firstElementChild);
+};
+/* cartão Saúde do painel mostra o resultado do sono */
+const _hcAval = hc;
+hc = function(key, o){
+  if(key==='saude' && S && !isCoach()){
+    const al=sonoAlvo(S.nutri&&S.nutri.nascimento?idadeDe(S.nutri.nascimento):null);
+    const n=(S.health||[]).filter(h=>daysUntil(h.date)>=-6 && Number(h.sleep)>0).map(h=>Number(h.sleep));
+    if(n.length>=3){ const m=n.reduce((a,b)=>a+b,0)/n.length; o={...o, sub:(m>=al.min&&m<=al.max+1?'✓ Sono dentro do recomendado':'⚠ Sono abaixo do recomendado')+' · '+o.sub}; }
+  }
+  return _hcAval(key, o);
+};
+
+/* sem objetivo: o cartão de topo já pede o objetivo; o cartão do plano leva aos treinos */
+const _hcDedup = hc;
+hc = function(key, o){ if(key==='plano' && S && !S.goal && !isCoach()) o={...o, title:'Plano de treino', sub:'Gravar com GPS, registar ou importar treinos. O plano aparece quando definires o objetivo.', act:'Os meus treinos', actFn:"openPane('plano')"}; return _hcDedup(key, o); };
 /* ---------- (antigo) apagar ---------- */
 function askReset(){ document.getElementById('resetConfirm').hidden=false; }
 function doReset(){ try{ localStorage.removeItem(KEY); }catch(e){} S=null; location.reload(); }
