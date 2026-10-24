@@ -2,8 +2,24 @@
   "rewrites": [
     {
       "source": "/:path*",
-      "has": [{ "type": "host", "value": "movimento.escola-3s.pt" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "movimento.escola-3s.pt"
+        }
+      ],
       "destination": "/movimento/:path*"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/movimento/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
+        }
+      ]
     }
   ]
 }
