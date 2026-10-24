@@ -348,6 +348,7 @@
   .alim.on{border-color:var(--gold); background:#F6EBD9; font-weight:600;}
   .qty{display:flex; align-items:center; gap:8px; flex-shrink:0;}
   .qty button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:#fff; font-size:18px; cursor:pointer; color:var(--ink);}
+  .sport[data-sp="trilho"]{background:#E3EEE6;} .sport[data-sp="corrida"]{background:#F8E6DE;} .sport[data-sp="bike"]{background:#E3EAF5;} .sport[data-sp="pilates"]{background:#EEE6F4;}
   /* v3 */
   header.top{padding-bottom:58px;}
   .hc::before{display:none;}
@@ -943,7 +944,7 @@ function openMeet(id){
       ${(mine||host)?`<div class="msg-row"><input id="chatIn" placeholder="Escreve uma mensagem" onkeydown="if(event.key==='Enter')sendChat('${m.id}')"><button class="primary" onclick="sendChat('${m.id}')">Enviar</button></div>`:'<p class="tiny" style="margin:8px 0 0;">Estás a ver como moderador. Para escrever, junta-te ao encontro.</p>'}</div>`
     : `<div class="card"><h3>Conversa do grupo</h3><p class="muted" style="margin:0;">Junta-te ao encontro para falar com o grupo.</p></div>`;
 
-  openSheet(sp.name, `
+  openSheet('Encontro · '+sp.name, `
     <div class="card">
       <div class="row" style="justify-content:flex-start; gap:12px; align-items:flex-start;">
         <span class="sport">${sp.ic}</span>
@@ -957,7 +958,7 @@ function openMeet(id){
       <div class="list-row"><span class="muted">Vagas</span><span class="num">${m.going.length} de ${m.spots}</span></div>
       ${m.bring?`<div class="list-row"><span class="muted">O que levar</span><span style="text-align:right;">${esc(m.bring)}</span></div>`:''}
       <div style="margin-top:12px;">${btn}</div>
-      <a class="tiny" style="display:block; margin-top:10px; color:var(--navy);" href="https://www.google.com/maps/search/?api=1&query=${m.lat?m.lat+','+m.lng:encodeURIComponent(m.place)}" target="_blank" rel="noopener">Ver ponto de encontro no mapa ↗</a>
+      <a class="ghost small" style="margin-top:10px;" href="https://www.google.com/maps/search/?api=1&query=${m.lat?m.lat+','+m.lng:encodeURIComponent(m.place)}" target="_blank" rel="noopener">📍 Ver o ponto de encontro no mapa ↗</a>
     </div>
     <div class="card"><h3>Quem vai (${m.going.length})</h3>${people}</div>
     ${(host && (m.pending||[]).length)?`<div class="card"><h3>Pedidos para ir (${m.pending.length})</h3>${m.pending.map(pid=>`<div class="list-row"><span>${esc(person(pid).name)} · ${esc(person(pid).level||'')}</span><button class="primary small mintbtn" onclick="approveMember('${m.id}','${unId(pid)}')">Aprovar</button></div>`).join('')}</div>`:''}
@@ -3771,7 +3772,7 @@ hc = function(key, o){
   if(key==='saude' && S && !isCoach()){
     const al=sonoAlvo(S.nutri&&S.nutri.nascimento?idadeDe(S.nutri.nascimento):null);
     const n=(S.health||[]).filter(h=>daysUntil(h.date)>=-6 && Number(h.sleep)>0).map(h=>Number(h.sleep));
-    if(n.length>=3){ const m=n.reduce((a,b)=>a+b,0)/n.length; o={...o, sub:(m>=al.min&&m<=al.max+1?'✓ Sono dentro do recomendado':'⚠ Sono abaixo do recomendado')+' · '+o.sub}; }
+    if(n.length>=3){ const m=n.reduce((a,b)=>a+b,0)/n.length; o={...o, sub:(m>=al.min&&m<=al.max+1?'✓ Sono bom':'⚠ Pouco sono')+' · '+o.sub}; }
   }
   return _hcAval(key, o);
 };
@@ -3969,6 +3970,13 @@ hc = function(key, o){
   return _hcSemIA(key, o);
 };
 
+/* cor de cada modalidade nos ícones */
+(function(){
+  const M={'⛰️':'trilho','🏃':'corrida','🚴':'bike','🧘':'pilates'};
+  const tag=root=>root.querySelectorAll && root.querySelectorAll('.sport:not([data-sp])').forEach(el=>{ const k=M[el.textContent.trim()]; el.dataset.sp=k||'x'; });
+  new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{ if(n.nodeType===1){ if(n.classList&&n.classList.contains('sport')) tag(n.parentNode); else tag(n); } }))).observe(document.body,{childList:true, subtree:true});
+  tag(document);
+})();
 /* ---------- (antigo) apagar ---------- */
 function askReset(){ document.getElementById('resetConfirm').hidden=false; }
 function doReset(){ try{ localStorage.removeItem(KEY); }catch(e){} S=null; location.reload(); }
