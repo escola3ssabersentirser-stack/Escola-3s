@@ -1084,7 +1084,7 @@ function SectionHeader({ eyebrow, title, onBack, backLabel }) {
 const areas = [
   { key: "alunos", titulo: "Alunos", desc: "Cursos das escolas 3S", icon: GraduationCap, full: true },
   { key: "aluno", titulo: "Área do Aluno", desc: "Progresso, certificados e materiais", icon: GraduationCap },
-  { key: "livros", titulo: "Os meus livros", desc: "Romances de Conceição Alves", icon: BookOpen },
+  { key: "livros", titulo: "Livros", desc: "Liderança 3S e Filosofia 3S", icon: BookOpen },
   { key: "escola-lideranca", titulo: "Liderança 3S", desc: "Comunicação e liderança de pessoas", icon: BookOpen },
   { key: "escola-ser", titulo: "Vida 3S", desc: "Autoconhecimento, emoções e crenças", icon: BookOpen },
   { key: "workshops", titulo: "Workshops", desc: "Próximas sessões e inscrição", icon: Calendar },
@@ -1096,7 +1096,7 @@ const areasInicio = [
   { key: "formacao-hub", titulo: "Formação", desc: "Cursos, material didático e temas de liderança e comunicação", icon: GraduationCap, full: true },
   { key: "podcast", titulo: "Podcast", desc: "Episódios para ouvir", icon: Headphones },
   { key: "marcar", titulo: "Marcar sessão", desc: "Coaching e mentoria", icon: PenLine },
-  { key: "livros", titulo: "Os meus livros", desc: "Romances da autora", icon: BookOpen },
+  { key: "livros", titulo: "Livros", desc: "Liderança 3S e Filosofia 3S", icon: BookOpen },
 ];
 
 /* ---------------------------------------------------------
@@ -2822,7 +2822,7 @@ const areasLideranca = [
 const areasDesenvolvimento = [
   { key: "escola-ser", titulo: "Cursos de desenvolvimento", desc: "Autoconhecimento, emoções e crenças limitantes", icon: GraduationCap, full: true },
   { key: "marcar", titulo: "Sessão de coaching", desc: "Individual", icon: PenLine },
-  { key: "livros", titulo: "Livros da autora", desc: "Romances de Conceição Alves", icon: BookOpen },
+  { key: "livros", titulo: "Livros", desc: "Liderança 3S e Filosofia 3S", icon: BookOpen },
 ];
 
 function EscolaHubScreen({ onBack, onOpen, eyebrow, nome, frase, por, lista }) {
@@ -2859,7 +2859,7 @@ const areasEscolaComuns = [
 ];
 
 const produtosLista = [
-  { key: "livros", titulo: "Livros", desc: "Os livros da Conceição Alves", icon: BookOpen, full: true },
+  { key: "livros", titulo: "Livros", desc: "Liderança 3S e Filosofia 3S", icon: BookOpen, full: true },
   { key: "carrinho", titulo: "O meu carrinho", desc: "Rever e pagar", icon: ShoppingBag },
   { key: "codigo", titulo: "Código de oferta", desc: "Tenho um código", icon: Gift },
 ];
@@ -6365,7 +6365,7 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
               />
               {descontoValido && (
                 <p className="text-xs text-center" style={{ color: palette.gold }}>
-                  Código aplicado — 10% de desconto (membro da Comunidade)
+                  Código aplicado: 10% de desconto
                 </p>
               )}
               <label className="flex items-start gap-2.5 px-1">
@@ -6391,6 +6391,11 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
                 >
                   {aConfirmar ? "A enviar pedido..." : usaCiclo ? `Confirmar · usar 1 sessão do ciclo (restam ${creditos[servicoEscolhido.tipo]})` : eGratis ? "Confirmar sessão gratuita" : `Confirmar e pagar · ${descontoValido ? precoComDesconto(servicoEscolhido.preco) : servicoEscolhido.preco}`}
                 </button>
+              )}
+              {!aConfirmar && estadoPagamento !== "a_confirmar" && (!nomeCompleto.trim() || !telemovel.trim() || !aceitouConsentimento) && (
+                <p className="text-xs text-center rounded-lg px-3 py-2" style={{ backgroundColor: `${palette.gold}1F`, color: palette.navy }}>
+                  Para avançar, falta: {[!nomeCompleto.trim() && "o teu nome", !telemovel.trim() && "o número de telemóvel (MB WAY)", !aceitouConsentimento && "aceitar a caixa dos dados pessoais"].filter(Boolean).join(", ")}.
+                </p>
               )}
               {erro && <p className="text-xs text-center" style={{ color: "#B23A3A" }}>{erro}</p>}
             </div>
@@ -8939,13 +8944,21 @@ function CursoVendaScreen({ curso, onBack }) {
   );
 }
 
+const LIVROS_3S_IDS = [130, 131]; // só os livros Liderança 3S e Filosofia 3S estão à venda
+
 function LivrosScreen({ onBack, materiaisDesbloqueados }) {
-  const livros = LIVROS_AUTORA_IDS.map((id) => materiais.find((m) => m.id === id)).filter(Boolean);
+  const livros = LIVROS_3S_IDS.map((id) => materiais.find((m) => m.id === id)).filter(Boolean);
   return (
     <div className="pb-28">
-      <SectionHeader eyebrow="CONCEIÇÃO ALVES" title="Os meus livros" onBack={onBack} />
+      <SectionHeader eyebrow="CONCEIÇÃO ALVES" title="Livros" onBack={onBack} />
       <div className="px-6 space-y-3">
-        {livros.map((m) => (
+        {livros.map((m) => m.emBreve ? (
+          <div key={m.id} className="rounded-xl px-4 py-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66` }}>
+            <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{m.titulo}</p>
+            {m.desc && <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{m.desc}</p>}
+            <span className="inline-block mt-2 text-xs font-medium rounded-full px-3 py-1" style={{ border: `1px dashed ${palette.gold}`, color: palette.navy }}>Em breve · {m.preco}</span>
+          </div>
+        ) : (
           <MaterialCard
             key={m.id}
             material={m}
@@ -9112,30 +9125,6 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher }) {
             </div>
           );
         })}
-
-        {/* Livros */}
-        {livros.length > 0 && (
-          <div className="px-6 mb-10">
-            {titulo("OS LIVROS DA CONCEIÇÃO", "Histórias que tocam onde dói")}
-            <div className="space-y-2">
-              {livros.map((m) => (
-                <div key={m.id} className="flex items-center justify-between rounded-xl px-4 py-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
-                  <div>
-                    <p className="text-sm" style={{ color: palette.navy }}>{m.titulo}</p>
-                    <p className="text-[11px]" style={{ color: palette.navySoft }}>Digital {m.preco}{m.tambemFisico && m.precoFisico ? ` · Físico ${m.precoFisico}` : ""}</p>
-                  </div>
-                  <button
-                    onClick={() => onEscolher({ chave: `material-${m.id}`, tipo: "material", materialId: m.id, titulo: m.titulo, valor: precoNumero(m.preco) })}
-                    className="rounded-full px-3.5 py-1.5 text-xs font-medium"
-                    style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
-                  >
-                    Comprar
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* Como comprar */}
         <div className="px-6 mb-10">
