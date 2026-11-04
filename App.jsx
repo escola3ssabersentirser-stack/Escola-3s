@@ -1,4 +1,4 @@
-// VERSAO-04-NOV-LABORATORIO-LIDERANCA
+// VERSAO-04-NOV-REVISAO-LINGUAGEM
 import { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "./supabase.js";
 import {
@@ -352,7 +352,7 @@ const TODOS_CURSOS = [
       { titulo: "O que é empoderamento", descricao: "A diferença entre ter poder sobre os outros e ter poder sobre a tua própria vida.", conteudo: "Empoderamento é outra palavra usada com frequência, e por vezes de forma vaga. Este capítulo procura uma definição clara e útil: empoderamento pessoal é o reconhecimento — e o exercício — do poder que já temos sobre a nossa própria vida, mesmo dentro de circunstâncias que não escolhemos.\n\nO psicólogo Julian Rotter descreveu o conceito de locus de controlo: o grau em que uma pessoa acredita que os resultados da sua vida dependem de fatores internos (as suas próprias ações e escolhas) ou externos (sorte, destino, outras pessoas). Um locus de controlo mais interno está associado, de forma consistente, a maior sensação de agência e bem-estar — não porque tudo dependa efetivamente de nós, mas porque focar no que está dentro da nossa influência é, geralmente, mais produtivo do que focar apenas no que não está.\n\nÉ importante distinguir empoderamento pessoal de poder sobre os outros. Empoderar-se não é dominar ou controlar quem nos rodeia — é reclamar a autoria sobre as próprias escolhas, respostas e direção, mesmo quando não controlamos tudo o resto.\n\nEmpoderamento pessoal não é a ilusão de controlar tudo — é o reconhecimento realista da área, por vezes pequena, mas real, onde temos escolha. É aí que este curso vai focar-se.", materiaisIds: [39, 40] },
       { titulo: "Onde entreguei o meu poder", descricao: "Relações, trabalho e crenças onde deixaste de decidir por ti.", conteudo: "Se o empoderamento é o reconhecimento da nossa área de escolha, faz sentido perguntar: onde é que, sem perceber, deixámos de escolher? Este capítulo olha para os lugares mais comuns onde \"entregamos\" o nosso poder de decisão a outros — ou a hábitos que já não questionamos.\n\nPadrões de relação onde deixamos, de forma sistemática, que a opinião ou vontade de outra pessoa decida por nós, mesmo em decisões que nos dizem diretamente respeito.\n\nA ideia, muitas vezes herdada, de que certas decisões \"não são para nós\" tomarmos — que pertencem sempre a alguém com mais experiência, mais estatuto, ou mais autoridade formal.\n\nRotinas e escolhas que, em algum momento, foram decisões conscientes, mas que se tornaram tão automáticas que deixámos de as reconhecer como escolhas — e, por isso, deixámos também de as questionar.\n\nEntregar poder não é sempre um erro — por vezes é apropriado confiar noutros, ou seguir uma rotina que nos serve bem. O objetivo desta aula é apenas tornar essa entrega consciente, e não automática.", materiaisIds: [39, 40] },
       { titulo: "Pequenas escolhas, todos os dias", descricao: "Como recuperar autonomia começa em decisões pequenas.", conteudo: "Recuperar um sentido de autonomia não exige, necessariamente, grandes decisões dramáticas. Este capítulo defende que a autonomia se reconstrói, sobretudo, através de pequenas escolhas conscientes, repetidas ao longo do tempo.\n\nCada pequena decisão tomada de forma consciente — mesmo algo tão simples como escolher, deliberadamente, como responder a uma mensagem, ou como organizar uma manhã — reforça a experiência de sermos, de facto, autores das nossas próprias escolhas. Este efeito é cumulativo: pequenas escolhas conscientes, repetidas, mudam gradualmente a forma como nos relacionamos com a nossa própria vida.\n\nO psicólogo Albert Bandura descreveu o conceito de autoeficácia: a crença na nossa própria capacidade de produzir um resultado desejado. Esta crença desenvolve-se, sobretudo, através de pequenas experiências de sucesso, mais do que através de grandes feitos isolados.\n\nNão é preciso esperar por uma grande decisão para praticar o empoderamento — as pequenas escolhas do dia a dia são, na verdade, onde esta prática mais acontece.", materiaisIds: [39, 40] },
-      { titulo: "Assumir a responsabilidade sem culpa", descricao: "Escolher sem te veres como vítima nem como culpada de tudo.", conteudo: "Este capítulo final aborda uma distinção delicada, mas essencial: a diferença entre assumir responsabilidade pela nossa parte numa situação, e cair na culpa — seja culpando-nos excessivamente a nós próprios, seja assumindo, de forma desproporcionada, culpa que não é só nossa.\n\nResponsabilidade, no sentido usado aqui, refere-se à capacidade de resposta — à parte da situação que está, de facto, ao nosso alcance influenciar. Culpa é um julgamento sobre o valor moral de uma ação passada. É possível assumir responsabilidade plena pela nossa parte, sem necessidade de carregar culpa excessiva por aquilo que não estava, de facto, sob o nosso controlo.\n\nDois extremos, igualmente pouco úteis: ver-se sempre como vítima das circunstâncias, sem qualquer área de escolha; ou assumir-se responsável por tudo o que acontece, incluindo aquilo que genuinamente não dependia de nós. O empoderamento pessoal situa-se entre estes dois extremos — com clareza sobre onde termina a nossa área de influência.\n\nAo longo destas quatro aulas, definimos empoderamento como o reconhecimento realista da nossa área de escolha, identificámos onde temos entregue esse poder sem perceber, praticámos pequenas escolhas conscientes, e distinguimos responsabilidade de culpa. Como nos outros cursos deste ciclo, este é um trabalho que se revisita — a cada nova situação, a mesma pergunta permanece útil: o que está, aqui, dentro da minha escolha?", materiaisIds: [39, 40] },
+      { titulo: "Assumir a responsabilidade sem culpa", descricao: "Escolher sem te veres como vítima nem te culpares por tudo.", conteudo: "Este capítulo final aborda uma distinção delicada, mas essencial: a diferença entre assumir responsabilidade pela nossa parte numa situação, e cair na culpa — seja culpando-nos excessivamente a nós próprios, seja assumindo, de forma desproporcionada, culpa que não é só nossa.\n\nResponsabilidade, no sentido usado aqui, refere-se à capacidade de resposta — à parte da situação que está, de facto, ao nosso alcance influenciar. Culpa é um julgamento sobre o valor moral de uma ação passada. É possível assumir responsabilidade plena pela nossa parte, sem necessidade de carregar culpa excessiva por aquilo que não estava, de facto, sob o nosso controlo.\n\nDois extremos, igualmente pouco úteis: ver-se sempre como vítima das circunstâncias, sem qualquer área de escolha; ou assumir-se responsável por tudo o que acontece, incluindo aquilo que genuinamente não dependia de nós. O empoderamento pessoal situa-se entre estes dois extremos — com clareza sobre onde termina a nossa área de influência.\n\nAo longo destas quatro aulas, definimos empoderamento como o reconhecimento realista da nossa área de escolha, identificámos onde temos entregue esse poder sem perceber, praticámos pequenas escolhas conscientes, e distinguimos responsabilidade de culpa. Como nos outros cursos deste ciclo, este é um trabalho que se revisita — a cada nova situação, a mesma pergunta permanece útil: o que está, aqui, dentro da minha escolha?", materiaisIds: [39, 40] },
     ],
     materiaisIds: [39, 40],
   },
@@ -361,12 +361,12 @@ const TODOS_CURSOS = [
     escolaId: "ser",
     emBreve: true,
     titulo: "Filosofia 3S",
-    promessa: "Saber, Sentir, Ser: a filosofia da Escola 3S aplicada à tua vida. Para qualquer pessoa que queira conhecer-se, sentir com verdade e ser inteira.",
+    promessa: "Saber, Sentir, Ser: a filosofia da Escola 3S aplicada à tua vida. Para qualquer pessoa que queira conhecer-se, sentir com verdade e viver por inteiro.",
     pergunta: "Quem sou eu quando deixo de viver em piloto automático?",
     tipo: "video",
     aulas: [
       { titulo: "Saber", descricao: "Conhecer-te: o que pensas, o que acreditas e de onde vem." },
-      { titulo: "Sentir", descricao: "Dar lugar às emoções sem seres governada por elas." },
+      { titulo: "Sentir", descricao: "Dar lugar às emoções sem deixar que te governem." },
       { titulo: "Ser", descricao: "Viver de acordo com quem és, nas escolhas de todos os dias." },
       { titulo: "Integrar", descricao: "Juntar os três: um caminho para a tua vida." },
     ],
@@ -547,7 +547,7 @@ const workshops = [
 
 const escolas = [
   { id: "lideranca", nome: "Liderança 3S" },
-  { id: "ser", nome: "Desenvolvimento 3S" },
+  { id: "ser", nome: "Vida 3S" },
 ];
 
 const podcastPorEscola = {
@@ -1082,11 +1082,11 @@ function SectionHeader({ eyebrow, title, onBack, backLabel }) {
    Grelha de áreas (usada no Início e no Explorar)
 --------------------------------------------------------- */
 const areas = [
-  { key: "alunos", titulo: "Alunos", desc: "Cursos das duas escolas", icon: GraduationCap, full: true },
+  { key: "alunos", titulo: "Alunos", desc: "Cursos das escolas 3S", icon: GraduationCap, full: true },
   { key: "aluno", titulo: "Área do Aluno", desc: "Progresso, certificados e materiais", icon: GraduationCap },
   { key: "livros", titulo: "Os meus livros", desc: "Romances de Conceição Alves", icon: BookOpen },
   { key: "escola-lideranca", titulo: "Liderança 3S", desc: "Comunicação e liderança de pessoas", icon: BookOpen },
-  { key: "escola-ser", titulo: "Desenvolvimento 3S", desc: "Autoconhecimento, emoções e crenças", icon: BookOpen },
+  { key: "escola-ser", titulo: "Vida 3S", desc: "Autoconhecimento, emoções e crenças", icon: BookOpen },
   { key: "comunidade", titulo: "Comunidade", desc: "Tema, desafio e partilha do mês", icon: Users },
   { key: "workshops", titulo: "Workshops", desc: "Próximas sessões e inscrição", icon: Calendar },
   { key: "podcast", titulo: "Podcast", desc: "Episódios para ouvir", icon: Headphones },
@@ -1271,14 +1271,14 @@ function AreasGrid({ onOpen, lista }) {
 }
 
 /* ---------------------------------------------------------
-   As escolas da Escola 3S: Liderança 3S e Desenvolvimento 3S
+   As escolas da Escola 3S: Liderança 3S e Vida 3S
 --------------------------------------------------------- */
 const ESCOLAS_3S = {
   lideranca: {
     secao: "lideranca-3s",
     nome: "Coaching de Liderança 3S",
     curto: "Liderança",
-    frase: "Liderar pessoas começa na forma como comunicas.",
+    frase: "Liderar começa na forma como comunicas.",
     para: "Para quem lidera equipas, negócios ou projetos",
     icon: Compass,
     fundo: `linear-gradient(150deg, ${palette.navy} 0%, #24436E 100%)`,
@@ -1410,7 +1410,7 @@ const PERGUNTAS_PERFIL = [
     ["F", "Garantir que todos falam e se sentem ouvidos."],
     ["D", "Ouvir e deixar a equipa decidir."]]],
   ["Quando dás feedback…", [
-    ["O", "Sou direta: o que está mal e como corrigir."],
+    ["O", "Vou direto ao assunto: o que está mal e como corrigir."],
     ["C", "Ajudo a pessoa a chegar às suas conclusões."],
     ["F", "Começo pelo positivo e cuido da forma como é recebido."],
     ["D", "Dou pouco: prefiro que cada um se avalie."]]],
@@ -1457,7 +1457,7 @@ const COMPETENCIAS_3S = [
 ];
 const DICAS_PILAR = {
   Saber: "Treina o feedback com o Modelo SBI e prepara as conversas difíceis antes de as ter.",
-  Sentir: "Antes de reagir, pára e nomeia o que sentes. Pergunta “como estás?” e espera pela resposta.",
+  Sentir: "Antes de reagir, para e nomeia o que sentes. Pergunta “como estás?” e espera pela resposta.",
   Ser: "Escolhe um compromisso pequeno esta semana e cumpre-o à vista de todos.",
 };
 const ESCALA = ["Nunca", "Raramente", "Às vezes", "Muitas vezes", "Sempre"];
@@ -2133,7 +2133,7 @@ function AreaAlunoScreen({ onBack, onOpenCurso, cursosConcluidos, materiaisDesbl
 
       {[
         { id: "lideranca", nome: "Liderança 3S", frase: "Comunicar, liderar pessoas e conduzir conversas" },
-        { id: "ser", nome: "Desenvolvimento 3S", frase: "A liderança começa em ti: autoconhecimento e emoções" },
+        { id: "ser", nome: "Vida 3S", frase: "A mudança começa em ti: autoconhecimento e emoções" },
         { id: "comunidade", nome: "Formações da Comunidade", frase: "A formação de cada mês da Comunidade 3S" },
       ].map((escola) => {
         const lista = cursos.filter((c) => c.escolaId === escola.id);
@@ -4568,7 +4568,7 @@ function FerramentasDesenvolvimentoPessoalScreen({ onBack }) {
             <DP_Logo3S size={36} />
             <div>
               <div style={{ fontFamily: DP_serif, fontSize: 21, color: DP_COLORS.ink, lineHeight: 1.1 }}>
-                Desenvolvimento 3S
+                Vida 3S
               </div>
               <div style={{ fontSize: 12.5, color: DP_COLORS.inkSoft, fontStyle: "italic" }}>
                 Ferramentas de Desenvolvimento Pessoal
@@ -4746,7 +4746,7 @@ const CARTOES_MATERIAL_DIDATICO = [
   },
   {
     chave: "ser",
-    titulo: "Desenvolvimento 3S",
+    titulo: "Vida 3S",
     desc: "Ferramentas de desenvolvimento pessoal",
     icon: Layers,
     ids: [111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126],
@@ -7797,15 +7797,15 @@ function incluiCurso(curso) {
 const GRUPOS_CURSOS = [
   {
     nome: "Liderança",
-    frase: "Liderar pessoas começa na forma como comunicas",
+    frase: "Liderar começa na forma como comunicas",
     sub: [
       { nome: "Liderar pessoas", ids: [1] },
       { nome: "Comunicação", ids: [2], emBreve: ["Comunicação Não Violenta"] },
     ],
   },
   {
-    nome: "Desenvolvimento 3S",
-    frase: "A liderança começa em ti: autoconhecimento e emoções",
+    nome: "Vida 3S",
+    frase: "A mudança começa em ti: autoconhecimento e emoções",
     sub: [{ nome: null, escolaId: "ser" }],
   },
 ];
@@ -8043,7 +8043,7 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher }) {
 
         {/* Comunidade */}
         <div className="px-6 mb-10">
-          {titulo("COMUNIDADE 3S", "Um tema de comunicação e liderança por mês")}
+          {titulo("COMUNIDADE 3S", "Um tema novo por mês, com o grupo")}
           <div className="rounded-3xl px-5 py-5" style={{ backgroundColor: palette.card, border: `1px solid ${palette.gold}` }}>
             <div className="space-y-1.5">
               {["Todos os cadernos de trabalho", "Todos os livros do aluno", "Todo o material didático", "Aulas gravadas", "1 encontro online por mês", "Partilha e desafios com o grupo"].map((t) => (
@@ -8174,7 +8174,7 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher }) {
             <p className="text-xs mt-2" style={{ color: palette.goldSoft }}>O primeiro curso é por nossa conta.</p>
             <div className="mt-4">{botao("Criar conta grátis", onCriarConta, true)}</div>
           </div>
-          <p className="text-[11px] text-center mt-6" style={{ color: palette.navySoft }}>Escola 3S · Liderança e Comunicação · Saber · Sentir · Ser</p>
+          <p className="text-[11px] text-center mt-6" style={{ color: palette.navySoft }}>Escola 3S · Coaching de Liderança, Vida e Desporto · Saber · Sentir · Ser</p>
         </div>
       </div>
     </div>
