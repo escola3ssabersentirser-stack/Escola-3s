@@ -1,4 +1,4 @@
-// VERSAO-04-NOV-TRES-ESCOLAS-CORES-LOGO
+// VERSAO-04-NOV-COACH-POR-AREA
 import { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "./supabase.js";
 import {
@@ -1354,8 +1354,31 @@ function EscolasDuplas({ publico, onAbrir }) {
   );
 }
 
+function useCoachDaArea(area) {
+  const [coach, setCoach] = useState(undefined);
+  useEffect(() => {
+    let ativo = true;
+    (async () => {
+      const { data: ac, error } = await supabase.from("areas_coach").select("mentor_user_id").eq("area", area).maybeSingle();
+      if (error) {
+        // Ainda sem a tabela: Liderança e Vida ficam com a Conceição, Desporto em breve.
+        if (area === "desporto") { if (ativo) setCoach(null); return; }
+        const { data: ms } = await supabase.from("mentores_disponibilidade").select("nome, titulo").limit(1);
+        if (ativo) setCoach((ms && ms[0]) || null);
+        return;
+      }
+      if (!ac || !ac.mentor_user_id) { if (ativo) setCoach(null); return; }
+      const { data: m } = await supabase.from("mentores_disponibilidade").select("nome, titulo").eq("user_id", ac.mentor_user_id).maybeSingle();
+      if (ativo) setCoach(m || null);
+    })();
+    return () => { ativo = false; };
+  }, [area]);
+  return coach;
+}
+
 function EscolaScreen({ escola, onBack, onOpen, temAcesso, onAbrirCurso, desbloqueados, acessoTotal }) {
   const e = ESCOLAS_3S[escola];
+  const coach = useCoachDaArea(escola);
   const Icon = e.icon;
   const lista = e.cursos.map((id) => cursos.find((c) => c.id === id)).filter(Boolean);
   const livro = materiais.find((m) => m.id === e.livro);
@@ -1444,8 +1467,18 @@ function EscolaScreen({ escola, onBack, onOpen, temAcesso, onAbrirCurso, desbloq
       )}
 
       <div className="px-6">
-        {rotulo("SESSÕES INDIVIDUAIS")}
-        <button onClick={() => onOpen("marcar")} className="w-full flex items-center gap-4 rounded-2xl px-5 py-4 text-left transition active:scale-[0.99]" style={{ background: `linear-gradient(150deg, ${palette.navy} 0%, #24436E 100%)` }}>
+        {rotulo("O TEU COACH")}
+        <div className="rounded-2xl px-4 py-4 mb-3 flex items-center gap-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
+          <div className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 font-serif" style={{ background: e.fundo, border: e.borda ? `1px solid ${e.borda}` : "none", color: e.acento }}>
+            {coach && coach.nome ? coach.nome.slice(0, 1).toUpperCase() : "3S"}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>COACH RESPONSÁVEL</p>
+            <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{coach === undefined ? "…" : coach ? coach.nome : "Em breve"}</p>
+            <p className="text-[11px]" style={{ color: palette.navySoft }}>{coach && coach.titulo ? coach.titulo : coach === null ? "Estamos a escolher o coach desta área" : ""}</p>
+          </div>
+        </div>
+        <button onClick={() => onOpen("marcar:" + escola)} className="w-full flex items-center gap-4 rounded-2xl px-5 py-4 text-left transition active:scale-[0.99]" style={{ background: `linear-gradient(150deg, ${palette.navy} 0%, #24436E 100%)` }}>
           <div className="w-11 h-11 rounded-full flex items-center justify-center shrink-0" style={{ border: `1.5px solid ${palette.gold}` }}>
             <PenLine size={18} strokeWidth={1.6} style={{ color: palette.gold }} />
           </div>
@@ -4665,7 +4698,7 @@ function MaterialCard({ material, desbloqueado, onDesbloquear, desbloqueadoFisic
 /* ---------------------------------------------------------
    Marcar Sessão
 --------------------------------------------------------- */
-function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo = 0, onUsouCredito }) {
+function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo = 0, onUsouCredito, area }) {
   const [passo, setPasso] = useState(1); // 1: serviço, 2: profissional, 3: horário
   const [servicoEscolhido, setServicoEscolhido] = useState(null);
   const [mentoras, setMentoras] = useState([]);
@@ -4696,7 +4729,14 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
   const carregarMentoras = async () => {
     setACarregar(true);
     const { data } = await supabase.from("mentores_disponibilidade").select("*").order("nome", { ascending: true });
-    setMentoras(data || []);
+    let lista = data || [];
+    if (area) {
+      // Cada área tem um coach responsável: só esse aparece.
+      const { data: ac, error: erroArea } = await supabase.from("areas_coach").select("mentor_user_id").eq("area", area).maybeSingle();
+      if (!erroArea) lista = lista.filter((m) => ac && m.user_id === ac.mentor_user_id);
+      else if (area === "desporto") lista = []; // sem a tabela: Desporto ainda sem coach
+    }
+    setMentoras(lista);
     setACarregar(false);
   };
 
@@ -4905,7 +4945,7 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
           {aCarregar ? (
             <p className="text-sm" style={{ color: palette.navySoft }}>A carregar...</p>
           ) : mentoras.length === 0 ? (
-            <p className="text-sm" style={{ color: palette.navySoft }}>Ainda não há profissionais com horários definidos.</p>
+            <p className="text-sm" style={{ color: palette.navySoft }}>{area ? "O coach desta área ainda não tem horários. Volta em breve." : "Ainda não há profissionais com horários definidos."}</p>
           ) : (
             <div className="space-y-3">
               {mentoras.map((m) => (
@@ -6226,6 +6266,52 @@ function AcessoFormadoresScreen({ onBack }) {
   );
 }
 
+function CoachPorAreaPainel() {
+  const [mentores, setMentores] = useState([]);
+  const [escolhas, setEscolhas] = useState({});
+  const [estado, setEstado] = useState("");
+  useEffect(() => {
+    (async () => {
+      const { data: ms } = await supabase.from("mentores_disponibilidade").select("user_id, nome, email").order("nome", { ascending: true });
+      setMentores(ms || []);
+      const { data: ac, error } = await supabase.from("areas_coach").select("area, mentor_user_id");
+      if (error) { setEstado("Ainda não está ativo na base de dados."); return; }
+      const e = {};
+      (ac || []).forEach((r) => { e[r.area] = r.mentor_user_id || ""; });
+      setEscolhas(e);
+    })();
+  }, []);
+  const guardar = async (area, mentorId) => {
+    setEscolhas((x) => ({ ...x, [area]: mentorId }));
+    setEstado("A guardar...");
+    const { error } = await supabase.from("areas_coach").upsert({ area, mentor_user_id: mentorId || null, atualizado_em: new Date().toISOString() });
+    setEstado(error ? "Não foi possível guardar." : "Guardado.");
+  };
+  return (
+    <div className="px-6 mb-6">
+      <div className="rounded-2xl px-5 py-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
+        <p className="font-serif text-lg" style={{ color: palette.navy }}>Coach por área</p>
+        <p className="text-xs mt-0.5 mb-3" style={{ color: palette.navySoft }}>Quem recebe as marcações de cada escola. Só aparecem coaches com conta de mentora aprovada.</p>
+        {Object.entries(ESCOLAS_3S).map(([area, e]) => (
+          <div key={area} className="mb-3">
+            <p className="text-[11px] tracking-[0.15em] font-semibold mb-1" style={{ color: palette.gold }}>{e.curto.toUpperCase()} 3S</p>
+            <select
+              value={escolhas[area] || ""}
+              onChange={(ev) => guardar(area, ev.target.value)}
+              className="w-full rounded-xl px-3 py-2.5 text-sm"
+              style={{ backgroundColor: palette.creamSoft, border: `1px solid ${palette.goldSoft}88`, color: palette.navy }}
+            >
+              <option value="">Sem coach (em breve)</option>
+              {mentores.map((m) => <option key={m.user_id} value={m.user_id}>{m.nome || m.email}</option>)}
+            </select>
+          </div>
+        ))}
+        {estado && <p className="text-xs" style={{ color: palette.navySoft }}>{estado}</p>}
+      </div>
+    </div>
+  );
+}
+
 function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFormadores, onVerArquivo }) {
   const totalInscricoes = Object.values(progresso.inscricoesWorkshops || {}).filter(Boolean).length;
   const totalMateriais = Object.values(progresso.materiaisDesbloqueados || {}).filter(Boolean).length;
@@ -6292,6 +6378,8 @@ function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFor
           </button>
         </div>
       )}
+
+      {progresso.papel === "dona" && <CoachPorAreaPainel />}
 
       {progresso.papel === "dona" && (
         <div className="px-6 mb-6">
@@ -8933,7 +9021,7 @@ export default function App() {
         acessoTotal={progresso.papel === "dona"}
       />
     );
-  } else if (secao === "marcar") {
+  } else if (secao === "marcar" || (secao || "").startsWith("marcar:")) {
     content = (
       <MarcarSessaoScreen
         onBack={() => setSecao(null)}
@@ -8941,6 +9029,7 @@ export default function App() {
         creditos={creditosSessoes}
         descontoCiclo={descontoCiclo}
         onUsouCredito={sincronizarCompras}
+        area={(secao || "").startsWith("marcar:") ? secao.split(":")[1] : null}
       />
     );
   } else if (secao === "agenda-mentora") {
