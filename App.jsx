@@ -1,4 +1,4 @@
-// VERSAO-04-NOV-QUIZZES-PLANOS
+// VERSAO-04-NOV-TREINOS-COMPETENCIAS
 import { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "./supabase.js";
 import {
@@ -1601,8 +1601,214 @@ function BarraPct({ rotulo, pct, destaque }) {
   );
 }
 
-function LaboratorioLiderancaScreen({ onBack, resultados = {}, onGuardar, onMarcar }) {
-  const [vista, setVista] = useState(null); // null | perfil | competencias | modelos | perguntas
+const cap = (t) => (t ? t.charAt(0).toUpperCase() + t.slice(1) : t);
+const TREINOS_LIDERANCA = [
+  {
+    id: "cnv", grupo: "Comunicação", titulo: "Comunicação não violenta", desc: "Falar de necessidades sem culpar",
+    essencial: ["Observação sem julgamento: descreve o que viste ou ouviste, como uma câmara.", "Sentimento e necessidade: diz o que sentes e do que precisas, sem culpar.", "Pedido concreto: pede algo possível, positivo e com prazo."],
+    cenarios: [
+      { p: "Um colega entregou o relatório atrasado pela terceira vez. O que dizes?", o: ["“És sempre irresponsável.”", "“Nas últimas três semanas o relatório chegou depois de sexta. Fico com receio pelo cliente, porque preciso dos dados a tempo. Podemos combinar quinta ao fim do dia?”", "“Deixa, eu faço.”", "“Vou falar com a chefia.”"], c: 1, e: "Observação, sentimento, necessidade e pedido, sem rótulos." },
+      { p: "Qual destas frases é uma observação, e não um julgamento?", o: ["“Estás desinteressado.”", "“Hoje olhaste para o telemóvel quatro vezes durante a reunião.”", "“Não te importas com a equipa.”", "“És mal-educado.”"], c: 1, e: "Uma observação descreve factos que qualquer pessoa podia ver." },
+      { p: "Qual destes é um pedido claro?", o: ["“Quero que mudes de atitude.”", "“Podes enviar-me o ponto de situação até às 17h de amanhã?”", "“Tens de ser mais responsável.”", "“Era bom que melhorasses.”"], c: 1, e: "Um pedido claro diz o quê e quando, e deixa espaço para resposta." },
+    ],
+    construtor: {
+      titulo: "Constrói a tua frase CNV",
+      campos: [["obs", "Quando vejo ou ouço…", "o relatório chegar depois do prazo"], ["sent", "sinto…", "preocupação"], ["nec", "porque preciso de…", "poder confiar nos prazos"], ["ped", "Podes…?", "avisar-me na véspera se houver atraso"]],
+      gerar: (v) => `Quando ${v.obs}, sinto ${v.sent}, porque preciso de ${v.nec}. Podes ${v.ped}?`,
+    },
+    plano: ["Escreve três frases tuas de julgamento e transforma-as em observações.", "Aprende cinco palavras novas para sentimentos e usa uma hoje.", "Usa a frase que construíste numa conversa real.", "Repara num pedido vago que fizeste e torna-o concreto.", "Escreve o que mudou na conversa quando usaste a CNV."],
+  },
+  {
+    id: "assertiva", grupo: "Comunicação", titulo: "Comunicação assertiva", desc: "Dizer o que precisas, com respeito",
+    essencial: ["Nem passivo (calar), nem agressivo (atacar): dizer o que precisas com respeito.", "Fala na primeira pessoa: “eu preciso”, “eu proponho”.", "Um “não” com alternativa é um “sim” à relação."],
+    cenarios: [
+      { p: "Marcam uma reunião para o teu dia de folga.", o: ["Aceitas e não dizes nada.", "“Isso é um abuso!”", "“Nesse dia estou de folga. Posso participar na véspera ou mandar o meu contributo por escrito.”", "Faltas sem avisar."], c: 2, e: "Limite claro, com uma alternativa útil." },
+      { p: "Um colega interrompe-te sempre nas reuniões.", o: ["Interrompes também.", "Calas-te.", "“Deixa-me terminar a ideia, por favor. Depois quero muito ouvir a tua.”", "Queixas-te a outros colegas."], c: 2, e: "Pedes o que precisas e mostras respeito pelo outro." },
+      { p: "Discordas de uma decisão da equipa.", o: ["Concordas para não criar conflito.", "Dizes que é uma decisão estúpida.", "“Vejo um risco nesta decisão. Proponho testarmos uma semana e avaliarmos.”", "Não dizes nada e fazes à tua maneira."], c: 2, e: "Discordar com uma proposta é contribuir." },
+    ],
+    construtor: {
+      titulo: "Constrói a tua frase DESC",
+      campos: [["desc", "O que aconteceu (só factos)", "na reunião de hoje, as minhas ideias foram interrompidas três vezes"], ["exp", "Como isso te faz sentir", "isso deixa-me com frustração"], ["sug", "O que propões", "que cada pessoa termine antes de outra falar"], ["conc", "O que ganham todos", "as reuniões ficam mais curtas e com todas as ideias"]],
+      gerar: (v) => `${cap(v.desc)}. ${cap(v.exp)}. Proponho ${v.sug}. Assim, ${v.conc}.`,
+    },
+    plano: ["Identifica uma situação em que costumas calar-te.", "Prepara a tua frase DESC para essa situação.", "Diz um “não” com alternativa.", "Pede a alguém de confiança feedback sobre a tua forma de falar.", "Usa a frase DESC numa conversa real e regista o resultado."],
+  },
+  {
+    id: "empatica", grupo: "Comunicação", titulo: "Comunicação empática", desc: "Perceber o outro antes de responder",
+    essencial: ["Empatia não é concordar: é perceber o que o outro sente e do que precisa.", "Primeiro acolher, depois resolver.", "Reflete o que ouviste (“Parece que…”) e confirma (“É isso?”)."],
+    cenarios: [
+      { p: "Uma pessoa da equipa diz: “Já não aguento esta pressão.”", o: ["“Todos estamos assim.”", "“Parece que estás mesmo no limite. O que está a pesar mais?”", "“Tens de te organizar melhor.”", "“Amanhã passa.”"], c: 1, e: "Nomear o que a pessoa sente e perguntar abre a conversa." },
+      { p: "Um cliente está irritado com um atraso.", o: ["“A culpa não é minha.”", "“Compreendo que seja frustrante esperar. Vou ver já o que se passa e dou-lhe uma resposta até às 15h.”", "“Acalme-se.”", "“Isso acontece.”"], c: 1, e: "Reconhecer a emoção e agir com um compromisso concreto." },
+      { p: "Qual destas é uma resposta empática?", o: ["“Eu, no teu lugar…”", "“Isso não é nada comparado com…”", "“Estou a ouvir. Isso deve ser difícil.”", "“Vê o lado positivo.”"], c: 2, e: "Acolher sem comparar, sem minimizar e sem dar logo conselhos." },
+    ],
+    construtor: {
+      titulo: "Constrói a tua frase de empatia",
+      campos: [["sente", "O que achas que a pessoa sente?", "cansaço"], ["porque", "Porquê?", "o projeto teve muitas mudanças"], ["precisa", "Do que poderá precisar?", "mais clareza nas prioridades"]],
+      gerar: (v) => `Parece que sentes ${v.sente}, porque ${v.porque}. Será que precisas de ${v.precisa}? É isso?`,
+    },
+    plano: ["Numa conversa, faz só perguntas durante os primeiros dois minutos.", "Usa a frase de empatia que construíste.", "Repara quando dás conselhos que ninguém pediu.", "Pergunta a alguém “Como estás, a sério?” e ouve até ao fim.", "Escreve o que aprendeste sobre alguém da equipa esta semana."],
+  },
+  {
+    id: "conflitos", grupo: "Resultados e carácter", titulo: "Resolução de conflitos", desc: "Do braço de ferro ao acordo",
+    essencial: ["Separa as pessoas do problema.", "Procura os interesses (o porquê), não só as posições (o quê).", "Cria opções em conjunto antes de decidir."],
+    cenarios: [
+      { p: "Dois colegas discutem sobre quem fica com o turno de sábado. O primeiro passo é…", o: ["Decidires tu, depressa.", "Ouvires cada um sobre o que precisa e porquê.", "Deixares que resolvam sozinhos.", "Fazeres um sorteio."], c: 1, e: "Antes da solução, perceber os interesses de cada um." },
+      { p: "Num conflito, uma “posição” é…", o: ["O que a pessoa diz que quer.", "A razão profunda.", "A solução final.", "A opinião do líder."], c: 0, e: "A posição é o que se pede; o interesse é o porquê. Os acordos nascem dos interesses." },
+      { p: "A discussão aquece. Tu…", o: ["Sobes o tom para impor ordem.", "Propões uma pausa e marcas a continuação.", "Sais da sala.", "Dás razão a quem fala mais alto."], c: 1, e: "Com emoções altas não se decide bem. Uma pausa protege a relação." },
+    ],
+    construtor: {
+      titulo: "Prepara a conversa",
+      campos: [["eu", "O que eu quero", "o projeto entregue a tempo"], ["outro", "O que a outra pessoa quer", "não fazer horas extra"], ["comum", "O que queremos os dois", "um cliente satisfeito e uma equipa descansada"], ["prop", "A minha proposta", "dividir a tarefa por três pessoas"]],
+      gerar: (v) => `Eu quero ${v.eu} e tu queres ${v.outro}. Os dois queremos ${v.comum}. Proponho ${v.prop}. O que te parece?`,
+    },
+    plano: ["Escolhe um conflito por resolver e escreve a posição de cada lado.", "Descobre o interesse por trás de cada posição.", "Prepara a conversa com a frase que construíste.", "Tem a conversa num momento calmo e em privado.", "Combina uma data para ver se o acordo está a funcionar."],
+  },
+  {
+    id: "resultados", grupo: "Resultados e carácter", titulo: "Atingir resultados", desc: "Objetivos claros, passos pequenos",
+    essencial: ["Um objetivo claro diz o quê, até quando e como se mede.", "Divide em passos pequenos, cada um com responsável.", "Acompanha com regularidade e celebra os avanços."],
+    cenarios: [
+      { p: "Qual é o objetivo mais útil?", o: ["“Melhorar as vendas.”", "“Aumentar as vendas da loja em 5% até 31 de março.”", "“Fazer o melhor possível.”", "“Vender mais do que no ano passado, se der.”"], c: 1, e: "Concreto, mensurável e com prazo." },
+      { p: "A meio do mês, a equipa está atrasada. Tu…", o: ["Esperas pelo fim do mês.", "Revês com a equipa o que está a travar e ajustam o plano.", "Pressionas sem explicar.", "Baixas a meta em silêncio."], c: 1, e: "Acompanhar cedo dá tempo para corrigir." },
+      { p: "O que aumenta o compromisso com um objetivo?", o: ["Impor sem explicar.", "Explicar o porquê e envolver a equipa no como.", "Ameaçar com consequências.", "Mudar de objetivo todas as semanas."], c: 1, e: "As pessoas comprometem-se com o que ajudam a construir." },
+    ],
+    construtor: {
+      titulo: "Define o teu objetivo",
+      campos: [["obj", "O que queres alcançar", "reduzir as quebras da secção"], ["prazo", "Até quando", "31 de janeiro"], ["medida", "Vais saber que conseguiste quando…", "as quebras passarem de 3% para 2%"], ["passo", "Primeiro passo", "rever os prazos de validade todas as manhãs"]],
+      gerar: (v) => `Objetivo: ${v.obj}, até ${v.prazo}. Vou saber que consegui quando ${v.medida}. Primeiro passo: ${v.passo}.`,
+    },
+    plano: ["Escreve o teu objetivo com a frase que construíste.", "Partilha-o com a equipa e explica o porquê.", "Divide-o em três passos, cada um com responsável.", "Faz um ponto de situação de 10 minutos.", "Celebra um avanço, mesmo pequeno."],
+  },
+  {
+    id: "consistencia", grupo: "Resultados e carácter", titulo: "Consistência", desc: "Pouco, mas todos os dias",
+    essencial: ["Pequeno e todos os dias vale mais do que grande e de vez em quando.", "Liga o novo hábito a algo que já fazes.", "Regista: o que se vê, melhora."],
+    cenarios: [
+      { p: "Queres dar feedback com mais regularidade. Qual é o melhor plano?", o: ["“Vou dar mais feedback.”", "“Todas as sextas, antes de sair, dou um feedback concreto a uma pessoa.”", "“Quando tiver tempo.”", "“Só na avaliação anual.”"], c: 1, e: "Um hábito precisa de dia, momento e ação concreta." },
+      { p: "Falhaste o teu hábito dois dias seguidos. Tu…", o: ["Desistes.", "Recomeças hoje, sem culpa, e tornas o passo mais pequeno.", "Esperas pela próxima segunda-feira.", "Mudas de hábito."], c: 1, e: "Falhar faz parte. O que conta é recomeçar depressa." },
+      { p: "A equipa confia mais num líder que…", o: ["Tem dias muito bons e dias muito maus.", "Reage de forma previsível e cumpre o que combina.", "Muda de prioridades todas as semanas.", "Só aparece nas crises."], c: 1, e: "Previsibilidade gera confiança." },
+    ],
+    construtor: {
+      titulo: "Cria o teu hábito",
+      campos: [["quando", "Quando (dia e momento)", "todas as manhãs, depois do café"], ["acao", "Vou…", "perguntar a uma pessoa da equipa como está"], ["tempo", "Durante", "5 minutos"]],
+      gerar: (v) => `${cap(v.quando)}, vou ${v.acao}, durante ${v.tempo}.`,
+    },
+    plano: ["Faz o teu hábito pela primeira vez.", "Repete.", "Repete e regista.", "Repete, mesmo num dia difícil.", "Revê a semana e ajusta o hábito, se for preciso."],
+  },
+  {
+    id: "coerencia", grupo: "Resultados e carácter", titulo: "Coerência", desc: "O que dizes é o que fazes",
+    essencial: ["Coerência é o que dizes ser igual ao que fazes.", "A equipa aprende mais com o que vê do que com o que ouve.", "Quando falhas, assume: também isso é coerência."],
+    cenarios: [
+      { p: "Pedes pontualidade à equipa, mas chegas tarde às reuniões. A equipa aprende que…", o: ["A pontualidade é importante.", "As regras são só para os outros.", "Tens muito trabalho.", "Nada."], c: 1, e: "O exemplo fala mais alto do que as regras." },
+      { p: "Disseste que respondias até sexta e não conseguiste. Tu…", o: ["Finges que te esqueceste.", "Avisas antes do prazo, explicas e dás uma nova data.", "Esperas que ninguém repare.", "Culpas outra pessoa."], c: 1, e: "Assumir protege a confiança." },
+      { p: "Um líder coerente…", o: ["Diz o que a equipa quer ouvir.", "Decide de acordo com os valores que defende, mesmo quando custa.", "Muda de opinião conforme a pessoa.", "Nunca admite erros."], c: 1, e: "Os valores veem-se nas decisões difíceis." },
+    ],
+    construtor: {
+      titulo: "Do valor à ação",
+      campos: [["valor", "Um valor que defendes", "respeito"], ["hoje", "Em que momentos ainda não o mostras?", "estou com pressa e interrompo as pessoas"], ["acao", "O que vais fazer esta semana", "deixar cada pessoa terminar antes de falar"]],
+      gerar: (v) => `Defendo: ${v.valor}. Ainda não o mostro quando ${v.hoje}. Esta semana, vou ${v.acao}.`,
+    },
+    plano: ["Escreve os teus três valores mais importantes.", "Pergunta a alguém de confiança: “Onde é que não sou coerente?”", "Põe em prática a ação que escreveste.", "Cumpre um compromisso pequeno, à vista de todos.", "Assume um erro teu perante a equipa."],
+  },
+];
+
+function TreinoScreen({ treino, onVoltar, resultados, onGuardar, onMarcar }) {
+  const [escolhas, setEscolhas] = useState({});
+  const [valores, setValores] = useState(() => ((resultados.treinos || {})[treino.id] || {}).valores || {});
+  const [msg, setMsg] = useState("");
+  const completo = treino.construtor.campos.every(([k]) => (valores[k] || "").trim());
+  const frase = completo ? treino.construtor.gerar(Object.fromEntries(Object.entries(valores).map(([k, v]) => [k, v.trim()]))) : "";
+  const certas = treino.cenarios.filter((c, i) => escolhas[i] === c.c).length;
+  const respondidas = Object.keys(escolhas).length;
+  const DIAS_T = ["Dia 1", "Dia 2", "Dia 4", "Dia 5", "Dia 7"];
+  const plano = {
+    titulo: `Plano de 7 dias: ${treino.titulo}`, origem: "treino-" + treino.id, data: new Date().toISOString(),
+    passos: treino.plano.map((t, i) => ({ etiqueta: DIAS_T[i], texto: t, feito: false })),
+  };
+  const rotulo = (t) => <p className="text-[11px] tracking-[0.2em] font-semibold mb-3" style={{ color: palette.gold }}>{t}</p>;
+  const guardar = () => {
+    onGuardar("treinos", { ...(resultados.treinos || {}), [treino.id]: { valores, frase, certas, data: new Date().toISOString() } });
+    onGuardar("plano", plano);
+    setMsg("Frase e plano guardados. Encontras o plano no Laboratório.");
+  };
+  const copiar = async () => { try { await navigator.clipboard.writeText(frase); setMsg("Frase copiada."); } catch (e) { setMsg("Não foi possível copiar."); } };
+  return (
+    <div className="pb-28">
+      <SectionHeader eyebrow={`TREINO · ${treino.grupo.toUpperCase()}`} title={treino.titulo} onBack={onVoltar} backLabel="Treinos" />
+      <div className="px-6 space-y-7">
+        <div>
+          {rotulo("1. O ESSENCIAL")}
+          <div className="space-y-2">
+            {treino.essencial.map((t, i) => (
+              <div key={i} className="flex gap-3">
+                <span className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-semibold shrink-0" style={{ backgroundColor: palette.navy, color: palette.gold }}>{i + 1}</span>
+                <p className="text-sm leading-relaxed" style={{ color: palette.ink }}>{t}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          {rotulo("2. PRATICA: O QUE FARIAS?")}
+          <div className="space-y-5">
+            {treino.cenarios.map((c, ci) => {
+              const respondida = escolhas[ci] !== undefined;
+              const n = c.o.length; const k = (ci * 3 + treino.id.length) % n;
+              const ordem = c.o.map((_, j) => (j + k) % n);
+              return (
+                <div key={ci}>
+                  <p className="font-serif text-lg leading-snug mb-2.5" style={{ color: palette.navy }}>{c.p}</p>
+                  <div className="space-y-2">
+                    {ordem.map((i) => {
+                      const certa = respondida && i === c.c;
+                      const errada = respondida && i === escolhas[ci] && i !== c.c;
+                      return (
+                        <button key={i} disabled={respondida} onClick={() => setEscolhas((e) => ({ ...e, [ci]: i }))} className="w-full text-left rounded-2xl px-4 py-3 text-sm" style={{ backgroundColor: certa ? "#E3F1E7" : errada ? "#F8E1DE" : palette.card, border: `1px solid ${certa ? "#3C8D5A" : errada ? "#C0392B" : `${palette.goldSoft}66`}`, color: palette.ink }}>
+                          {certa ? "✓ " : errada ? "✗ " : ""}{c.o[i]}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {respondida && <p className="text-xs leading-relaxed rounded-xl px-3.5 py-2.5 mt-2" style={{ backgroundColor: `${palette.gold}1F`, color: palette.navy }}><span className="font-semibold">{escolhas[ci] === c.c ? "Certo. " : "Não é bem assim. "}</span>{c.e}</p>}
+                </div>
+              );
+            })}
+            {respondidas === treino.cenarios.length && <p className="text-sm font-medium text-center" style={{ color: palette.navy }}>Acertaste {certas} de {treino.cenarios.length}.</p>}
+          </div>
+        </div>
+
+        <div>
+          {rotulo(`3. ${treino.construtor.titulo.toUpperCase()}`)}
+          <div className="space-y-3">
+            {treino.construtor.campos.map(([k, label, ph]) => (
+              <div key={k}>
+                <p className="text-xs font-medium mb-1" style={{ color: palette.navySoft }}>{label}</p>
+                <input value={valores[k] || ""} onChange={(e) => setValores((v) => ({ ...v, [k]: e.target.value }))} placeholder={`Ex.: ${ph}`} className="w-full rounded-xl px-3.5 py-2.5 text-sm" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66`, color: palette.ink }} />
+              </div>
+            ))}
+            <div className="rounded-2xl px-5 py-4" style={{ background: `linear-gradient(150deg, ${palette.navy} 0%, #24436E 100%)` }}>
+              <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>A TUA FRASE</p>
+              <p className="font-serif text-lg leading-snug mt-1.5" style={{ color: completo ? palette.creamSoft : palette.goldSoft }}>{completo ? frase : "Preenche os campos e a tua frase aparece aqui."}</p>
+              {completo && <button onClick={copiar} className="mt-3 text-xs font-medium rounded-full px-3 py-1.5" style={{ backgroundColor: palette.gold, color: palette.navy }}>Copiar</button>}
+            </div>
+          </div>
+        </div>
+
+        <div>
+          {rotulo("4. O TEU PLANO")}
+          <PlanoCartao plano={plano} compacto />
+          <div className="mt-3 space-y-2.5">
+            <button onClick={guardar} className="w-full rounded-full py-3.5 font-medium text-sm" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Guardar frase e plano</button>
+            {msg && <p className="text-xs text-center" style={{ color: palette.navySoft }}>{msg}</p>}
+            <button onClick={onMarcar} className="w-full rounded-full py-3 text-sm font-medium" style={{ border: `1px solid ${palette.navy}`, color: palette.navy }}>Treinar isto numa sessão</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function LaboratorioLiderancaScreen({ onBack, resultados = {}, onGuardar, onMarcar, inicial }) {
+  const [vista, setVista] = useState(inicial ? "treino" : null); // null | perfil | competencias | modelos | perguntas | quizzes | quiz | treinos | treino
+  const [treinoId, setTreinoId] = useState(inicial || null);
   const [passo, setPasso] = useState(0);
   const [respostas, setRespostas] = useState([]);
   const [modeloAberto, setModeloAberto] = useState(null);
@@ -1765,6 +1971,29 @@ function LaboratorioLiderancaScreen({ onBack, resultados = {}, onGuardar, onMarc
           <button onClick={onMarcar} className="w-full rounded-full py-3 text-sm font-medium" style={{ border: `1px solid ${palette.navy}`, color: palette.navy }}>Trabalhar isto numa sessão</button>
           <button onClick={() => { setPasso(0); setRespostas([]); setGuardadoMsg(""); }} className="w-full text-xs underline" style={{ color: palette.navySoft }}>Repetir o teste</button>
         </div>
+      </div>
+    );
+  }
+
+  // ---- Treinos de competências
+  if (vista === "treino") {
+    const treino = TREINOS_LIDERANCA.find((t) => t.id === treinoId);
+    if (treino) return <TreinoScreen key={treino.id} treino={treino} onVoltar={() => setVista("treinos")} resultados={resultados} onGuardar={onGuardar} onMarcar={onMarcar} />;
+  }
+  if (vista === "treinos" || vista === "treino") {
+    const feitos = resultados.treinos || {};
+    return (
+      <div className="pb-28">
+        {cabecalho("PARA TRABALHAR", "Treinos de competências", voltarLab, "Laboratório")}
+        <p className="px-6 -mt-2 mb-5 text-sm leading-relaxed" style={{ color: palette.navySoft }}>Cada treino tem o essencial, situações para praticar, uma frase construída por ti e um plano de 7 dias.</p>
+        {["Comunicação", "Resultados e carácter"].map((g) => (
+          <div key={g} className="px-6 mb-6">
+            <p className="text-[11px] tracking-[0.2em] font-semibold mb-3" style={{ color: palette.gold }}>{g.toUpperCase()}</p>
+            <div className="space-y-3">
+              {TREINOS_LIDERANCA.filter((t) => t.grupo === g).map((t) => cartao(t.titulo, t.desc, feitos[t.id] ? "Já treinaste · a tua frase está guardada" : null, () => { setTreinoId(t.id); setVista("treino"); }))}
+            </div>
+          </div>
+        ))}
       </div>
     );
   }
@@ -1941,6 +2170,7 @@ function LaboratorioLiderancaScreen({ onBack, resultados = {}, onGuardar, onMarc
         </div>
       )}
       <div className="px-6 space-y-3">
+        {cartao("Treinos de competências", "Comunicação não violenta, assertiva e empática · Conflitos, resultados, consistência e coerência", Object.keys(resultados.treinos || {}).length ? `${Object.keys(resultados.treinos).length} de ${TREINOS_LIDERANCA.length} feitos` : "7 treinos · frase e plano no fim", () => setVista("treinos"))}
         {cartao("Que líder sou eu?", "Teste de perfil de liderança · 10 situações · 3 min", perfilGuardado ? `O teu perfil: ${perfilGuardado.nome}` : null, () => { setVista("perfil"); setPasso(0); setRespostas([]); setGuardadoMsg(""); })}
         {cartao("Competências 3S", "Saber, Sentir e Ser: onde estás forte e onde crescer · 12 afirmações", compGuardadas ? compGuardadas.map((p) => `${p.pilar} ${p.pct}%`).join(" · ") : null, () => { setVista("competencias"); setPasso(0); setRespostas([]); setGuardadoMsg(""); })}
         {cartao("Quizzes de liderança", "Feedback, assertividade, escuta, liderança situacional e segurança psicológica", Object.keys(resultados.quizzes || {}).length ? `${Object.keys(resultados.quizzes).length} de ${QUIZZES_LIDERANCA.length} feitos` : "5 quizzes · plano automático no fim", () => setVista("quizzes"))}
@@ -2016,6 +2246,24 @@ function EscolaScreen({ escola, onBack, onOpen, temAcesso, onAbrirCurso, desbloq
             <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navy }}>Testes · Quizzes · Planos automáticos · Modelos · Perguntas para líderes</p>
             <span className="inline-flex items-center gap-1 mt-3 text-xs font-medium rounded-full px-3 py-1.5" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Começar <ChevronRight size={14} /></span>
           </button>
+        </div>
+      )}
+
+      {escola === "lideranca" && (
+        <div className="px-6 mb-7">
+          {rotulo("TRABALHAR COMPETÊNCIAS")}
+          {["Comunicação", "Resultados e carácter"].map((g) => (
+            <div key={g} className="mb-3">
+              <p className="text-xs font-medium mb-2" style={{ color: palette.navy }}>{g}</p>
+              <div className="flex flex-wrap gap-2">
+                {TREINOS_LIDERANCA.filter((t) => t.grupo === g).map((t) => (
+                  <button key={t.id} onClick={() => onOpen("lab-lideranca:" + t.id)} className="rounded-full px-3.5 py-2 text-xs font-medium" style={{ backgroundColor: palette.card, border: `1px solid ${palette.gold}`, color: palette.navy }}>
+                    {cap(t.titulo.replace("Comunicação ", ""))}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
@@ -9570,9 +9818,11 @@ export default function App() {
     content = <CatalogoCursosScreen onBack={() => setSecao("formacao-hub")} temAcesso={temAcessoCurso} onAbrirCurso={setCursoAberto} onAreaAluno={() => setSecao("aluno")} />;
   } else if (secao === "lideranca-3s") {
     content = <EscolaScreen escola="lideranca" onBack={() => setSecao(null)} onOpen={setSecao} temAcesso={temAcessoCurso} onAbrirCurso={setCursoAberto} desbloqueados={materiaisAcesso} acessoTotal={progresso.papel === "dona"} />;
-  } else if (secao === "lab-lideranca") {
+  } else if (secao === "lab-lideranca" || (secao || "").startsWith("lab-lideranca:")) {
     content = (
       <LaboratorioLiderancaScreen
+        key={secao}
+        inicial={(secao || "").startsWith("lab-lideranca:") ? secao.split(":")[1] : null}
         onBack={() => setSecao("lideranca-3s")}
         resultados={progresso.testesLideranca || {}}
         onGuardar={(chave, valor) => setProgresso((p) => ({ ...p, testesLideranca: { ...(p.testesLideranca || {}), [chave]: valor } }))}
