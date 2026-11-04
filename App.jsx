@@ -1,4 +1,4 @@
-// VERSAO-04-NOV-TRES-ESCOLAS-COACHING
+// VERSAO-04-NOV-TRES-ESCOLAS-CORES-LOGO
 import { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "./supabase.js";
 import {
@@ -1309,9 +1309,10 @@ const ESCOLAS_3S = {
     frase: "Corpo, mente e hábitos: treinar com cabeça, coração e propósito.",
     para: "Para quem treina: trilhos, corrida, bicicleta e pilates",
     icon: Footprints,
-    fundo: "linear-gradient(150deg, #1F4D45 0%, #2E6B5E 100%)",
-    texto: palette.creamSoft,
-    suave: "#BFE0D2",
+    fundo: `linear-gradient(150deg, #FBF5EA 0%, ${palette.cream} 100%)`,
+    borda: palette.gold,
+    texto: palette.navy,
+    suave: palette.gold,
     acento: palette.gold,
     cursos: [],
     livro: null,
@@ -1331,7 +1332,7 @@ function EscolasDuplas({ publico, onAbrir }) {
             key={e.secao}
             onClick={() => (onAbrir ? onAbrir(e.secao) : irPara(e.secao))}
             className="relative overflow-hidden block w-full rounded-3xl px-5 py-5 text-left transition active:scale-[0.98]"
-            style={{ background: e.fundo, boxShadow: "0 10px 26px -14px rgba(27,51,85,0.6)" }}
+            style={{ background: e.fundo, border: e.borda ? `1.5px solid ${e.borda}` : "none", boxShadow: "0 10px 26px -14px rgba(27,51,85,0.6)" }}
           >
             <Icon size={110} strokeWidth={1} className="absolute -right-4 -bottom-5" style={{ color: e.texto, opacity: 0.08 }} />
             <div className="flex items-center gap-4 relative">
@@ -1368,7 +1369,7 @@ function EscolaScreen({ escola, onBack, onOpen, temAcesso, onAbrirCurso, desbloq
         </button>
       </div>
       <div className="px-6 pt-4 pb-7">
-        <div className="relative overflow-hidden rounded-3xl px-5 py-7 text-center" style={{ background: e.fundo }}>
+        <div className="relative overflow-hidden rounded-3xl px-5 py-7 text-center" style={{ background: e.fundo, border: e.borda ? `1.5px solid ${e.borda}` : "none" }}>
           <Icon size={150} strokeWidth={1} className="absolute -right-6 -bottom-8" style={{ color: e.texto, opacity: 0.07 }} />
           <div className="w-14 h-14 mx-auto rounded-full flex items-center justify-center" style={{ border: `1.5px solid ${e.acento}` }}>
             <Icon size={24} strokeWidth={1.6} style={{ color: e.acento }} />
@@ -1383,7 +1384,7 @@ function EscolaScreen({ escola, onBack, onOpen, temAcesso, onAbrirCurso, desbloq
       {e.app && (
         <div className="px-6 mb-7">
           {rotulo("A APP")}
-          <a href={e.app.url} className="block rounded-2xl px-5 py-4 transition active:scale-[0.99]" style={{ background: e.fundo }}>
+          <a href={e.app.url} className="block rounded-2xl px-5 py-4 transition active:scale-[0.99]" style={{ background: e.fundo, border: e.borda ? `1.5px solid ${e.borda}` : "none" }}>
             <p className="font-serif text-xl" style={{ color: e.texto }}>{e.app.nome}</p>
             <p className="text-xs mt-1 leading-relaxed" style={{ color: e.texto, opacity: 0.85 }}>{e.app.desc}</p>
             <span className="inline-flex items-center gap-1 mt-3 text-xs font-medium rounded-full px-3 py-1.5" style={{ backgroundColor: e.acento, color: palette.navy }}>Abrir o {e.app.nome} <ChevronRight size={14} /></span>
@@ -7569,7 +7570,7 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher }) {
           const Icon = e.icon;
           return (
             <div key={e.secao} id={e.secao} className="px-6 mb-10" style={{ scrollMarginTop: 16 }}>
-              <div className="relative overflow-hidden rounded-3xl px-5 py-5 mb-3" style={{ background: e.fundo }}>
+              <div className="relative overflow-hidden rounded-3xl px-5 py-5 mb-3" style={{ background: e.fundo, border: e.borda ? `1.5px solid ${e.borda}` : "none" }}>
                 <Icon size={110} strokeWidth={1} className="absolute -right-4 -bottom-5" style={{ color: e.texto, opacity: 0.08 }} />
                 <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: e.suave }}>COACHING</p>
                 <p className="font-serif text-3xl leading-tight" style={{ color: e.texto }}>{e.curto} <span style={{ color: e.acento, fontWeight: 600 }}>3S</span></p>
