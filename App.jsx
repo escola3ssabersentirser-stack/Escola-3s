@@ -2617,6 +2617,32 @@ async function coachIdDaArea(area) {
   return ac.mentor_user_id || null;
 }
 
+function EscolherAreaSessaoScreen({ onBack, onEscolher }) {
+  return (
+    <div className="pb-28">
+      <SectionHeader eyebrow="MARCAR SESSÃO" title="Em que área queres trabalhar?" onBack={onBack} />
+      <p className="px-6 -mt-2 mb-5 text-sm leading-relaxed" style={{ color: palette.navySoft }}>Cada área tem o seu coach. Escolhe e vês logo os horários livres. A primeira sessão (20 min) é grátis.</p>
+      <div className="px-6 space-y-2.5">
+        {Object.entries(ESCOLAS_3S).map(([area, e]) => {
+          const Icon = e.icon;
+          return (
+            <button key={area} onClick={() => onEscolher(area)} className="relative overflow-hidden w-full flex items-center gap-3 rounded-xl px-4 py-3 text-left transition active:scale-[0.98]" style={{ background: e.fundo, border: e.borda ? `1.5px solid ${e.borda}` : "none" }}>
+              <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ border: `1.5px solid ${e.acento}` }}>
+                <Icon size={18} strokeWidth={1.6} style={{ color: e.acento }} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-serif text-lg leading-tight" style={{ color: e.texto }}>{e.curto} <span style={{ color: e.acento, fontWeight: 600 }}>3S</span></p>
+                <p className="text-[11px] leading-snug" style={{ color: e.texto, opacity: 0.85 }}>{e.para}</p>
+              </div>
+              <ChevronRight size={18} style={{ color: e.acento }} />
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function useCoachDaArea(area) {
   const [coach, setCoach] = useState(undefined);
   useEffect(() => {
@@ -2877,33 +2903,24 @@ function InicioScreen({ onOpen, email, papel, naoLidas, onVerAgenda, onVerNotifi
           Olá{primeiroNome ? `, ${primeiroNome}` : ""} <span style={{ color: palette.gold }}>♡</span>
         </p>
       </div>
-      <div className="px-6 mb-2">
-        <p className="text-[10px] tracking-[0.2em] font-semibold mb-2" style={{ color: palette.gold }}>AS ESCOLAS DE COACHING</p>
-        <div className="grid grid-cols-3 gap-2.5">
-          {Object.values(ESCOLAS_3S).map((e) => {
-            const Icon = e.icon;
+      <div className="px-6 mb-6">
+        <div className="grid grid-cols-4 gap-2">
+          {[
+            ...Object.values(ESCOLAS_3S).map((e) => ({ key: e.secao, titulo: e.curto, sub: "3S", icon: e.icon, fundo: e.fundo, borda: e.borda, texto: e.texto, acento: e.acento })),
+            { key: "marcar", titulo: "Sessões", sub: "coaching", icon: PenLine, fundo: palette.card, borda: palette.goldSoft, texto: palette.navy, acento: palette.gold },
+            ...areasEscolaComuns.map((a) => ({ key: a.key, titulo: a.titulo, sub: "", icon: a.icon, fundo: palette.card, borda: palette.goldSoft, texto: palette.navy, acento: palette.gold })),
+          ].map((c) => {
+            const Icon = c.icon;
             return (
-              <button key={e.secao} onClick={() => onOpen(e.secao)} className="relative overflow-hidden aspect-square rounded-lg p-2.5 flex flex-col items-center justify-center text-center transition active:scale-[0.96]" style={{ background: e.fundo, border: e.borda ? `1.5px solid ${e.borda}` : "none", boxShadow: "0 6px 16px -10px rgba(27,51,85,0.6)" }}>
-                <div className="w-9 h-9 rounded-full flex items-center justify-center mb-1.5" style={{ border: `1.5px solid ${e.acento}` }}>
-                  <Icon size={16} strokeWidth={1.6} style={{ color: e.acento }} />
-                </div>
-                <span className="text-[8.5px] tracking-[0.18em] font-semibold" style={{ color: e.suave }}>COACHING</span>
-                <span className="font-serif text-[15px] leading-tight" style={{ color: e.texto }}>{e.curto} <span style={{ color: e.acento, fontWeight: 600 }}>3S</span></span>
+              <button key={c.key} onClick={() => onOpen(c.key)} className="aspect-square rounded-md flex flex-col items-center justify-center gap-1 text-center transition active:scale-[0.95]" style={{ background: c.fundo, border: `1px solid ${c.borda || "transparent"}` }}>
+                <Icon size={17} strokeWidth={1.7} style={{ color: c.acento }} />
+                <span className="text-[10.5px] font-semibold leading-none" style={{ color: c.texto }}>{c.titulo}</span>
+                <span className="text-[9px] leading-none" style={{ color: c.acento, minHeight: 9 }}>{c.sub}</span>
               </button>
             );
           })}
         </div>
-      </div>
-      <div className="px-6 mb-6 mt-4">
-        <div className="grid grid-cols-4 gap-2">
-          {[{ key: "marcar", titulo: "Marcar sessão", icon: PenLine, destaque: true }, ...areasEscolaComuns].map((a) => (
-            <button key={a.key} onClick={() => onOpen(a.key)} className="aspect-square rounded-lg p-1.5 flex flex-col items-center justify-center gap-1 text-center transition active:scale-[0.96]" style={a.destaque ? { backgroundColor: palette.navy } : { backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}88` }}>
-              <a.icon size={18} strokeWidth={1.6} style={{ color: a.destaque ? palette.gold : palette.navy }} />
-              <span className="text-[10.5px] font-medium leading-tight" style={{ color: a.destaque ? palette.creamSoft : palette.navy }}>{a.titulo}</span>
-            </button>
-          ))}
-        </div>
-        <p className="text-[10.5px] text-center mt-2" style={{ color: palette.navySoft }}>A primeira sessão de coaching (20 min) é grátis.</p>
+        <p className="text-[10.5px] text-center mt-2.5" style={{ color: palette.navySoft }}>Três escolas de coaching · a primeira sessão (20 min) é grátis</p>
       </div>
       {(papel === "dona" || papel === "mentora") && (
         <div className="px-6 mb-6">
@@ -6672,7 +6689,79 @@ function AgendaMentoraScreen({ onBack, linkVideochamada, onVista }) {
   );
 }
 
-function DisponibilidadeScreen({ onBack, disponibilidade, onAdicionarData, onRemoverData, onAdicionarHora, onRemoverHora, onGuardarLinkVideochamada }) {
+const DIAS_SEMANA_CURTOS = [["Seg", 1], ["Ter", 2], ["Qua", 3], ["Qui", 4], ["Sex", 5], ["Sáb", 6], ["Dom", 0]];
+const HORAS_POSSIVEIS = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00"];
+function isoLocal(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; }
+
+function DisponibilidadeRapida({ disponibilidade, onDefinir }) {
+  const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+  const diasAtuais = (disponibilidade.dias || []).filter((d) => d >= isoLocal(hoje));
+  const semanaInicial = [...new Set(diasAtuais.map((d) => { const [a, m, dd] = d.split("-").map(Number); return new Date(a, m - 1, dd).getDay(); }))];
+  const [diasSemana, setDiasSemana] = useState(semanaInicial);
+  const [horas, setHoras] = useState(disponibilidade.horas || []);
+  const [semanas, setSemanas] = useState(8);
+  const [excecoes, setExcecoes] = useState([]);
+  const [msg, setMsg] = useState("");
+  const alternar = (lista, setLista, v) => setLista(lista.includes(v) ? lista.filter((x) => x !== v) : [...lista, v]);
+  const datasGeradas = [];
+  for (let i = 0; i < semanas * 7; i++) {
+    const d = new Date(hoje); d.setDate(hoje.getDate() + i);
+    if (diasSemana.includes(d.getDay())) datasGeradas.push(isoLocal(d));
+  }
+  const datasFinais = datasGeradas.filter((d) => !excecoes.includes(d));
+  const guardar = () => {
+    onDefinir(datasFinais, [...horas].sort());
+    setMsg(`Guardado: ${datasFinais.length} dias e ${horas.length} horários por dia.`);
+  };
+  const chip = (ativo) => ({ backgroundColor: ativo ? palette.navy : palette.card, color: ativo ? palette.creamSoft : palette.navy, border: `1px solid ${ativo ? palette.navy : palette.goldSoft + "88"}` });
+  const rotulo = (t) => <p className="text-[11px] tracking-[0.2em] font-semibold mb-2" style={{ color: palette.gold }}>{t}</p>;
+  return (
+    <div className="rounded-2xl px-4 py-4 mb-8" style={{ backgroundColor: palette.card, border: `1.5px solid ${palette.gold}` }}>
+      <p className="font-serif text-lg" style={{ color: palette.navy }}>Forma rápida</p>
+      <p className="text-xs mb-4" style={{ color: palette.navySoft }}>Escolhe os dias da semana e as horas. A app repete para as próximas semanas.</p>
+      {rotulo("1. DIAS DA SEMANA")}
+      <div className="grid grid-cols-7 gap-1.5 mb-4">
+        {DIAS_SEMANA_CURTOS.map(([n, v]) => (
+          <button key={v} onClick={() => alternar(diasSemana, setDiasSemana, v)} className="rounded-md py-2 text-xs font-semibold" style={chip(diasSemana.includes(v))}>{n}</button>
+        ))}
+      </div>
+      {rotulo("2. HORAS")}
+      <div className="grid grid-cols-4 gap-1.5 mb-4">
+        {HORAS_POSSIVEIS.map((h) => (
+          <button key={h} onClick={() => alternar(horas, setHoras, h)} className="rounded-md py-2 text-xs font-semibold" style={chip(horas.includes(h))}>{h}</button>
+        ))}
+      </div>
+      {rotulo("3. DURANTE")}
+      <div className="grid grid-cols-3 gap-1.5 mb-4">
+        {[4, 8, 12].map((n) => (
+          <button key={n} onClick={() => setSemanas(n)} className="rounded-md py-2 text-xs font-semibold" style={chip(semanas === n)}>{n} semanas</button>
+        ))}
+      </div>
+      {datasGeradas.length > 0 && (
+        <>
+          {rotulo("4. DIAS EM QUE NÃO PODES (TOCA PARA TIRAR)")}
+          <div className="flex flex-wrap gap-1.5 mb-4">
+            {datasGeradas.map((d) => {
+              const [a, m, dd] = d.split("-").map(Number);
+              const fora = excecoes.includes(d);
+              return (
+                <button key={d} onClick={() => alternar(excecoes, setExcecoes, d)} className="rounded-md px-2 py-1 text-[11px]" style={{ backgroundColor: fora ? "transparent" : `${palette.gold}26`, color: palette.navy, border: `1px solid ${palette.goldSoft}88`, textDecoration: fora ? "line-through" : "none", opacity: fora ? 0.5 : 1 }}>
+                  {dd}/{m}
+                </button>
+              );
+            })}
+          </div>
+        </>
+      )}
+      <button onClick={guardar} disabled={!datasFinais.length || !horas.length} className="w-full rounded-full py-3 text-sm font-medium" style={{ backgroundColor: palette.navy, color: palette.creamSoft, opacity: !datasFinais.length || !horas.length ? 0.5 : 1 }}>
+        Guardar disponibilidade
+      </button>
+      {msg && <p className="text-xs text-center mt-2" style={{ color: palette.navySoft }}>{msg}</p>}
+    </div>
+  );
+}
+
+function DisponibilidadeScreen({ onBack, disponibilidade, onAdicionarData, onRemoverData, onAdicionarHora, onRemoverHora, onGuardarLinkVideochamada, onDefinir }) {
   const [novaHora, setNovaHora] = useState("");
   const [novaData, setNovaData] = useState("");
   const [linkVideo, setLinkVideo] = useState(disponibilidade.linkVideochamada || "");
@@ -6683,10 +6772,10 @@ function DisponibilidadeScreen({ onBack, disponibilidade, onAdicionarData, onRem
     <div className="pb-28">
       <SectionHeader eyebrow="MARCAR SESSÃO" title="Disponibilidade" onBack={onBack} />
       <div className="px-6">
-        <p className="text-sm mb-6" style={{ color: palette.navySoft }}>
-          Escolhe as datas exatas e as horas em que estás disponível. É isto que aparece
-          a quem quiser marcar uma sessão — sem repetição automática por semana.
+        <p className="text-sm mb-5" style={{ color: palette.navySoft }}>
+          É isto que aparece a quem quiser marcar uma sessão contigo.
         </p>
+        <DisponibilidadeRapida disponibilidade={disponibilidade} onDefinir={onDefinir} />
 
         <p className="text-[11px] tracking-[0.2em] font-medium mb-2" style={{ color: palette.gold }}>LINK DA VIDEOCHAMADA</p>
         <p className="text-xs mb-3" style={{ color: palette.navySoft }}>
@@ -6710,7 +6799,7 @@ function DisponibilidadeScreen({ onBack, disponibilidade, onAdicionarData, onRem
           </button>
         </div>
 
-        <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>DATAS DISPONÍVEIS</p>
+        <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>OU AJUSTA DIA A DIA</p>
         <div className="flex flex-wrap gap-2 mb-4">
           {datasOrdenadas.length === 0 && (
             <p className="text-sm" style={{ color: palette.navySoft }}>Ainda não adicionaste nenhuma data.</p>
@@ -10355,7 +10444,9 @@ export default function App() {
         acessoTotal={progresso.papel === "dona"}
       />
     );
-  } else if (secao === "marcar" || (secao || "").startsWith("marcar:")) {
+  } else if (secao === "marcar") {
+    content = <EscolherAreaSessaoScreen onBack={() => setSecao(null)} onEscolher={(area) => setSecao("marcar:" + area)} />;
+  } else if ((secao || "").startsWith("marcar:")) {
     content = (
       <MarcarSessaoScreen
         onBack={() => setSecao(null)}
@@ -10378,6 +10469,7 @@ export default function App() {
         onAdicionarHora={adicionarHora}
         onRemoverHora={removerHora}
         onGuardarLinkVideochamada={(link) => setProgresso((p) => ({ ...p, disponibilidade: { ...p.disponibilidade, linkVideochamada: link } }))}
+        onDefinir={(dias, horas) => setProgresso((p) => ({ ...p, disponibilidade: { ...p.disponibilidade, dias, horas } }))}
       />
     );
   } else if (secao === "painel-mentora") {
