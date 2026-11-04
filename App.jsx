@@ -1,4 +1,4 @@
-// VERSAO-04-NOV-CARTOES-PEQUENOS
+// VERSAO-04-NOV-SEM-COMUNIDADE
 import { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "./supabase.js";
 import {
@@ -377,7 +377,7 @@ const TODOS_CURSOS = [
 
 // Cada escola mostra só o seu curso principal (+ Crenças grátis). Os outros ficam guardados, escondidos.
 const CURSOS_VISIVEIS = [1, 7, 30];
-const cursos = TODOS_CURSOS.filter((c) => c.escolaId === "comunidade" || CURSOS_VISIVEIS.includes(c.id));
+const cursos = TODOS_CURSOS.filter((c) => CURSOS_VISIVEIS.includes(c.id)); // Comunidade do mês retirada
 
 const materiais = [
   { id: 1, titulo: "Guia de Reflexão Diária", formato: "PDF", preco: "8€", url: "/guia-reflexao-diaria.pdf" },
@@ -1087,7 +1087,6 @@ const areas = [
   { key: "livros", titulo: "Os meus livros", desc: "Romances de Conceição Alves", icon: BookOpen },
   { key: "escola-lideranca", titulo: "Liderança 3S", desc: "Comunicação e liderança de pessoas", icon: BookOpen },
   { key: "escola-ser", titulo: "Vida 3S", desc: "Autoconhecimento, emoções e crenças", icon: BookOpen },
-  { key: "comunidade", titulo: "Comunidade", desc: "Tema, desafio e partilha do mês", icon: Users },
   { key: "workshops", titulo: "Workshops", desc: "Próximas sessões e inscrição", icon: Calendar },
   { key: "podcast", titulo: "Podcast", desc: "Episódios para ouvir", icon: Headphones },
   { key: "material", titulo: "Material Didático", desc: "Fichas, jogos, ebooks", icon: Layers },
@@ -1096,7 +1095,6 @@ const areas = [
 
 const areasInicio = [
   { key: "formacao-hub", titulo: "Formação", desc: "Cursos, material didático e temas de liderança e comunicação", icon: GraduationCap, full: true },
-  { key: "comunidade", titulo: "Comunidade", desc: "Um tema por mês", icon: Users },
   { key: "podcast", titulo: "Podcast", desc: "Episódios para ouvir", icon: Headphones },
   { key: "marcar", titulo: "Marcar sessão", desc: "Coaching e mentoria", icon: PenLine },
   { key: "livros", titulo: "Os meus livros", desc: "Romances da autora", icon: BookOpen },
@@ -2859,7 +2857,6 @@ function EscolaHubScreen({ onBack, onOpen, eyebrow, nome, frase, por, lista }) {
 
 const areasEscolaComuns = [
   { key: "podcast", titulo: "Podcast", icon: Headphones },
-  { key: "comunidade", titulo: "Comunidade", icon: Users },
   { key: "produtos", titulo: "Produtos", icon: ShoppingBag },
 ];
 
@@ -8296,7 +8293,7 @@ function BotaoCarrinho({ item, rotulo, pequeno }) {
   const noCarrinho = carrinho.itens.some((i) => i.chave === item.chave);
   const incluidoNoMes = (item.tipo === "material" || item.tipo === "material_fisico") && materiaisIncluidosComunidade()[item.materialId];
   const dica = incluidoNoMes ? (
-    <p className="text-[11px] mt-1.5" style={{ color: palette.gold }}>Grátis para membros da Comunidade · 4,99€/mês</p>
+    null
   ) : null;
   const classe = pequeno
     ? "w-full flex items-center justify-between rounded-lg px-3 py-2 text-xs font-medium"
@@ -8465,7 +8462,7 @@ function CarrinhoScreen({ onBack, onPagamentoConfirmado }) {
               </div>
             ))}
 
-            {itensIncluidos.length > 0 && !temComunidadeNoCarrinho && (
+            {false && itensIncluidos.length > 0 && !temComunidadeNoCarrinho && (
               <div className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.navy }}>
                 <p className="font-serif text-lg" style={{ color: palette.creamSoft }}>Fica tudo por 4,99€</p>
                 <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.goldSoft }}>
@@ -8980,7 +8977,7 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher }) {
           <p className="text-[11px] tracking-[0.3em] font-medium" style={{ color: palette.gold }}>LIDERANÇA E COMUNICAÇÃO</p>
           <h2 className="font-serif text-3xl leading-tight mt-3" style={{ color: palette.navy }}>Liderar começa na forma como comunicas.</h2>
           <p className="text-sm mt-4 leading-relaxed" style={{ color: palette.navySoft }}>
-            Para quem lidera equipas, negócios, famílias ou a própria vida. Cursos em vídeo, cadernos de trabalho e uma comunidade que te acompanha todos os meses — com a Conceição Alves.
+            Para quem lidera equipas, negócios, famílias ou a própria vida. Cursos em vídeo, testes interativos, livros e sessões de coaching, com a Conceição Alves.
           </p>
           <div className="mt-6 space-y-2.5">
             {botao("Começar grátis", onCriarConta)}
@@ -9022,22 +9019,6 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher }) {
             </div>
           </div>
         )}
-
-        {/* Comunidade */}
-        <div className="px-6 mb-10">
-          {titulo("COMUNIDADE 3S", "Um tema novo por mês, com o grupo")}
-          <div className="rounded-3xl px-5 py-5" style={{ backgroundColor: palette.card, border: `1px solid ${palette.gold}` }}>
-            <div className="space-y-1.5">
-              {["Todos os cadernos de trabalho", "Todos os livros do aluno", "Todo o material didático", "Aulas gravadas", "1 encontro online por mês", "Partilha e desafios com o grupo"].map((t) => (
-                <p key={t} className="text-sm" style={{ color: palette.ink }}><span style={{ color: palette.gold }}>✓</span> {t}</p>
-              ))}
-            </div>
-            <p className="text-xs mt-4 line-through" style={{ color: palette.navySoft }}>Os materiais, em separado, valem mais de 500€</p>
-            <p className="font-serif text-3xl" style={{ color: palette.navy }}>4,99€ <span className="text-base" style={{ color: palette.navySoft }}>/ mês</span></p>
-            <p className="text-[11px] mt-1" style={{ color: palette.navySoft }}>Sem fidelização: pagas mês a mês.</p>
-            <div className="mt-4">{botao("Quero ser membro", () => onEscolher(comunidadeItem))}</div>
-          </div>
-        </div>
 
         {/* As duas escolas: curso + livro */}
         {Object.values(ESCOLAS_3S).map((e) => {
