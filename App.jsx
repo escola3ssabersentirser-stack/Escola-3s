@@ -1354,22 +1354,29 @@ function EscolasDuplas({ publico, onAbrir }) {
   );
 }
 
+// Coach responsável por cada área (a dona pode mudar no Painel quando a tabela areas_coach existir).
+const COACH_POR_AREA_PADRAO = {
+  lideranca: "1306b6b7-c562-4cdc-b284-2b9d293d8795", // Conceição
+  desenvolvimento: "1306b6b7-c562-4cdc-b284-2b9d293d8795", // Conceição
+  desporto: "1b36a35d-b14d-4ed4-a4f2-e7d0fb58801d", // coach desportivo
+};
+const TITULO_COACH_PADRAO = { desporto: "Coach desportivo certificado" };
+
+async function coachIdDaArea(area) {
+  const { data: ac, error } = await supabase.from("areas_coach").select("mentor_user_id").eq("area", area).maybeSingle();
+  if (error || !ac) return COACH_POR_AREA_PADRAO[area] || null;
+  return ac.mentor_user_id || null;
+}
+
 function useCoachDaArea(area) {
   const [coach, setCoach] = useState(undefined);
   useEffect(() => {
     let ativo = true;
     (async () => {
-      const { data: ac, error } = await supabase.from("areas_coach").select("mentor_user_id").eq("area", area).maybeSingle();
-      if (error) {
-        // Ainda sem a tabela: Liderança e Vida ficam com a Conceição, Desporto em breve.
-        if (area === "desporto") { if (ativo) setCoach(null); return; }
-        const { data: ms } = await supabase.from("mentores_disponibilidade").select("nome, titulo").limit(1);
-        if (ativo) setCoach((ms && ms[0]) || null);
-        return;
-      }
-      if (!ac || !ac.mentor_user_id) { if (ativo) setCoach(null); return; }
-      const { data: m } = await supabase.from("mentores_disponibilidade").select("nome, titulo").eq("user_id", ac.mentor_user_id).maybeSingle();
-      if (ativo) setCoach(m || null);
+      const id = await coachIdDaArea(area);
+      if (!id) { if (ativo) setCoach(null); return; }
+      const { data: m } = await supabase.from("mentores_disponibilidade").select("nome, titulo").eq("user_id", id).maybeSingle();
+      if (ativo) setCoach(m && m.nome ? m : { nome: TITULO_COACH_PADRAO[area] || "Coach 3S", titulo: "A preparar os horários" });
     })();
     return () => { ativo = false; };
   }, [area]);
@@ -4732,9 +4739,8 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
     let lista = data || [];
     if (area) {
       // Cada área tem um coach responsável: só esse aparece.
-      const { data: ac, error: erroArea } = await supabase.from("areas_coach").select("mentor_user_id").eq("area", area).maybeSingle();
-      if (!erroArea) lista = lista.filter((m) => ac && m.user_id === ac.mentor_user_id);
-      else if (area === "desporto") lista = []; // sem a tabela: Desporto ainda sem coach
+      const id = await coachIdDaArea(area);
+      lista = lista.filter((m) => id && m.user_id === id);
     }
     setMentoras(lista);
     setACarregar(false);
@@ -6275,7 +6281,7 @@ function CoachPorAreaPainel() {
       const { data: ms } = await supabase.from("mentores_disponibilidade").select("user_id, nome, email").order("nome", { ascending: true });
       setMentores(ms || []);
       const { data: ac, error } = await supabase.from("areas_coach").select("area, mentor_user_id");
-      if (error) { setEstado("Ainda não está ativo na base de dados."); return; }
+      if (error) { setEscolhas({ ...COACH_POR_AREA_PADRAO }); setEstado("Por agora a escolha está fixa: Liderança e Vida com a Conceição, Desporto com o coach desportivo."); return; }
       const e = {};
       (ac || []).forEach((r) => { e[r.area] = r.mentor_user_id || ""; });
       setEscolhas(e);
