@@ -382,6 +382,19 @@
   .nov-ic{width:34px; height:34px; border-radius:10px; background:#F2E5D1; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
   .nov-sub{display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
   .nav-dot{position:absolute; top:-2px; right:8px; min-width:17px; height:17px; padding:0 4px; border-radius:99px; background:#B5483E; color:#fff; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center;}
+  /* Testes e quizzes */
+  .tt-eye{font-size:10.5px; letter-spacing:1.4px; font-weight:600; color:var(--gold); text-transform:uppercase;}
+  .tt-op{display:flex; align-items:center; width:100%; text-align:left; background:var(--card); border:1.5px solid var(--line); border-radius:16px; padding:13px 14px; margin-bottom:9px; font-size:14px; color:var(--ink); cursor:pointer;}
+  .tt-op.certa{background:#E3F1E7; border-color:#3C8D5A;}
+  .tt-op.errada{background:#F8E1DE; border-color:#C0392B;}
+  .tt-op:disabled{cursor:default;}
+  .tt-expl{background:var(--coral-soft); color:var(--navy); border-radius:14px; padding:11px 13px; font-size:13px; margin:4px 0 12px;}
+  .tt-card{display:block; width:100%; text-align:left; background:var(--card); box-shadow:0 3px 12px var(--shadow); border:none; border-radius:var(--radius); padding:15px 16px; margin-bottom:10px; font-size:15px; color:var(--ink); cursor:pointer;}
+  .tt-plano{border:1.5px solid var(--gold);}
+  .tt-passo{display:flex; gap:10px; align-items:flex-start; font-size:13.5px; margin-bottom:8px; cursor:pointer;}
+  .tt-passo.ok span:last-child{text-decoration:line-through; opacity:.6;}
+  .tt-n{width:24px; height:24px; flex-shrink:0; border-radius:50%; border:1.5px solid var(--gold); color:var(--gold); display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:600;}
+  .tt-passo.ok .tt-n{background:var(--gold); color:var(--navy);}
 </style>
 </head>
 <body>
@@ -506,6 +519,8 @@
 
       <div id="desafioHome"></div>
 
+      <button class="tt-card" style="border:1.5px solid var(--gold);" onclick="goView('treino'); openPane('testes')"><span class="tt-eye" style="display:block;">Teste rápido · 3 min</span><b>Que atleta és tu?</b><span class="tiny" style="display:block;">Responde a 10 perguntas e recebe o teu perfil e um plano de 4 semanas.</span></button>
+
       <div class="actions">
         <button class="action free" onclick="openFree()">
           <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4M9 15l2 2 4-4"/></svg></span><span class="t">Estou livre</span><span class="s">Diz quando podes e encontra companhia</span>
@@ -614,6 +629,8 @@
       <div id="pane-nutricao" class="pane" hidden></div>
       <!-- ATLETAS (coach) -->
       <div id="pane-atletas" class="pane" hidden></div>
+      <!-- TESTES E QUIZZES -->
+      <div id="pane-testes" class="pane" hidden></div>
     </section>
 
     <!-- INSTITUIÇÃO -->
@@ -1216,6 +1233,7 @@ const PATTERNS = {
 const TYPE_NAME = {facil:'Fácil', qualidade:'Qualidade', longo:'Longo', forca:'Força', prova:'Prova'};
 const WD = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
 const ICONS = {
+  testes:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l2 2 4-4"/><rect x="4" y="3" width="16" height="18" rx="3"/></svg>',
   coaching:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v10H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg>',
   plano:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4M8 14l2 2 4-4"/></svg>',
   saude:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/><path d="M5 12h3l2-3 3 6 2-3h4"/></svg>',
@@ -1319,7 +1337,7 @@ function openPane(p, fromHistory){
   window.scrollTo(0,0);
   renderTreino();
 }
-const PANE_TITLES={coaching:'Sessões de coaching', plano:'Plano de treino', saude:'Saúde', corpo:'Corpo', mente:'Mente', nutricao:'Nutrição', evolucao:'Evolução', atletas:'Os meus atletas'};
+const PANE_TITLES={coaching:'Sessões de coaching', plano:'Plano de treino', saude:'Saúde', corpo:'Corpo', mente:'Mente', nutricao:'Nutrição', evolucao:'Evolução', atletas:'Os meus atletas', testes:'Testes e quizzes'};
 
 /* ---------- render principal ---------- */
 function renderTreino(){
@@ -1334,6 +1352,7 @@ function renderTreino(){
   if(currentPane==='nutricao') renderNutri();
   if(currentPane==='evolucao') renderEvo();
   if(currentPane==='atletas') renderAthletes();
+  if(currentPane==='testes'){ if(!window._ttAberto){ TT={vista:null,passo:0,resp:[],quiz:null,msg:''}; } window._ttAberto=true; renderTestes(); } else { window._ttAberto=false; }
 }
 function hubCard(key, cls, title, sub, wide){
   return `<button class="hub-card ${wide?'wide':''}" onclick="openPane('${key}')"><span class="hi ${cls}">${ICONS[key]}</span><span style="min-width:0;"><span class="ht" style="display:block">${title}</span><span class="hs" style="display:block; margin-top:3px;">${sub}</span></span></button>`;
@@ -2589,6 +2608,7 @@ const TONS = {
   coaching:['#B5603E','#F7E4DA'],
   atletas: ['#1B2A4A','#E7EAF1'],
   evolucao:['#2F6F8F','#E1EEF4'],
+  testes:  ['#B3843F','#F2E5D1'],
 };
 function hc(key, o){
   const [tone, soft] = TONS[key];
@@ -2672,6 +2692,12 @@ function renderHub(){
   const mHoje=(S.mind||[]).find(m=>m.date===today);
   cards+=hc('mente',{title:'Mente', metric: mHoje? FEELINGS[mHoje.mood-1] : null,
     sub: mHoje? 'O teu humor de hoje' : 'Como te sentes hoje?', act:'Respirar 2 min', actFn:"openPane('mente')"});
+
+  // testes e quizzes (largo)
+  if(!isCoach()){ const dT=ttLer(), pfT=dT.perfil&&TT_PERFIS[dT.perfil.perfil];
+    cards+=hc('testes',{wide:true, title:'Testes e quizzes', metric: pfT? pfT.nome : null,
+      sub: pfT? 'O teu perfil de atleta' + (dT.plano? ` · plano: ${dT.plano.passos.filter(x=>x.feito).length}/${dT.plano.passos.length}`:'') : 'Responde e recebe o teu perfil de atleta e um plano feito para ti.',
+      act: pfT? 'Ver' : 'Fazer o teste', actFn:"openPane('testes')"}); }
 
   // sessões de coaching (largo)
   const next=(S.sessions||[]).filter(s=>s.date>=today).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time))[0];
@@ -4009,6 +4035,171 @@ async function saveNewPass(){
   const {error}=await sb.auth.updateUser({password:p}); if(error){ toast('Erro: '+error.message); return; }
   closeSheet(); toast('Palavra-passe alterada');
 }
+
+/* =========================================================
+   TESTES E QUIZZES: respostas → perfil → plano automático
+   ========================================================= */
+const TT_PERFIS = {
+  R:{nome:'Competidor', frase:'Vives para o desafio e para a meta.', forca:'Foco no resultado, garra e vontade de te superares.', risco:'Frustração quando o tempo não sai e tendência para treinar em excesso.', quando:'Provas e objetivos com data marcada.', crescer:'Celebra o processo, não só o tempo final. Descansar também é treinar.'},
+  E:{nome:'Explorador', frase:'Treinas pelo prazer de descobrir.', forca:'Curiosidade, variedade e gosto genuíno pelo movimento.', risco:'Falta de regularidade e de plano.', quando:'Trilhos novos, modalidades diferentes, fases de experimentar.', crescer:'Escolhe um objetivo e mantém um plano simples durante 4 semanas.'},
+  S:{nome:'Social', frase:'Treinas melhor em grupo.', forca:'Energia do grupo e compromisso com os outros.', risco:'Depender dos outros para treinar.', quando:'Treinos em grupo e encontros da app.', crescer:'Garante um treino por semana só teu, para te conheceres.'},
+  D:{nome:'Disciplinado', frase:'A tua força é a rotina.', forca:'Consistência, organização e cumprimento do plano.', risco:'Rigidez, culpa quando falhas e ignorar sinais do corpo.', quando:'Preparações longas e objetivos exigentes.', crescer:'Ouve o corpo: ajustar o plano não é falhar.'},
+};
+const TT_PERGUNTAS = [
+  ['Porque é que treinas?', [['R','Para me superar e bater os meus tempos.'],['E','Para descobrir sítios e experimentar coisas novas.'],['S','Pelo convívio e pela energia do grupo.'],['D','Porque faz parte da minha rotina.']]],
+  ['Está a chover no dia do treino.', [['R','Vou na mesma: a prova não escolhe o tempo.'],['E','Troco por outra atividade, como pilates em casa.'],['S','Vou se o grupo for.'],['D','Faço o treino previsto, adaptado.']]],
+  ['Como escolhes um percurso?', [['R','O que me der melhor tempo ou mais desnível.'],['E','Um que nunca fiz.'],['S','O que o grupo escolher.'],['D','O que está no meu plano.']]],
+  ['Depois de um mau treino…', [['R','Fico a remoer e quero compensar no próximo.'],['E','Esqueço e penso no próximo sítio.'],['S','Falo com os colegas e rio-me disso.'],['D','Registo e sigo o plano.']]],
+  ['O que te faz faltar a um treino?', [['R','Saber que não vou melhorar nada.'],['E','Tédio: fazer sempre o mesmo.'],['S','Não ter companhia.'],['D','Muito pouca coisa.']]],
+  ['Usas relógio ou aplicação de treino?', [['R','Sempre: ritmo, tempo e frequência cardíaca.'],['E','Às vezes, para guardar o percurso.'],['S','Para partilhar com o grupo.'],['D','Para cumprir e registar o plano.']]],
+  ['Uma prova perfeita é…', [['R','Bater o meu recorde.'],['E','Um percurso bonito e diferente.'],['S','Chegar ao fim com os amigos.'],['D','Cumprir a estratégia que planeei.']]],
+  ['Quando não te apetece treinar…', [['R','Penso na meta e vou.'],['E','Mudo de atividade.'],['S','Combino com alguém, para ter de ir.'],['D','Vou na mesma: é um compromisso comigo.']]],
+  ['O que mais te incomoda no desporto?', [['R','Não ver evolução.'],['E','A monotonia.'],['S','Treinar sem companhia.'],['D','A falta de método.']]],
+  ['Como gostas que te vejam?', [['R','Alguém que não desiste.'],['E','Alguém que está sempre a experimentar.'],['S','Alguém que puxa pelos outros.'],['D','Alguém de confiança e com rotina.']]],
+];
+const TT_PLANO_PERFIL = {
+  R:['Define um objetivo de processo (por exemplo, 3 treinos por semana), não só de tempo.','Inclui um treino leve por semana, sem relógio.','Depois de cada treino, escreve uma coisa que correu bem.','Volta a fazer o teste e compara.'],
+  E:['Escolhe um objetivo para as próximas 4 semanas.','Faz um plano simples: 3 dias fixos por semana.','Varia o local, mas mantém os dias.','Volta a fazer o teste e compara.'],
+  S:['Junta-te a um encontro aqui na app.','Faz um treino por semana só teu.','Combina com alguém um objetivo comum.','Volta a fazer o teste e compara.'],
+  D:['Regista como te sentes antes de cada treino (de 1 a 5).','Quando o corpo pedir, troca um treino intenso por um leve, sem culpa.','Experimenta uma atividade nova, só por prazer.','Volta a fazer o teste e compara.'],
+};
+const TT_COMP = [
+  ['Saber','Sei para que serve cada treino que faço.'],['Saber','Conheço os sinais de cansaço do meu corpo.'],['Saber','Planeio o descanso tão bem como o treino.'],['Saber','Sei o que comer e beber antes e depois de treinar.'],
+  ['Sentir','Consigo acalmar-me antes de uma prova.'],['Sentir','Quando um treino corre mal, não me deito abaixo.'],['Sentir','Tenho prazer enquanto treino, não só no fim.'],['Sentir','Peço ajuda quando sinto dor ou falta de motivação.'],
+  ['Ser','Cumpro os treinos que combino comigo.'],['Ser','Treino com regularidade, mesmo sem prova à vista.'],['Ser','Respeito os outros atletas, quer ganhe quer perca.'],['Ser','O desporto faz parte de quem sou, não é só uma obrigação.'],
+];
+const TT_ESCALA = ['Nunca','Raramente','Às vezes','Muitas vezes','Sempre'];
+const TT_DICAS = {Saber:'Escreve o objetivo de cada treino da semana e marca um dia de descanso a sério.', Sentir:'Antes de cada treino, respira fundo três vezes e escolhe uma palavra para o dia.', Ser:'Marca os treinos na agenda como compromissos: são encontros contigo.'};
+const TT_PLANO_PILAR = {
+  Saber:['Escreve o objetivo de cada treino da semana.','Marca um dia de descanso a sério.','Revê o que comes e bebes antes e depois de treinar.','Volta a fazer o teste e compara.'],
+  Sentir:['Antes de cada treino, respira fundo três vezes.','Depois de cada treino, escreve como te sentiste.','Treina uma vez sem relógio, só pelo prazer.','Volta a fazer o teste e compara.'],
+  Ser:['Marca os treinos da semana na agenda.','Cumpre o mínimo, mesmo num dia difícil: 10 minutos contam.','Partilha o teu objetivo com alguém de confiança.','Volta a fazer o teste e compara.'],
+};
+const TT_QUIZZES = [
+  {id:'recuperacao', titulo:'Recuperação e sono', desc:'O corpo fica mais forte no descanso', desafio:'Esta semana, dorme mais 30 minutos em três noites e repara na diferença nos treinos.', perguntas:[
+    {p:'Quando é que o corpo fica mais forte?', o:['Durante o treino.','No descanso depois do treino.','Só nos dias de prova.','Nunca: só se mantém.'], c:1, e:'O treino dá o estímulo; a adaptação acontece no descanso.', a:'Marca pelo menos um dia de descanso por semana.'},
+    {p:'Para quem treina, dormir bem…', o:['É secundário.','Ajuda a recuperar e a render mais.','Só conta antes das provas.','Pode ser compensado com café.'], c:1, e:'O sono é uma das ferramentas de recuperação mais importantes.', a:'Durante uma semana, deita-te sempre à mesma hora.'},
+    {p:'Treinar com muito cansaço vários dias seguidos pode…', o:['Acelerar a evolução.','Aumentar o risco de lesão e de desmotivação.','Não ter efeito nenhum.','Substituir o aquecimento.'], c:1, e:'Sem recuperação, o corpo acumula fadiga.', a:'Regista de 1 a 5 como acordas; com 1 ou 2, faz um treino leve.'},
+    {p:'Um treino de recuperação deve ser…', o:['Tão intenso como os outros.','Leve e confortável.','Sempre em jejum.','Evitado.'], c:1, e:'Recuperar é mexer o corpo com pouca intensidade.', a:'Inclui um treino leve por semana, a um ritmo em que consigas conversar.'},
+    {p:'Sentes uma dor que não passa e piora com o treino. Tu…', o:['Treinas por cima da dor.','Paras e procuras um profissional de saúde.','Tomas um analgésico e continuas.','Ignoras.'], c:1, e:'Uma dor que persiste ou piora é sinal para parar e pedir avaliação.', a:'Se uma dor piora com o treino, para e consulta um profissional de saúde.'},
+  ]},
+  {id:'prova', titulo:'Mente na prova', desc:'Nervos, foco e diálogo interno', desafio:'Cria a tua rotina de 5 minutos antes de treinar: respiração, frase e objetivo do dia.', perguntas:[
+    {p:'Sentir nervos antes de uma prova é…', o:['Sinal de que vai correr mal.','Normal: é o corpo a preparar-se.','Para esconder.','Coisa de principiante.'], c:1, e:'Algum nervosismo dá energia. O segredo é usá-lo a teu favor.', a:'Antes da próxima prova, diz: “Isto é energia para a prova.”'},
+    {p:'Uma boa forma de acalmar antes da partida:', o:['Pensar em tudo o que pode correr mal.','Respirar devagar, expirando durante mais tempo do que inspiras.','Beber muito café.','Comparar-te com os outros.'], c:1, e:'Expirar devagar ajuda o corpo a acalmar.', a:'Treina 3 minutos de respiração lenta por dia.'},
+    {p:'A meio da prova, estás a sofrer. Ajuda mais…', o:['Pensar na meta, que ainda está longe.','Focar no próximo quilómetro ou na próxima subida.','Parar para ver o tempo.','Pensar em desistir.'], c:1, e:'Dividir a prova em partes pequenas torna o esforço gerível.', a:'No próximo treino longo, divide-o em blocos e pensa só no bloco em que estás.'},
+    {p:'Uma frase útil para usares na prova:', o:['“Não consigo.”','“Um passo de cada vez. Treinei para isto.”','“Sou o pior.”','“Todos são melhores do que eu.”'], c:1, e:'O diálogo interno muda o esforço que sentes.', a:'Escolhe a tua frase de prova e repete-a nos treinos difíceis.'},
+    {p:'Depois de uma prova que correu mal…', o:['Desistes do desporto.','Vês o que aprendeste e o que vais mudar.','Culpas o tempo que fez.','Não falas disso.'], c:1, e:'Cada prova é informação para a próxima.', a:'Escreve três coisas que aprendeste na última prova.'},
+  ]},
+  {id:'alimentacao', titulo:'Hidratação e alimentação', desc:'O básico para treinar bem', desafio:'Esta semana, leva água em todos os treinos e regista como te sentiste.', perguntas:[
+    {p:'Num treino longo, quando deves beber água?', o:['Só no fim, quando tiveres sede.','Antes, durante e depois do treino.','Só no dia seguinte.','Nunca durante o treino.'], c:1, e:'Beber ao longo do dia e durante treinos longos ajuda o rendimento.', a:'Leva sempre água nos treinos com mais de uma hora.'},
+    {p:'Comer muito pouco antes de treinar pode…', o:['Melhorar sempre o rendimento.','Deixar-te sem energia e com tonturas.','Não ter efeito.','Substituir o aquecimento.'], c:1, e:'O corpo precisa de energia para treinar bem.', a:'Experimenta um lanche leve uma a duas horas antes de treinar.'},
+    {p:'Depois de um treino exigente, é útil…', o:['Não comer nada até ao jantar.','Fazer uma refeição equilibrada, com proteína e hidratos de carbono.','Beber só café.','Comer apenas doces.'], c:1, e:'Recuperar inclui repor energia e ajudar os músculos.', a:'Planeia o que vais comer depois dos treinos exigentes.'},
+    {p:'Urina muito escura pode ser sinal de…', o:['Boa hidratação.','Pouca água no corpo.','Excesso de treino de força.','Nada de especial.'], c:1, e:'A cor da urina é um sinal simples do estado de hidratação.', a:'Repara na cor da urina ao longo do dia.'},
+    {p:'Para um plano alimentar feito à tua medida, o mais indicado é…', o:['Copiar o plano de um atleta famoso.','Falar com um nutricionista.','Seguir a última moda das redes sociais.','Cortar refeições.'], c:1, e:'Cada corpo é diferente: um profissional ajusta o plano ao teu caso.', a:'Se tens objetivos exigentes, marca uma consulta com um nutricionista.'},
+  ]},
+  {id:'motivacao', titulo:'Objetivos e motivação', desc:'Metas que te fazem sair de casa', desafio:'Escreve o teu objetivo para os próximos 3 meses e afixa-o num sítio onde o vejas todos os dias.', perguntas:[
+    {p:'Qual é o objetivo mais útil?', o:['“Ficar em forma.”','“Fazer 10 km em menos de 60 minutos até junho.”','“Treinar mais.”','“Ser o melhor.”'], c:1, e:'Concreto, mensurável e com prazo.', a:'Reescreve o teu objetivo com um número e uma data.'},
+    {p:'Um objetivo de processo é…', o:['O tempo final da prova.','Algo que controlas, como treinar 3 vezes por semana.','Ganhar a um colega.','O lugar na classificação.'], c:1, e:'Os objetivos de processo dependem só de ti e mantêm a motivação.', a:'Define um objetivo de processo para este mês.'},
+    {p:'A motivação que dura mais vem de…', o:['Prémios e medalhas.','Gostar do que fazes e sentir que evoluis.','Medo de engordar.','Comparar-te com os outros.'], c:1, e:'A motivação que vem de dentro aguenta mais do que a de fora.', a:'Escreve três razões tuas para treinar, que não tenham a ver com tempos.'},
+    {p:'Falhaste uma semana de treinos. O melhor é…', o:['Compensar tudo na semana seguinte.','Recomeçar com calma, no plano normal.','Desistir do objetivo.','Treinar o dobro num só dia.'], c:1, e:'Compensar de uma vez aumenta o risco de lesão.', a:'Se falhares, recomeça no plano normal, sem compensar.'},
+    {p:'Partilhar o teu objetivo com alguém…', o:['Não serve para nada.','Aumenta o compromisso.','É vaidade.','Dá azar.'], c:1, e:'Dizer a alguém torna o compromisso mais real.', a:'Partilha o teu objetivo com uma pessoa de confiança ou com o teu grupo de treino.'},
+  ]},
+];
+const TT_SEMANAS=['Semana 1','Semana 2','Semana 3','Semana 4'], TT_DIAS=['Dia 1','Dia 2','Dia 4','Dia 5','Dia 7'];
+let TT = {vista:null, passo:0, resp:[], quiz:null, msg:''};
+function ttKey(){ return 'mov_testes_'+(ME||'anon'); }
+function ttLer(){ try{ return JSON.parse(localStorage.getItem(ttKey())||'{}')||{}; }catch(e){ return {}; } }
+function ttGravar(chave, valor){ const d=ttLer(); d[chave]=valor; try{ localStorage.setItem(ttKey(), JSON.stringify(d)); }catch(e){} }
+function ttPlano(titulo, textos, etiquetas){ return {titulo, data:new Date().toISOString(), passos:textos.map((t,i)=>({etiqueta:etiquetas[i]||'', texto:t, feito:false}))}; }
+function ttRot(n, k){ return Array.from({length:n},(_,j)=>(j+k)%n); }
+function ttIr(vista, quiz){ TT={vista, passo:0, resp:[], quiz:quiz||null, msg:''}; renderTestes(); window.scrollTo(0,0); }
+function ttResponder(v){ TT.resp.push(v); TT.passo++; renderTestes(); window.scrollTo(0,0); }
+function ttQuizEscolher(i){ if(TT.resp.length>TT.passo) return; TT.resp.push(i); renderTestes(); }
+function ttQuizSeguinte(){ TT.passo++; renderTestes(); window.scrollTo(0,0); }
+function ttAlternar(i){ const d=ttLer(); if(!d.plano) return; d.plano.passos[i].feito=!d.plano.passos[i].feito; ttGravar('plano', d.plano); renderTestes(); }
+function ttGuardar(chave, valor, plano){ ttGravar(chave, valor); ttGravar('plano', plano); TT.msg='Guardado. Encontras o plano em Testes e quizzes.'; toast('Plano guardado'); renderTestes(); }
+function ttBarra(rot, pct, dest){ return `<div style="margin-bottom:9px;"><div class="row" style="font-size:12.5px; margin-bottom:4px;"><span style="${dest?'font-weight:600':''}">${esc(rot)}</span><span style="color:var(--gold)">${pct}%</span></div><div class="bar-bg"><div class="bar-fill" style="width:${pct}%; background:${dest?'var(--gold)':'var(--navy)'}"></div></div></div>`; }
+function ttPlanoHtml(p, interativo){
+  const feitos=p.passos.filter(x=>x.feito).length;
+  return `<div class="card tt-plano"><div class="row"><span class="tt-eye">O MEU PLANO</span><span class="tiny">${feitos} de ${p.passos.length} feitos</span></div><h3 style="margin:4px 0 10px;">${esc(p.titulo)}</h3>
+    ${p.passos.map((x,i)=>`<div class="tt-passo ${x.feito?'ok':''}" ${interativo?`role="button" tabindex="0" onclick="ttAlternar(${i})"`:''}><span class="tt-n">${x.feito?'✓':i+1}</span><span><b>${esc(x.etiqueta)}:</b> ${esc(x.texto)}</span></div>`).join('')}
+    ${interativo?'<p class="tiny" style="margin:8px 0 0;">Toca em cada passo quando o fizeres.</p>':''}</div>`;
+}
+function ttCab(eyebrow, titulo){ return `<div class="tt-cab"><button class="ghost small" style="width:auto; margin:0 0 10px;" onclick="ttIr(${TT.vista==='quiz'?"'quizzes'":'null'})">‹ ${TT.vista==='quiz'?'Quizzes':'Testes e quizzes'}</button><div class="tt-eye">${esc(eyebrow)}</div><h2 style="margin:2px 0 12px;">${esc(titulo)}</h2></div>`; }
+function ttProgresso(i,n){ return `<div class="bar-bg" style="height:6px; margin-bottom:14px;"><div class="bar-fill" style="width:${Math.round(i/n*100)}%; background:var(--gold)"></div></div>`; }
+function renderTestes(){
+  const box=document.getElementById('pane-testes'); if(!box) return;
+  const d=ttLer();
+  let h='';
+  if(TT.vista==='perfil'){
+    if(TT.passo<TT_PERGUNTAS.length){
+      const [p,ops]=TT_PERGUNTAS[TT.passo];
+      h=ttCab(`PERGUNTA ${TT.passo+1} DE ${TT_PERGUNTAS.length}`,'Que atleta sou eu?')+ttProgresso(TT.passo,TT_PERGUNTAS.length)+`<h3 style="margin-bottom:12px;">${esc(p)}</h3>`+ttRot(4,TT.passo%4).map(i=>`<button class="tt-op" onclick="ttResponder('${ops[i][0]}')">${esc(ops[i][1])}</button>`).join('');
+    } else {
+      const cont={R:0,E:0,S:0,D:0}; TT.resp.forEach(r=>cont[r]++);
+      const ord=Object.keys(cont).sort((a,b)=>cont[b]-cont[a]); const P=TT_PERFIS[ord[0]];
+      const plano=ttPlano('Plano de 4 semanas: atleta '+P.nome, TT_PLANO_PERFIL[ord[0]], TT_SEMANAS);
+      window._ttPend={chave:'perfil', valor:{perfil:ord[0], cont, data:new Date().toISOString()}, plano};
+      h=ttCab('O TEU RESULTADO','Que atleta sou eu?')+`<div class="goal-top" style="text-align:center;"><div class="eyebrow">O TEU PERFIL</div><h2 style="font-size:30px;">${esc(P.nome)}</h2><div style="opacity:.85; position:relative;">${esc(P.frase)}</div>${cont[ord[1]]?`<div class="tiny" style="color:#fff; opacity:.75; margin-top:8px; position:relative;">Segundo perfil: ${esc(TT_PERFIS[ord[1]].nome)}</div>`:''}</div>
+        <div class="card">${ord.map(k=>ttBarra(TT_PERFIS[k].nome, Math.round(cont[k]/TT_PERGUNTAS.length*100), k===ord[0])).join('')}</div>
+        <div class="card">${[['A tua força',P.forca],['Atenção a',P.risco],['Funciona melhor com',P.quando],['Para crescer',P.crescer]].map(([t,x])=>`<div style="margin-bottom:10px;"><div class="tt-eye">${t.toUpperCase()}</div><div style="font-size:14px; margin-top:2px;">${esc(x)}</div></div>`).join('')}<p class="tiny" style="margin:0;">Não há perfil certo. Conhecer o teu ajuda-te a escolher como treinar e como te motivares.</p></div>
+        ${ttPlanoHtml(plano,false)}
+        <button class="primary" onclick="ttGuardar(_ttPend.chave,_ttPend.valor,_ttPend.plano)">Guardar perfil e plano</button>
+        ${TT.msg?`<p class="tiny" style="text-align:center;">${esc(TT.msg)}</p>`:''}
+        <button class="ghost" onclick="openSession()">Falar sobre o meu perfil com o coach</button>
+        <button class="ghost" onclick="ttIr('perfil')">Repetir o teste</button>`;
+    }
+  } else if(TT.vista==='comp'){
+    if(TT.passo<TT_COMP.length){
+      const [pilar,frase]=TT_COMP[TT.passo];
+      h=ttCab(`${pilar.toUpperCase()} · ${TT.passo+1} DE ${TT_COMP.length}`,'Competências 3S do atleta')+ttProgresso(TT.passo,TT_COMP.length)+`<h3 style="margin-bottom:12px; font-size:20px;">${esc(frase)}</h3>`+TT_ESCALA.map((r,i)=>`<button class="tt-op" onclick="ttResponder(${i+1})"><span class="tt-n" style="margin-right:10px;">${i+1}</span>${r}</button>`).join('');
+    } else {
+      const pil=['Saber','Sentir','Ser'].map(p=>{ const v=TT_COMP.map((c,i)=>c[0]===p?TT.resp[i]:null).filter(x=>x!=null); return {pilar:p, pct:Math.round((v.reduce((a,b)=>a+b,0)-v.length)/(v.length*4)*100)}; });
+      const forte=[...pil].sort((a,b)=>b.pct-a.pct)[0], fraco=[...pil].sort((a,b)=>a.pct-b.pct)[0];
+      const plano=ttPlano('Plano de 4 semanas: crescer no '+fraco.pilar, TT_PLANO_PILAR[fraco.pilar], TT_SEMANAS);
+      window._ttPend={chave:'comp', valor:{pil, data:new Date().toISOString()}, plano};
+      h=ttCab('O TEU RESULTADO','Competências 3S do atleta')+`<div class="card">${pil.map(p=>ttBarra(p.pilar,p.pct,p.pilar===forte.pilar)).join('')}</div>
+        <div class="card"><div class="tt-eye">O TEU PONTO FORTE</div><h3 style="margin:2px 0 10px;">${forte.pilar}</h3><div class="tt-eye">ONDE CRESCER: ${fraco.pilar.toUpperCase()}</div><div style="font-size:14px; margin-top:2px;">${esc(TT_DICAS[fraco.pilar])}</div></div>
+        ${ttPlanoHtml(plano,false)}
+        <button class="primary" onclick="ttGuardar(_ttPend.chave,_ttPend.valor,_ttPend.plano)">Guardar resultado e plano</button>
+        ${TT.msg?`<p class="tiny" style="text-align:center;">${esc(TT.msg)}</p>`:''}
+        <button class="ghost" onclick="ttIr('comp')">Repetir o teste</button>`;
+    }
+  } else if(TT.vista==='quizzes'){
+    const qz=d.quizzes||{};
+    h=ttCab('TESTA O QUE SABES','Quizzes do atleta')+`<p class="muted" style="margin:-4px 0 12px;">5 perguntas cada. No fim recebes a explicação e um plano de 7 dias feito para ti.</p>`+TT_QUIZZES.map(q=>`<button class="tt-card" onclick="ttIr('quiz','${q.id}')"><b>${esc(q.titulo)}</b><span class="tiny" style="display:block;">${esc(q.desc)}</span>${qz[q.id]?`<span class="tt-eye" style="display:block; margin-top:4px;">Última vez: ${qz[q.id].pontos} de 5</span>`:''}</button>`).join('');
+  } else if(TT.vista==='quiz'){
+    const Q=TT_QUIZZES.find(q=>q.id===TT.quiz);
+    if(TT.passo<Q.perguntas.length){
+      const q=Q.perguntas[TT.passo], resp=TT.resp.length>TT.passo, esc0=TT.resp[TT.passo];
+      h=ttCab(`PERGUNTA ${TT.passo+1} DE ${Q.perguntas.length}`, Q.titulo)+ttProgresso(TT.passo,Q.perguntas.length)+`<h3 style="margin-bottom:12px;">${esc(q.p)}</h3>`+
+        ttRot(q.o.length,(TT.passo*3+Q.id.length)%q.o.length).map(i=>{ const cls= resp&&i===q.c?'certa': resp&&i===esc0?'errada':''; return `<button class="tt-op ${cls}" ${resp?'disabled':''} onclick="ttQuizEscolher(${i})">${cls==='certa'?'✓ ':cls==='errada'?'✗ ':''}${esc(q.o[i])}</button>`; }).join('')+
+        (resp?`<div class="tt-expl"><b>${esc0===q.c?'Certo! ':'Não é bem assim. '}</b>${esc(q.e)}</div><button class="primary" onclick="ttQuizSeguinte()">${TT.passo+1<Q.perguntas.length?'Próxima pergunta':'Ver resultado e plano'}</button>`:'');
+    } else {
+      const pts=Q.perguntas.filter((q,i)=>TT.resp[i]===q.c).length;
+      let textos=Q.perguntas.filter((q,i)=>TT.resp[i]!==q.c).map(q=>q.a); textos.push(Q.desafio); if(pts===Q.perguntas.length) textos.unshift('Partilha com o teu grupo de treino o que sabes sobre '+Q.titulo.toLowerCase()+'.'); textos=textos.slice(0,5);
+      const plano=ttPlano('Plano de 7 dias: '+Q.titulo, textos, TT_DIAS);
+      const qz={...(d.quizzes||{}), [Q.id]:{pontos:pts, data:new Date().toISOString()}};
+      window._ttPend={chave:'quizzes', valor:qz, plano};
+      const msg= pts===5?'Excelente! Dominas este tema.': pts>=3?'Bom caminho. Há pormenores a afinar.':'Este tema merece a tua atenção. O plano ajuda.';
+      h=ttCab('O TEU RESULTADO', Q.titulo)+`<div class="goal-top" style="text-align:center;"><h2 style="font-size:40px; color:var(--gold);">${pts}<span style="font-size:20px; color:#fff;"> / 5</span></h2><div style="opacity:.9; position:relative;">${msg}</div></div>
+        ${ttPlanoHtml(plano,false)}
+        <button class="primary" onclick="ttGuardar(_ttPend.chave,_ttPend.valor,_ttPend.plano)">Guardar este plano</button>
+        ${TT.msg?`<p class="tiny" style="text-align:center;">${esc(TT.msg)}</p>`:''}
+        <button class="ghost" onclick="ttIr('quiz','${Q.id}')">Repetir o quiz</button>`;
+    }
+  } else {
+    const pf=d.perfil&&TT_PERFIS[d.perfil.perfil];
+    h=`<div class="goal-top"><div class="eyebrow">Testes e quizzes</div><h2>Conhece-te como atleta</h2><div style="font-size:13px; opacity:.85; position:relative; z-index:1;">Responde às perguntas e recebe o teu perfil e um plano feito para ti.</div></div>`+
+      (d.plano?ttPlanoHtml(d.plano,true):'')+
+      `<button class="tt-card" onclick="ttIr('perfil')"><b>Que atleta sou eu?</b><span class="tiny" style="display:block;">10 perguntas · perfil e plano de 4 semanas</span>${pf?`<span class="tt-eye" style="display:block; margin-top:4px;">O teu perfil: ${esc(pf.nome)}</span>`:''}</button>
+       <button class="tt-card" onclick="ttIr('comp')"><b>Competências 3S do atleta</b><span class="tiny" style="display:block;">Saber, Sentir e Ser no desporto · 12 afirmações</span>${d.comp?`<span class="tt-eye" style="display:block; margin-top:4px;">${d.comp.pil.map(p=>p.pilar+' '+p.pct+'%').join(' · ')}</span>`:''}</button>
+       <button class="tt-card" onclick="ttIr('quizzes')"><b>Quizzes do atleta</b><span class="tiny" style="display:block;">Recuperação, mente na prova, hidratação e objetivos · plano de 7 dias</span>${d.quizzes?`<span class="tt-eye" style="display:block; margin-top:4px;">${Object.keys(d.quizzes).length} de ${TT_QUIZZES.length} feitos</span>`:''}</button>
+       <p class="tiny" style="text-align:center; margin:8px;">Informação geral. Se tens dores, lesões ou algum problema de saúde, fala com um profissional de saúde.</p>`;
+  }
+  box.innerHTML=h;
+}
+
 </script>
 </body>
 </html>
