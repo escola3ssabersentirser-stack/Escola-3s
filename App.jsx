@@ -2877,19 +2877,33 @@ function InicioScreen({ onOpen, email, papel, naoLidas, onVerAgenda, onVerNotifi
           Olá{primeiroNome ? `, ${primeiroNome}` : ""} <span style={{ color: palette.gold }}>♡</span>
         </p>
       </div>
-      <EscolasDuplas onAbrir={onOpen} />
-      <div className="px-6 mb-3">
-        <AreaCard area={{ key: "marcar", titulo: "Coaching e Mentoria", desc: "Marcar uma sessão individual · a primeira é grátis", icon: PenLine, full: true }} onOpen={onOpen} full />
-      </div>
-      <div className="px-6 mb-6">
+      <div className="px-6 mb-2">
+        <p className="text-[10px] tracking-[0.2em] font-semibold mb-2" style={{ color: palette.gold }}>AS ESCOLAS DE COACHING</p>
         <div className="grid grid-cols-3 gap-2.5">
-          {areasEscolaComuns.map((a) => (
-            <button key={a.key} onClick={() => onOpen(a.key)} className="rounded-xl px-2 py-2.5 flex flex-col items-center gap-1 transition active:scale-[0.97]" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66` }}>
-              <a.icon size={17} strokeWidth={1.6} style={{ color: palette.navy }} />
-              <span className="text-xs font-medium" style={{ color: palette.navy }}>{a.titulo}</span>
+          {Object.values(ESCOLAS_3S).map((e) => {
+            const Icon = e.icon;
+            return (
+              <button key={e.secao} onClick={() => onOpen(e.secao)} className="relative overflow-hidden aspect-square rounded-lg p-2.5 flex flex-col items-center justify-center text-center transition active:scale-[0.96]" style={{ background: e.fundo, border: e.borda ? `1.5px solid ${e.borda}` : "none", boxShadow: "0 6px 16px -10px rgba(27,51,85,0.6)" }}>
+                <div className="w-9 h-9 rounded-full flex items-center justify-center mb-1.5" style={{ border: `1.5px solid ${e.acento}` }}>
+                  <Icon size={16} strokeWidth={1.6} style={{ color: e.acento }} />
+                </div>
+                <span className="text-[8.5px] tracking-[0.18em] font-semibold" style={{ color: e.suave }}>COACHING</span>
+                <span className="font-serif text-[15px] leading-tight" style={{ color: e.texto }}>{e.curto} <span style={{ color: e.acento, fontWeight: 600 }}>3S</span></span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+      <div className="px-6 mb-6 mt-4">
+        <div className="grid grid-cols-4 gap-2">
+          {[{ key: "marcar", titulo: "Marcar sessão", icon: PenLine, destaque: true }, ...areasEscolaComuns].map((a) => (
+            <button key={a.key} onClick={() => onOpen(a.key)} className="aspect-square rounded-lg p-1.5 flex flex-col items-center justify-center gap-1 text-center transition active:scale-[0.96]" style={a.destaque ? { backgroundColor: palette.navy } : { backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}88` }}>
+              <a.icon size={18} strokeWidth={1.6} style={{ color: a.destaque ? palette.gold : palette.navy }} />
+              <span className="text-[10.5px] font-medium leading-tight" style={{ color: a.destaque ? palette.creamSoft : palette.navy }}>{a.titulo}</span>
             </button>
           ))}
         </div>
+        <p className="text-[10.5px] text-center mt-2" style={{ color: palette.navySoft }}>A primeira sessão de coaching (20 min) é grátis.</p>
       </div>
       {(papel === "dona" || papel === "mentora") && (
         <div className="px-6 mb-6">
