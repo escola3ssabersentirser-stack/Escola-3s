@@ -9824,6 +9824,58 @@ function progressoInicial() {
   };
 }
 
+
+/* ---------------------------------------------------------
+   Convite para instalar a app (iPhone e Android)
+--------------------------------------------------------- */
+export function InstalarApp() {
+  const [evento, setEvento] = useState(null);
+  const [mostrar, setMostrar] = useState(false);
+  const ua = (typeof navigator !== "undefined" && navigator.userAgent) || "";
+  const ios = /iphone|ipad|ipod/i.test(ua) || (/macintosh/i.test(ua) && typeof navigator !== "undefined" && navigator.maxTouchPoints > 1);
+  const android = /android/i.test(ua);
+  const appInterna = /FBAN|FBAV|Instagram|WhatsApp|Line\//i.test(ua);
+  const instalada = typeof window !== "undefined" && ((window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || window.navigator.standalone === true);
+  useEffect(() => {
+    if (instalada) return;
+    let fechadoEm = 0;
+    try { fechadoEm = Number(localStorage.getItem("escola3s:instalar-fechado") || 0); } catch (e) {}
+    if (Date.now() - fechadoEm < 3 * 24 * 3600 * 1000) return;
+    const antes = (e) => { e.preventDefault(); setEvento(e); setMostrar(true); };
+    window.addEventListener("beforeinstallprompt", antes);
+    const instalou = () => setMostrar(false);
+    window.addEventListener("appinstalled", instalou);
+    if (ios || android) { const t = setTimeout(() => setMostrar(true), 1500); return () => { clearTimeout(t); window.removeEventListener("beforeinstallprompt", antes); window.removeEventListener("appinstalled", instalou); }; }
+    return () => { window.removeEventListener("beforeinstallprompt", antes); window.removeEventListener("appinstalled", instalou); };
+  }, []);
+  if (!mostrar || instalada) return null;
+  const fechar = () => { setMostrar(false); try { localStorage.setItem("escola3s:instalar-fechado", String(Date.now())); } catch (e) {} };
+  const instalar = async () => { if (!evento) return; evento.prompt(); try { await evento.userChoice; } catch (e) {} setEvento(null); setMostrar(false); };
+  let instrucoes = null;
+  if (!evento) {
+    if (appInterna) instrucoes = "Abre este link no Safari (iPhone) ou no Chrome (Android) para instalares a app.";
+    else if (ios) instrucoes = "Toca em Partilhar (o quadrado com a seta para cima) e depois em \u201cAdicionar ao ecrã principal\u201d.";
+    else if (android) instrucoes = "Toca nos três pontos \u22ee do Chrome e depois em \u201cInstalar app\u201d ou \u201cAdicionar ao ecrã principal\u201d.";
+  }
+  return (
+    <div style={{ position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 9999, display: "flex", justifyContent: "center", padding: "0 10px calc(10px + env(safe-area-inset-bottom, 0px))", pointerEvents: "none" }}>
+      <div style={{ pointerEvents: "auto", width: "100%", maxWidth: 440, background: palette.navy, color: palette.creamSoft, borderRadius: 16, padding: "12px 14px", boxShadow: "0 12px 30px -10px rgba(0,0,0,0.45)", fontFamily: "Inter, sans-serif" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <img src="/apple-touch-icon.png" alt="" width={40} height={40} style={{ borderRadius: 10, flexShrink: 0 }} />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontWeight: 600, fontSize: 14 }}>Instala a app Escola 3S</div>
+            <div style={{ fontSize: 11.5, opacity: 0.85, lineHeight: 1.35 }}>{instrucoes || "Fica no teu telemóvel, como uma app normal. É grátis."}</div>
+          </div>
+          <button onClick={fechar} aria-label="Fechar" style={{ background: "transparent", border: "none", color: palette.goldSoft, fontSize: 20, lineHeight: 1, padding: 4, cursor: "pointer" }}>×</button>
+        </div>
+        {evento && (
+          <button onClick={instalar} style={{ marginTop: 10, width: "100%", border: "none", borderRadius: 999, padding: "10px 0", fontWeight: 600, fontSize: 13.5, background: palette.gold, color: palette.navy, cursor: "pointer" }}>Instalar agora</button>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   const [session, setSession] = useState(null);
   const [sessaoCarregada, setSessaoCarregada] = useState(false);
