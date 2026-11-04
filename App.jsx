@@ -1,9 +1,11 @@
-// VERSAO-09-OUT-VISUAL
+// VERSAO-04-NOV-TRES-ESCOLAS-COACHING
 import { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "./supabase.js";
 import {
   Home,
   Compass,
+  Sprout,
+  Footprints,
   Calendar,
   Bell,
   User,
@@ -101,12 +103,12 @@ function Wordmark({ compacto }) {
 
 const escolaCor = { lideranca: palette.navy, ser: palette.gold };
 
-const cursos = [
+const TODOS_CURSOS = [
   {
     id: 1,
     escolaId: "lideranca",
-    titulo: "Liderar Pessoas, Não Apenas Resultados",
-    promessa: "Aprender a liderar pessoas diferentes, criar compromisso e conseguir resultados sem cair no controlo constante.",
+    titulo: "Liderança 3S",
+    promessa: "Liderar pessoas diferentes, criar compromisso e conseguir resultados sem cair no controlo constante. Quatro aulas: Controlo ou Compromisso, Liderança Situacional, Segurança Psicológica e Que Líder Sou Eu.",
     pergunta: "Que líder encontram os outros quando trabalham comigo?",
     tipo: "video",
     duracao: "45 min",
@@ -354,7 +356,28 @@ const cursos = [
     ],
     materiaisIds: [39, 40],
   },
+  {
+    id: 30,
+    escolaId: "ser",
+    emBreve: true,
+    titulo: "Filosofia 3S",
+    promessa: "Saber, Sentir, Ser: a filosofia da Escola 3S aplicada à tua vida. Para qualquer pessoa que queira conhecer-se, sentir com verdade e ser inteira.",
+    pergunta: "Quem sou eu quando deixo de viver em piloto automático?",
+    tipo: "video",
+    aulas: [
+      { titulo: "Saber", descricao: "Conhecer-te: o que pensas, o que acreditas e de onde vem." },
+      { titulo: "Sentir", descricao: "Dar lugar às emoções sem seres governada por elas." },
+      { titulo: "Ser", descricao: "Viver de acordo com quem és, nas escolhas de todos os dias." },
+      { titulo: "Integrar", descricao: "Juntar os três: um caminho para a tua vida." },
+    ],
+    materiaisIds: [],
+  },
+
 ];
+
+// Cada escola mostra só o seu curso principal (+ Crenças grátis). Os outros ficam guardados, escondidos.
+const CURSOS_VISIVEIS = [1, 7, 30];
+const cursos = TODOS_CURSOS.filter((c) => c.escolaId === "comunidade" || CURSOS_VISIVEIS.includes(c.id));
 
 const materiais = [
   { id: 1, titulo: "Guia de Reflexão Diária", formato: "PDF", preco: "8€", url: "/guia-reflexao-diaria.pdf" },
@@ -368,11 +391,11 @@ const materiais = [
   { id: 9, titulo: "Cartas Amor Próprio", formato: "Cartas", preco: "15€", url: "/cartas-amor-proprio.pdf" },
   { id: 10, titulo: "Cartas Relações", formato: "Cartas", preco: "15€", url: "/cartas-relacoes.pdf" },
   { id: 11, titulo: "Ficha — Roda da Vida", formato: "Ficha", preco: "1,99€", url: "/roda-da-vida.pdf" },
-  { id: 12, titulo: "A Rapariga Descalça", formato: "Livro", preco: "6,99€", url: "", tambemFisico: true, precoFisico: "22€" },
-  { id: 13, titulo: "Amina", formato: "Livro", preco: "6,99€", url: "/amina.pdf", tambemFisico: true, precoFisico: "22€" },
-  { id: 14, titulo: "Porta 15", formato: "Livro", preco: "6,99€", url: "/porta-15.pdf", tambemFisico: true, precoFisico: "22€" },
-  { id: 15, titulo: "O Último Cadeado", formato: "Livro", preco: "6,99€", url: "/o-ultimo-cadeado.pdf", tambemFisico: true, precoFisico: "22€" },
-  { id: 16, titulo: "O Preço do Silêncio", formato: "Livro", preco: "6,99€", url: "", tambemFisico: true, precoFisico: "22€" },
+  { id: 12, titulo: "A Rapariga Descalça", formato: "Livro", preco: "12,99€", url: "", tambemFisico: true, precoFisico: "22€" },
+  { id: 13, titulo: "Amina", formato: "Livro", preco: "12,99€", url: "/amina.pdf", tambemFisico: true, precoFisico: "22€" },
+  { id: 14, titulo: "Porta 15", formato: "Livro", preco: "12,99€", url: "/porta-15.pdf", tambemFisico: true, precoFisico: "22€" },
+  { id: 15, titulo: "O Último Cadeado", formato: "Livro", preco: "12,99€", url: "/o-ultimo-cadeado.pdf", tambemFisico: true, precoFisico: "22€" },
+  { id: 16, titulo: "O Preço do Silêncio", formato: "Livro", preco: "12,99€", url: "", tambemFisico: true, precoFisico: "22€" },
   { id: 17, titulo: "Caderno da Pertença", formato: "Caderno", preco: "4,99€", url: "/caderno-pertenca.pdf", tambemFisico: true, precoFisico: "16€" },
   { id: 18, titulo: "Mapa dos Vínculos", formato: "Mapa", preco: "8€", url: "/mapa-vinculos.pdf" },
   { id: 19, titulo: "Caderno dos Cadeados", formato: "Caderno", preco: "4,99€", url: "/caderno-cadeados.pdf", tambemFisico: true, precoFisico: "16€" },
@@ -467,6 +490,8 @@ const materiais = [
   { id: 124, titulo: "Ferramenta A4 — Validação Emocional", formato: "Ficha", preco: "1,99€", url: "/ferramenta-validacao-emocional-dp.pdf" },
   { id: 125, titulo: "Ferramenta A4 — Autocompaixão", formato: "Ficha", preco: "1,99€", url: "/ferramenta-autocompaixao-dp.pdf" },
   { id: 126, titulo: "Ferramenta A4 — Diário de Reflexão Diária", formato: "Ficha", preco: "1,99€", url: "/ferramenta-diario-reflexao-dp.pdf" },
+  { id: 130, titulo: "Liderança 3S — o livro", formato: "Livro", preco: "12,99€", url: "", emBreve: true, desc: "Liderar com Saber, Sentir e Ser: histórias e exercícios para quem lidera pessoas." },
+  { id: 131, titulo: "Filosofia 3S — o livro", formato: "Livro", preco: "12,99€", url: "", emBreve: true, desc: "Saber, Sentir, Ser: um livro sobre as pessoas e o ser humano." },
   { id: 32, titulo: "Caderno do Aluno — Crenças que Limitam", formato: "Caderno", preco: "4,99€", url: "/caderno-aluno-crencas-limitantes.pdf" },
   { id: 33, titulo: "Livro do Aluno — Autossabotagem", formato: "Livro", preco: "6,99€", url: "/livro-autossabotagem.pdf" },
   { id: 34, titulo: "Caderno de Trabalho — Autossabotagem", formato: "Caderno", preco: "4,99€", url: "/caderno-autossabotagem.pdf" },
@@ -1248,30 +1273,188 @@ function AreasGrid({ onOpen, lista }) {
 /* ---------------------------------------------------------
    As escolas da Escola 3S: Liderança 3S e Desenvolvimento 3S
 --------------------------------------------------------- */
+const ESCOLAS_3S = {
+  lideranca: {
+    secao: "lideranca-3s",
+    nome: "Coaching de Liderança 3S",
+    curto: "Liderança",
+    frase: "Liderar pessoas começa na forma como comunicas.",
+    para: "Para quem lidera equipas, negócios ou projetos",
+    icon: Compass,
+    fundo: `linear-gradient(150deg, ${palette.navy} 0%, #24436E 100%)`,
+    texto: palette.creamSoft,
+    suave: palette.goldSoft,
+    acento: palette.gold,
+    cursos: [1],
+    livro: 130,
+  },
+  desenvolvimento: {
+    secao: "desenvolvimento-3s",
+    nome: "Coaching de Vida 3S",
+    curto: "Vida",
+    frase: "Saber, Sentir, Ser: a mudança começa em ti.",
+    para: "Para quem quer crescer por dentro e viver com sentido",
+    icon: Sprout,
+    fundo: `linear-gradient(150deg, #E4C98C 0%, ${palette.gold} 100%)`,
+    texto: palette.navy,
+    suave: palette.navy,
+    acento: palette.navy,
+    cursos: [30, 7],
+    livro: 131,
+  },
+  desporto: {
+    secao: "desporto-3s",
+    nome: "Coaching Desportivo 3S",
+    curto: "Desporto",
+    frase: "Corpo, mente e hábitos: treinar com cabeça, coração e propósito.",
+    para: "Para quem treina: trilhos, corrida, bicicleta e pilates",
+    icon: Footprints,
+    fundo: "linear-gradient(150deg, #1F4D45 0%, #2E6B5E 100%)",
+    texto: palette.creamSoft,
+    suave: "#BFE0D2",
+    acento: palette.gold,
+    cursos: [],
+    livro: null,
+    por: "com coach desportivo certificado",
+    app: { nome: "Movimento 3S", url: "/movimento/", desc: "A app de desporto da Escola 3S: encontros para treinar em grupo, registo dos treinos e plano com o coach." },
+  },
+};
+
 function EscolasDuplas({ publico, onAbrir }) {
-  const irLideranca = () => { const el = document.getElementById("lideranca-3s"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); };
-  const abrir = (k) => (onAbrir ? onAbrir(k) : irLideranca());
-  const Card = ({ titulo, desc, por, fundo, cor, destaque, etiqueta, onClick, href }) => {
-    const conteudo = (
-      <div className="flex items-center gap-3">
-        <div className="flex-1 min-w-0">
-          <p className="font-serif text-2xl leading-tight" style={{ color: cor }}>{titulo} <span style={{ color: destaque }}>3S</span></p>
-          <p className="text-[12px] mt-0.5 leading-snug" style={{ color: cor, opacity: 0.85 }}>{desc}</p>
-        </div>
-        <span className="text-[10px] tracking-[0.14em] font-semibold rounded-full px-2.5 py-1 shrink-0" style={{ backgroundColor: `${destaque}26`, color: destaque }}>{etiqueta}</span>
-      </div>
-    );
-    const cls = "block w-full rounded-3xl px-5 py-4 text-left transition active:scale-[0.98]";
-    const st = { background: fundo, boxShadow: "0 8px 22px -12px rgba(27,51,85,0.5)" };
-    return href ? <a href={href} className={cls} style={st}>{conteudo}</a> : <button onClick={onClick} className={cls} style={st}>{conteudo}</button>;
-  };
+  const irPara = (id) => { const el = document.getElementById(id); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); };
   return (
     <div className={`px-6 space-y-3 ${publico ? "mb-7" : "mb-6"}`}>
-      <Card titulo="Liderança" desc="Comunicação, líderes e equipas" por="COM CONCEIÇÃO ALVES" etiqueta={publico ? "VER ↓" : "ABRIR ›"}
-        fundo={`linear-gradient(150deg, ${palette.navy} 0%, #24436E 100%)`} cor={palette.creamSoft} destaque={palette.gold} onClick={() => abrir("lideranca-3s")} />
-      <Card titulo="Desenvolvimento" desc="Autoconhecimento, emoções e crenças" por="COM CONCEIÇÃO ALVES" etiqueta={publico ? "VER ↓" : "ABRIR ›"}
-        fundo={palette.card} cor={palette.navy} destaque={palette.gold} onClick={() => abrir("desenvolvimento-3s")} />
-      {publico && <p className="text-[11px] text-center" style={{ color: palette.navySoft }}>Uma só conta dá acesso às duas escolas.</p>}
+      {Object.values(ESCOLAS_3S).map((e) => {
+        const Icon = e.icon;
+        return (
+          <button
+            key={e.secao}
+            onClick={() => (onAbrir ? onAbrir(e.secao) : irPara(e.secao))}
+            className="relative overflow-hidden block w-full rounded-3xl px-5 py-5 text-left transition active:scale-[0.98]"
+            style={{ background: e.fundo, boxShadow: "0 10px 26px -14px rgba(27,51,85,0.6)" }}
+          >
+            <Icon size={110} strokeWidth={1} className="absolute -right-4 -bottom-5" style={{ color: e.texto, opacity: 0.08 }} />
+            <div className="flex items-center gap-4 relative">
+              <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0" style={{ border: `1.5px solid ${e.acento}` }}>
+                <Icon size={22} strokeWidth={1.6} style={{ color: e.acento }} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: e.suave, opacity: 0.85 }}>COACHING</p>
+                <p className="font-serif text-[22px] leading-tight whitespace-nowrap" style={{ color: e.texto }}>{e.curto} <span style={{ color: e.acento, fontWeight: 600 }}>3S</span></p>
+                <p className="text-[12px] mt-0.5 leading-snug" style={{ color: e.texto, opacity: 0.85 }}>{e.para}</p>
+              </div>
+              <ChevronRight size={20} style={{ color: e.acento }} />
+            </div>
+          </button>
+        );
+      })}
+      {publico && <p className="text-[11px] text-center" style={{ color: palette.navySoft }}>Uma só conta dá acesso às três escolas.</p>}
+    </div>
+  );
+}
+
+function EscolaScreen({ escola, onBack, onOpen, temAcesso, onAbrirCurso, desbloqueados, acessoTotal }) {
+  const e = ESCOLAS_3S[escola];
+  const Icon = e.icon;
+  const lista = e.cursos.map((id) => cursos.find((c) => c.id === id)).filter(Boolean);
+  const livro = materiais.find((m) => m.id === e.livro);
+  const rotulo = (t) => <p className="text-[11px] tracking-[0.25em] font-medium mb-3" style={{ color: palette.gold }}>{t}</p>;
+  return (
+    <div className="pb-28">
+      <div className="px-6 pt-6">
+        <button onClick={onBack} className="flex items-center gap-1.5" style={{ color: palette.navySoft }}>
+          <ChevronLeft size={18} />
+          <span className="text-sm">Escola 3S</span>
+        </button>
+      </div>
+      <div className="px-6 pt-4 pb-7">
+        <div className="relative overflow-hidden rounded-3xl px-5 py-7 text-center" style={{ background: e.fundo }}>
+          <Icon size={150} strokeWidth={1} className="absolute -right-6 -bottom-8" style={{ color: e.texto, opacity: 0.07 }} />
+          <div className="w-14 h-14 mx-auto rounded-full flex items-center justify-center" style={{ border: `1.5px solid ${e.acento}` }}>
+            <Icon size={24} strokeWidth={1.6} style={{ color: e.acento }} />
+          </div>
+          <p className="text-[10px] tracking-[0.25em] font-semibold mt-3" style={{ color: e.suave }}>COACHING</p>
+          <p className="font-serif text-4xl leading-tight mt-1" style={{ color: e.texto }}>{e.curto} <span style={{ color: e.acento, fontWeight: 600 }}>3S</span></p>
+          <p className="text-sm mt-2 leading-relaxed" style={{ color: e.texto, opacity: 0.9 }}>{e.frase}</p>
+          <p className="text-[11px] mt-3" style={{ color: e.texto, opacity: 0.75 }}>{e.por || "com Conceição Alves"}</p>
+        </div>
+      </div>
+
+      {e.app && (
+        <div className="px-6 mb-7">
+          {rotulo("A APP")}
+          <a href={e.app.url} className="block rounded-2xl px-5 py-4 transition active:scale-[0.99]" style={{ background: e.fundo }}>
+            <p className="font-serif text-xl" style={{ color: e.texto }}>{e.app.nome}</p>
+            <p className="text-xs mt-1 leading-relaxed" style={{ color: e.texto, opacity: 0.85 }}>{e.app.desc}</p>
+            <span className="inline-flex items-center gap-1 mt-3 text-xs font-medium rounded-full px-3 py-1.5" style={{ backgroundColor: e.acento, color: palette.navy }}>Abrir o {e.app.nome} <ChevronRight size={14} /></span>
+          </a>
+        </div>
+      )}
+
+      {lista.length > 0 && <div className="px-6 mb-7">
+        {rotulo(lista.length > 1 ? "CURSOS" : "O CURSO")}
+        <div className="space-y-3">
+          {lista.map((c) => {
+            const acesso = temAcesso(c);
+            return (
+              <button key={c.id} onClick={() => onAbrirCurso(c)} className="w-full text-left rounded-2xl px-4 py-4 transition active:scale-[0.99]" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, boxShadow: "0 4px 14px -8px rgba(27,51,85,0.25)" }}>
+                <div className="flex items-start justify-between gap-2">
+                  <p className="font-serif text-xl leading-snug" style={{ color: palette.navy }}>{c.titulo}</p>
+                  {c.gratuito && <span className="text-[10px] font-semibold rounded-full px-2 py-0.5 shrink-0" style={{ backgroundColor: `${palette.gold}26`, color: palette.navy }}>GRÁTIS</span>}
+                </div>
+                {c.promessa && <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{c.promessa}</p>}
+                <div className="flex items-center justify-between mt-3">
+                  <span className="font-serif text-lg" style={{ color: palette.gold }}>
+                    {c.emBreve ? "Em breve" : c.gratuito ? "Grátis" : acesso ? "Tens acesso" : precoTexto(PRECO_CURSO)}
+                  </span>
+                  <span className="text-xs font-medium flex items-center gap-1 rounded-full px-3 py-1.5" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>
+                    {acesso || c.gratuito ? "Entrar" : "Ver o curso"} <ChevronRight size={14} />
+                  </span>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>}
+
+      {livro && (
+        <div className="px-6 mb-7">
+          {rotulo("O LIVRO")}
+          <div className="rounded-2xl px-4 py-4 flex gap-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
+            <div className="w-16 h-22 shrink-0 rounded-lg flex flex-col items-center justify-center px-1 py-3" style={{ background: e.fundo, minHeight: 88 }}>
+              <span className="font-serif text-lg leading-none" style={{ color: e.acento }}>3S</span>
+              <span className="text-[7px] tracking-[0.15em] mt-1 text-center" style={{ color: e.texto }}>{e.curto.toUpperCase()}</span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{livro.titulo}</p>
+              {livro.desc && <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{livro.desc}</p>}
+              <div className="mt-3">
+                {livro.emBreve ? (
+                  <span className="inline-block text-xs font-medium rounded-full px-3 py-1.5" style={{ border: `1px dashed ${palette.gold}`, color: palette.navy }}>Em breve · {livro.preco}</span>
+                ) : (acessoTotal || desbloqueados[livro.id]) ? (
+                  <a href={livro.url} target="_blank" rel="noreferrer" className="inline-block text-xs font-medium rounded-full px-3 py-1.5" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Ler o livro</a>
+                ) : (
+                  <BotaoCarrinho pequeno item={{ chave: `material-${livro.id}`, tipo: "material", materialId: livro.id, titulo: livro.titulo, valor: precoNumero(livro.preco) }} />
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="px-6">
+        {rotulo("SESSÕES INDIVIDUAIS")}
+        <button onClick={() => onOpen("marcar")} className="w-full flex items-center gap-4 rounded-2xl px-5 py-4 text-left transition active:scale-[0.99]" style={{ background: `linear-gradient(150deg, ${palette.navy} 0%, #24436E 100%)` }}>
+          <div className="w-11 h-11 rounded-full flex items-center justify-center shrink-0" style={{ border: `1.5px solid ${palette.gold}` }}>
+            <PenLine size={18} strokeWidth={1.6} style={{ color: palette.gold }} />
+          </div>
+          <div className="flex-1">
+            <p className="font-serif text-lg leading-tight" style={{ color: palette.creamSoft }}>Marcar Coaching ou Mentoria</p>
+            <p className="text-[11px] mt-0.5" style={{ color: palette.goldSoft }}>A primeira sessão de 20 min é grátis</p>
+          </div>
+          <ChevronRight size={18} style={{ color: palette.gold }} />
+        </button>
+      </div>
     </div>
   );
 }
@@ -1329,7 +1512,6 @@ function EscolaHubScreen({ onBack, onOpen, eyebrow, nome, frase, por, lista }) {
 }
 
 const areasEscolaComuns = [
-  { key: "formacao-hub", titulo: "Formação", icon: GraduationCap },
   { key: "podcast", titulo: "Podcast", icon: Headphones },
   { key: "comunidade", titulo: "Comunidade", icon: Users },
   { key: "produtos", titulo: "Produtos", icon: ShoppingBag },
@@ -1375,12 +1557,20 @@ function InicioScreen({ onOpen, email, papel, naoLidas, onVerAgenda, onVerNotifi
           Olá{primeiroNome ? `, ${primeiroNome}` : ""} <span style={{ color: palette.gold }}>♡</span>
         </p>
       </div>
+      <EscolasDuplas onAbrir={onOpen} />
       <div className="px-6 mb-3">
-        <div className="grid grid-cols-2 gap-3">
-          {areasEscolaComuns.map((a) => <AreaCard key={a.key} area={a} onOpen={onOpen} />)}
+        <AreaCard area={{ key: "marcar", titulo: "Coaching e Mentoria", desc: "Marcar uma sessão individual · a primeira é grátis", icon: PenLine, full: true }} onOpen={onOpen} full />
+      </div>
+      <div className="px-6 mb-6">
+        <div className="grid grid-cols-3 gap-2.5">
+          {areasEscolaComuns.map((a) => (
+            <button key={a.key} onClick={() => onOpen(a.key)} className="rounded-2xl px-2 py-4 flex flex-col items-center gap-2 transition active:scale-[0.97]" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66` }}>
+              <a.icon size={20} strokeWidth={1.6} style={{ color: palette.navy }} />
+              <span className="text-xs font-medium" style={{ color: palette.navy }}>{a.titulo}</span>
+            </button>
+          ))}
         </div>
       </div>
-      <EscolasDuplas onAbrir={onOpen} />
       {(papel === "dona" || papel === "mentora") && (
         <div className="px-6 mb-6">
           <button
@@ -6518,7 +6708,9 @@ function BottomNav({ active, onChange, badgeAgenda }) {
 const MESES_PT = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 function todosMateriaisDigitais() {
   const ids = {};
-  materiais.forEach((m) => { if (!m.apenasMentor) ids[m.id] = true; });
+  // Os livros da autora (romances, Liderança 3S e Filosofia 3S) vendem-se à parte: não entram na Comunidade.
+  const livrosAutora = [...LIVROS_AUTORA_IDS, 130, 131];
+  materiais.forEach((m) => { if (!m.apenasMentor && !livrosAutora.includes(m.id)) ids[m.id] = true; });
   return ids;
 }
 function materiaisIncluidosComunidade() {
@@ -7199,7 +7391,7 @@ function CatalogoCursosScreen({ onBack, temAcesso, onAbrirCurso, onAreaAluno }) 
 }
 
 function CursoVendaScreen({ curso, onBack }) {
-  const escolaNome = curso.escolaId === "lideranca" ? "ESCOLA DE LIDERANÇA" : curso.escolaId === "ser" ? "ESCOLA DO SER" : "COMUNIDADE 3S";
+  const escolaNome = curso.escolaId === "lideranca" ? "COACHING DE LIDERANÇA 3S" : curso.escolaId === "ser" ? "COACHING DE VIDA 3S" : "COMUNIDADE 3S";
   const inclui = incluiCurso(curso);
   const ehComunidade = curso.escolaId === "comunidade";
   return (
@@ -7232,7 +7424,9 @@ function CursoVendaScreen({ curso, onBack }) {
           <p className="font-serif text-3xl mt-4" style={{ color: palette.gold }}>{ehComunidade ? "4,99€ / mês" : precoTexto(PRECO_CURSO)}</p>
         </div>
 
-        {ehComunidade ? (
+        {curso.emBreve ? (
+          <div className="w-full rounded-full py-3 text-center font-medium text-sm" style={{ border: `1px dashed ${palette.gold}`, color: palette.navy }}>Em breve: está a ser preparado</div>
+        ) : ehComunidade ? (
           <BotaoCarrinho rotulo="Aderir à Comunidade" item={{ chave: "comunidade", tipo: "comunidade", titulo: "Comunidade 3S — mensalidade", valor: 4.99 }} />
         ) : (
           <BotaoCarrinho rotulo="Comprar o curso" item={{ chave: `curso-${curso.id}`, tipo: "curso", cursoId: curso.id, titulo: `Curso — ${curso.titulo}`, valor: PRECO_CURSO }} />
@@ -7298,13 +7492,13 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher }) {
         {/* Escola 3S: duas escolas */}
         <div className="px-6 pt-2 pb-5 text-center">
           <p className="text-[11px] tracking-[0.3em] font-medium" style={{ color: palette.gold }}>ESCOLA 3S · SABER · SENTIR · SER</p>
-          <h1 className="font-serif text-4xl leading-tight mt-3" style={{ color: palette.navy }}>Duas escolas, um só método.</h1>
-          <p className="text-sm mt-3 leading-relaxed" style={{ color: palette.navySoft }}>Liderar pessoas e crescer por dentro pedem o mesmo: saber, sentir e ser.</p>
+          <h1 className="font-serif text-4xl leading-tight mt-3" style={{ color: palette.navy }}>Três escolas de coaching, um só método.</h1>
+          <p className="text-sm mt-3 leading-relaxed" style={{ color: palette.navySoft }}>Liderar pessoas, crescer por dentro e treinar o corpo pedem o mesmo: saber, sentir e ser.</p>
         </div>
         <EscolasDuplas publico />
 
         {/* Herói Liderança 3S */}
-        <DivisorArea id="lideranca-3s" texto="LIDERANÇA 3S" />
+        <DivisorArea id="metodo-3s" texto="LIDERANÇA 3S" />
         <div className="px-6 pt-2 pb-8 text-center">
           <p className="text-[11px] tracking-[0.3em] font-medium" style={{ color: palette.gold }}>LIDERANÇA E COMUNICAÇÃO</p>
           <h2 className="font-serif text-3xl leading-tight mt-3" style={{ color: palette.navy }}>Liderar começa na forma como comunicas.</h2>
@@ -7368,34 +7562,66 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher }) {
           </div>
         </div>
 
-        {/* Cursos */}
-        {[
-          { id: "lideranca", nome: "Liderança 3S", frase: "Comunicar, liderar pessoas e conduzir conversas" },
-          { id: "ser", nome: "Desenvolvimento 3S", frase: "A liderança começa em ti: autoconhecimento e emoções" },
-        ].map((escola) => {
-          const lista = cursos.filter((c) => c.escolaId === escola.id && !c.gratuito);
-          if (lista.length === 0) return null;
+        {/* As duas escolas: curso + livro */}
+        {Object.values(ESCOLAS_3S).map((e) => {
+          const lista = e.cursos.map((id) => cursos.find((c) => c.id === id)).filter((c) => c && !c.gratuito);
+          const livro = materiais.find((m) => m.id === e.livro);
+          const Icon = e.icon;
           return (
-            <div key={escola.id} className="px-6 mb-10">
-              {titulo(escola.nome.toUpperCase(), escola.frase)}
+            <div key={e.secao} id={e.secao} className="px-6 mb-10" style={{ scrollMarginTop: 16 }}>
+              <div className="relative overflow-hidden rounded-3xl px-5 py-5 mb-3" style={{ background: e.fundo }}>
+                <Icon size={110} strokeWidth={1} className="absolute -right-4 -bottom-5" style={{ color: e.texto, opacity: 0.08 }} />
+                <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: e.suave }}>COACHING</p>
+                <p className="font-serif text-3xl leading-tight" style={{ color: e.texto }}>{e.curto} <span style={{ color: e.acento, fontWeight: 600 }}>3S</span></p>
+                <p className="text-xs mt-1" style={{ color: e.texto, opacity: 0.85 }}>{e.frase}</p>
+              </div>
               <div className="space-y-3">
+                {e.app && (
+                  <a href={e.app.url} className="block rounded-2xl px-4 py-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
+                    <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>APP</p>
+                    <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{e.app.nome}</p>
+                    <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{e.app.desc}</p>
+                    <span className="inline-flex items-center gap-1 mt-3 text-xs font-medium rounded-full px-4 py-2" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Abrir <ChevronRight size={14} /></span>
+                  </a>
+                )}
                 {lista.map((c) => (
                   <div key={c.id} className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
+                    <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>CURSO</p>
                     <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{c.titulo}</p>
                     {c.promessa && <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{c.promessa}</p>}
-                    <p className="text-[11px] mt-2 leading-relaxed" style={{ color: palette.navySoft }}>{incluiCurso(c).join(" · ")}</p>
                     <div className="flex items-center justify-between mt-3 gap-3">
-                      <span className="font-serif text-xl" style={{ color: palette.gold }}>{precoTexto(PRECO_CURSO)}</span>
-                      <button
-                        onClick={() => onEscolher({ chave: `curso-${c.id}`, tipo: "curso", cursoId: c.id, titulo: `Curso — ${c.titulo}`, valor: PRECO_CURSO })}
-                        className="rounded-full px-4 py-2 text-xs font-medium"
-                        style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
-                      >
-                        Comprar
-                      </button>
+                      <span className="font-serif text-xl" style={{ color: palette.gold }}>{c.emBreve ? "Em breve" : precoTexto(PRECO_CURSO)}</span>
+                      {!c.emBreve && (
+                        <button
+                          onClick={() => onEscolher({ chave: `curso-${c.id}`, tipo: "curso", cursoId: c.id, titulo: `Curso — ${c.titulo}`, valor: PRECO_CURSO })}
+                          className="rounded-full px-4 py-2 text-xs font-medium"
+                          style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
+                        >
+                          Comprar
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))}
+                {livro && (
+                  <div className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
+                    <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>LIVRO</p>
+                    <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{livro.titulo}</p>
+                    {livro.desc && <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{livro.desc}</p>}
+                    <div className="flex items-center justify-between mt-3 gap-3">
+                      <span className="font-serif text-xl" style={{ color: palette.gold }}>{livro.emBreve ? "Em breve" : livro.preco}</span>
+                      {!livro.emBreve && (
+                        <button
+                          onClick={() => onEscolher({ chave: `material-${livro.id}`, tipo: "material", materialId: livro.id, titulo: livro.titulo, valor: precoNumero(livro.preco) })}
+                          className="rounded-full px-4 py-2 text-xs font-medium"
+                          style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
+                        >
+                          Comprar
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           );
@@ -8640,11 +8866,11 @@ export default function App() {
   } else if (secao === "alunos") {
     content = <CatalogoCursosScreen onBack={() => setSecao("formacao-hub")} temAcesso={temAcessoCurso} onAbrirCurso={setCursoAberto} onAreaAluno={() => setSecao("aluno")} />;
   } else if (secao === "lideranca-3s") {
-    content = <EscolaHubScreen onBack={() => setSecao(null)} onOpen={setSecao} lista={areasLideranca}
-      eyebrow="ESCOLA 3S" nome="Liderança" frase="Liderar começa na forma como comunicas." por="com Conceição Alves · Coach de líderes e equipas" />;
+    content = <EscolaScreen escola="lideranca" onBack={() => setSecao(null)} onOpen={setSecao} temAcesso={temAcessoCurso} onAbrirCurso={setCursoAberto} desbloqueados={materiaisAcesso} acessoTotal={progresso.papel === "dona"} />;
+  } else if (secao === "desporto-3s") {
+    content = <EscolaScreen escola="desporto" onBack={() => setSecao(null)} onOpen={setSecao} temAcesso={temAcessoCurso} onAbrirCurso={setCursoAberto} desbloqueados={materiaisAcesso} acessoTotal={progresso.papel === "dona"} />;
   } else if (secao === "desenvolvimento-3s") {
-    content = <EscolaHubScreen onBack={() => setSecao(null)} onOpen={setSecao} lista={areasDesenvolvimento}
-      eyebrow="ESCOLA 3S" nome="Desenvolvimento" frase="A mudança começa em ti." por="com Conceição Alves" />;
+    content = <EscolaScreen escola="desenvolvimento" onBack={() => setSecao(null)} onOpen={setSecao} temAcesso={temAcessoCurso} onAbrirCurso={setCursoAberto} desbloqueados={materiaisAcesso} acessoTotal={progresso.papel === "dona"} />;
   } else if (secao === "produtos") {
     content = <ProdutosScreen onBack={() => setSecao(null)} onOpen={setSecao} />;
   } else if (secao === "livros") {
@@ -8709,7 +8935,7 @@ export default function App() {
   } else if (secao === "marcar") {
     content = (
       <MarcarSessaoScreen
-        onBack={() => setSecao("lideranca-3s")}
+        onBack={() => setSecao(null)}
         onConfirmar={registarSessao}
         creditos={creditosSessoes}
         descontoCiclo={descontoCiclo}
