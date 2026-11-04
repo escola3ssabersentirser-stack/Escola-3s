@@ -1,4 +1,4 @@
-// VERSAO-04-NOV-LAB-ATLETA
+// VERSAO-04-NOV-CARTOES-PEQUENOS
 import { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "./supabase.js";
 import {
@@ -85,13 +85,13 @@ function Brand({ size = "md" }) {
 function Wordmark({ compacto }) {
   return (
     <div
-      className={`flex flex-col items-center select-none rounded-3xl ${compacto ? "py-4 px-5" : "py-8 px-6"}`}
+      className={`flex flex-col items-center select-none ${compacto ? "rounded-2xl py-2.5 px-4" : "rounded-3xl py-8 px-6"}`}
       style={{ background: `linear-gradient(150deg, ${palette.navy} 0%, #24436E 100%)`, boxShadow: "0 10px 30px -12px rgba(27,51,85,0.45)" }}
     >
       <img
         src={LOGO_FULL_TRANSPARENTE}
         alt="Escola 3S — Saber, Sentir, Ser"
-        className={`${compacto ? "w-28" : "w-48"} h-auto object-contain`}
+        className={`${compacto ? "w-20" : "w-48"} h-auto object-contain`}
       />
     </div>
   );
@@ -1213,7 +1213,7 @@ function AreaCard({ area, onOpen, full }) {
   return (
     <button
       onClick={() => onOpen(area.key)}
-      className={`relative overflow-hidden rounded-3xl px-5 py-5 text-left transition active:scale-[0.97] h-full ${full ? "w-full" : ""}`}
+      className={`relative overflow-hidden rounded-2xl px-4 py-3 text-left transition active:scale-[0.97] h-full ${full ? "w-full" : ""}`}
       style={{
         background: `linear-gradient(150deg, ${palette.navy} 0%, #24436E 100%)`,
         boxShadow: "0 8px 22px -12px rgba(27,51,85,0.55)",
@@ -1222,17 +1222,17 @@ function AreaCard({ area, onOpen, full }) {
       <span className="absolute top-0 left-5 right-5 h-px" style={{ background: `linear-gradient(90deg, transparent, ${palette.gold}, transparent)` }} />
       <div className={destaque ? "flex items-center gap-4" : ""}>
         <div
-          className={`${destaque ? "w-14 h-14" : "w-11 h-11 mb-3"} rounded-full flex items-center justify-center shrink-0`}
+          className={`${destaque ? "w-10 h-10" : "w-8 h-8 mb-2"} rounded-full flex items-center justify-center shrink-0`}
           style={{ backgroundColor: `${palette.gold}14`, border: `1.5px solid ${palette.gold}` }}
         >
-          <Icon size={destaque ? 22 : 18} strokeWidth={1.6} style={{ color: palette.gold }} />
+          <Icon size={destaque ? 18 : 15} strokeWidth={1.6} style={{ color: palette.gold }} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className={`font-serif ${destaque ? "text-2xl" : "text-lg"} leading-tight`} style={{ color: palette.creamSoft }}>
+          <p className={`font-serif ${destaque ? "text-lg" : "text-base"} leading-tight`} style={{ color: palette.creamSoft }}>
             {area.titulo}
           </p>
           {area.desc && (
-            <p className="text-[11px] mt-1 leading-snug" style={{ color: palette.goldSoft }}>{area.desc}</p>
+            <p className="text-[10.5px] mt-0.5 leading-snug" style={{ color: palette.goldSoft }}>{area.desc}</p>
           )}
         </div>
         {destaque && <ChevronRight size={20} style={{ color: palette.gold }} />}
@@ -1324,25 +1324,25 @@ const ESCOLAS_3S = {
 function EscolasDuplas({ publico, onAbrir }) {
   const irPara = (id) => { const el = document.getElementById(id); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); };
   return (
-    <div className={`px-6 space-y-3 ${publico ? "mb-7" : "mb-6"}`}>
+    <div className={`px-6 space-y-2 ${publico ? "mb-7" : "mb-4"}`}>
       {Object.values(ESCOLAS_3S).map((e) => {
         const Icon = e.icon;
         return (
           <button
             key={e.secao}
             onClick={() => (onAbrir ? onAbrir(e.secao) : irPara(e.secao))}
-            className="relative overflow-hidden block w-full rounded-3xl px-5 py-5 text-left transition active:scale-[0.98]"
+            className="relative overflow-hidden block w-full rounded-2xl px-4 py-3 text-left transition active:scale-[0.98]"
             style={{ background: e.fundo, border: e.borda ? `1.5px solid ${e.borda}` : "none", boxShadow: "0 10px 26px -14px rgba(27,51,85,0.6)" }}
           >
-            <Icon size={110} strokeWidth={1} className="absolute -right-4 -bottom-5" style={{ color: e.texto, opacity: 0.08 }} />
-            <div className="flex items-center gap-4 relative">
-              <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0" style={{ border: `1.5px solid ${e.acento}` }}>
-                <Icon size={22} strokeWidth={1.6} style={{ color: e.acento }} />
+            <Icon size={80} strokeWidth={1} className="absolute -right-3 -bottom-4" style={{ color: e.texto, opacity: 0.08 }} />
+            <div className="flex items-center gap-3 relative">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ border: `1.5px solid ${e.acento}` }}>
+                <Icon size={18} strokeWidth={1.6} style={{ color: e.acento }} />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: e.suave, opacity: 0.85 }}>COACHING</p>
-                <p className="font-serif text-[22px] leading-tight whitespace-nowrap" style={{ color: e.texto }}>{e.curto} <span style={{ color: e.acento, fontWeight: 600 }}>3S</span></p>
-                <p className="text-[12px] mt-0.5 leading-snug" style={{ color: e.texto, opacity: 0.85 }}>{e.para}</p>
+                <p className="font-serif text-[19px] leading-tight whitespace-nowrap" style={{ color: e.texto }}>{e.curto} <span style={{ color: e.acento, fontWeight: 600 }}>3S</span></p>
+                <p className="text-[11px] leading-snug" style={{ color: e.texto, opacity: 0.85 }}>{e.para}</p>
               </div>
               <ChevronRight size={20} style={{ color: e.acento }} />
             </div>
@@ -2023,6 +2023,206 @@ const LAB_DESPORTO = {
   },
 };
 
+/* ---------------------------------------------------------
+   Laboratório da Vida (Vida 3S)
+--------------------------------------------------------- */
+const LAB_VIDA = {
+  perfis: {
+    C: { nome: "Cuidar", frase: "Vives para os outros.", forca: "Empatia, generosidade e capacidade de criar laços.", risco: "Esqueceres-te de ti e teres dificuldade em dizer “não”.", quando: "Na família, nas amizades e em tudo o que pede proximidade.", crescer: "Pôr-te também na tua lista de prioridades." },
+    Q: { nome: "Conquistar", frase: "Vives para os teus objetivos.", forca: "Energia, ambição e capacidade de fazer acontecer.", risco: "Cansaço e valorizares-te só pelo que fazes.", quando: "Projetos, mudanças e metas com prazo.", crescer: "Descansar sem culpa e valorizar quem és, não só o que fazes." },
+    D: { nome: "Descobrir", frase: "Vives para experiências novas.", forca: "Curiosidade, coragem e abertura ao novo.", risco: "Dispersão e dificuldade em terminar o que começas.", quando: "Fases de mudança, viagens, recomeços.", crescer: "Escolher um caminho e ficar nele tempo suficiente para colher." },
+    P: { nome: "Compreender", frase: "Vives para dar sentido às coisas.", forca: "Reflexão, profundidade e bom senso.", risco: "Pensar demais e agir de menos.", quando: "Decisões importantes e momentos de reflexão.", crescer: "Passar do pensamento à ação, com um passo pequeno por dia." },
+  },
+  perguntasPerfil: [
+    ["Num dia livre, o que te sabe melhor?", [["C", "Estar com quem gosto e cuidar dessas pessoas."], ["Q", "Riscar tarefas da minha lista."], ["D", "Ir a um sítio onde nunca fui."], ["P", "Ler, pensar ou escrever."]]],
+    ["Quando alguém te pede ajuda…", [["C", "Digo logo que sim, mesmo sem tempo."], ["Q", "Ajudo, se for rápido e prático."], ["D", "Ajudo, se for algo novo para mim."], ["P", "Primeiro tento perceber o que se passa."]]],
+    ["Perante um problema, tu…", [["C", "Penso em como afeta os outros."], ["Q", "Faço um plano e avanço."], ["D", "Experimento várias saídas."], ["P", "Analiso até perceber a raiz."]]],
+    ["O que te deixa mais em baixo?", [["C", "Sentir que não fui útil a ninguém."], ["Q", "Não conseguir o que me propus."], ["D", "A rotina e a monotonia."], ["P", "Não perceber porque me sinto assim."]]],
+    ["Os teus amigos dizem que és…", [["C", "A pessoa que está sempre lá."], ["Q", "A pessoa que faz acontecer."], ["D", "A pessoa das ideias e das aventuras."], ["P", "A pessoa que dá bons conselhos."]]],
+    ["Quando estás em stress…", [["C", "Preocupo-me ainda mais com os outros."], ["Q", "Trabalho ainda mais."], ["D", "Fujo para algo novo."], ["P", "Penso muito, às vezes demais."]]],
+    ["Uma vida com sentido é…", [["C", "Ter à minha volta as pessoas que amo."], ["Q", "Conquistar o que sonhei."], ["D", "Viver muitas experiências."], ["P", "Perceber quem sou e porque estou aqui."]]],
+    ["O que te custa mais?", [["C", "Dizer “não”."], ["Q", "Parar e descansar."], ["D", "Ficar muito tempo no mesmo sítio."], ["P", "Decidir sem ter todas as respostas."]]],
+    ["Quando consegues algo importante…", [["C", "Partilho com quem me ajudou."], ["Q", "Penso logo no próximo objetivo."], ["D", "Procuro um novo desafio."], ["P", "Paro a pensar no que aprendi."]]],
+    ["O que mais queres para os próximos anos?", [["C", "Relações mais profundas."], ["Q", "Alcançar metas que ainda não alcancei."], ["D", "Liberdade para viver coisas novas."], ["P", "Paz interior e clareza."]]],
+  ],
+  competencias: [
+    { pilar: "Saber", frase: "Conheço os meus valores e o que é importante para mim." },
+    { pilar: "Saber", frase: "Percebo de onde vêm as minhas reações." },
+    { pilar: "Saber", frase: "Sei identificar as crenças que me travam." },
+    { pilar: "Saber", frase: "Sei o que me dá e o que me tira energia." },
+    { pilar: "Sentir", frase: "Consigo dar nome ao que sinto." },
+    { pilar: "Sentir", frase: "Acolho as minhas emoções sem me julgar." },
+    { pilar: "Sentir", frase: "Falo comigo com a gentileza com que falo com quem gosto." },
+    { pilar: "Sentir", frase: "Peço apoio quando preciso." },
+    { pilar: "Ser", frase: "As minhas escolhas refletem quem sou." },
+    { pilar: "Ser", frase: "Ponho limites que me protegem." },
+    { pilar: "Ser", frase: "Cuido do meu corpo, do meu descanso e da minha mente." },
+    { pilar: "Ser", frase: "Vivo de acordo com aquilo em que acredito." },
+  ],
+  dicasPilar: {
+    Saber: "Escreve os teus três valores mais importantes e, para cada um, uma decisão desta semana que o respeite.",
+    Sentir: "Duas vezes por dia, para um minuto e pergunta: “O que estou a sentir?”",
+    Ser: "Escolhe um limite de que precisas e põe-no esta semana, com calma.",
+  },
+  planoPerfil: {
+    C: ["Diz um “não” esta semana, com calma e sem justificar demais.", "Reserva uma hora só para ti, na agenda.", "Pede ajuda a alguém, para variar.", "Volta a fazer o teste e compara."],
+    Q: ["Marca um momento de descanso por dia, sem telemóvel.", "Escreve três coisas de que gostas em ti que não tenham a ver com conquistas.", "Faz uma atividade só pelo prazer, sem objetivo.", "Volta a fazer o teste e compara."],
+    D: ["Escolhe um projeto e define o primeiro passo.", "Dá esse passo e mantém-te nele durante a semana.", "Termina uma coisa que deixaste a meio.", "Volta a fazer o teste e compara."],
+    P: ["Escolhe uma decisão que andas a adiar e decide até sexta.", "Quando deres por ti a pensar demais, muda de atividade durante 5 minutos.", "Transforma uma reflexão num passo concreto por dia.", "Volta a fazer o teste e compara."],
+  },
+  planoPilar: {
+    Saber: ["Escreve os teus três valores mais importantes.", "Identifica uma crença que te trava e escreve de onde vem.", "Faz uma lista do que te dá e do que te tira energia.", "Volta a fazer o teste e compara."],
+    Sentir: ["Duas vezes por dia, dá nome ao que estás a sentir.", "Quando te criticares, pergunta: “O que diria a um amigo?”", "Fala com alguém de confiança sobre algo que sentes.", "Volta a fazer o teste e compara."],
+    Ser: ["Escolhe um limite e põe-no esta semana.", "Toma uma decisão alinhada com um valor teu.", "Cuida de ti: sono, movimento e uma pausa por dia.", "Volta a fazer o teste e compara."],
+  },
+  quizzes: [
+    {
+      id: "crencas", titulo: "Crenças limitantes", desc: "Ideias que te travam sem dares por isso",
+      desafio: "Escolhe uma crença tua e faz-lhe quatro perguntas: é verdade? Tenho a certeza absoluta? Como reajo quando acredito nela? Quem seria eu sem ela?",
+      perguntas: [
+        { p: "Uma crença limitante é…", o: ["Um facto sobre ti.", "Uma ideia que tomas como verdade e que te trava.", "Um defeito de personalidade.", "Algo que não se pode mudar."], c: 1, e: "É uma interpretação, não um facto. Por isso, pode ser revista.", a: "Escreve uma frase que repetes sobre ti e pergunta: é um facto ou uma interpretação?" },
+        { p: "Qual destas é uma crença limitante?", o: ["“Hoje estou com sono.”", "“Eu nunca consigo terminar nada.”", "“O relatório tem 10 páginas.”", "“Ontem choveu.”"], c: 1, e: "Palavras como “nunca” e “sempre” costumam esconder generalizações.", a: "Esta semana, repara nas vezes em que dizes “nunca” ou “sempre” sobre ti." },
+        { p: "As crenças formam-se muitas vezes…", o: ["Por acaso.", "A partir de experiências e mensagens repetidas, muitas vezes na infância.", "Só na idade adulta.", "Porque são verdade."], c: 1, e: "Muitas crenças vêm de quem nos rodeou e do que vivemos cedo.", a: "Pensa numa crença tua: de quem a ouviste pela primeira vez?" },
+        { p: "Para mudar uma crença, ajuda mais…", o: ["Ignorá-la.", "Procurar provas do contrário e agir de forma diferente.", "Esperar que desapareça.", "Pensar positivo, sem agir."], c: 1, e: "Novas experiências criam novas provas.", a: "Faz uma pequena ação que contrarie a tua crença e regista o que aconteceu." },
+        { p: "Dizer “ainda não consigo” em vez de “não consigo”…", o: ["É igual.", "Abre a porta à aprendizagem.", "É enganar-te.", "Só serve para crianças."], c: 1, e: "A palavra “ainda” transforma um limite num caminho.", a: "Acrescenta “ainda” a uma frase tua de limite." },
+      ],
+    },
+    {
+      id: "emocoes", titulo: "Emoções", desc: "Sentir sem ser governado pelo que sentes",
+      desafio: "Durante uma semana, duas vezes por dia, escreve o nome da emoção que estás a sentir.",
+      perguntas: [
+        { p: "Dar nome a uma emoção…", o: ["Torna-a mais forte.", "Ajuda a acalmá-la e a percebê-la.", "Não faz diferença.", "É sinal de fraqueza."], c: 1, e: "Nomear o que sentimos reduz a intensidade da emoção.", a: "Aprende cinco palavras novas para emoções." },
+        { p: "As emoções difíceis (tristeza, raiva, medo)…", o: ["São más e devem ser evitadas.", "Dão informação sobre aquilo de que precisas.", "Só aparecem a pessoas frágeis.", "Devem ser sempre escondidas."], c: 1, e: "Cada emoção aponta para uma necessidade.", a: "Quando sentires raiva, pergunta: “O que é importante para mim aqui?”" },
+        { p: "Quando uma emoção é muito forte, ajuda…", o: ["Reagir logo.", "Respirar devagar e dar-lhe uns minutos antes de agir.", "Fingir que não existe.", "Descarregar em alguém."], c: 1, e: "Entre o que sentes e o que fazes pode haver um espaço.", a: "Antes de responder numa situação tensa, respira três vezes." },
+        { p: "Validar a emoção de alguém é…", o: ["Concordar com tudo.", "Reconhecer que o que sente é real e compreensível.", "Dar logo uma solução.", "Dizer que não é nada."], c: 1, e: "Validar não é concordar: é reconhecer.", a: "Diz a alguém esta semana: “Faz sentido que te sintas assim.”" },
+        { p: "Uma tristeza que dura muito tempo e não melhora é sinal para…", o: ["Aguentar sem falar com ninguém.", "Procurar apoio, incluindo de um profissional.", "Esconder da família.", "Esperar que passe."], c: 1, e: "Pedir ajuda é um ato de cuidado contigo.", a: "Se a tristeza persistir, fala com alguém de confiança ou com um profissional de saúde." },
+      ],
+    },
+    {
+      id: "autoestima", titulo: "Autoestima e autocompaixão", desc: "Tratar-te como tratas quem amas",
+      desafio: "Todas as noites, durante uma semana, escreve uma coisa que fizeste bem.",
+      perguntas: [
+        { p: "Autoestima é…", o: ["Achar-te melhor do que os outros.", "Reconhecer o teu valor, com qualidades e limites.", "Nunca errar.", "Depender de elogios."], c: 1, e: "É um olhar justo sobre ti, nem acima nem abaixo dos outros.", a: "Escreve três qualidades tuas e um exemplo de cada." },
+        { p: "Autocompaixão é…", o: ["Ter pena de ti.", "Tratares-te com a gentileza com que tratarias alguém de quem gostas.", "Desculpar tudo.", "Falta de exigência."], c: 1, e: "Não é baixar a fasquia: é apoiares-te enquanto tentas.", a: "Quando te criticares, pergunta: “O que diria a um amigo nesta situação?”" },
+        { p: "Depois de um erro, a voz mais útil diz…", o: ["“És um desastre.”", "“Errei. O que aprendo com isto?”", "“Nunca fazes nada bem.”", "“Não vale a pena tentar.”"], c: 1, e: "Aprender com o erro é diferente de te castigares por ele.", a: "Escreve um erro recente e o que aprendeste com ele." },
+        { p: "Comparar-te constantemente com os outros…", o: ["Motiva sempre.", "Costuma baixar a autoestima. Compara-te contigo.", "É obrigatório para crescer.", "Não tem efeito."], c: 1, e: "A tua referência és tu, há algum tempo atrás.", a: "Escreve o que mudou em ti no último ano." },
+        { p: "Pôr limites…", o: ["É egoísmo.", "Protege-te e melhora as relações.", "Afasta toda a gente.", "Só serve no trabalho."], c: 1, e: "Limites claros tornam as relações mais honestas.", a: "Escolhe um limite de que precisas e diz-o com calma." },
+      ],
+    },
+    {
+      id: "habitos", titulo: "Hábitos e mudança", desc: "Mudar de forma que dure",
+      desafio: "Escolhe um hábito pequeno e repete-o todos os dias durante 7 dias, à mesma hora.",
+      perguntas: [
+        { p: "A melhor forma de começar um hábito novo…", o: ["Mudar tudo de uma vez.", "Começar muito pequeno, todos os dias.", "Esperar pela motivação.", "Começar só na segunda-feira."], c: 1, e: "Pequeno e todos os dias vence grande e de vez em quando.", a: "Reduz o teu hábito novo até caber em 2 minutos." },
+        { p: "Ligar um hábito novo a algo que já fazes…", o: ["Não ajuda.", "Ajuda a lembrar e a repetir.", "Atrapalha.", "Só funciona de manhã."], c: 1, e: "Por exemplo: depois de fazer o café, escrevo três linhas no diário.", a: "Escreve: “Depois de ___, vou ___.”" },
+        { p: "Falhaste dois dias seguidos. O melhor é…", o: ["Desistir.", "Recomeçar hoje, sem culpa.", "Esperar pelo mês seguinte.", "Castigar-te."], c: 1, e: "O que conta é recomeçar depressa.", a: "Se falhares, recomeça no próprio dia, com a versão mais pequena do hábito." },
+        { p: "A mudança dura mais quando…", o: ["Depende só da força de vontade.", "Está ligada a quem queres ser.", "É imposta por outros.", "É feita às escondidas."], c: 1, e: "“Sou uma pessoa que cuida de si” pesa mais do que “tenho de fazer exercício”.", a: "Escreve a frase “Sou uma pessoa que…” para o teu novo hábito." },
+        { p: "Para mudar, o ambiente…", o: ["Não importa.", "Ajuda muito: torna fácil o que queres fazer e difícil o que queres evitar.", "Só importa para crianças.", "É uma desculpa."], c: 1, e: "Mudar o ambiente poupa força de vontade.", a: "Muda uma coisa em casa que torne o teu hábito mais fácil." },
+      ],
+    },
+  ],
+  treinos: [
+    {
+      id: "valores", grupo: "Conhecer-me", titulo: "Autoconhecimento e valores", desc: "Saber o que é importante para ti",
+      essencial: ["Os valores são o que é mais importante para ti: guiam as tuas escolhas.", "Quando vives contra os teus valores, sentes desconforto.", "Conhecer os teus valores torna as decisões mais fáceis."],
+      cenarios: [
+        { p: "Sentes-te mal com uma decisão, mas não sabes porquê. O primeiro passo é…", o: ["Ignorar o que sentes.", "Perguntar que valor teu essa decisão pode estar a pôr em causa.", "Pedir a alguém que decida por ti.", "Fazer o que a maioria faria."], c: 1, e: "O desconforto costuma apontar para um valor." },
+        { p: "Qual destas é um valor?", o: ["Ter um carro novo.", "Liberdade.", "Ir de férias em agosto.", "Ganhar uma discussão."], c: 1, e: "Um valor é uma qualidade de vida, não um objeto ou um acontecimento." },
+        { p: "Tens dois convites para o mesmo dia. Ajuda mais…", o: ["Escolher o mais popular.", "Escolher o que está mais perto do que é importante para ti.", "Ir aos dois e chegar atrasado a ambos.", "Não ir a nenhum."], c: 1, e: "Os valores servem de bússola nas escolhas difíceis." },
+      ],
+      construtor: { titulo: "Os teus valores", campos: [["v1", "Um valor teu", "liberdade"], ["v2", "Outro valor", "família"], ["v3", "Mais um", "honestidade"], ["acao", "Esta semana, vou honrá-los quando…", "disser o que penso numa conversa difícil"]], gerar: (v) => `Os meus valores são ${v.v1}, ${v.v2} e ${v.v3}. Esta semana, vou honrá-los quando ${v.acao}.` },
+      plano: ["Escreve os teus três valores e porque são importantes para ti.", "Revê a tua semana: onde viveste de acordo com eles?", "Toma uma decisão guiada por um dos teus valores.", "Repara numa situação em que foste contra um valor teu.", "Escreve o que aprendeste sobre ti esta semana."],
+    },
+    {
+      id: "crencas", grupo: "Conhecer-me", titulo: "Crenças que limitam", desc: "Rever as ideias que te travam",
+      essencial: ["Uma crença é uma ideia que tomas como verdade.", "Muitas crenças vêm do passado e já não te servem.", "Novas ações criam novas provas, e novas crenças."],
+      cenarios: [
+        { p: "Pensas: “Não tenho jeito para falar em público.” Ajuda mais…", o: ["Evitar sempre falar em público.", "Perguntar: “É um facto ou uma interpretação?” e treinar num grupo pequeno.", "Esperar que passe.", "Pedir a outro que fale por ti."], c: 1, e: "Questionar e testar enfraquece a crença." },
+        { p: "Uma crença que diz “nunca” ou “sempre”…", o: ["É sempre verdade.", "Costuma ser uma generalização.", "Não se pode mudar.", "É sinal de sabedoria."], c: 1, e: "Generalizações escondem as exceções." },
+        { p: "Para perceber de onde vem uma crença, pergunta…", o: ["“Quem tem a culpa?”", "“Quando é que a ouvi ou senti pela primeira vez?”", "“Porque é que sou assim?”", "“O que pensam os outros?”"], c: 1, e: "Conhecer a origem ajuda a perceber que a crença foi aprendida." },
+      ],
+      construtor: { titulo: "Transforma a tua crença", campos: [["crenca", "A crença que te trava", "não sou capaz de mudar de vida"], ["origem", "De onde veio", "ouvir em criança que mudar era arriscado"], ["prova", "Uma prova do contrário", "já mudei de casa e correu bem"], ["nova", "A tua nova crença", "consigo mudar, passo a passo"]], gerar: (v) => `Eu acreditava que ${v.crenca}. Esta crença veio de ${v.origem}. Mas ${v.prova}. A partir de agora, escolho acreditar que ${v.nova}.` },
+      plano: ["Escreve a crença que mais te trava.", "Descobre de onde veio e escreve-o.", "Procura três provas do contrário.", "Faz uma pequena ação de acordo com a nova crença.", "Lê a tua frase nova todas as manhãs."],
+    },
+    {
+      id: "emocoes", grupo: "Conhecer-me", titulo: "Gestão emocional", desc: "Sentir antes de reagir",
+      essencial: ["Todas as emoções têm uma função: dão informação.", "Dar nome ao que sentes ajuda a acalmar.", "Entre a emoção e a reação podes criar um espaço."],
+      cenarios: [
+        { p: "Alguém te responde mal e sentes raiva. Tu…", o: ["Respondes no mesmo tom.", "Respiras, nomeias o que sentes e decides como responder.", "Engoles e ficas a remoer.", "Cortas a relação."], c: 1, e: "Respirar e nomear cria espaço para escolheres." },
+        { p: "Estás triste há alguns dias. Ajuda…", o: ["Fingir que está tudo bem.", "Dar espaço à tristeza e falar com alguém de confiança.", "Encher a agenda para não pensar.", "Culpar-te por estares assim."], c: 1, e: "Acolher e partilhar alivia. Se durar muito, procura ajuda profissional." },
+        { p: "Que pergunta te ajuda perante uma emoção forte?", o: ["“Porque sou assim?”", "“Do que preciso agora?”", "“Quem tem a culpa?”", "“Como a escondo?”"], c: 1, e: "A emoção aponta para uma necessidade." },
+      ],
+      construtor: { titulo: "Da emoção à ação", campos: [["situacao", "Quando…", "chego a casa e está tudo por fazer"], ["emocao", "sinto…", "cansaço e irritação"], ["precisa", "Preciso de…", "ajuda e de um momento só meu"], ["acao", "Por isso, vou…", "pedir apoio em casa e reservar 15 minutos para mim"]], gerar: (v) => `Quando ${v.situacao}, sinto ${v.emocao}. Preciso de ${v.precisa}. Por isso, vou ${v.acao}.` },
+      plano: ["Duas vezes por dia, escreve o nome da emoção que sentes.", "Repara numa emoção forte e na necessidade por trás dela.", "Antes de reagir, respira três vezes.", "Usa a frase que construíste numa situação real.", "Escreve o que mudou quando criaste espaço antes de reagir."],
+    },
+    {
+      id: "autoestima", grupo: "Viver melhor", titulo: "Autoestima e autocompaixão", desc: "Ser do teu lado",
+      essencial: ["Autoestima é reconhecer o teu valor, com qualidades e limites.", "Autocompaixão é tratares-te como tratas quem amas.", "A forma como falas contigo molda como te sentes."],
+      cenarios: [
+        { p: "Falhaste num objetivo importante. A tua voz diz…", o: ["“És um fracasso.”", "“Isto custou. O que posso aprender e tentar de outra forma?”", "“Nunca devias ter tentado.”", "“Os outros fazem sempre melhor.”"], c: 1, e: "Gentileza não é desistir; é apoiares-te para continuar." },
+        { p: "Alguém elogia o teu trabalho. Tu…", o: ["Dizes que não foi nada.", "Agradeces e aceitas.", "Apontas logo os defeitos.", "Mudas de assunto."], c: 1, e: "Aceitar um elogio também é cuidar da autoestima." },
+        { p: "Para te sentires melhor contigo, ajuda…", o: ["Compará-lo com os outros.", "Lembrar o que já superaste.", "Esperar pela aprovação dos outros.", "Ser perfeito."], c: 1, e: "A tua história é prova do teu valor." },
+      ],
+      construtor: { titulo: "A tua voz gentil", campos: [["critica", "A frase crítica que dizes a ti", "nunca faço nada bem"], ["gentil", "O que dirias a um amigo", "estás a fazer o teu melhor e estás a aprender"], ["qualidade", "Uma qualidade tua", "persistência"]], gerar: (v) => `Quando a minha voz disser “${v.critica}”, vou responder: “${v.gentil}”. E vou lembrar-me da minha ${v.qualidade}.` },
+      plano: ["Escreve três qualidades tuas.", "Quando te criticares, usa a tua frase gentil.", "Aceita um elogio sem o desvalorizar.", "Faz uma coisa só por ti.", "Escreve uma coisa que fizeste bem esta semana."],
+    },
+    {
+      id: "limites", grupo: "Viver melhor", titulo: "Limites e relações", desc: "Dizer não para dizer sim a ti",
+      essencial: ["Um limite diz o que aceitas e o que não aceitas.", "Pôr limites protege-te e torna as relações mais honestas.", "Diz o limite com calma, sem justificar demais."],
+      cenarios: [
+        { p: "Uma pessoa liga-te sempre tarde da noite para desabafar.", o: ["Atendes sempre, mesmo sem forças.", "“Gosto de te ouvir. Depois das 22h já não consigo. Falamos amanhã?”", "Deixas de atender sem explicar.", "Mudas de número."], c: 1, e: "Limite claro, com cuidado pela relação." },
+        { p: "Pôr um limite e a outra pessoa ficar chateada significa…", o: ["Que erraste.", "Que o limite é novo para ela; mantém-no com calma.", "Que deves pedir desculpa e recuar.", "Que a relação acabou."], c: 1, e: "Desconforto no início é normal; a consistência dá segurança." },
+        { p: "Uma forma saudável de dizer não:", o: ["“Talvez, depois vejo.” (e não respondes)", "“Desta vez não posso, mas agradeço o convite.”", "Inventar uma desculpa complicada.", "Dizer sim e não aparecer."], c: 1, e: "Um “não” simples e honesto é respeito por ti e pelo outro." },
+      ],
+      construtor: { titulo: "O teu limite", campos: [["situacao", "A situação", "me pedem favores ao fim de semana"], ["limite", "O teu limite", "o domingo é para a minha família"], ["frase", "O que vais dizer", "ao domingo não consigo, mas posso ajudar na segunda"]], gerar: (v) => `Quando ${v.situacao}, o meu limite é: ${v.limite}. Vou dizer: “${v.frase}”.` },
+      plano: ["Identifica uma situação em que te sentes a ceder demais.", "Escreve o teu limite com a frase que construíste.", "Diz o limite com calma, a uma pessoa.", "Mantém o limite, mesmo que haja desconforto.", "Escreve como te sentiste depois."],
+    },
+    {
+      id: "proposito", grupo: "Viver melhor", titulo: "Propósito e equilíbrio", desc: "Viver com sentido, sem te perderes",
+      essencial: ["Propósito é saber para quê: o que dá sentido aos teus dias.", "Equilíbrio não é dar o mesmo a tudo; é dar o que cada área precisa agora.", "Pequenos passos mantêm-te no caminho."],
+      cenarios: [
+        { p: "Sentes que vives em piloto automático. Ajuda…", o: ["Mudar tudo de uma vez.", "Perguntar o que te dá sentido e dar um passo pequeno nessa direção.", "Esperar pelas férias.", "Trabalhar mais para não pensar."], c: 1, e: "O sentido constrói-se com passos pequenos e conscientes." },
+        { p: "Na Roda da Vida, uma área está muito em baixo. O primeiro passo é…", o: ["Tentar melhorar todas as áreas ao mesmo tempo.", "Escolher uma área e um passo pequeno para a próxima semana.", "Ignorar essa área.", "Sentir culpa."], c: 1, e: "Uma área de cada vez, um passo de cada vez." },
+        { p: "Propósito é…", o: ["Uma resposta que aparece de repente.", "Algo que se descobre e constrói ao longo da vida.", "Só para pessoas famosas.", "O mesmo que profissão."], c: 1, e: "O propósito vai-se revelando enquanto vives e escolhes." },
+      ],
+      construtor: { titulo: "O teu rumo", campos: [["importa", "O que mais importa para ti", "estar presente para os meus filhos"], ["area", "A área da vida que queres cuidar agora", "a saúde"], ["passo", "O teu primeiro passo", "caminhar 20 minutos três vezes por semana"]], gerar: (v) => `O que mais importa para mim é ${v.importa}. A área que quero cuidar agora é ${v.area}. O meu primeiro passo é ${v.passo}.` },
+      plano: ["Faz a Roda da Vida e dá uma nota de 1 a 10 a cada área.", "Escolhe a área que queres cuidar primeiro.", "Dá o primeiro passo que escreveste.", "Repete esse passo mais duas vezes esta semana.", "Escreve o que mudou em ti esta semana."],
+    },
+  ],
+  modelos: [
+    { nome: "Roda da Vida", para: "Ver o equilíbrio das áreas da tua vida", passos: [["Avalia", "Dá uma nota de 1 a 10 a cada área: saúde, família, relações, trabalho, finanças, lazer, crescimento, espiritualidade."], ["Observa", "Que áreas estão mais em baixo?"], ["Escolhe", "Uma área para cuidar primeiro."], ["Age", "Define um passo pequeno para esta semana."]] },
+    { nome: "As quatro perguntas", para: "Testar uma crença", passos: [["É verdade?", "Responde com sinceridade."], ["Tenho a certeza absoluta?", "Que prova tenho?"], ["Como reajo quando acredito nisto?", "O que sinto e faço?"], ["Quem seria eu sem este pensamento?", "Na mesma situação."]] },
+    { nome: "Parar · Questionar · Ressignificar · Agir", para: "Mudar uma reação automática", passos: [["Parar", "Repara no que pensas, sentes e queres fazer."], ["Questionar", "É um facto ou uma interpretação?"], ["Ressignificar", "Que outra forma de ver isto é possível?"], ["Agir", "O que posso fazer de diferente?"]] },
+    { nome: "Zonas de conforto, aprendizagem e pânico", para: "Crescer sem te assustares demais", passos: [["Conforto", "Seguro e conhecido, mas aprendes pouco."], ["Aprendizagem", "Desafio suficiente para crescer."], ["Pânico", "Desafio a mais: bloqueia."], ["O segredo", "Passos pequenos na zona de aprendizagem."]] },
+    { nome: "Níveis lógicos", para: "Perceber a que nível está a mudança", passos: [["Ambiente", "Onde e quando?"], ["Comportamento", "O que faço?"], ["Capacidades", "Como faço?"], ["Crenças e valores", "Porque faço?"], ["Identidade", "Quem sou eu, ao fazer isto?"], ["Propósito", "Para quê?"]] },
+    { nome: "Autocompaixão em três passos", para: "Apoiares-te num momento difícil", passos: [["Reconhecer", "“Isto é difícil, agora.”"], ["Lembrar", "Outras pessoas também passam por isto."], ["Cuidar", "“O que diria a alguém de quem gosto?”"]] },
+  ],
+  reflexao: [
+    "O que é que este momento me está a ensinar sobre mim?",
+    "Se não tivesse medo, o que faria diferente?",
+    "Que padrão se repete na minha vida?",
+    "O que estou a evitar sentir?",
+    "Quem seria eu sem esta crença?",
+    "O que me dá energia, e o que ma tira?",
+    "Do que preciso, que ainda não pedi?",
+    "Que parte de mim precisa de mais cuidado agora?",
+    "O que quero levar comigo deste ano?",
+    "Se a minha vida fosse um livro, como se chamaria este capítulo?",
+  ],
+  grupos: ["Conhecer-me", "Viver melhor"],
+  t: {
+    eyebrow: "VIDA 3S · INTERATIVO", titulo: "Laboratório da Vida", voltar: "Vida 3S",
+    intro: "Testes, treinos, quizzes e perguntas para te conheceres melhor e viveres com mais sentido. Grátis e ao teu ritmo.",
+    treinosDesc: "Valores, crenças e emoções · Autoestima, limites e propósito",
+    perfilTitulo: "Como vivo a minha vida?", perfilDesc: "Teste de perfil · 10 perguntas · 3 min", perfilPlano: "perfil",
+    notaPerfil: "Não há perfil certo. Todos temos um pouco de cada; o teu perfil mostra para onde costumas ir primeiro.",
+    compDesc: "Saber, Sentir e Ser na tua vida: onde estás forte e onde crescer · 12 afirmações",
+    quizzesTitulo: "Quizzes da vida", quizzesDesc: "Crenças limitantes, emoções, autoestima e hábitos",
+    modelosEyebrow: "FERRAMENTAS DE VIDA", modelosTitulo: "Modelos para a vida", modelosDesc: "Roda da Vida, as quatro perguntas, zonas de crescimento e mais, passo a passo",
+    perguntasEyebrow: "PERGUNTAS PARA TI", perguntasTitulo: "Perguntas para ti", perguntasDesc: "Uma pergunta para refletir e o teu diário", diario: "O MEU DIÁRIO",
+  },
+};
+
 function LaboratorioLiderancaScreen(props) {
   return <LaboratorioScreen cfg={LAB_LIDERANCA} {...props} />;
 }
@@ -2053,11 +2253,11 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
   const SEMANAS = ["Semana 1", "Semana 2", "Semana 3", "Semana 4"];
   const DIAS = ["Dia 1", "Dia 2", "Dia 4", "Dia 5", "Dia 7"];
   const cartao = (titulo, desc, extra, onClick) => (
-    <button onClick={onClick} className="w-full text-left rounded-2xl px-5 py-4 transition active:scale-[0.99]" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66`, boxShadow: "0 4px 14px -8px rgba(27,51,85,0.25)" }}>
+    <button onClick={onClick} className="w-full text-left rounded-xl px-4 py-3 transition active:scale-[0.99]" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66`, boxShadow: "0 3px 10px -8px rgba(27,51,85,0.25)" }}>
       <div className="flex items-center gap-3">
         <div className="flex-1 min-w-0">
-          <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{titulo}</p>
-          <p className="text-xs mt-0.5 leading-relaxed" style={{ color: palette.navySoft }}>{desc}</p>
+          <p className="font-serif text-base leading-snug" style={{ color: palette.navy }}>{titulo}</p>
+          <p className="text-[11px] mt-0.5 leading-snug" style={{ color: palette.navySoft }}>{desc}</p>
           {extra && <p className="text-[11px] mt-1.5 font-medium" style={{ color: palette.gold }}>{extra}</p>}
         </div>
         <ChevronRight size={18} style={{ color: palette.gold }} />
@@ -2435,7 +2635,7 @@ function useCoachDaArea(area) {
 function EscolaScreen({ escola, onBack, onOpen, temAcesso, onAbrirCurso, desbloqueados, acessoTotal }) {
   const e = ESCOLAS_3S[escola];
   const coach = useCoachDaArea(escola);
-  const lab = escola === "lideranca" ? { secao: "lab-lideranca", cfg: LAB_LIDERANCA, rotuloTreinos: "TRABALHAR COMPETÊNCIAS" } : escola === "desporto" ? { secao: "lab-desporto", cfg: LAB_DESPORTO, rotuloTreinos: "TREINAR A CABEÇA E OS HÁBITOS" } : null;
+  const lab = escola === "lideranca" ? { secao: "lab-lideranca", cfg: LAB_LIDERANCA, rotuloTreinos: "TRABALHAR COMPETÊNCIAS" } : escola === "desporto" ? { secao: "lab-desporto", cfg: LAB_DESPORTO, rotuloTreinos: "TREINAR A CABEÇA E OS HÁBITOS" } : escola === "desenvolvimento" ? { secao: "lab-vida", cfg: LAB_VIDA, rotuloTreinos: "TRABALHAR EM TI" } : null;
   const Icon = e.icon;
   const lista = e.cursos.map((id) => cursos.find((c) => c.id === id)).filter(Boolean);
   const livro = materiais.find((m) => m.id === e.livro);
@@ -2448,14 +2648,14 @@ function EscolaScreen({ escola, onBack, onOpen, temAcesso, onAbrirCurso, desbloq
           <span className="text-sm">Escola 3S</span>
         </button>
       </div>
-      <div className="px-6 pt-4 pb-7">
-        <div className="relative overflow-hidden rounded-3xl px-5 py-7 text-center" style={{ background: e.fundo, border: e.borda ? `1.5px solid ${e.borda}` : "none" }}>
-          <Icon size={150} strokeWidth={1} className="absolute -right-6 -bottom-8" style={{ color: e.texto, opacity: 0.07 }} />
-          <div className="w-14 h-14 mx-auto rounded-full flex items-center justify-center" style={{ border: `1.5px solid ${e.acento}` }}>
-            <Icon size={24} strokeWidth={1.6} style={{ color: e.acento }} />
+      <div className="px-6 pt-3 pb-5">
+        <div className="relative overflow-hidden rounded-2xl px-5 py-4 text-center" style={{ background: e.fundo, border: e.borda ? `1.5px solid ${e.borda}` : "none" }}>
+          <Icon size={100} strokeWidth={1} className="absolute -right-4 -bottom-6" style={{ color: e.texto, opacity: 0.07 }} />
+          <div className="w-10 h-10 mx-auto rounded-full flex items-center justify-center" style={{ border: `1.5px solid ${e.acento}` }}>
+            <Icon size={18} strokeWidth={1.6} style={{ color: e.acento }} />
           </div>
-          <p className="text-[10px] tracking-[0.25em] font-semibold mt-3" style={{ color: e.suave }}>COACHING</p>
-          <p className="font-serif text-4xl leading-tight mt-1" style={{ color: e.texto }}>{e.curto} <span style={{ color: e.acento, fontWeight: 600 }}>3S</span></p>
+          <p className="text-[10px] tracking-[0.25em] font-semibold mt-2" style={{ color: e.suave }}>COACHING</p>
+          <p className="font-serif text-3xl leading-tight" style={{ color: e.texto }}>{e.curto} <span style={{ color: e.acento, fontWeight: 600 }}>3S</span></p>
           <p className="text-sm mt-2 leading-relaxed" style={{ color: e.texto, opacity: 0.9 }}>{e.frase}</p>
           <p className="text-[11px] mt-3" style={{ color: e.texto, opacity: 0.75 }}>{e.por || "com Conceição Alves"}</p>
         </div>
@@ -2464,10 +2664,10 @@ function EscolaScreen({ escola, onBack, onOpen, temAcesso, onAbrirCurso, desbloq
       {lab && (
         <div className="px-6 mb-7">
           {rotulo("INTERATIVO · GRÁTIS")}
-          <button onClick={() => onOpen(lab.secao)} className="relative overflow-hidden w-full text-left rounded-2xl px-5 py-5 transition active:scale-[0.99]" style={{ background: `linear-gradient(150deg, ${palette.gold} 0%, #E4C98C 100%)` }}>
-            <p className="font-serif text-2xl leading-tight" style={{ color: palette.navy }}>{lab.cfg.t.titulo}</p>
+          <button onClick={() => onOpen(lab.secao)} className="relative overflow-hidden w-full text-left rounded-xl px-4 py-3 transition active:scale-[0.99]" style={{ background: `linear-gradient(150deg, ${palette.gold} 0%, #E4C98C 100%)` }}>
+            <p className="font-serif text-lg leading-tight" style={{ color: palette.navy }}>{lab.cfg.t.titulo}</p>
             <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navy }}>Testes · Treinos · Quizzes · Planos automáticos · Modelos · {lab.cfg.t.perguntasTitulo}</p>
-            <span className="inline-flex items-center gap-1 mt-3 text-xs font-medium rounded-full px-3 py-1.5" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Começar <ChevronRight size={14} /></span>
+            <span className="inline-flex items-center gap-1 mt-2 text-[11px] font-medium rounded-full px-3 py-1" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Começar <ChevronRight size={13} /></span>
           </button>
         </div>
       )}
@@ -2507,9 +2707,9 @@ function EscolaScreen({ escola, onBack, onOpen, temAcesso, onAbrirCurso, desbloq
           {lista.map((c) => {
             const acesso = temAcesso(c);
             return (
-              <button key={c.id} onClick={() => onAbrirCurso(c)} className="w-full text-left rounded-2xl px-4 py-4 transition active:scale-[0.99]" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, boxShadow: "0 4px 14px -8px rgba(27,51,85,0.25)" }}>
+              <button key={c.id} onClick={() => onAbrirCurso(c)} className="w-full text-left rounded-xl px-4 py-3 transition active:scale-[0.99]" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, boxShadow: "0 4px 14px -8px rgba(27,51,85,0.25)" }}>
                 <div className="flex items-start justify-between gap-2">
-                  <p className="font-serif text-xl leading-snug" style={{ color: palette.navy }}>{c.titulo}</p>
+                  <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{c.titulo}</p>
                   {c.gratuito && <span className="text-[10px] font-semibold rounded-full px-2 py-0.5 shrink-0" style={{ backgroundColor: `${palette.gold}26`, color: palette.navy }}>GRÁTIS</span>}
                 </div>
                 {c.promessa && <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{c.promessa}</p>}
@@ -2564,7 +2764,7 @@ function EscolaScreen({ escola, onBack, onOpen, temAcesso, onAbrirCurso, desbloq
             <p className="text-[11px]" style={{ color: palette.navySoft }}>{coach && coach.titulo ? coach.titulo : coach === null ? "Estamos a escolher o coach desta área" : ""}</p>
           </div>
         </div>
-        <button onClick={() => onOpen("marcar:" + escola)} className="w-full flex items-center gap-4 rounded-2xl px-5 py-4 text-left transition active:scale-[0.99]" style={{ background: `linear-gradient(150deg, ${palette.navy} 0%, #24436E 100%)` }}>
+        <button onClick={() => onOpen("marcar:" + escola)} className="w-full flex items-center gap-3 rounded-xl px-4 py-3 text-left transition active:scale-[0.99]" style={{ background: `linear-gradient(150deg, ${palette.navy} 0%, #24436E 100%)` }}>
           <div className="w-11 h-11 rounded-full flex items-center justify-center shrink-0" style={{ border: `1.5px solid ${palette.gold}` }}>
             <PenLine size={18} strokeWidth={1.6} style={{ color: palette.gold }} />
           </div>
@@ -2684,8 +2884,8 @@ function InicioScreen({ onOpen, email, papel, naoLidas, onVerAgenda, onVerNotifi
       <div className="px-6 mb-6">
         <div className="grid grid-cols-3 gap-2.5">
           {areasEscolaComuns.map((a) => (
-            <button key={a.key} onClick={() => onOpen(a.key)} className="rounded-2xl px-2 py-4 flex flex-col items-center gap-2 transition active:scale-[0.97]" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66` }}>
-              <a.icon size={20} strokeWidth={1.6} style={{ color: palette.navy }} />
+            <button key={a.key} onClick={() => onOpen(a.key)} className="rounded-xl px-2 py-2.5 flex flex-col items-center gap-1 transition active:scale-[0.97]" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66` }}>
+              <a.icon size={17} strokeWidth={1.6} style={{ color: palette.navy }} />
               <span className="text-xs font-medium" style={{ color: palette.navy }}>{a.titulo}</span>
             </button>
           ))}
@@ -10062,6 +10262,18 @@ export default function App() {
         resultados={progresso.testesDesporto || {}}
         onGuardar={(chave, valor) => setProgresso((p) => ({ ...p, testesDesporto: { ...(p.testesDesporto || {}), [chave]: valor } }))}
         onMarcar={() => setSecao("marcar:desporto")}
+      />
+    );
+  } else if (secao === "lab-vida" || (secao || "").startsWith("lab-vida:")) {
+    content = (
+      <LaboratorioScreen
+        key={secao}
+        cfg={LAB_VIDA}
+        inicial={(secao || "").startsWith("lab-vida:") ? secao.split(":")[1] : null}
+        onBack={() => setSecao("desenvolvimento-3s")}
+        resultados={progresso.testesVida || {}}
+        onGuardar={(chave, valor) => setProgresso((p) => ({ ...p, testesVida: { ...(p.testesVida || {}), [chave]: valor } }))}
+        onMarcar={() => setSecao("marcar:desenvolvimento")}
       />
     );
   } else if (secao === "desporto-3s") {
