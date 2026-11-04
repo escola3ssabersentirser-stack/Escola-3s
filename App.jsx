@@ -1089,7 +1089,6 @@ const areas = [
   { key: "escola-ser", titulo: "Vida 3S", desc: "Autoconhecimento, emoções e crenças", icon: BookOpen },
   { key: "workshops", titulo: "Workshops", desc: "Próximas sessões e inscrição", icon: Calendar },
   { key: "podcast", titulo: "Podcast", desc: "Episódios para ouvir", icon: Headphones },
-  { key: "material", titulo: "Material Didático", desc: "Fichas, jogos, ebooks", icon: Layers },
   { key: "marcar", titulo: "Coaching e Mentoria", desc: "Sessões individuais e acompanhamento", icon: PenLine },
 ];
 
@@ -1140,9 +1139,9 @@ function FormacaoHubScreen({ onBack, onAbrir, tema, setTema, temAcesso, onAbrirC
           </div>
         )}
         {listaCursos.length === 0 && (
-          <p className="mx-6 px-4 mb-6 text-xs rounded-xl py-3" style={{ backgroundColor: `${palette.gold}1F`, color: palette.navy }}>Curso em vídeo deste tema: em breve. Para já tens aqui o material para trabalhar.</p>
+          <p className="mx-6 px-4 mb-6 text-xs rounded-xl py-3" style={{ backgroundColor: `${palette.gold}1F`, color: palette.navy }}>Curso em vídeo deste tema: em breve.</p>
         )}
-        {listaMateriais.length > 0 && (
+        {false && listaMateriais.length > 0 && (
           <div className="px-6">
             <p className="text-[11px] tracking-[0.25em] font-medium mb-3" style={{ color: palette.gold }}>MATERIAL DIDÁTICO</p>
             <div className="space-y-3">
@@ -1176,8 +1175,7 @@ function FormacaoHubScreen({ onBack, onAbrir, tema, setTema, temAcesso, onAbrirC
     <div className="pb-28">
       <SectionHeader eyebrow="LIDERANÇA E COMUNICAÇÃO" title="Formação" onBack={onBack} />
       <div className="px-6 grid grid-cols-2 gap-3">
-        {cartao("Cursos", "Cursos em vídeo, com caderno e certificado", BookOpen, () => onAbrir("alunos"))}
-        {cartao("Material didático", "Fichas, ferramentas e cadernos", Layers, () => onAbrir("material"))}
+        <div className="col-span-2">{cartao("Cursos", "Cursos em vídeo, com caderno e certificado", BookOpen, () => onAbrir("alunos"))}</div>
       </div>
       <div className="px-6 mt-3">
         <button onClick={() => onAbrir("aluno")} className="w-full flex items-center justify-between rounded-2xl px-5 py-3.5" style={{ backgroundColor: palette.card, border: `1px solid ${palette.gold}` }}>
@@ -2861,8 +2859,7 @@ const areasEscolaComuns = [
 ];
 
 const produtosLista = [
-  { key: "material", titulo: "Material didático", desc: "Cadernos de trabalho, fichas, jogos e ebooks", icon: Layers, full: true },
-  { key: "livros", titulo: "Livros", desc: "Os livros da Conceição Alves", icon: BookOpen },
+  { key: "livros", titulo: "Livros", desc: "Os livros da Conceição Alves", icon: BookOpen, full: true },
   { key: "carrinho", titulo: "O meu carrinho", desc: "Rever e pagar", icon: ShoppingBag },
   { key: "codigo", titulo: "Código de oferta", desc: "Tenho um código", icon: Gift },
 ];
@@ -2942,6 +2939,18 @@ function InicioScreen({ onOpen, email, papel, naoLidas, onVerAgenda, onVerNotifi
           >
             <Users size={20} style={{ color: palette.gold }} />
             <span className="flex-1 font-serif text-lg" style={{ color: palette.creamSoft }}>Painel da Escola</span>
+            <ChevronRight size={18} style={{ color: palette.gold }} />
+          </button>
+          <button
+            onClick={() => onOpen("material")}
+            className="w-full flex items-center gap-3 rounded-2xl px-5 py-4 mt-3 text-left transition active:scale-[0.99]"
+            style={{ backgroundColor: palette.card, border: `1px solid ${palette.gold}` }}
+          >
+            <Layers size={20} style={{ color: palette.gold }} />
+            <span className="flex-1">
+              <span className="block font-serif text-lg" style={{ color: palette.navy }}>Material didático</span>
+              <span className="block text-[11px]" style={{ color: palette.navySoft }}>Só para coaches: fichas, ferramentas e cadernos</span>
+            </span>
             <ChevronRight size={18} style={{ color: palette.gold }} />
           </button>
         </div>
@@ -5688,7 +5697,7 @@ function MaterialDidaticoScreen({ onBack, desbloqueados, onDesbloquear, acessoTo
         {acessoTotal && (
           <div className="px-6 mb-4">
             <p className="text-xs rounded-xl px-4 py-3" style={{ backgroundColor: `${palette.gold}1F`, color: palette.navy }}>
-              Como dona da escola, vês tudo já desbloqueado — para poderes rever o conteúdo.
+              Como coach, tens acesso a todo o material: podes descarregar, imprimir ou enviar aos teus clientes.
             </p>
           </div>
         )}
@@ -5853,6 +5862,19 @@ function MaterialCard({ material, desbloqueado, onDesbloquear, desbloqueadoFisic
     setADescarregar(false);
   };
 
+  const urlCompleto = material.url ? new URL(material.url, window.location.origin).href : "";
+  const imprimir = () => {
+    const w = window.open(urlCompleto, "_blank", "noopener,noreferrer");
+    if (w) { try { w.addEventListener("load", () => w.print()); } catch (e) {} }
+  };
+  const enviar = async () => {
+    const texto = `${material.titulo} · Escola 3S`;
+    try {
+      if (navigator.share) { await navigator.share({ title: texto, text: texto, url: urlCompleto }); return; }
+    } catch (e) { if (e && e.name === "AbortError") return; }
+    window.open(`https://wa.me/?text=${encodeURIComponent(texto + "\n" + urlCompleto)}`, "_blank", "noopener,noreferrer");
+  };
+
   const blocoFisico = material.tambemFisico && (
     <div className="mt-3 pt-3" style={{ borderTop: `1px solid ${palette.goldSoft}40` }}>
       {desbloqueadoFisico ? (
@@ -5919,6 +5941,12 @@ function MaterialCard({ material, desbloqueado, onDesbloquear, desbloqueadoFisic
             </span>
           )}
         </div>
+        {material.url && !material.fisico && (
+          <div className="flex gap-2 mt-2.5">
+            <button onClick={imprimir} className="flex-1 rounded-lg py-1.5 text-xs font-medium" style={{ border: `1px solid ${palette.goldSoft}88`, color: palette.navy }}>🖨 Imprimir</button>
+            <button onClick={enviar} className="flex-1 rounded-lg py-1.5 text-xs font-medium" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Enviar a um cliente</button>
+          </div>
+        )}
         {blocoFisico}
       </div>
     );
@@ -10419,10 +10447,10 @@ export default function App() {
   } else if (secao === "material") {
     content = (
       <MaterialDidaticoScreen
-        onBack={() => setSecao("formacao-hub")}
+        onBack={() => setSecao(null)}
         desbloqueados={materiaisAcesso}
         onDesbloquear={desbloquearMaterial}
-        acessoTotal={progresso.papel === "dona"}
+        acessoTotal={progresso.papel === "dona" || progresso.papel === "mentora"}
       />
     );
   } else if (secao === "marcar") {
