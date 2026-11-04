@@ -1,4 +1,4 @@
-// VERSAO-04-NOV-REVISAO-LINGUAGEM
+// VERSAO-04-NOV-QUIZZES-PLANOS
 import { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "./supabase.js";
 import {
@@ -1484,6 +1484,109 @@ const PERGUNTAS_REFLEXAO = [
   "O que é para mim uma equipa feliz? Estou a contribuir para isso?",
 ];
 
+const QUIZZES_LIDERANCA = [
+  {
+    id: "feedback", titulo: "Feedback que funciona", desc: "Modelo SBI e feedback que muda comportamentos",
+    desafio: "Dá esta semana um feedback positivo e um de melhoria, ambos com o SBI.",
+    perguntas: [
+      { p: "Qual destas frases é feedback útil?", o: ["Tens de ser mais profissional.", "Na reunião de hoje chegaste 15 minutos atrasado e começámos sem os teus números.", "Estás sempre atrasado.", "Não gosto da tua atitude."], c: 1, e: "Feedback útil é concreto: uma situação e um comportamento que se podem ver.", a: "Antes de dares feedback, escreve a situação e o comportamento concreto, sem adjetivos." },
+      { p: "No Modelo SBI, o “I” quer dizer…", o: ["Intenção", "Impacto", "Instrução", "Imagem"], c: 1, e: "Situação, Comportamento (Behaviour) e Impacto: o efeito que o comportamento teve.", a: "Revê o Modelo SBI no Laboratório e treina-o com um exemplo teu." },
+      { p: "Quando dar um feedback de melhoria?", o: ["No fim do ano, na avaliação.", "O mais perto possível do momento, em privado.", "À frente da equipa, para todos aprenderem.", "Só se a pessoa pedir."], c: 1, e: "Perto do momento e em privado: a pessoa lembra-se e não se sente exposta.", a: "Da próxima vez, dá o feedback no próprio dia, a sós." },
+      { p: "Depois de dares feedback, o passo seguinte é…", o: ["Ouvir a outra pessoa.", "Repetir para garantir.", "Mudar de assunto.", "Mandar por email."], c: 0, e: "Feedback é uma conversa: ouvir a outra parte muda tudo.", a: "Depois de cada feedback, pergunta: “Como vês isto?” e ouve até ao fim." },
+      { p: "Um feedback positivo deve ser…", o: ["Genérico: “bom trabalho”.", "Concreto: o que a pessoa fez e o efeito que teve.", "Raro, para ter valor.", "Só em público."], c: 1, e: "O elogio concreto mostra o que repetir.", a: "Faz um elogio concreto por dia durante uma semana." },
+    ],
+  },
+  {
+    id: "assertiva", titulo: "Comunicação assertiva", desc: "Nem passivo, nem agressivo",
+    desafio: "Diz um “não” esta semana com uma alternativa, sem pedir desculpa a mais.",
+    perguntas: [
+      { p: "Pedem-te mais uma tarefa e não tens tempo. Resposta assertiva:", o: ["“Está bem, eu faço.”", "“Estás a gozar? Não vês como estou?”", "“Agora não consigo. Posso ajudar na quinta, ou vemos o que pode sair da lista.”", "Ignorar o pedido."], c: 2, e: "Assertivo é dizer o limite e propor uma saída.", a: "Prepara a tua frase para dizer “não” com uma alternativa." },
+      { p: "Comunicação assertiva é…", o: ["Dizer sempre o que penso, doa a quem doer.", "Defender o que preciso, respeitando o outro.", "Evitar conflitos a todo o custo.", "Falar mais alto para ser ouvido."], c: 1, e: "Respeito por ti e pelo outro, ao mesmo tempo.", a: "Repara numa conversa desta semana: foste passivo, agressivo ou assertivo?" },
+      { p: "Qual destas frases fala de ti, e não do outro?", o: ["“Tu nunca me ouves.”", "“Preciso de terminar a ideia antes de passarmos à frente.”", "“Vocês fazem sempre isto.”", "“Toda a gente acha que…”"], c: 1, e: "Falar de ti (o que precisas) não ataca e abre a conversa.", a: "Troca um “tu nunca” por um “eu preciso” numa conversa desta semana." },
+      { p: "O corpo também comunica. Uma postura assertiva é…", o: ["Braços cruzados e olhar para o chão.", "Olhar nos olhos, voz calma e firme.", "Apontar o dedo.", "Falar enquanto mexes no telemóvel."], c: 1, e: "Voz calma e olhar direto dão segurança à mensagem.", a: "Na próxima conversa importante, pousa o telemóvel e olha a pessoa nos olhos." },
+      { p: "Dizer “não” a um pedido é…", o: ["Falta de espírito de equipa.", "Um limite legítimo, se for explicado com respeito.", "Sempre errado com chefias.", "Sinal de fraqueza."], c: 1, e: "Um “não” claro protege o teu trabalho e a confiança.", a: "Escolhe um pedido a que dirias “sim” por medo, e responde com honestidade." },
+    ],
+  },
+  {
+    id: "situacional", titulo: "Liderança situacional", desc: "O estilo certo para cada pessoa",
+    desafio: "Para cada pessoa da tua equipa, escreve que estilo precisa agora: dirigir, treinar, apoiar ou delegar.",
+    perguntas: [
+      { p: "Uma pessoa nova, motivada mas sem experiência, precisa sobretudo de…", o: ["Dirigir: instruções claras.", "Delegar.", "Ser deixada em paz.", "Pressão."], c: 0, e: "Com pouca competência e muita vontade, a pessoa precisa de direção.", a: "Para quem é novo, dá instruções claras e um ponto de situação diário na primeira semana." },
+      { p: "Alguém experiente e motivado precisa de…", o: ["Instruções detalhadas.", "Delegar: confiança e espaço.", "Controlo diário.", "Formação básica."], c: 1, e: "Controlar quem já sabe desmotiva.", a: "Escolhe uma pessoa experiente e entrega-lhe uma decisão." },
+      { p: "Uma pessoa competente ficou insegura depois de um erro. Tu…", o: ["Apoias e encorajas.", "Tiras-lhe a tarefa.", "Diriges passo a passo.", "Ignoras."], c: 0, e: "Ela sabe fazer; precisa de recuperar a confiança.", a: "Fala com quem errou recentemente e lembra-lhe o que faz bem." },
+      { p: "O estilo certo depende…", o: ["Da personalidade do líder.", "Da pessoa e da tarefa.", "Do cargo.", "Do humor do dia."], c: 1, e: "É a pessoa, naquela tarefa, que define o estilo.", a: "Antes de delegar, pergunta-te: esta pessoa já fez isto antes?" },
+      { p: "A mesma pessoa pode precisar de estilos diferentes?", o: ["Não, cada pessoa tem o seu estilo.", "Sim, consoante a tarefa.", "Só se mudar de função.", "Só nos primeiros meses."], c: 1, e: "Alguém pode ser experiente numa tarefa e novo noutra.", a: "Pensa numa pessoa e em duas tarefas dela: precisa do mesmo estilo nas duas?" },
+    ],
+  },
+  {
+    id: "escuta", titulo: "Escuta ativa", desc: "Ouvir para perceber, não para responder",
+    desafio: "Numa conversa por dia, resume o que ouviste antes de dares a tua opinião.",
+    perguntas: [
+      { p: "Escutar ativamente é…", o: ["Esperar pela vez de falar.", "Perceber o que o outro diz e sente, e mostrar que percebeste.", "Dar logo a solução.", "Concordar com tudo."], c: 1, e: "É ouvir com atenção e confirmar que entendeste.", a: "Na próxima conversa, não dês soluções nos primeiros dois minutos." },
+      { p: "Qual destas é uma pergunta aberta?", o: ["“Correu bem?”", "“O que achas que podia ter corrido melhor?”", "“Fizeste o relatório?”", "“Estás chateado?”"], c: 1, e: "Perguntas abertas não se respondem com sim ou não.", a: "Escreve três perguntas abertas para usar esta semana." },
+      { p: "Parafrasear é…", o: ["Repetir palavra por palavra.", "Dizer por outras palavras o que entendeste.", "Mudar de assunto.", "Corrigir o outro."], c: 1, e: "Mostra que ouviste e evita mal-entendidos.", a: "Usa a frase: “Se percebi bem, o que estás a dizer é…”" },
+      { p: "Enquanto alguém fala, o maior obstáculo à escuta é…", o: ["O silêncio.", "Estar a preparar a resposta.", "Olhar nos olhos.", "Acenar com a cabeça."], c: 1, e: "Quem prepara a resposta já deixou de ouvir.", a: "Repara quantas vezes preparas a resposta enquanto o outro ainda fala." },
+      { p: "Alguém desabafa contigo. A melhor primeira resposta é…", o: ["“Isso não é nada.”", "“Comigo foi pior.”", "“Isso parece mesmo difícil. Queres contar mais?”", "“Devias ter feito…”"], c: 2, e: "Primeiro acolher, depois (se pedirem) aconselhar.", a: "Quando alguém desabafar, acolhe primeiro e pergunta se quer ajuda." },
+    ],
+  },
+  {
+    id: "seguranca", titulo: "Segurança psicológica", desc: "Equipas onde se pode errar e falar",
+    desafio: "Na próxima reunião, fala em último lugar e agradece a quem trouxer um problema.",
+    perguntas: [
+      { p: "Numa equipa com segurança psicológica…", o: ["Ninguém erra.", "As pessoas falam de erros sem medo.", "Não há conflitos.", "O líder decide tudo."], c: 1, e: "Erros há sempre; a diferença é falar deles cedo.", a: "Pergunta na próxima reunião: “O que correu mal esta semana e o que aprendemos?”" },
+      { p: "Alguém admite um erro numa reunião. Tu…", o: ["Mostras desagrado para não se repetir.", "Agradeces e procuram juntos a solução.", "Mudas de assunto.", "Registas para a avaliação."], c: 1, e: "A forma como reages ao primeiro erro decide se te contam o segundo.", a: "Treina a frase: “Obrigado por dizeres. O que fazemos agora?”" },
+      { p: "Qual destas frases cria segurança?", o: ["“Não quero problemas, quero soluções.”", "“Posso estar a falhar alguma coisa. O que vos parece?”", "“Isto já está decidido.”", "“Quem não concordar sabe onde é a porta.”"], c: 1, e: "Quando o líder admite que pode falhar, os outros arriscam falar.", a: "Usa uma vez por semana: “Posso estar enganado. O que vos parece?”" },
+      { p: "Segurança psicológica significa…", o: ["Ser simpático e evitar críticas.", "Exigência alta com confiança alta.", "Baixar os objetivos.", "Não haver hierarquia."], c: 1, e: "Não é facilitismo: é poder dizer a verdade num ambiente exigente.", a: "Mantém a exigência, mas separa sempre o erro da pessoa." },
+      { p: "Numa reunião, quem fala primeiro…", o: ["Não influencia nada.", "Influencia o que os outros se atrevem a dizer; o líder deve falar no fim.", "Só conta para a ata.", "Deve ser sempre o mais novo."], c: 1, e: "Se o líder fala primeiro, a equipa tende a concordar.", a: "Na próxima reunião, ouve todos antes de dares a tua opinião." },
+    ],
+  },
+];
+
+const PLANO_PERFIL = {
+  O: ["Em cada reunião, faz duas perguntas antes de dares a tua opinião.", "Escolhe uma tarefa que costumas controlar e delega-a com um objetivo claro.", "Pergunta a uma pessoa: “Do que precisas de mim para fazeres melhor?”", "Volta a fazer o teste e compara."],
+  C: ["Escolhe uma decisão que andas a adiar e decide até sexta.", "Usa o Modelo GROW numa conversa e fecha sempre com: o quê, quem e quando.", "Dá uma instrução clara a quem é novo, sem perguntas pelo meio.", "Volta a fazer o teste e compara."],
+  F: ["Escolhe a conversa difícil que andas a adiar e marca-a.", "Prepara essa conversa com o Modelo DESC.", "Dá um feedback de melhoria com o Modelo SBI.", "Volta a fazer o teste e compara."],
+  D: ["Marca 15 minutos por semana com cada pessoa da equipa.", "Pergunta a cada pessoa: “Onde precisas de mais apoio?”", "Num projeto que delegaste, faz um ponto de situação a meio.", "Volta a fazer o teste e compara."],
+};
+const PLANO_PILAR = {
+  Saber: ["Escreve os 3 objetivos da equipa e explica o porquê a cada pessoa.", "Dá dois feedbacks com o Modelo SBI.", "Prepara e tem uma conversa que andas a adiar.", "Volta a fazer o teste e compara."],
+  Sentir: ["Começa cada conversa individual com “Como estás?” e espera pela resposta.", "Quando sentires tensão, respira três vezes antes de responder.", "Agradece a alguém que te trouxe um erro ou uma má notícia.", "Volta a fazer o teste e compara."],
+  Ser: ["Escreve 3 valores teus e um exemplo de cada no teu trabalho.", "Cumpre um compromisso pequeno, à vista de todos.", "Assume um erro teu perante a equipa.", "Volta a fazer o teste e compara."],
+};
+
+function planoDoQuiz(quiz, respostas) {
+  const erradas = quiz.perguntas.filter((q, i) => respostas[i] !== q.c);
+  const passos = erradas.map((q) => q.a);
+  passos.push(quiz.desafio);
+  if (erradas.length === 0) passos.unshift("Ensina a alguém da equipa o que sabes sobre " + quiz.titulo.toLowerCase() + ".");
+  return passos.slice(0, 5);
+}
+
+function PlanoCartao({ plano, onAlternar, compacto }) {
+  if (!plano) return null;
+  const feitos = plano.passos.filter((p) => p.feito).length;
+  return (
+    <div className="rounded-2xl px-5 py-4" style={{ backgroundColor: palette.card, border: `1.5px solid ${palette.gold}` }}>
+      <div className="flex items-baseline justify-between gap-2">
+        <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>O MEU PLANO</p>
+        <p className="text-[11px]" style={{ color: palette.navySoft }}>{feitos} de {plano.passos.length} feitos</p>
+      </div>
+      <p className="font-serif text-lg leading-snug mt-1 mb-3" style={{ color: palette.navy }}>{plano.titulo}</p>
+      <div className="space-y-2">
+        {plano.passos.map((p, i) => (
+          <button key={i} onClick={() => onAlternar && onAlternar(i)} className="w-full flex items-start gap-3 text-left">
+            <span className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-[11px] font-semibold mt-0.5" style={p.feito ? { backgroundColor: palette.gold, color: palette.navy } : { border: `1.5px solid ${palette.gold}`, color: palette.gold }}>{p.feito ? "✓" : i + 1}</span>
+            <span className="text-sm leading-snug" style={{ color: palette.ink, textDecoration: p.feito ? "line-through" : "none", opacity: p.feito ? 0.6 : 1 }}>
+              {p.etiqueta && <span className="font-semibold" style={{ color: palette.navy }}>{p.etiqueta}: </span>}{p.texto}
+            </span>
+          </button>
+        ))}
+      </div>
+      {!compacto && <p className="text-[11px] mt-3" style={{ color: palette.navySoft }}>Toca em cada passo quando o fizeres.</p>}
+    </div>
+  );
+}
+
 function BarraPct({ rotulo, pct, destaque }) {
   return (
     <div className="mb-2.5">
@@ -1506,8 +1609,21 @@ function LaboratorioLiderancaScreen({ onBack, resultados = {}, onGuardar, onMarc
   const [iPergunta, setIPergunta] = useState(() => Math.floor(Math.random() * PERGUNTAS_REFLEXAO.length));
   const [textoReflexao, setTextoReflexao] = useState("");
   const [guardadoMsg, setGuardadoMsg] = useState("");
+  const [quizId, setQuizId] = useState(null);
 
-  const voltarLab = () => { setVista(null); setPasso(0); setRespostas([]); };
+  const voltarLab = () => { setVista(null); setPasso(0); setRespostas([]); setQuizId(null); };
+  const criarPlano = (titulo, origem, textos, etiquetas) => ({
+    titulo, origem, data: new Date().toISOString(),
+    passos: textos.map((t, i) => ({ etiqueta: etiquetas ? etiquetas[i] : null, texto: t, feito: false })),
+  });
+  const guardarPlano = (plano) => { onGuardar("plano", plano); };
+  const alternarPasso = (i) => {
+    const p = resultados.plano;
+    if (!p) return;
+    onGuardar("plano", { ...p, passos: p.passos.map((x, j) => (j === i ? { ...x, feito: !x.feito } : x)) });
+  };
+  const SEMANAS = ["Semana 1", "Semana 2", "Semana 3", "Semana 4"];
+  const DIAS = ["Dia 1", "Dia 2", "Dia 4", "Dia 5", "Dia 7"];
   const cartao = (titulo, desc, extra, onClick) => (
     <button onClick={onClick} className="w-full text-left rounded-2xl px-5 py-4 transition active:scale-[0.99]" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66`, boxShadow: "0 4px 14px -8px rgba(27,51,85,0.25)" }}>
       <div className="flex items-center gap-3">
@@ -1555,9 +1671,11 @@ function LaboratorioLiderancaScreen({ onBack, resultados = {}, onGuardar, onMarc
     const ordenados = Object.keys(contagem).sort((a, b) => contagem[b] - contagem[a]);
     const principal = PERFIS_LIDER[ordenados[0]];
     const segundo = PERFIS_LIDER[ordenados[1]];
+    const planoPerfil = criarPlano(`Plano de 4 semanas: líder ${principal.nome}`, "perfil", PLANO_PERFIL[ordenados[0]], SEMANAS);
     const guardar = () => {
       onGuardar("perfil", { perfil: ordenados[0], contagem, data: new Date().toISOString() });
-      setGuardadoMsg("Resultado guardado.");
+      guardarPlano(planoPerfil);
+      setGuardadoMsg("Resultado e plano guardados. Encontras o plano no Laboratório.");
     };
     return (
       <div className="pb-28">
@@ -1579,7 +1697,8 @@ function LaboratorioLiderancaScreen({ onBack, resultados = {}, onGuardar, onMarc
             </div>
           ))}
           <p className="text-xs leading-relaxed rounded-xl px-4 py-3" style={{ backgroundColor: `${palette.gold}1F`, color: palette.navy }}>Não há perfil certo. Os melhores líderes mudam de estilo consoante a pessoa e a situação: é a Liderança Situacional.</p>
-          {botaoPrincipal("Guardar o meu resultado", guardar)}
+          <PlanoCartao plano={planoPerfil} compacto />
+          {botaoPrincipal("Guardar resultado e plano", guardar)}
           {guardadoMsg && <p className="text-xs text-center" style={{ color: palette.navySoft }}>{guardadoMsg}</p>}
           <button onClick={onMarcar} className="w-full rounded-full py-3 text-sm font-medium" style={{ border: `1px solid ${palette.navy}`, color: palette.navy }}>Falar sobre o meu perfil numa sessão</button>
           <button onClick={() => { setPasso(0); setRespostas([]); setGuardadoMsg(""); }} className="w-full text-xs underline" style={{ color: palette.navySoft }}>Repetir o teste</button>
@@ -1619,9 +1738,11 @@ function LaboratorioLiderancaScreen({ onBack, resultados = {}, onGuardar, onMarc
     });
     const forte = [...pilares].sort((a, b) => b.pct - a.pct)[0];
     const fraco = [...pilares].sort((a, b) => a.pct - b.pct)[0];
+    const planoPilar = criarPlano(`Plano de 4 semanas: crescer no ${fraco.pilar}`, "competencias", PLANO_PILAR[fraco.pilar], SEMANAS);
     const guardar = () => {
       onGuardar("competencias", { pilares, data: new Date().toISOString() });
-      setGuardadoMsg("Resultado guardado.");
+      guardarPlano(planoPilar);
+      setGuardadoMsg("Resultado e plano guardados. Encontras o plano no Laboratório.");
     };
     return (
       <div className="pb-28">
@@ -1638,10 +1759,91 @@ function LaboratorioLiderancaScreen({ onBack, resultados = {}, onGuardar, onMarc
             <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>ONDE CRESCER: {fraco.pilar.toUpperCase()}</p>
             <p className="text-sm mt-1 leading-relaxed" style={{ color: palette.ink }}>{DICAS_PILAR[fraco.pilar]}</p>
           </div>
-          {botaoPrincipal("Guardar o meu resultado", guardar)}
+          <PlanoCartao plano={planoPilar} compacto />
+          {botaoPrincipal("Guardar resultado e plano", guardar)}
           {guardadoMsg && <p className="text-xs text-center" style={{ color: palette.navySoft }}>{guardadoMsg}</p>}
           <button onClick={onMarcar} className="w-full rounded-full py-3 text-sm font-medium" style={{ border: `1px solid ${palette.navy}`, color: palette.navy }}>Trabalhar isto numa sessão</button>
           <button onClick={() => { setPasso(0); setRespostas([]); setGuardadoMsg(""); }} className="w-full text-xs underline" style={{ color: palette.navySoft }}>Repetir o teste</button>
+        </div>
+      </div>
+    );
+  }
+
+  // ---- Quizzes
+  if (vista === "quizzes") {
+    const feitos = resultados.quizzes || {};
+    return (
+      <div className="pb-28">
+        {cabecalho("TESTA O QUE SABES", "Quizzes de liderança", voltarLab, "Laboratório")}
+        <p className="px-6 -mt-2 mb-5 text-sm leading-relaxed" style={{ color: palette.navySoft }}>5 perguntas cada. No fim recebes a explicação das respostas e um plano de 7 dias feito para ti.</p>
+        <div className="px-6 space-y-3">
+          {QUIZZES_LIDERANCA.map((q) => cartao(q.titulo, q.desc, feitos[q.id] ? `Última vez: ${feitos[q.id].pontos} de ${feitos[q.id].total}` : null, () => { setQuizId(q.id); setVista("quiz"); setPasso(0); setRespostas([]); setGuardadoMsg(""); }))}
+        </div>
+      </div>
+    );
+  }
+  if (vista === "quiz") {
+    const quiz = QUIZZES_LIDERANCA.find((q) => q.id === quizId);
+    const voltarQuizzes = () => { setVista("quizzes"); setPasso(0); setRespostas([]); };
+    if (passo < quiz.perguntas.length) {
+      const q = quiz.perguntas[passo];
+      const respondida = respostas.length > passo;
+      const escolha = respostas[passo];
+      return (
+        <div className="pb-28">
+          {cabecalho(`PERGUNTA ${passo + 1} DE ${quiz.perguntas.length}`, quiz.titulo, voltarQuizzes, "Quizzes")}
+          <div className="px-6">
+            <div className="h-1.5 rounded-full mb-5 overflow-hidden" style={{ backgroundColor: `${palette.navy}14` }}>
+              <div className="h-full" style={{ width: `${(passo / quiz.perguntas.length) * 100}%`, backgroundColor: palette.gold }} />
+            </div>
+            <p className="font-serif text-xl leading-snug mb-4" style={{ color: palette.navy }}>{q.p}</p>
+            <div className="space-y-2.5">
+              {(() => { const n = q.o.length; const k = (passo * 3 + quiz.id.length) % n; return q.o.map((_, j) => (j + k) % n); })().map((i) => {
+                const texto = q.o[i];
+                const certa = respondida && i === q.c;
+                const errada = respondida && i === escolha && i !== q.c;
+                return (
+                  <button key={i} disabled={respondida} onClick={() => setRespostas((r) => [...r, i])} className="w-full text-left rounded-2xl px-4 py-3.5 text-sm" style={{ backgroundColor: certa ? "#E3F1E7" : errada ? "#F8E1DE" : palette.card, border: `1px solid ${certa ? "#3C8D5A" : errada ? "#C0392B" : `${palette.goldSoft}66`}`, color: palette.ink }}>
+                    {certa ? "✓ " : errada ? "✗ " : ""}{texto}
+                  </button>
+                );
+              })}
+            </div>
+            {respondida && (
+              <div className="mt-4 space-y-3">
+                <p className="text-sm leading-relaxed rounded-xl px-4 py-3" style={{ backgroundColor: `${palette.gold}1F`, color: palette.navy }}>
+                  <span className="font-semibold">{escolha === q.c ? "Certo! " : "Não é bem assim. "}</span>{q.e}
+                </p>
+                {botaoPrincipal(passo + 1 < quiz.perguntas.length ? "Próxima pergunta" : "Ver resultado e plano", () => setPasso((p) => p + 1))}
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+    const pontos = quiz.perguntas.filter((q, i) => respostas[i] === q.c).length;
+    const total = quiz.perguntas.length;
+    const textos = planoDoQuiz(quiz, respostas);
+    const planoQuiz = criarPlano(`Plano de 7 dias: ${quiz.titulo}`, "quiz-" + quiz.id, textos, DIAS.slice(0, textos.length));
+    const mensagem = pontos === total ? "Excelente! Dominas este tema." : pontos >= 3 ? "Bom caminho. Há pormenores a afinar." : "Este tema merece a tua atenção. O plano ajuda.";
+    const guardar = () => {
+      onGuardar("quizzes", { ...(resultados.quizzes || {}), [quiz.id]: { pontos, total, data: new Date().toISOString() } });
+      guardarPlano(planoQuiz);
+      setGuardadoMsg("Plano guardado. Encontras o plano no Laboratório.");
+    };
+    return (
+      <div className="pb-28">
+        {cabecalho("O TEU RESULTADO", quiz.titulo, voltarQuizzes, "Quizzes")}
+        <div className="px-6 space-y-4">
+          <div className="rounded-3xl px-5 py-6 text-center" style={{ background: `linear-gradient(150deg, ${palette.navy} 0%, #24436E 100%)` }}>
+            <p className="font-serif text-5xl" style={{ color: palette.gold }}>{pontos}<span className="text-2xl" style={{ color: palette.creamSoft }}> / {total}</span></p>
+            <p className="text-sm mt-2" style={{ color: palette.creamSoft }}>{mensagem}</p>
+          </div>
+          <PlanoCartao plano={planoQuiz} compacto />
+          {botaoPrincipal("Guardar este plano", guardar)}
+          {guardadoMsg && <p className="text-xs text-center" style={{ color: palette.navySoft }}>{guardadoMsg}</p>}
+          <button onClick={onMarcar} className="w-full rounded-full py-3 text-sm font-medium" style={{ border: `1px solid ${palette.navy}`, color: palette.navy }}>Treinar isto numa sessão</button>
+          <button onClick={() => { setPasso(0); setRespostas([]); setGuardadoMsg(""); }} className="w-full text-xs underline" style={{ color: palette.navySoft }}>Repetir o quiz</button>
         </div>
       </div>
     );
@@ -1733,9 +1935,15 @@ function LaboratorioLiderancaScreen({ onBack, resultados = {}, onGuardar, onMarc
     <div className="pb-28">
       {cabecalho("LIDERANÇA 3S · INTERATIVO", "Laboratório de Liderança", onBack, "Liderança 3S")}
       <p className="px-6 -mt-2 mb-5 text-sm leading-relaxed" style={{ color: palette.navySoft }}>Testes, perfis, modelos e perguntas para te conheceres como líder. Grátis e ao teu ritmo.</p>
+      {resultados.plano && (
+        <div className="px-6 mb-5">
+          <PlanoCartao plano={resultados.plano} onAlternar={alternarPasso} />
+        </div>
+      )}
       <div className="px-6 space-y-3">
         {cartao("Que líder sou eu?", "Teste de perfil de liderança · 10 situações · 3 min", perfilGuardado ? `O teu perfil: ${perfilGuardado.nome}` : null, () => { setVista("perfil"); setPasso(0); setRespostas([]); setGuardadoMsg(""); })}
         {cartao("Competências 3S", "Saber, Sentir e Ser: onde estás forte e onde crescer · 12 afirmações", compGuardadas ? compGuardadas.map((p) => `${p.pilar} ${p.pct}%`).join(" · ") : null, () => { setVista("competencias"); setPasso(0); setRespostas([]); setGuardadoMsg(""); })}
+        {cartao("Quizzes de liderança", "Feedback, assertividade, escuta, liderança situacional e segurança psicológica", Object.keys(resultados.quizzes || {}).length ? `${Object.keys(resultados.quizzes).length} de ${QUIZZES_LIDERANCA.length} feitos` : "5 quizzes · plano automático no fim", () => setVista("quizzes"))}
         {cartao("Modelos de liderança", "GROW, SBI, DESC, Situacional, CNV e Segurança Psicológica, passo a passo", null, () => setVista("modelos"))}
         {cartao("Perguntas para líderes", "Uma pergunta para refletir e o teu diário de líder", (resultados.reflexoes || []).length ? `${resultados.reflexoes.length} resposta(s) no teu diário` : null, () => { setVista("perguntas"); setGuardadoMsg(""); })}
       </div>
@@ -1805,7 +2013,7 @@ function EscolaScreen({ escola, onBack, onOpen, temAcesso, onAbrirCurso, desbloq
           {rotulo("INTERATIVO · GRÁTIS")}
           <button onClick={() => onOpen("lab-lideranca")} className="relative overflow-hidden w-full text-left rounded-2xl px-5 py-5 transition active:scale-[0.99]" style={{ background: `linear-gradient(150deg, ${palette.gold} 0%, #E4C98C 100%)` }}>
             <p className="font-serif text-2xl leading-tight" style={{ color: palette.navy }}>Laboratório de Liderança</p>
-            <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navy }}>Que líder sou eu? · Competências 3S · Modelos · Perguntas para líderes</p>
+            <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navy }}>Testes · Quizzes · Planos automáticos · Modelos · Perguntas para líderes</p>
             <span className="inline-flex items-center gap-1 mt-3 text-xs font-medium rounded-full px-3 py-1.5" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Começar <ChevronRight size={14} /></span>
           </button>
         </div>
