@@ -1,4 +1,4 @@
-// VERSAO-04-NOV-COACH-POR-AREA
+// VERSAO-04-NOV-LABORATORIO-LIDERANCA
 import { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "./supabase.js";
 import {
@@ -1354,6 +1354,395 @@ function EscolasDuplas({ publico, onAbrir }) {
   );
 }
 
+/* ---------------------------------------------------------
+   Laboratório de Liderança: testes, perfis, modelos e perguntas
+--------------------------------------------------------- */
+const PERFIS_LIDER = {
+  O: {
+    nome: "Orientador", frase: "Dás direção e segurança.",
+    forca: "Clareza, decisão e organização. Com ti, as pessoas sabem o que fazer.",
+    risco: "Cair na microgestão e criar uma equipa que espera sempre por ti.",
+    quando: "Pessoas novas, crises e prazos apertados.",
+    crescer: "Fazer uma pergunta antes de dar a resposta. Saber ouvir também é liderar.",
+  },
+  C: {
+    nome: "Coach", frase: "Fazes as pessoas crescer.",
+    forca: "Desenvolvimento, perguntas poderosas e autonomia.",
+    risco: "Demorar quando é preciso decidir já.",
+    quando: "Pessoas com potencial, momentos de aprendizagem e mudança.",
+    crescer: "Saber quando é altura de perguntar e quando é altura de decidir.",
+  },
+  F: {
+    nome: "Facilitador", frase: "Cuidas das pessoas e do clima.",
+    forca: "Confiança, escuta e segurança psicológica.",
+    risco: "Evitar conversas difíceis para não estragar o ambiente.",
+    quando: "Equipas em mudança, depois de conflitos, pessoas fragilizadas.",
+    crescer: "Dizer o que precisa de ser dito, com respeito: comunicação assertiva.",
+  },
+  D: {
+    nome: "Delegador", frase: "Confias e dás espaço.",
+    forca: "Autonomia, responsabilização e foco no que é estratégico.",
+    risco: "Parecer ausente e deixar pessoas sem apoio.",
+    quando: "Equipas experientes e motivadas.",
+    crescer: "Estar presente: acompanhar sem controlar.",
+  },
+};
+
+const PERGUNTAS_PERFIL = [
+  ["Uma pessoa nova entra na equipa. O teu primeiro passo é…", [
+    ["O", "Explicar com detalhe o que é esperado e como fazer."],
+    ["C", "Perguntar o que já sabe e o que quer aprender."],
+    ["F", "Apresentá-la a todos e garantir que se sente bem-vinda."],
+    ["D", "Dar-lhe uma tarefa real e confiar que pede ajuda se precisar."]]],
+  ["Um prazo importante está em risco.", [
+    ["O", "Reorganizo as tarefas e digo a cada um o que fazer."],
+    ["C", "Reúno a equipa e pergunto que soluções veem."],
+    ["F", "Vejo como as pessoas estão e alivio a pressão onde posso."],
+    ["D", "Dou autonomia à pessoa responsável e fico disponível."]]],
+  ["Alguém da equipa erra pela segunda vez.", [
+    ["O", "Mostro outra vez o procedimento certo, passo a passo."],
+    ["C", "Pergunto o que aconteceu e o que faria diferente."],
+    ["F", "Converso com calma para perceber se está tudo bem."],
+    ["D", "Deixo que corrija sozinha: aprende-se mais assim."]]],
+  ["Numa reunião, tu costumas…", [
+    ["O", "Conduzir a agenda e fechar decisões."],
+    ["C", "Fazer perguntas para pôr todos a pensar."],
+    ["F", "Garantir que todos falam e se sentem ouvidos."],
+    ["D", "Ouvir e deixar a equipa decidir."]]],
+  ["Quando dás feedback…", [
+    ["O", "Sou direta: o que está mal e como corrigir."],
+    ["C", "Ajudo a pessoa a chegar às suas conclusões."],
+    ["F", "Começo pelo positivo e cuido da forma como é recebido."],
+    ["D", "Dou pouco: prefiro que cada um se avalie."]]],
+  ["Há um conflito entre dois colegas.", [
+    ["O", "Decido quem tem razão e encerro o assunto."],
+    ["C", "Junto os dois e ajudo-os a encontrar uma saída."],
+    ["F", "Falo com cada um em separado para acalmar os ânimos."],
+    ["D", "Deixo que resolvam entre eles."]]],
+  ["A equipa está desmotivada.", [
+    ["O", "Defino metas claras e acompanho de perto."],
+    ["C", "Pergunto a cada um o que o faria voltar a acreditar."],
+    ["F", "Crio momentos de equipa e reconheço o esforço."],
+    ["D", "Dou mais liberdade para escolherem como trabalhar."]]],
+  ["O que mais te incomoda numa equipa?", [
+    ["O", "Falta de rigor e de método."],
+    ["C", "Pessoas que não querem crescer."],
+    ["F", "Mau ambiente e falta de respeito."],
+    ["D", "Microgestão e falta de confiança."]]],
+  ["Uma pessoa experiente propõe mudar um processo.", [
+    ["O", "Analiso e decido eu se avança."],
+    ["C", "Pergunto como testaria a ideia e o que precisa."],
+    ["F", "Vejo se a mudança agrada ao resto da equipa."],
+    ["D", "Digo-lhe que avance: confio no critério dela."]]],
+  ["Como gostas que te vejam?", [
+    ["O", "Alguém que sabe para onde vamos."],
+    ["C", "Alguém que faz os outros crescer."],
+    ["F", "Alguém em quem se pode confiar."],
+    ["D", "Alguém que dá espaço e liberdade."]]],
+];
+
+const COMPETENCIAS_3S = [
+  { pilar: "Saber", frase: "Dou objetivos claros e explico o porquê." },
+  { pilar: "Saber", frase: "Dou feedback concreto, com exemplos." },
+  { pilar: "Saber", frase: "Faço perguntas antes de dar respostas." },
+  { pilar: "Saber", frase: "Conduzo conversas difíceis sem as adiar." },
+  { pilar: "Sentir", frase: "Percebo como a pessoa está antes de falar de trabalho." },
+  { pilar: "Sentir", frase: "Mantenho a calma quando estou sob pressão." },
+  { pilar: "Sentir", frase: "Escuto até ao fim sem interromper." },
+  { pilar: "Sentir", frase: "As pessoas sentem-se à vontade para me dizer que erraram." },
+  { pilar: "Ser", frase: "Faço o que digo que vou fazer." },
+  { pilar: "Ser", frase: "Assumo os meus erros à frente da equipa." },
+  { pilar: "Ser", frase: "Os meus valores veem-se nas minhas decisões." },
+  { pilar: "Ser", frase: "Trato todos com o mesmo respeito, seja qual for o cargo." },
+];
+const DICAS_PILAR = {
+  Saber: "Treina o feedback com o Modelo SBI e prepara as conversas difíceis antes de as ter.",
+  Sentir: "Antes de reagir, pára e nomeia o que sentes. Pergunta “como estás?” e espera pela resposta.",
+  Ser: "Escolhe um compromisso pequeno esta semana e cumpre-o à vista de todos.",
+};
+const ESCALA = ["Nunca", "Raramente", "Às vezes", "Muitas vezes", "Sempre"];
+
+const MODELOS_LIDERANCA = [
+  { nome: "Modelo GROW", para: "Conduzir uma conversa de coaching", passos: [["Goal", "O que queres alcançar?"], ["Reality", "Onde estás hoje?"], ["Options", "Que caminhos tens?"], ["Will", "O que vais fazer, e quando?"]] },
+  { nome: "Modelo SBI", para: "Dar feedback sem atacar", passos: [["Situação", "Quando e onde aconteceu."], ["Comportamento", "O que a pessoa fez, sem julgar."], ["Impacto", "O efeito que teve em ti, na equipa ou no cliente."]], exemplo: "Na reunião de ontem (S), interrompeste a Ana três vezes (B). Ela deixou de dar ideias (I)." },
+  { nome: "Modelo DESC", para: "Pôr limites com assertividade", passos: [["Descrever", "O facto, sem rótulos."], ["Expressar", "Como te sentes."], ["Especificar", "O que pedes."], ["Consequência", "O que ganham os dois."]] },
+  { nome: "Liderança Situacional", para: "Escolher o estilo certo para cada pessoa", passos: [["Dirigir", "Pouca competência, muita vontade: dá instruções claras."], ["Treinar", "Alguma competência, pouca confiança: explica e acompanha."], ["Apoiar", "Competente mas inseguro: escuta e encoraja."], ["Delegar", "Competente e motivado: confia e dá espaço."]] },
+  { nome: "Comunicação Não Violenta", para: "Falar de necessidades sem culpar", passos: [["Observação", "O que vi ou ouvi."], ["Sentimento", "O que sinto."], ["Necessidade", "O que preciso."], ["Pedido", "O que peço, de forma concreta."]] },
+  { nome: "Segurança Psicológica", para: "Criar uma equipa onde se pode errar", passos: [["Enquadrar", "Dizer que o trabalho é incerto e que precisamos de todas as vozes."], ["Convidar", "Fazer perguntas abertas e pedir opiniões."], ["Responder bem", "Agradecer quem traz más notícias ou erros."]] },
+];
+
+const PERGUNTAS_REFLEXAO = [
+  "Que líder encontram os outros quando trabalham comigo?",
+  "Que conversa ando a adiar, e porquê?",
+  "Quando foi a última vez que agradeci a alguém da equipa, de forma concreta?",
+  "O que faço quando alguém me traz uma má notícia?",
+  "Em que é que eu controlo quando devia confiar?",
+  "Que pessoa da equipa conheço menos? O que posso fazer esta semana?",
+  "O que diria a minha equipa se eu não estivesse na sala?",
+  "Que exemplo dei hoje sem dizer uma palavra?",
+  "Que decisão tomei por medo e não por convicção?",
+  "O que é para mim uma equipa feliz? Estou a contribuir para isso?",
+];
+
+function BarraPct({ rotulo, pct, destaque }) {
+  return (
+    <div className="mb-2.5">
+      <div className="flex justify-between text-xs mb-1">
+        <span style={{ color: palette.navy, fontWeight: destaque ? 600 : 400 }}>{rotulo}</span>
+        <span style={{ color: palette.gold }}>{pct}%</span>
+      </div>
+      <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: `${palette.navy}14` }}>
+        <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: destaque ? palette.gold : palette.navy }} />
+      </div>
+    </div>
+  );
+}
+
+function LaboratorioLiderancaScreen({ onBack, resultados = {}, onGuardar, onMarcar }) {
+  const [vista, setVista] = useState(null); // null | perfil | competencias | modelos | perguntas
+  const [passo, setPasso] = useState(0);
+  const [respostas, setRespostas] = useState([]);
+  const [modeloAberto, setModeloAberto] = useState(null);
+  const [iPergunta, setIPergunta] = useState(() => Math.floor(Math.random() * PERGUNTAS_REFLEXAO.length));
+  const [textoReflexao, setTextoReflexao] = useState("");
+  const [guardadoMsg, setGuardadoMsg] = useState("");
+
+  const voltarLab = () => { setVista(null); setPasso(0); setRespostas([]); };
+  const cartao = (titulo, desc, extra, onClick) => (
+    <button onClick={onClick} className="w-full text-left rounded-2xl px-5 py-4 transition active:scale-[0.99]" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66`, boxShadow: "0 4px 14px -8px rgba(27,51,85,0.25)" }}>
+      <div className="flex items-center gap-3">
+        <div className="flex-1 min-w-0">
+          <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{titulo}</p>
+          <p className="text-xs mt-0.5 leading-relaxed" style={{ color: palette.navySoft }}>{desc}</p>
+          {extra && <p className="text-[11px] mt-1.5 font-medium" style={{ color: palette.gold }}>{extra}</p>}
+        </div>
+        <ChevronRight size={18} style={{ color: palette.gold }} />
+      </div>
+    </button>
+  );
+  const cabecalho = (eyebrow, titulo, voltar, rotuloVoltar) => (
+    <SectionHeader eyebrow={eyebrow} title={titulo} onBack={voltar} backLabel={rotuloVoltar} />
+  );
+  const botaoPrincipal = (texto, onClick, desativado) => (
+    <button onClick={onClick} disabled={desativado} className="w-full rounded-full py-3.5 font-medium text-sm" style={{ backgroundColor: palette.navy, color: palette.creamSoft, opacity: desativado ? 0.5 : 1 }}>{texto}</button>
+  );
+
+  // ---- Teste: perfil de liderança
+  if (vista === "perfil") {
+    if (passo < PERGUNTAS_PERFIL.length) {
+      const [pergunta, opcoes] = PERGUNTAS_PERFIL[passo];
+      return (
+        <div className="pb-28">
+          {cabecalho(`PERGUNTA ${passo + 1} DE ${PERGUNTAS_PERFIL.length}`, "Que líder sou eu?", voltarLab, "Laboratório")}
+          <div className="px-6">
+            <div className="h-1.5 rounded-full mb-5 overflow-hidden" style={{ backgroundColor: `${palette.navy}14` }}>
+              <div className="h-full" style={{ width: `${(passo / PERGUNTAS_PERFIL.length) * 100}%`, backgroundColor: palette.gold }} />
+            </div>
+            <p className="font-serif text-xl leading-snug mb-4" style={{ color: palette.navy }}>{pergunta}</p>
+            <div className="space-y-2.5">
+              {[...opcoes.slice(passo % 4), ...opcoes.slice(0, passo % 4)].map(([perfil, texto]) => (
+                <button key={texto} onClick={() => { setRespostas((r) => [...r, perfil]); setPasso((p) => p + 1); }} className="w-full text-left rounded-2xl px-4 py-3.5 text-sm transition active:scale-[0.99]" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66`, color: palette.ink }}>
+                  {texto}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+    const contagem = { O: 0, C: 0, F: 0, D: 0 };
+    respostas.forEach((r) => { contagem[r] += 1; });
+    const ordenados = Object.keys(contagem).sort((a, b) => contagem[b] - contagem[a]);
+    const principal = PERFIS_LIDER[ordenados[0]];
+    const segundo = PERFIS_LIDER[ordenados[1]];
+    const guardar = () => {
+      onGuardar("perfil", { perfil: ordenados[0], contagem, data: new Date().toISOString() });
+      setGuardadoMsg("Resultado guardado.");
+    };
+    return (
+      <div className="pb-28">
+        {cabecalho("O TEU RESULTADO", "Que líder sou eu?", voltarLab, "Laboratório")}
+        <div className="px-6 space-y-4">
+          <div className="rounded-3xl px-5 py-6 text-center" style={{ background: `linear-gradient(150deg, ${palette.navy} 0%, #24436E 100%)` }}>
+            <p className="text-[10px] tracking-[0.25em] font-semibold" style={{ color: palette.gold }}>O TEU PERFIL PRINCIPAL</p>
+            <p className="font-serif text-4xl mt-2" style={{ color: palette.creamSoft }}>{principal.nome}</p>
+            <p className="text-sm mt-1" style={{ color: palette.goldSoft }}>{principal.frase}</p>
+            {contagem[ordenados[1]] > 0 && <p className="text-[11px] mt-3" style={{ color: palette.creamSoft, opacity: 0.8 }}>Segundo perfil: {segundo.nome}</p>}
+          </div>
+          <div className="rounded-2xl px-5 py-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
+            {ordenados.map((k) => <BarraPct key={k} rotulo={PERFIS_LIDER[k].nome} pct={Math.round((contagem[k] / PERGUNTAS_PERFIL.length) * 100)} destaque={k === ordenados[0]} />)}
+          </div>
+          {[["A tua força", principal.forca], ["Atenção a", principal.risco], ["Funciona melhor com", principal.quando], ["Para crescer", principal.crescer]].map(([t, d]) => (
+            <div key={t}>
+              <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>{t.toUpperCase()}</p>
+              <p className="text-sm mt-1 leading-relaxed" style={{ color: palette.ink }}>{d}</p>
+            </div>
+          ))}
+          <p className="text-xs leading-relaxed rounded-xl px-4 py-3" style={{ backgroundColor: `${palette.gold}1F`, color: palette.navy }}>Não há perfil certo. Os melhores líderes mudam de estilo consoante a pessoa e a situação: é a Liderança Situacional.</p>
+          {botaoPrincipal("Guardar o meu resultado", guardar)}
+          {guardadoMsg && <p className="text-xs text-center" style={{ color: palette.navySoft }}>{guardadoMsg}</p>}
+          <button onClick={onMarcar} className="w-full rounded-full py-3 text-sm font-medium" style={{ border: `1px solid ${palette.navy}`, color: palette.navy }}>Falar sobre o meu perfil numa sessão</button>
+          <button onClick={() => { setPasso(0); setRespostas([]); setGuardadoMsg(""); }} className="w-full text-xs underline" style={{ color: palette.navySoft }}>Repetir o teste</button>
+        </div>
+      </div>
+    );
+  }
+
+  // ---- Teste: competências 3S
+  if (vista === "competencias") {
+    if (passo < COMPETENCIAS_3S.length) {
+      const item = COMPETENCIAS_3S[passo];
+      return (
+        <div className="pb-28">
+          {cabecalho(`${item.pilar.toUpperCase()} · ${passo + 1} DE ${COMPETENCIAS_3S.length}`, "Competências 3S", voltarLab, "Laboratório")}
+          <div className="px-6">
+            <div className="h-1.5 rounded-full mb-5 overflow-hidden" style={{ backgroundColor: `${palette.navy}14` }}>
+              <div className="h-full" style={{ width: `${(passo / COMPETENCIAS_3S.length) * 100}%`, backgroundColor: palette.gold }} />
+            </div>
+            <p className="font-serif text-2xl leading-snug mb-5" style={{ color: palette.navy }}>{item.frase}</p>
+            <div className="space-y-2">
+              {ESCALA.map((rotulo, i) => (
+                <button key={rotulo} onClick={() => { setRespostas((r) => [...r, i + 1]); setPasso((p) => p + 1); }} className="w-full flex items-center gap-3 text-left rounded-2xl px-4 py-3 text-sm" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66`, color: palette.ink }}>
+                  <span className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold shrink-0" style={{ backgroundColor: palette.navy, color: palette.gold }}>{i + 1}</span>
+                  {rotulo}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+    const pilares = ["Saber", "Sentir", "Ser"].map((p) => {
+      const vals = COMPETENCIAS_3S.map((c, i) => (c.pilar === p ? respostas[i] : null)).filter((v) => v != null);
+      const pct = Math.round(((vals.reduce((a, b) => a + b, 0) - vals.length) / (vals.length * 4)) * 100);
+      return { pilar: p, pct };
+    });
+    const forte = [...pilares].sort((a, b) => b.pct - a.pct)[0];
+    const fraco = [...pilares].sort((a, b) => a.pct - b.pct)[0];
+    const guardar = () => {
+      onGuardar("competencias", { pilares, data: new Date().toISOString() });
+      setGuardadoMsg("Resultado guardado.");
+    };
+    return (
+      <div className="pb-28">
+        {cabecalho("O TEU RESULTADO", "Competências 3S", voltarLab, "Laboratório")}
+        <div className="px-6 space-y-4">
+          <div className="rounded-2xl px-5 py-5" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
+            {pilares.map((p) => <BarraPct key={p.pilar} rotulo={p.pilar} pct={p.pct} destaque={p.pilar === forte.pilar} />)}
+          </div>
+          <div>
+            <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>O TEU PONTO FORTE</p>
+            <p className="font-serif text-xl mt-1" style={{ color: palette.navy }}>{forte.pilar}</p>
+          </div>
+          <div>
+            <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>ONDE CRESCER: {fraco.pilar.toUpperCase()}</p>
+            <p className="text-sm mt-1 leading-relaxed" style={{ color: palette.ink }}>{DICAS_PILAR[fraco.pilar]}</p>
+          </div>
+          {botaoPrincipal("Guardar o meu resultado", guardar)}
+          {guardadoMsg && <p className="text-xs text-center" style={{ color: palette.navySoft }}>{guardadoMsg}</p>}
+          <button onClick={onMarcar} className="w-full rounded-full py-3 text-sm font-medium" style={{ border: `1px solid ${palette.navy}`, color: palette.navy }}>Trabalhar isto numa sessão</button>
+          <button onClick={() => { setPasso(0); setRespostas([]); setGuardadoMsg(""); }} className="w-full text-xs underline" style={{ color: palette.navySoft }}>Repetir o teste</button>
+        </div>
+      </div>
+    );
+  }
+
+  // ---- Modelos
+  if (vista === "modelos") {
+    return (
+      <div className="pb-28">
+        {cabecalho("FERRAMENTAS DO LÍDER", "Modelos de liderança", voltarLab, "Laboratório")}
+        <div className="px-6 space-y-3">
+          {MODELOS_LIDERANCA.map((m) => {
+            const aberto = modeloAberto === m.nome;
+            return (
+              <div key={m.nome} className="rounded-2xl overflow-hidden" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66` }}>
+                <button onClick={() => setModeloAberto(aberto ? null : m.nome)} className="w-full flex items-center gap-3 text-left px-5 py-4">
+                  <div className="flex-1">
+                    <p className="font-serif text-lg" style={{ color: palette.navy }}>{m.nome}</p>
+                    <p className="text-xs" style={{ color: palette.navySoft }}>{m.para}</p>
+                  </div>
+                  {aberto ? <ChevronDown size={18} style={{ color: palette.gold }} /> : <ChevronRight size={18} style={{ color: palette.gold }} />}
+                </button>
+                {aberto && (
+                  <div className="px-5 pb-5 space-y-2.5">
+                    {m.passos.map(([t, d], i) => (
+                      <div key={t} className="flex gap-3">
+                        <span className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold shrink-0" style={{ backgroundColor: palette.navy, color: palette.gold }}>{i + 1}</span>
+                        <div>
+                          <p className="text-sm font-semibold" style={{ color: palette.navy }}>{t}</p>
+                          <p className="text-xs leading-relaxed" style={{ color: palette.navySoft }}>{d}</p>
+                        </div>
+                      </div>
+                    ))}
+                    {m.exemplo && <p className="text-xs italic rounded-xl px-3 py-2.5 mt-1" style={{ backgroundColor: `${palette.gold}1F`, color: palette.navy }}>Exemplo: {m.exemplo}</p>}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  // ---- Perguntas para líderes
+  if (vista === "perguntas") {
+    const pergunta = PERGUNTAS_REFLEXAO[iPergunta];
+    const minhas = (resultados.reflexoes || []);
+    const guardar = () => {
+      if (!textoReflexao.trim()) return;
+      onGuardar("reflexoes", [{ pergunta, resposta: textoReflexao.trim(), data: new Date().toISOString() }, ...minhas].slice(0, 50));
+      setTextoReflexao("");
+      setGuardadoMsg("Guardado no teu diário.");
+    };
+    return (
+      <div className="pb-28">
+        {cabecalho("PERGUNTAS PARA LÍDERES", "Pergunta do dia", voltarLab, "Laboratório")}
+        <div className="px-6 space-y-4">
+          <div className="rounded-3xl px-5 py-7 text-center" style={{ background: `linear-gradient(150deg, ${palette.navy} 0%, #24436E 100%)` }}>
+            <p className="text-[10px] tracking-[0.25em] font-semibold" style={{ color: palette.gold }}>PENSA NISTO</p>
+            <p className="font-serif text-2xl leading-snug mt-3" style={{ color: palette.creamSoft }}>{pergunta}</p>
+          </div>
+          <button onClick={() => { setIPergunta((i) => (i + 1) % PERGUNTAS_REFLEXAO.length); setGuardadoMsg(""); }} className="w-full text-sm font-medium rounded-full py-2.5" style={{ border: `1px solid ${palette.gold}`, color: palette.navy }}>Outra pergunta</button>
+          <textarea value={textoReflexao} onChange={(e) => setTextoReflexao(e.target.value)} rows={4} placeholder="Escreve aqui a tua resposta (só tu vês)…" className="w-full rounded-2xl px-4 py-3 text-sm resize-none" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66`, color: palette.ink }} />
+          {botaoPrincipal("Guardar no meu diário", guardar, !textoReflexao.trim())}
+          {guardadoMsg && <p className="text-xs text-center" style={{ color: palette.navySoft }}>{guardadoMsg}</p>}
+          {minhas.length > 0 && (
+            <div>
+              <p className="text-[11px] tracking-[0.2em] font-semibold mb-2" style={{ color: palette.gold }}>O MEU DIÁRIO DE LÍDER</p>
+              <div className="space-y-2">
+                {minhas.slice(0, 10).map((r, i) => (
+                  <div key={i} className="rounded-xl px-4 py-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}44` }}>
+                    <p className="text-xs font-semibold" style={{ color: palette.navy }}>{r.pergunta}</p>
+                    <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{r.resposta}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // ---- Entrada do laboratório
+  const perfilGuardado = resultados.perfil && PERFIS_LIDER[resultados.perfil.perfil];
+  const compGuardadas = resultados.competencias && resultados.competencias.pilares;
+  return (
+    <div className="pb-28">
+      {cabecalho("LIDERANÇA 3S · INTERATIVO", "Laboratório de Liderança", onBack, "Liderança 3S")}
+      <p className="px-6 -mt-2 mb-5 text-sm leading-relaxed" style={{ color: palette.navySoft }}>Testes, perfis, modelos e perguntas para te conheceres como líder. Grátis e ao teu ritmo.</p>
+      <div className="px-6 space-y-3">
+        {cartao("Que líder sou eu?", "Teste de perfil de liderança · 10 situações · 3 min", perfilGuardado ? `O teu perfil: ${perfilGuardado.nome}` : null, () => { setVista("perfil"); setPasso(0); setRespostas([]); setGuardadoMsg(""); })}
+        {cartao("Competências 3S", "Saber, Sentir e Ser: onde estás forte e onde crescer · 12 afirmações", compGuardadas ? compGuardadas.map((p) => `${p.pilar} ${p.pct}%`).join(" · ") : null, () => { setVista("competencias"); setPasso(0); setRespostas([]); setGuardadoMsg(""); })}
+        {cartao("Modelos de liderança", "GROW, SBI, DESC, Situacional, CNV e Segurança Psicológica, passo a passo", null, () => setVista("modelos"))}
+        {cartao("Perguntas para líderes", "Uma pergunta para refletir e o teu diário de líder", (resultados.reflexoes || []).length ? `${resultados.reflexoes.length} resposta(s) no teu diário` : null, () => { setVista("perguntas"); setGuardadoMsg(""); })}
+      </div>
+    </div>
+  );
+}
+
 // Coach responsável por cada área (a dona pode mudar no Painel quando a tabela areas_coach existir).
 const COACH_POR_AREA_PADRAO = {
   lideranca: "1306b6b7-c562-4cdc-b284-2b9d293d8795", // Conceição
@@ -1410,6 +1799,17 @@ function EscolaScreen({ escola, onBack, onOpen, temAcesso, onAbrirCurso, desbloq
           <p className="text-[11px] mt-3" style={{ color: e.texto, opacity: 0.75 }}>{e.por || "com Conceição Alves"}</p>
         </div>
       </div>
+
+      {escola === "lideranca" && (
+        <div className="px-6 mb-7">
+          {rotulo("INTERATIVO · GRÁTIS")}
+          <button onClick={() => onOpen("lab-lideranca")} className="relative overflow-hidden w-full text-left rounded-2xl px-5 py-5 transition active:scale-[0.99]" style={{ background: `linear-gradient(150deg, ${palette.gold} 0%, #E4C98C 100%)` }}>
+            <p className="font-serif text-2xl leading-tight" style={{ color: palette.navy }}>Laboratório de Liderança</p>
+            <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navy }}>Que líder sou eu? · Competências 3S · Modelos · Perguntas para líderes</p>
+            <span className="inline-flex items-center gap-1 mt-3 text-xs font-medium rounded-full px-3 py-1.5" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Começar <ChevronRight size={14} /></span>
+          </button>
+        </div>
+      )}
 
       {e.app && (
         <div className="px-6 mb-7">
@@ -8962,6 +9362,15 @@ export default function App() {
     content = <CatalogoCursosScreen onBack={() => setSecao("formacao-hub")} temAcesso={temAcessoCurso} onAbrirCurso={setCursoAberto} onAreaAluno={() => setSecao("aluno")} />;
   } else if (secao === "lideranca-3s") {
     content = <EscolaScreen escola="lideranca" onBack={() => setSecao(null)} onOpen={setSecao} temAcesso={temAcessoCurso} onAbrirCurso={setCursoAberto} desbloqueados={materiaisAcesso} acessoTotal={progresso.papel === "dona"} />;
+  } else if (secao === "lab-lideranca") {
+    content = (
+      <LaboratorioLiderancaScreen
+        onBack={() => setSecao("lideranca-3s")}
+        resultados={progresso.testesLideranca || {}}
+        onGuardar={(chave, valor) => setProgresso((p) => ({ ...p, testesLideranca: { ...(p.testesLideranca || {}), [chave]: valor } }))}
+        onMarcar={() => setSecao("marcar:lideranca")}
+      />
+    );
   } else if (secao === "desporto-3s") {
     content = <EscolaScreen escola="desporto" onBack={() => setSecao(null)} onOpen={setSecao} temAcesso={temAcessoCurso} onAbrirCurso={setCursoAberto} desbloqueados={materiaisAcesso} acessoTotal={progresso.papel === "dona"} />;
   } else if (secao === "desenvolvimento-3s") {
