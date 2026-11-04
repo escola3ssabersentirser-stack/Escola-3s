@@ -1,4 +1,4 @@
-// VERSAO-04-NOV-TREINOS-COMPETENCIAS
+// VERSAO-04-NOV-LAB-ATLETA
 import { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "./supabase.js";
 import {
@@ -1806,7 +1806,229 @@ function TreinoScreen({ treino, onVoltar, resultados, onGuardar, onMarcar }) {
   );
 }
 
-function LaboratorioLiderancaScreen({ onBack, resultados = {}, onGuardar, onMarcar, inicial }) {
+const LAB_LIDERANCA = {
+  perfis: PERFIS_LIDER, perguntasPerfil: PERGUNTAS_PERFIL, competencias: COMPETENCIAS_3S, dicasPilar: DICAS_PILAR,
+  modelos: MODELOS_LIDERANCA, reflexao: PERGUNTAS_REFLEXAO, quizzes: QUIZZES_LIDERANCA, planoPerfil: PLANO_PERFIL,
+  planoPilar: PLANO_PILAR, treinos: TREINOS_LIDERANCA, grupos: ["Comunicação", "Resultados e carácter"],
+  t: {
+    eyebrow: "LIDERANÇA 3S · INTERATIVO", titulo: "Laboratório de Liderança", voltar: "Liderança 3S",
+    intro: "Testes, treinos, quizzes, modelos e perguntas para te conheceres como líder. Grátis e ao teu ritmo.",
+    treinosDesc: "Comunicação não violenta, assertiva e empática · Conflitos, resultados, consistência e coerência",
+    perfilTitulo: "Que líder sou eu?", perfilDesc: "Teste de perfil de liderança · 10 situações · 3 min", perfilPlano: "líder",
+    notaPerfil: "Não há perfil certo. Os melhores líderes mudam de estilo consoante a pessoa e a situação: é a Liderança Situacional.",
+    compDesc: "Saber, Sentir e Ser: onde estás forte e onde crescer · 12 afirmações",
+    quizzesTitulo: "Quizzes de liderança", quizzesDesc: "Feedback, assertividade, escuta, liderança situacional e segurança psicológica",
+    modelosEyebrow: "FERRAMENTAS DO LÍDER", modelosTitulo: "Modelos de liderança", modelosDesc: "GROW, SBI, DESC, Situacional, CNV e Segurança Psicológica, passo a passo",
+    perguntasEyebrow: "PERGUNTAS PARA LÍDERES", perguntasTitulo: "Perguntas para líderes", perguntasDesc: "Uma pergunta para refletir e o teu diário de líder", diario: "O MEU DIÁRIO DE LÍDER",
+  },
+};
+
+/* ---------------------------------------------------------
+   Laboratório do Atleta (Desporto 3S)
+--------------------------------------------------------- */
+const LAB_DESPORTO = {
+  perfis: {
+    R: { nome: "Competidor", frase: "Vives para o desafio e para a meta.", forca: "Foco no resultado, garra e vontade de te superares.", risco: "Frustração quando o tempo não sai e tendência para treinar em excesso.", quando: "Provas e objetivos com data marcada.", crescer: "Celebra o processo, não só o tempo final. Descansar também é treinar." },
+    E: { nome: "Explorador", frase: "Treinas pelo prazer de descobrir.", forca: "Curiosidade, variedade e gosto genuíno pelo movimento.", risco: "Falta de regularidade e de plano.", quando: "Trilhos novos, modalidades diferentes, fases de experimentar.", crescer: "Escolhe um objetivo e mantém um plano simples durante 4 semanas." },
+    S: { nome: "Social", frase: "Treinas melhor em grupo.", forca: "Energia do grupo e compromisso com os outros.", risco: "Depender dos outros para treinar.", quando: "Treinos em grupo e encontros do Movimento 3S.", crescer: "Garante um treino por semana só teu, para te conheceres." },
+    D: { nome: "Disciplinado", frase: "A tua força é a rotina.", forca: "Consistência, organização e cumprimento do plano.", risco: "Rigidez, culpa quando falhas e ignorar sinais do corpo.", quando: "Preparações longas e objetivos exigentes.", crescer: "Ouve o corpo: ajustar o plano não é falhar." },
+  },
+  perguntasPerfil: [
+    ["Porque é que treinas?", [["R", "Para me superar e bater os meus tempos."], ["E", "Para descobrir sítios e experimentar coisas novas."], ["S", "Pelo convívio e pela energia do grupo."], ["D", "Porque faz parte da minha rotina."]]],
+    ["Está a chover no dia do treino.", [["R", "Vou na mesma: a prova não escolhe o tempo."], ["E", "Troco por outra atividade, como pilates em casa."], ["S", "Vou se o grupo for."], ["D", "Faço o treino previsto, adaptado."]]],
+    ["Como escolhes um percurso?", [["R", "O que me der melhor tempo ou mais desnível."], ["E", "Um que nunca fiz."], ["S", "O que o grupo escolher."], ["D", "O que está no meu plano."]]],
+    ["Depois de um mau treino…", [["R", "Fico a remoer e quero compensar no próximo."], ["E", "Esqueço e penso no próximo sítio."], ["S", "Falo com os colegas e rio-me disso."], ["D", "Registo e sigo o plano."]]],
+    ["O que te faz faltar a um treino?", [["R", "Saber que não vou melhorar nada."], ["E", "Tédio: fazer sempre o mesmo."], ["S", "Não ter companhia."], ["D", "Muito pouca coisa."]]],
+    ["Usas relógio ou aplicação de treino?", [["R", "Sempre: ritmo, tempo e frequência cardíaca."], ["E", "Às vezes, para guardar o percurso."], ["S", "Para partilhar com o grupo."], ["D", "Para cumprir e registar o plano."]]],
+    ["Uma prova perfeita é…", [["R", "Bater o meu recorde."], ["E", "Um percurso bonito e diferente."], ["S", "Chegar ao fim com os amigos."], ["D", "Cumprir a estratégia que planeei."]]],
+    ["Quando não te apetece treinar…", [["R", "Penso na meta e vou."], ["E", "Mudo de atividade."], ["S", "Combino com alguém, para ter de ir."], ["D", "Vou na mesma: é um compromisso comigo."]]],
+    ["O que mais te incomoda no desporto?", [["R", "Não ver evolução."], ["E", "A monotonia."], ["S", "Treinar sem companhia."], ["D", "A falta de método."]]],
+    ["Como gostas que te vejam?", [["R", "Alguém que não desiste."], ["E", "Alguém que está sempre a experimentar."], ["S", "Alguém que puxa pelos outros."], ["D", "Alguém de confiança e com rotina."]]],
+  ],
+  competencias: [
+    { pilar: "Saber", frase: "Sei para que serve cada treino que faço." },
+    { pilar: "Saber", frase: "Conheço os sinais de cansaço do meu corpo." },
+    { pilar: "Saber", frase: "Planeio o descanso tão bem como o treino." },
+    { pilar: "Saber", frase: "Sei o que comer e beber antes e depois de treinar." },
+    { pilar: "Sentir", frase: "Consigo acalmar-me antes de uma prova." },
+    { pilar: "Sentir", frase: "Quando um treino corre mal, não me deito abaixo." },
+    { pilar: "Sentir", frase: "Tenho prazer enquanto treino, não só no fim." },
+    { pilar: "Sentir", frase: "Peço ajuda quando sinto dor ou falta de motivação." },
+    { pilar: "Ser", frase: "Cumpro os treinos que combino comigo." },
+    { pilar: "Ser", frase: "Treino com regularidade, mesmo sem prova à vista." },
+    { pilar: "Ser", frase: "Respeito os outros atletas, quer ganhe quer perca." },
+    { pilar: "Ser", frase: "O desporto faz parte de quem sou, não é só uma obrigação." },
+  ],
+  dicasPilar: {
+    Saber: "Escreve o objetivo de cada treino da semana e marca um dia de descanso a sério.",
+    Sentir: "Antes de cada treino, respira fundo três vezes e escolhe uma palavra para o dia.",
+    Ser: "Marca os treinos na agenda como compromissos: são encontros contigo.",
+  },
+  planoPerfil: {
+    R: ["Define um objetivo de processo (por exemplo, 3 treinos por semana), não só de tempo.", "Inclui um treino leve por semana, sem relógio.", "Depois de cada treino, escreve uma coisa que correu bem.", "Volta a fazer o teste e compara."],
+    E: ["Escolhe um objetivo para as próximas 4 semanas.", "Faz um plano simples: 3 dias fixos por semana.", "Varia o local, mas mantém os dias.", "Volta a fazer o teste e compara."],
+    S: ["Junta-te a um encontro na app Movimento 3S.", "Faz um treino por semana só teu.", "Combina com alguém um objetivo comum.", "Volta a fazer o teste e compara."],
+    D: ["Regista como te sentes antes de cada treino (de 1 a 5).", "Quando o corpo pedir, troca um treino intenso por um leve, sem culpa.", "Experimenta uma atividade nova, só por prazer.", "Volta a fazer o teste e compara."],
+  },
+  planoPilar: {
+    Saber: ["Escreve o objetivo de cada treino da semana.", "Marca um dia de descanso a sério.", "Revê o que comes e bebes antes e depois de treinar.", "Volta a fazer o teste e compara."],
+    Sentir: ["Antes de cada treino, respira fundo três vezes.", "Depois de cada treino, escreve como te sentiste.", "Treina uma vez sem relógio, só pelo prazer.", "Volta a fazer o teste e compara."],
+    Ser: ["Marca os treinos da semana na agenda.", "Cumpre o mínimo, mesmo num dia difícil: 10 minutos contam.", "Partilha o teu objetivo com alguém de confiança.", "Volta a fazer o teste e compara."],
+  },
+  quizzes: [
+    {
+      id: "recuperacao", titulo: "Recuperação e sono", desc: "O corpo fica mais forte no descanso",
+      desafio: "Esta semana, dorme mais 30 minutos em três noites e repara na diferença nos treinos.",
+      perguntas: [
+        { p: "Quando é que o corpo fica mais forte?", o: ["Durante o treino.", "No descanso depois do treino.", "Só nos dias de prova.", "Nunca: só se mantém."], c: 1, e: "O treino dá o estímulo; a adaptação acontece no descanso.", a: "Marca pelo menos um dia de descanso por semana." },
+        { p: "Para quem treina, dormir bem…", o: ["É secundário.", "Ajuda a recuperar e a render mais.", "Só conta antes das provas.", "Pode ser compensado com café."], c: 1, e: "O sono é uma das ferramentas de recuperação mais importantes.", a: "Durante uma semana, deita-te sempre à mesma hora." },
+        { p: "Treinar com muito cansaço vários dias seguidos pode…", o: ["Acelerar a evolução.", "Aumentar o risco de lesão e de desmotivação.", "Não ter efeito nenhum.", "Substituir o aquecimento."], c: 1, e: "Sem recuperação, o corpo acumula fadiga.", a: "Regista de 1 a 5 como acordas; com 1 ou 2, faz um treino leve." },
+        { p: "Um treino de recuperação deve ser…", o: ["Tão intenso como os outros.", "Leve e confortável.", "Sempre em jejum.", "Evitado."], c: 1, e: "Recuperar é mexer o corpo com pouca intensidade.", a: "Inclui um treino leve por semana, a um ritmo em que consigas conversar." },
+        { p: "Sentes uma dor que não passa e piora com o treino. Tu…", o: ["Treinas por cima da dor.", "Paras e procuras um profissional de saúde.", "Tomas um analgésico e continuas.", "Ignoras."], c: 1, e: "Uma dor que persiste ou piora é sinal para parar e pedir avaliação.", a: "Se uma dor piora com o treino, para e consulta um profissional de saúde." },
+      ],
+    },
+    {
+      id: "prova", titulo: "Mente na prova", desc: "Nervos, foco e diálogo interno",
+      desafio: "Cria a tua rotina de 5 minutos antes de treinar: respiração, frase e objetivo do dia.",
+      perguntas: [
+        { p: "Sentir nervos antes de uma prova é…", o: ["Sinal de que vai correr mal.", "Normal: é o corpo a preparar-se.", "Para esconder.", "Coisa de principiante."], c: 1, e: "Algum nervosismo dá energia. O segredo é usá-lo a teu favor.", a: "Antes da próxima prova, diz: “Isto é energia para a prova.”" },
+        { p: "Uma boa forma de acalmar antes da partida:", o: ["Pensar em tudo o que pode correr mal.", "Respirar devagar, expirando durante mais tempo do que inspiras.", "Beber muito café.", "Comparar-te com os outros."], c: 1, e: "Expirar devagar ajuda o corpo a acalmar.", a: "Treina 3 minutos de respiração lenta por dia." },
+        { p: "A meio da prova, estás a sofrer. Ajuda mais…", o: ["Pensar na meta, que ainda está longe.", "Focar no próximo quilómetro ou na próxima subida.", "Parar para ver o tempo.", "Pensar em desistir."], c: 1, e: "Dividir a prova em partes pequenas torna o esforço gerível.", a: "No próximo treino longo, divide-o em blocos e pensa só no bloco em que estás." },
+        { p: "Uma frase útil para usares na prova:", o: ["“Não consigo.”", "“Um passo de cada vez. Treinei para isto.”", "“Sou o pior.”", "“Todos são melhores do que eu.”"], c: 1, e: "O diálogo interno muda o esforço que sentes.", a: "Escolhe a tua frase de prova e repete-a nos treinos difíceis." },
+        { p: "Depois de uma prova que correu mal…", o: ["Desistes do desporto.", "Vês o que aprendeste e o que vais mudar.", "Culpas o tempo que fez.", "Não falas disso."], c: 1, e: "Cada prova é informação para a próxima.", a: "Escreve três coisas que aprendeste na última prova." },
+      ],
+    },
+    {
+      id: "alimentacao", titulo: "Hidratação e alimentação", desc: "O básico para treinar bem",
+      desafio: "Esta semana, leva água em todos os treinos e regista como te sentiste.",
+      perguntas: [
+        { p: "Num treino longo, quando deves beber água?", o: ["Só no fim, quando tiveres sede.", "Antes, durante e depois do treino.", "Só no dia seguinte.", "Nunca durante o treino."], c: 1, e: "Beber ao longo do dia e durante treinos longos ajuda o rendimento.", a: "Leva sempre água nos treinos com mais de uma hora." },
+        { p: "Comer muito pouco antes de treinar pode…", o: ["Melhorar sempre o rendimento.", "Deixar-te sem energia e com tonturas.", "Não ter efeito.", "Substituir o aquecimento."], c: 1, e: "O corpo precisa de energia para treinar bem.", a: "Experimenta um lanche leve uma a duas horas antes de treinar." },
+        { p: "Depois de um treino exigente, é útil…", o: ["Não comer nada até ao jantar.", "Fazer uma refeição equilibrada, com proteína e hidratos de carbono.", "Beber só café.", "Comer apenas doces."], c: 1, e: "Recuperar inclui repor energia e ajudar os músculos.", a: "Planeia o que vais comer depois dos treinos exigentes." },
+        { p: "Urina muito escura pode ser sinal de…", o: ["Boa hidratação.", "Pouca água no corpo.", "Excesso de treino de força.", "Nada de especial."], c: 1, e: "A cor da urina é um sinal simples do estado de hidratação.", a: "Repara na cor da urina ao longo do dia." },
+        { p: "Para um plano alimentar feito à tua medida, o mais indicado é…", o: ["Copiar o plano de um atleta famoso.", "Falar com um nutricionista.", "Seguir a última moda das redes sociais.", "Cortar refeições."], c: 1, e: "Cada corpo é diferente: um profissional ajusta o plano ao teu caso.", a: "Se tens objetivos exigentes, marca uma consulta com um nutricionista." },
+      ],
+    },
+    {
+      id: "motivacao", titulo: "Objetivos e motivação", desc: "Metas que te fazem sair de casa",
+      desafio: "Escreve o teu objetivo para os próximos 3 meses e afixa-o num sítio onde o vejas todos os dias.",
+      perguntas: [
+        { p: "Qual é o objetivo mais útil?", o: ["“Ficar em forma.”", "“Fazer 10 km em menos de 60 minutos até junho.”", "“Treinar mais.”", "“Ser o melhor.”"], c: 1, e: "Concreto, mensurável e com prazo.", a: "Reescreve o teu objetivo com um número e uma data." },
+        { p: "Um objetivo de processo é…", o: ["O tempo final da prova.", "Algo que controlas, como treinar 3 vezes por semana.", "Ganhar a um colega.", "O lugar na classificação."], c: 1, e: "Os objetivos de processo dependem só de ti e mantêm a motivação.", a: "Define um objetivo de processo para este mês." },
+        { p: "A motivação que dura mais vem de…", o: ["Prémios e medalhas.", "Gostar do que fazes e sentir que evoluis.", "Medo de engordar.", "Comparar-te com os outros."], c: 1, e: "A motivação que vem de dentro aguenta mais do que a de fora.", a: "Escreve três razões tuas para treinar, que não tenham a ver com tempos." },
+        { p: "Falhaste uma semana de treinos. O melhor é…", o: ["Compensar tudo na semana seguinte.", "Recomeçar com calma, no plano normal.", "Desistir do objetivo.", "Treinar o dobro num só dia."], c: 1, e: "Compensar de uma vez aumenta o risco de lesão.", a: "Se falhares, recomeça no plano normal, sem compensar." },
+        { p: "Partilhar o teu objetivo com alguém…", o: ["Não serve para nada.", "Aumenta o compromisso.", "É vaidade.", "Dá azar."], c: 1, e: "Dizer a alguém torna o compromisso mais real.", a: "Partilha o teu objetivo com uma pessoa de confiança ou com o grupo do Movimento 3S." },
+      ],
+    },
+  ],
+  treinos: [
+    {
+      id: "foco", grupo: "Mente", titulo: "Foco e concentração", desc: "Trazer a cabeça de volta ao treino",
+      essencial: ["O foco é escolher para onde vai a atenção, uma e outra vez.", "Pensa no que controlas: técnica, respiração e próximo passo.", "Uma palavra-chave ajuda a voltar ao presente."],
+      cenarios: [
+        { p: "A meio do treino, a cabeça vai para o trabalho.", o: ["Paras o treino.", "Voltas à respiração e à tua palavra-chave.", "Aceleras para acabar depressa.", "Ligas para o trabalho."], c: 1, e: "Reparar que a atenção fugiu e trazê-la de volta é treinar o foco." },
+        { p: "Na prova, um atleta passa por ti.", o: ["Aceleras logo para o apanhar.", "Manténs o teu ritmo e o teu plano.", "Desistes.", "Ficas a pensar nisso até ao fim."], c: 1, e: "Correr a prova dos outros gasta energia que não planeaste." },
+        { p: "Numa subida difícil, em que deves focar?", o: ["Em quanto falta até ao topo.", "Na postura, na respiração e no passo seguinte.", "Em quem vai à frente.", "No cansaço."], c: 1, e: "Focar no que controlas torna o esforço mais leve." },
+      ],
+      construtor: { titulo: "A tua âncora de foco", campos: [["palavra", "A tua palavra-chave", "solta"], ["foco", "Em que vais focar", "na respiração e nos ombros relaxados"], ["quando", "Quando a vais usar", "sempre que a cabeça fugir para outro lado"]], gerar: (v) => `A minha palavra é “${v.palavra}”. ${cap(v.quando)}, digo-a e volto a focar ${v.foco}.` },
+      plano: ["Escolhe a tua palavra-chave e escreve-a.", "Usa-a num treino e conta quantas vezes a cabeça fugiu.", "Faz 5 minutos de respiração com atenção antes de treinar.", "Num treino, foca só na técnica durante 10 minutos.", "Avalia de 1 a 5 o teu foco nesta semana."],
+    },
+    {
+      id: "ansiedade", grupo: "Mente", titulo: "Gerir a ansiedade de prova", desc: "Transformar nervos em energia",
+      essencial: ["Sentir nervos antes de uma prova é normal.", "Respirar devagar, expirando durante mais tempo, acalma o corpo.", "Uma rotina antes da partida dá segurança."],
+      cenarios: [
+        { p: "Na véspera da prova não consegues dormir.", o: ["Desesperas e dás a prova por perdida.", "Descansas na mesma, de olhos fechados: uma noite má não estraga a prova.", "Bebes muito café de manhã.", "Desistes."], c: 1, e: "O sono das noites anteriores conta mais do que o da véspera." },
+        { p: "Na partida, o coração está acelerado.", o: ["Achas que algo está mal.", "Respiras devagar: 4 tempos a inspirar, 6 a expirar.", "Começas muito rápido.", "Comparas-te com os outros."], c: 1, e: "É o corpo a preparar-se. A respiração lenta ajuda a regular." },
+        { p: "Uma boa rotina antes da prova inclui…", o: ["Estrear sapatilhas novas.", "Fazer o que já treinaste: aquecimento, respiração e plano.", "Mudar a alimentação nesse dia.", "Ver os tempos dos outros."], c: 1, e: "No dia da prova, nada de novo." },
+      ],
+      construtor: { titulo: "A tua rotina de partida", campos: [["resp", "Respiração", "4 tempos a inspirar e 6 a expirar, cinco vezes"], ["frase", "A tua frase", "treinei para isto, um passo de cada vez"], ["inicio", "Como vais começar", "os primeiros 2 km mais devagar do que me apetece"]], gerar: (v) => `Antes de partir: ${v.resp}. A minha frase: “${v.frase}”. Na partida: ${v.inicio}.` },
+      plano: ["Treina a respiração 4-6 durante 3 minutos.", "Escreve a tua rotina de partida.", "Ensaia a rotina antes de um treino.", "Prepara de véspera tudo o que vais levar para a prova.", "Escreve o que sentiste e o que funcionou."],
+    },
+    {
+      id: "confianca", grupo: "Mente", titulo: "Confiança e diálogo interno", desc: "O que dizes a ti muda o que consegues",
+      essencial: ["A confiança vem da preparação: lembra-te do que já fizeste.", "O diálogo interno muda o esforço que sentes.", "Compara-te contigo, não com os outros."],
+      cenarios: [
+        { p: "Numa subida, pensas: “Não vou conseguir.”", o: ["Paras logo.", "Trocas por: “Já subi pior. Passo curto e respira.”", "Aceleras com raiva.", "Ficas a remoer."], c: 1, e: "Trocar a frase muda a forma como o corpo responde." },
+        { p: "Um amigo tem melhores tempos do que tu.", o: ["Deixas de treinar com ele.", "Comparas a tua evolução contigo há três meses.", "Treinas o dobro para o apanhar.", "Dizes que ele tem sorte."], c: 1, e: "A tua referência és tu." },
+        { p: "O que aumenta mais a confiança?", o: ["Pensar positivo sem treinar.", "Ver provas reais do teu progresso, como o registo dos treinos.", "Comprar material novo.", "Seguir atletas famosos."], c: 1, e: "A confiança assenta em provas de que já consegues." },
+      ],
+      construtor: { titulo: "O teu diálogo interno", campos: [["neg", "A frase que te trava", "não vou conseguir"], ["prova", "Uma prova de que consegues", "já fiz 8 km a subir no mês passado"], ["nova", "A tua nova frase", "um passo de cada vez, treinei para isto"]], gerar: (v) => `Quando pensar “${v.neg}”, lembro-me de que ${v.prova}. E digo: “${v.nova}”.` },
+      plano: ["Escreve três conquistas desportivas tuas.", "Repara nas frases que te dizes nos treinos.", "Usa a tua nova frase num treino difícil.", "Compara um treino de hoje com um de há um mês.", "Partilha uma conquista com o grupo."],
+    },
+    {
+      id: "consistencia", grupo: "Hábitos e corpo", titulo: "Consistência nos treinos", desc: "Pouco e muitas vezes",
+      essencial: ["Treinar pouco e muitas vezes vale mais do que muito de vez em quando.", "Marca os treinos na agenda como compromissos.", "Num dia mau, faz o mínimo: 10 minutos contam."],
+      cenarios: [
+        { p: "Hoje tens pouco tempo.", o: ["Não treinas.", "Fazes 15 minutos de treino curto.", "Deixas para o fim de semana e fazes o dobro.", "Desistes do plano."], c: 1, e: "Um treino curto mantém o hábito vivo." },
+        { p: "O melhor plano para começar:", o: ["Treinar todos os dias, e muito, desde já.", "Três treinos curtos por semana, em dias fixos.", "Treinar quando apetecer.", "Esperar pela primavera."], c: 1, e: "Dias fixos e pouco volume no início ajudam a criar o hábito." },
+        { p: "Falhaste três treinos seguidos.", o: ["Recomeças hoje, com um treino leve.", "Esperas pela segunda-feira.", "Compensas com um treino enorme.", "Mudas de modalidade."], c: 0, e: "O melhor dia para recomeçar é hoje." },
+      ],
+      construtor: { titulo: "O teu compromisso de treino", campos: [["dias", "Em que dias", "segunda, quarta e sábado"], ["hora", "A que horas", "às 7h"], ["minimo", "O teu mínimo num dia mau", "15 minutos a andar"]], gerar: (v) => `Treino ${v.dias}, ${v.hora}. Num dia mau, faço o mínimo: ${v.minimo}.` },
+      plano: ["Marca os treinos da semana na agenda.", "Faz o primeiro treino, mesmo que seja curto.", "Prepara a roupa na véspera.", "Num dia mau, faz o teu mínimo.", "Revê a semana: quantos treinos fizeste?"],
+    },
+    {
+      id: "recuperacao", grupo: "Hábitos e corpo", titulo: "Recuperação e descanso", desc: "Descansar também é treinar",
+      essencial: ["O corpo fica mais forte no descanso, não durante o treino.", "Dormir bem faz parte do plano.", "Uma dor que persiste ou piora pede avaliação de um profissional de saúde."],
+      cenarios: [
+        { p: "Acordaste com muito cansaço e o corpo pesado.", o: ["Fazes o treino intenso previsto.", "Trocas por um treino leve ou por descanso.", "Bebes mais café e vais.", "Desistes da semana."], c: 1, e: "Ouvir o corpo hoje evita paragens longas amanhã." },
+        { p: "Quantos dias de descanso por semana?", o: ["Nenhum: descansar é perder tempo.", "Pelo menos um, ajustado ao teu nível e à tua carga.", "Só quando houver lesão.", "Um por mês."], c: 1, e: "O descanso é onde o corpo se adapta ao treino." },
+        { p: "Uma dor no joelho piora a cada treino.", o: ["Continuas: a dor passa.", "Paras e consultas um profissional de saúde.", "Mudas de sapatilhas e continuas.", "Treinas mais devagar e ignoras."], c: 1, e: "Uma dor que piora é um sinal para parar." },
+      ],
+      construtor: { titulo: "O teu plano de descanso", campos: [["dia", "O teu dia de descanso", "domingo"], ["sono", "A que horas te vais deitar", "às 23h"], ["leve", "O teu treino leve da semana", "40 minutos a caminhar"]], gerar: (v) => `Dia de descanso: ${v.dia}. Deito-me ${v.sono}. Uma vez por semana, faço um treino leve: ${v.leve}.` },
+      plano: ["Escolhe o teu dia de descanso.", "Deita-te à hora que escolheste.", "Regista de 1 a 5 como acordas.", "Num dia com 1 ou 2, troca por um treino leve.", "Revê a semana: como dormiste e como treinaste?"],
+    },
+    {
+      id: "objetivos", grupo: "Hábitos e corpo", titulo: "Objetivos desportivos", desc: "Da vontade ao plano",
+      essencial: ["Um objetivo claro tem um número e uma data.", "Junta um objetivo de resultado a um de processo.", "Partilha-o: aumenta o compromisso."],
+      cenarios: [
+        { p: "Qual é o objetivo mais útil?", o: ["“Ficar em forma.”", "“Fazer 10 km em menos de 60 minutos até junho.”", "“Treinar mais.”", "“Ser o melhor do grupo.”"], c: 1, e: "Concreto, mensurável e com prazo." },
+        { p: "Um objetivo de processo é…", o: ["O tempo final.", "Treinar três vezes por semana.", "O lugar na classificação.", "Ganhar a um colega."], c: 1, e: "Depende só de ti, por isso mantém a motivação." },
+        { p: "A meio do plano, percebes que o objetivo é demasiado exigente.", o: ["Desistes.", "Ajustas o objetivo e manténs o plano.", "Treinas o dobro.", "Não contas a ninguém."], c: 1, e: "Ajustar é inteligente; desistir não é a única saída." },
+      ],
+      construtor: { titulo: "O teu objetivo", campos: [["resultado", "Objetivo de resultado", "fazer o trilho de 15 km"], ["data", "Até quando", "abril"], ["processo", "Objetivo de processo", "treinar 3 vezes por semana"], ["partilha", "Com quem o vais partilhar", "o grupo do Movimento 3S"]], gerar: (v) => `Até ${v.data}, quero ${v.resultado}. Para isso, vou ${v.processo}. Vou partilhar este objetivo com ${v.partilha}.` },
+      plano: ["Escreve o teu objetivo com a frase que construíste.", "Partilha-o com alguém.", "Marca os treinos da primeira semana.", "Faz o primeiro treino do plano.", "Revê: o objetivo continua realista?"],
+    },
+  ],
+  modelos: [
+    { nome: "Respiração 4-6", para: "Acalmar antes de treinos e provas", passos: [["Inspira", "Pelo nariz, durante 4 tempos."], ["Expira", "Devagar, durante 6 tempos."], ["Repete", "Cinco vezes, de olhos abertos ou fechados."], ["Usa", "Antes da partida, numa subida ou quando sentires nervos."]] },
+    { nome: "Escala de esforço (1 a 10)", para: "Saber a que intensidade estás a treinar", passos: [["1 a 3", "Leve: consegues conversar sem esforço."], ["4 a 6", "Moderado: falas em frases curtas."], ["7 a 8", "Intenso: só dizes poucas palavras."], ["9 a 10", "Máximo: não consegues falar."]] },
+    { nome: "Ciclo treino e descanso", para: "Perceber como o corpo evolui", passos: [["Estímulo", "O treino desafia o corpo."], ["Fadiga", "Logo a seguir, rendes menos."], ["Recuperação", "O descanso repõe energia e repara."], ["Adaptação", "O corpo fica mais forte do que antes."]] },
+    { nome: "Rotina pré-prova", para: "Chegar à partida com calma", passos: [["Véspera", "Prepara tudo o que vais levar."], ["Manhã", "Come o que já testaste nos treinos."], ["Aquecimento", "O mesmo que fazes nos treinos."], ["Cabeça", "Respiração 4-6 e a tua frase."], ["Partida", "Começa mais devagar do que te apetece."]] },
+    { nome: "Objetivos SMART", para: "Transformar vontade em plano", passos: [["Específico", "O quê, exatamente?"], ["Mensurável", "Como vais medir?"], ["Alcançável", "É possível para ti agora?"], ["Relevante", "Porque é importante para ti?"], ["Temporal", "Até quando?"]] },
+    { nome: "Diálogo interno", para: "Trocar a frase que te trava", passos: [["Reparar", "Que frase estou a dizer na minha cabeça?"], ["Parar", "Respira uma vez."], ["Trocar", "Diz uma frase que te ajude."], ["Repetir", "Usa-a sempre que a frase antiga voltar."]] },
+  ],
+  reflexao: [
+    "Porque é que comecei a treinar?",
+    "Que treino me deixou mais orgulho, e porquê?",
+    "Do que preciso para treinar com mais prazer?",
+    "O que me está a dizer o corpo esta semana?",
+    "Que desculpa uso mais vezes para não treinar?",
+    "O que diria a um amigo que quer desistir?",
+    "Quem me inspira no desporto, e porquê?",
+    "Que objetivo me assusta um bocadinho, no bom sentido?",
+    "Como é que o desporto me torna melhor pessoa?",
+    "O que mudou em mim desde que treino com regularidade?",
+  ],
+  grupos: ["Mente", "Hábitos e corpo"],
+  t: {
+    eyebrow: "DESPORTO 3S · INTERATIVO", titulo: "Laboratório do Atleta", voltar: "Desporto 3S",
+    intro: "Testes, treinos mentais, quizzes e modelos para treinares com cabeça, coração e propósito. Grátis e ao teu ritmo.",
+    treinosDesc: "Foco, ansiedade de prova e confiança · Consistência, recuperação e objetivos",
+    perfilTitulo: "Que atleta sou eu?", perfilDesc: "Teste de perfil de atleta · 10 perguntas · 3 min", perfilPlano: "atleta",
+    notaPerfil: "Não há perfil certo. Conhecer o teu ajuda-te a escolher como treinar e como te motivares.",
+    compDesc: "Saber, Sentir e Ser no desporto: onde estás forte e onde crescer · 12 afirmações",
+    quizzesTitulo: "Quizzes do atleta", quizzesDesc: "Recuperação e sono, mente na prova, hidratação e alimentação, objetivos e motivação",
+    modelosEyebrow: "FERRAMENTAS DO ATLETA", modelosTitulo: "Modelos para treinar", modelosDesc: "Respiração 4-6, escala de esforço, rotina pré-prova e mais, passo a passo",
+    perguntasEyebrow: "PERGUNTAS PARA ATLETAS", perguntasTitulo: "Perguntas para atletas", perguntasDesc: "Uma pergunta para refletir e o teu diário de atleta", diario: "O MEU DIÁRIO DE ATLETA",
+  },
+};
+
+function LaboratorioLiderancaScreen(props) {
+  return <LaboratorioScreen cfg={LAB_LIDERANCA} {...props} />;
+}
+
+function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, inicial }) {
+  const { perfis: PERFIS_LIDER, perguntasPerfil: PERGUNTAS_PERFIL, competencias: COMPETENCIAS_3S, dicasPilar: DICAS_PILAR, modelos: MODELOS_LIDERANCA, reflexao: PERGUNTAS_REFLEXAO, quizzes: QUIZZES_LIDERANCA, planoPerfil: PLANO_PERFIL, planoPilar: PLANO_PILAR, treinos: TREINOS_LIDERANCA, grupos: GRUPOS_TREINO, t: TX } = cfg;
   const [vista, setVista] = useState(inicial ? "treino" : null); // null | perfil | competencias | modelos | perguntas | quizzes | quiz | treinos | treino
   const [treinoId, setTreinoId] = useState(inicial || null);
   const [passo, setPasso] = useState(0);
@@ -1855,7 +2077,7 @@ function LaboratorioLiderancaScreen({ onBack, resultados = {}, onGuardar, onMarc
       const [pergunta, opcoes] = PERGUNTAS_PERFIL[passo];
       return (
         <div className="pb-28">
-          {cabecalho(`PERGUNTA ${passo + 1} DE ${PERGUNTAS_PERFIL.length}`, "Que líder sou eu?", voltarLab, "Laboratório")}
+          {cabecalho(`PERGUNTA ${passo + 1} DE ${PERGUNTAS_PERFIL.length}`, TX.perfilTitulo, voltarLab, "Laboratório")}
           <div className="px-6">
             <div className="h-1.5 rounded-full mb-5 overflow-hidden" style={{ backgroundColor: `${palette.navy}14` }}>
               <div className="h-full" style={{ width: `${(passo / PERGUNTAS_PERFIL.length) * 100}%`, backgroundColor: palette.gold }} />
@@ -1872,12 +2094,12 @@ function LaboratorioLiderancaScreen({ onBack, resultados = {}, onGuardar, onMarc
         </div>
       );
     }
-    const contagem = { O: 0, C: 0, F: 0, D: 0 };
+    const contagem = Object.fromEntries(Object.keys(PERFIS_LIDER).map((k) => [k, 0]));
     respostas.forEach((r) => { contagem[r] += 1; });
     const ordenados = Object.keys(contagem).sort((a, b) => contagem[b] - contagem[a]);
     const principal = PERFIS_LIDER[ordenados[0]];
     const segundo = PERFIS_LIDER[ordenados[1]];
-    const planoPerfil = criarPlano(`Plano de 4 semanas: líder ${principal.nome}`, "perfil", PLANO_PERFIL[ordenados[0]], SEMANAS);
+    const planoPerfil = criarPlano(`Plano de 4 semanas: ${TX.perfilPlano} ${principal.nome}`, "perfil", PLANO_PERFIL[ordenados[0]], SEMANAS);
     const guardar = () => {
       onGuardar("perfil", { perfil: ordenados[0], contagem, data: new Date().toISOString() });
       guardarPlano(planoPerfil);
@@ -1885,7 +2107,7 @@ function LaboratorioLiderancaScreen({ onBack, resultados = {}, onGuardar, onMarc
     };
     return (
       <div className="pb-28">
-        {cabecalho("O TEU RESULTADO", "Que líder sou eu?", voltarLab, "Laboratório")}
+        {cabecalho("O TEU RESULTADO", TX.perfilTitulo, voltarLab, "Laboratório")}
         <div className="px-6 space-y-4">
           <div className="rounded-3xl px-5 py-6 text-center" style={{ background: `linear-gradient(150deg, ${palette.navy} 0%, #24436E 100%)` }}>
             <p className="text-[10px] tracking-[0.25em] font-semibold" style={{ color: palette.gold }}>O TEU PERFIL PRINCIPAL</p>
@@ -1902,7 +2124,7 @@ function LaboratorioLiderancaScreen({ onBack, resultados = {}, onGuardar, onMarc
               <p className="text-sm mt-1 leading-relaxed" style={{ color: palette.ink }}>{d}</p>
             </div>
           ))}
-          <p className="text-xs leading-relaxed rounded-xl px-4 py-3" style={{ backgroundColor: `${palette.gold}1F`, color: palette.navy }}>Não há perfil certo. Os melhores líderes mudam de estilo consoante a pessoa e a situação: é a Liderança Situacional.</p>
+          <p className="text-xs leading-relaxed rounded-xl px-4 py-3" style={{ backgroundColor: `${palette.gold}1F`, color: palette.navy }}>{TX.notaPerfil}</p>
           <PlanoCartao plano={planoPerfil} compacto />
           {botaoPrincipal("Guardar resultado e plano", guardar)}
           {guardadoMsg && <p className="text-xs text-center" style={{ color: palette.navySoft }}>{guardadoMsg}</p>}
@@ -1986,7 +2208,7 @@ function LaboratorioLiderancaScreen({ onBack, resultados = {}, onGuardar, onMarc
       <div className="pb-28">
         {cabecalho("PARA TRABALHAR", "Treinos de competências", voltarLab, "Laboratório")}
         <p className="px-6 -mt-2 mb-5 text-sm leading-relaxed" style={{ color: palette.navySoft }}>Cada treino tem o essencial, situações para praticar, uma frase construída por ti e um plano de 7 dias.</p>
-        {["Comunicação", "Resultados e carácter"].map((g) => (
+        {GRUPOS_TREINO.map((g) => (
           <div key={g} className="px-6 mb-6">
             <p className="text-[11px] tracking-[0.2em] font-semibold mb-3" style={{ color: palette.gold }}>{g.toUpperCase()}</p>
             <div className="space-y-3">
@@ -2003,7 +2225,7 @@ function LaboratorioLiderancaScreen({ onBack, resultados = {}, onGuardar, onMarc
     const feitos = resultados.quizzes || {};
     return (
       <div className="pb-28">
-        {cabecalho("TESTA O QUE SABES", "Quizzes de liderança", voltarLab, "Laboratório")}
+        {cabecalho("TESTA O QUE SABES", TX.quizzesTitulo, voltarLab, "Laboratório")}
         <p className="px-6 -mt-2 mb-5 text-sm leading-relaxed" style={{ color: palette.navySoft }}>5 perguntas cada. No fim recebes a explicação das respostas e um plano de 7 dias feito para ti.</p>
         <div className="px-6 space-y-3">
           {QUIZZES_LIDERANCA.map((q) => cartao(q.titulo, q.desc, feitos[q.id] ? `Última vez: ${feitos[q.id].pontos} de ${feitos[q.id].total}` : null, () => { setQuizId(q.id); setVista("quiz"); setPasso(0); setRespostas([]); setGuardadoMsg(""); }))}
@@ -2082,7 +2304,7 @@ function LaboratorioLiderancaScreen({ onBack, resultados = {}, onGuardar, onMarc
   if (vista === "modelos") {
     return (
       <div className="pb-28">
-        {cabecalho("FERRAMENTAS DO LÍDER", "Modelos de liderança", voltarLab, "Laboratório")}
+        {cabecalho(TX.modelosEyebrow, TX.modelosTitulo, voltarLab, "Laboratório")}
         <div className="px-6 space-y-3">
           {MODELOS_LIDERANCA.map((m) => {
             const aberto = modeloAberto === m.nome;
@@ -2129,7 +2351,7 @@ function LaboratorioLiderancaScreen({ onBack, resultados = {}, onGuardar, onMarc
     };
     return (
       <div className="pb-28">
-        {cabecalho("PERGUNTAS PARA LÍDERES", "Pergunta do dia", voltarLab, "Laboratório")}
+        {cabecalho(TX.perguntasEyebrow, "Pergunta do dia", voltarLab, "Laboratório")}
         <div className="px-6 space-y-4">
           <div className="rounded-3xl px-5 py-7 text-center" style={{ background: `linear-gradient(150deg, ${palette.navy} 0%, #24436E 100%)` }}>
             <p className="text-[10px] tracking-[0.25em] font-semibold" style={{ color: palette.gold }}>PENSA NISTO</p>
@@ -2141,7 +2363,7 @@ function LaboratorioLiderancaScreen({ onBack, resultados = {}, onGuardar, onMarc
           {guardadoMsg && <p className="text-xs text-center" style={{ color: palette.navySoft }}>{guardadoMsg}</p>}
           {minhas.length > 0 && (
             <div>
-              <p className="text-[11px] tracking-[0.2em] font-semibold mb-2" style={{ color: palette.gold }}>O MEU DIÁRIO DE LÍDER</p>
+              <p className="text-[11px] tracking-[0.2em] font-semibold mb-2" style={{ color: palette.gold }}>{TX.diario}</p>
               <div className="space-y-2">
                 {minhas.slice(0, 10).map((r, i) => (
                   <div key={i} className="rounded-xl px-4 py-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}44` }}>
@@ -2162,20 +2384,20 @@ function LaboratorioLiderancaScreen({ onBack, resultados = {}, onGuardar, onMarc
   const compGuardadas = resultados.competencias && resultados.competencias.pilares;
   return (
     <div className="pb-28">
-      {cabecalho("LIDERANÇA 3S · INTERATIVO", "Laboratório de Liderança", onBack, "Liderança 3S")}
-      <p className="px-6 -mt-2 mb-5 text-sm leading-relaxed" style={{ color: palette.navySoft }}>Testes, perfis, modelos e perguntas para te conheceres como líder. Grátis e ao teu ritmo.</p>
+      {cabecalho(TX.eyebrow, TX.titulo, onBack, TX.voltar)}
+      <p className="px-6 -mt-2 mb-5 text-sm leading-relaxed" style={{ color: palette.navySoft }}>{TX.intro}</p>
       {resultados.plano && (
         <div className="px-6 mb-5">
           <PlanoCartao plano={resultados.plano} onAlternar={alternarPasso} />
         </div>
       )}
       <div className="px-6 space-y-3">
-        {cartao("Treinos de competências", "Comunicação não violenta, assertiva e empática · Conflitos, resultados, consistência e coerência", Object.keys(resultados.treinos || {}).length ? `${Object.keys(resultados.treinos).length} de ${TREINOS_LIDERANCA.length} feitos` : "7 treinos · frase e plano no fim", () => setVista("treinos"))}
-        {cartao("Que líder sou eu?", "Teste de perfil de liderança · 10 situações · 3 min", perfilGuardado ? `O teu perfil: ${perfilGuardado.nome}` : null, () => { setVista("perfil"); setPasso(0); setRespostas([]); setGuardadoMsg(""); })}
-        {cartao("Competências 3S", "Saber, Sentir e Ser: onde estás forte e onde crescer · 12 afirmações", compGuardadas ? compGuardadas.map((p) => `${p.pilar} ${p.pct}%`).join(" · ") : null, () => { setVista("competencias"); setPasso(0); setRespostas([]); setGuardadoMsg(""); })}
-        {cartao("Quizzes de liderança", "Feedback, assertividade, escuta, liderança situacional e segurança psicológica", Object.keys(resultados.quizzes || {}).length ? `${Object.keys(resultados.quizzes).length} de ${QUIZZES_LIDERANCA.length} feitos` : "5 quizzes · plano automático no fim", () => setVista("quizzes"))}
-        {cartao("Modelos de liderança", "GROW, SBI, DESC, Situacional, CNV e Segurança Psicológica, passo a passo", null, () => setVista("modelos"))}
-        {cartao("Perguntas para líderes", "Uma pergunta para refletir e o teu diário de líder", (resultados.reflexoes || []).length ? `${resultados.reflexoes.length} resposta(s) no teu diário` : null, () => { setVista("perguntas"); setGuardadoMsg(""); })}
+        {cartao("Treinos de competências", TX.treinosDesc, Object.keys(resultados.treinos || {}).length ? `${Object.keys(resultados.treinos).length} de ${TREINOS_LIDERANCA.length} feitos` : "7 treinos · frase e plano no fim", () => setVista("treinos"))}
+        {cartao(TX.perfilTitulo, TX.perfilDesc, perfilGuardado ? `O teu perfil: ${perfilGuardado.nome}` : null, () => { setVista("perfil"); setPasso(0); setRespostas([]); setGuardadoMsg(""); })}
+        {cartao("Competências 3S", TX.compDesc, compGuardadas ? compGuardadas.map((p) => `${p.pilar} ${p.pct}%`).join(" · ") : null, () => { setVista("competencias"); setPasso(0); setRespostas([]); setGuardadoMsg(""); })}
+        {cartao(TX.quizzesTitulo, TX.quizzesDesc, Object.keys(resultados.quizzes || {}).length ? `${Object.keys(resultados.quizzes).length} de ${QUIZZES_LIDERANCA.length} feitos` : "5 quizzes · plano automático no fim", () => setVista("quizzes"))}
+        {cartao(TX.modelosTitulo, TX.modelosDesc, null, () => setVista("modelos"))}
+        {cartao(TX.perguntasTitulo, TX.perguntasDesc, (resultados.reflexoes || []).length ? `${resultados.reflexoes.length} resposta(s) no teu diário` : null, () => { setVista("perguntas"); setGuardadoMsg(""); })}
       </div>
     </div>
   );
@@ -2213,6 +2435,7 @@ function useCoachDaArea(area) {
 function EscolaScreen({ escola, onBack, onOpen, temAcesso, onAbrirCurso, desbloqueados, acessoTotal }) {
   const e = ESCOLAS_3S[escola];
   const coach = useCoachDaArea(escola);
+  const lab = escola === "lideranca" ? { secao: "lab-lideranca", cfg: LAB_LIDERANCA, rotuloTreinos: "TRABALHAR COMPETÊNCIAS" } : escola === "desporto" ? { secao: "lab-desporto", cfg: LAB_DESPORTO, rotuloTreinos: "TREINAR A CABEÇA E OS HÁBITOS" } : null;
   const Icon = e.icon;
   const lista = e.cursos.map((id) => cursos.find((c) => c.id === id)).filter(Boolean);
   const livro = materiais.find((m) => m.id === e.livro);
@@ -2238,26 +2461,26 @@ function EscolaScreen({ escola, onBack, onOpen, temAcesso, onAbrirCurso, desbloq
         </div>
       </div>
 
-      {escola === "lideranca" && (
+      {lab && (
         <div className="px-6 mb-7">
           {rotulo("INTERATIVO · GRÁTIS")}
-          <button onClick={() => onOpen("lab-lideranca")} className="relative overflow-hidden w-full text-left rounded-2xl px-5 py-5 transition active:scale-[0.99]" style={{ background: `linear-gradient(150deg, ${palette.gold} 0%, #E4C98C 100%)` }}>
-            <p className="font-serif text-2xl leading-tight" style={{ color: palette.navy }}>Laboratório de Liderança</p>
-            <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navy }}>Testes · Quizzes · Planos automáticos · Modelos · Perguntas para líderes</p>
+          <button onClick={() => onOpen(lab.secao)} className="relative overflow-hidden w-full text-left rounded-2xl px-5 py-5 transition active:scale-[0.99]" style={{ background: `linear-gradient(150deg, ${palette.gold} 0%, #E4C98C 100%)` }}>
+            <p className="font-serif text-2xl leading-tight" style={{ color: palette.navy }}>{lab.cfg.t.titulo}</p>
+            <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navy }}>Testes · Treinos · Quizzes · Planos automáticos · Modelos · {lab.cfg.t.perguntasTitulo}</p>
             <span className="inline-flex items-center gap-1 mt-3 text-xs font-medium rounded-full px-3 py-1.5" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Começar <ChevronRight size={14} /></span>
           </button>
         </div>
       )}
 
-      {escola === "lideranca" && (
+      {lab && (
         <div className="px-6 mb-7">
-          {rotulo("TRABALHAR COMPETÊNCIAS")}
-          {["Comunicação", "Resultados e carácter"].map((g) => (
+          {rotulo(lab.rotuloTreinos)}
+          {lab.cfg.grupos.map((g) => (
             <div key={g} className="mb-3">
               <p className="text-xs font-medium mb-2" style={{ color: palette.navy }}>{g}</p>
               <div className="flex flex-wrap gap-2">
-                {TREINOS_LIDERANCA.filter((t) => t.grupo === g).map((t) => (
-                  <button key={t.id} onClick={() => onOpen("lab-lideranca:" + t.id)} className="rounded-full px-3.5 py-2 text-xs font-medium" style={{ backgroundColor: palette.card, border: `1px solid ${palette.gold}`, color: palette.navy }}>
+                {lab.cfg.treinos.filter((t) => t.grupo === g).map((t) => (
+                  <button key={t.id} onClick={() => onOpen(lab.secao + ":" + t.id)} className="rounded-full px-3.5 py-2 text-xs font-medium" style={{ backgroundColor: palette.card, border: `1px solid ${palette.gold}`, color: palette.navy }}>
                     {cap(t.titulo.replace("Comunicação ", ""))}
                   </button>
                 ))}
@@ -9827,6 +10050,18 @@ export default function App() {
         resultados={progresso.testesLideranca || {}}
         onGuardar={(chave, valor) => setProgresso((p) => ({ ...p, testesLideranca: { ...(p.testesLideranca || {}), [chave]: valor } }))}
         onMarcar={() => setSecao("marcar:lideranca")}
+      />
+    );
+  } else if (secao === "lab-desporto" || (secao || "").startsWith("lab-desporto:")) {
+    content = (
+      <LaboratorioScreen
+        key={secao}
+        cfg={LAB_DESPORTO}
+        inicial={(secao || "").startsWith("lab-desporto:") ? secao.split(":")[1] : null}
+        onBack={() => setSecao("desporto-3s")}
+        resultados={progresso.testesDesporto || {}}
+        onGuardar={(chave, valor) => setProgresso((p) => ({ ...p, testesDesporto: { ...(p.testesDesporto || {}), [chave]: valor } }))}
+        onMarcar={() => setSecao("marcar:desporto")}
       />
     );
   } else if (secao === "desporto-3s") {
