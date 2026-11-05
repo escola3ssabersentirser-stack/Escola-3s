@@ -110,7 +110,7 @@ const TODOS_CURSOS = [
     escolaId: "lideranca",
     titulo: "Liderança 3S",
     interativo: true,
-    promessa: "O curso da Escola 3S para quem lidera pessoas: equipas, lojas, projetos, associações ou desporto. Trabalhas os três pilares (Saber, Sentir e Ser) com texto, ciência, exercícios, quizzes e desafios, e sais com o teu perfil 3S e um plano de 30 dias.",
+    promessa: "O curso da Escola 3S para quem lidera pessoas: equipas, lojas, projetos, associações ou desporto. Trabalhas os três pilares (Saber, Sentir e Ser) com texto, ciência, exercícios, questionários e desafios, e sais com o teu perfil 3S e um plano de 30 dias.",
     pergunta: "Que líder encontram os outros quando trabalham comigo?",
     tipo: "video",
     duracao: "6 aulas · cerca de 2 h",
@@ -123,7 +123,7 @@ const TODOS_CURSOS = [
     id: 2,
     escolaId: "lideranca",
     titulo: "Conversas que Mudam Equipas",
-    promessa: "Comunicação assertiva, feedback, conflitos, conversas difíceis, limites e responsabilização.",
+    promessa: "Comunicação assertiva, retorno, conflitos, conversas difíceis, limites e responsabilização.",
     pergunta: "Tudo acontece nas relações humanas e na comunicação.",
     tipo: "video",
     duracao: "50 min",
@@ -137,9 +137,9 @@ const TODOS_CURSOS = [
         materiaisFormadorIds: [88, 80, 81],
       },
       {
-        titulo: "Feedback",
+        titulo: "Retorno",
         descricao: "Específico, a tempo, e baseado em factos — o modelo SBI.",
-        conteudo: "Feedback eficaz é específico, é dado em tempo útil, e distingue claramente observação de interpretação. Um modelo simples, popularizado pelo Center for Creative Leadership, estrutura o feedback em três partes: Situação, Comportamento (observado, de forma factual) e Impacto — continua no Livro do Aluno.",
+        conteudo: "Retorno eficaz é específico, é dado em tempo útil, e distingue claramente observação de interpretação. Um modelo simples, popularizado pelo Center for Creative Leadership, estrutura o retorno em três partes: Situação, Comportamento (observado, de forma factual) e Impacto — continua no Livro do Aluno.",
         materiaisIds: [43, 44, 65],
         materiaisFormadorIds: [89, 82, 83],
       },
@@ -172,9 +172,9 @@ const TODOS_CURSOS = [
     duracao: "4 aulas",
     concluido: false,
     aulas: [
-      { titulo: "O que é uma crença limitadora", videoUrl: "https://www.youtube.com/embed/BbO2wd6QvYk?rel=0&modestbranding=1", descricao: "Como uma ideia repetida se torna \"verdade\" sobre nós e sobre o mundo.", conteudo: "Este é o primeiro capítulo de leitura do curso «Crenças Limitantes», da Escola 3S. Antes de qualquer exercício ou técnica, importa responder com clareza a duas perguntas simples, mas frequentemente mal respondidas: o que é, afinal, uma crença? E como reconhecemos que estamos perante uma, e não apenas perante um facto?\n\nVivemos, com frequência, as nossas crenças como se fossem verdades objetivas sobre o mundo. É precisamente essa confusão — entre aquilo que é e aquilo que interpretamos que é — que lhes confere o seu poder sobre nós. Este capítulo apoia-se em conceitos consolidados do coaching e da Programação Neurolinguística (PNL), duas disciplinas que, desde as últimas décadas do século XX, se dedicam a compreender como a linguagem e o pensamento moldam a experiência humana, e que propõem ferramentas práticas para a transformar.\n\nO convite que aqui se faz é simples de enunciar, ainda que exigente na prática: começar a separar aquilo que observamos daquilo que concluímos sobre o que observamos.\n\n«Não vemos as coisas como elas são. Vemos as coisas como nós somos.» — provérbio atribuído ao Talmude\n\nUm dos pressupostos fundadores da PNL — formulado a partir do trabalho do semanticista Alfred Korzybski — afirma que «o mapa não é o território»: a representação que fazemos da realidade não é a realidade em si, é apenas a nossa leitura dela, construída com a informação, a linguagem e a experiência de que dispomos em cada momento. Uma crença é, precisamente, um elemento desse mapa interno: uma generalização que fazemos a partir da experiência e que passamos a tratar como se fosse o próprio território.\n\nNascemos sem crenças sobre nós próprios. Vamo-las construindo, ao longo da vida, a partir daquilo que nos disseram, daquilo que vivemos e, sobretudo, daquilo que concluímos sobre o que vivemos. Em coaching, esta última etapa — a conclusão que tiramos dos factos — é frequentemente mais determinante para o nosso comportamento do que os próprios factos que a originaram.\n\nConsidere-se o seguinte exemplo: uma criança que erra, uma única vez, ao responder a uma pergunta na aula e é ridicularizada pelos colegas pode não concluir apenas «hoje correu mal». Pode concluir «eu sou estúpido» ou «não posso arriscar-me a falar em público». É esta segunda camada — a generalização sobre a identidade, e não apenas sobre o episódio — que dá origem a uma crença.\n\nO coach e formador norte-americano Robert Dilts propôs um modelo amplamente utilizado em coaching, conhecido como Níveis Lógicos, que organiza a experiência humana em diferentes camadas: o ambiente em que nos encontramos, os comportamentos que manifestamos, as capacidades que desenvolvemos, as crenças e valores que sustentamos, a identidade que assumimos e, por fim, um sentido mais amplo de missão ou propósito.\n\nEste modelo é útil porque mostra que as crenças ocupam um nível mais profundo do que o comportamento: não são apenas «coisas que pensamos», são o terreno a partir do qual decidimos o que é possível, permitido ou seguro fazer. Por isso, tentar mudar um comportamento sem tocar na crença que o sustenta tende a produzir resultados frágeis e temporários — e, inversamente, uma mudança de crença tende a refletir-se, com relativa naturalidade, em novos comportamentos.\n\nAs crenças formam-se, tipicamente, a partir de quatro fontes principais:\n\nExperiências marcantes, sobretudo na infância e na adolescência, em que uma emoção intensa — vergonha, medo, rejeição — ficou associada a uma conclusão sobre nós próprios.\n\nMensagens repetidas por figuras de referência — pais, professores, cuidadores — que, ditas muitas vezes, se tornam «verdades» interiorizadas.\n\nModelagem: aquilo que observámos os adultos à nossa volta acreditarem e viverem, mesmo sem nos dizerem nada diretamente — aprendemos padrões de pensamento por observação, e não apenas por instrução direta.\n\nCultura e contexto social: ideias sobre o que é «normal», «possível» ou «apropriado» para alguém como nós — pelo género, pela origem, pela idade, pela profissão.\n\nNenhuma destas origens constitui, em si, um erro. Formar crenças a partir da experiência é uma função saudável da mente: é assim que aprendemos a não repetir perigos e a agir com maior eficiência em contextos semelhantes a outros já vividos. O problema surge quando a crença deixa de servir a função para que foi criada e passa a limitar-nos em contextos onde já não faz sentido. É a essa crença que chamamos crença limitante.\n\nUma crença consolida-se por dois mecanismos principais: a repetição e a emoção. Quanto mais vezes uma ideia é confirmada — mesmo que essa confirmação seja, ela própria, produzida pela crença — mais automática e menos questionada ela se torna. E quanto mais intensa foi a emoção associada ao momento em que a crença se formou, mais forte tende a ser a sua fixação, mesmo quando a memória consciente do episódio original já se perdeu.\n\nÉ por esta razão que muitas crenças limitantes parecem não ter uma origem clara: não porque não a tenham, mas porque se formaram cedo, ou em torno de emoções que preferimos não revisitar. Não é, no entanto, necessário recuperar a memória exata da sua origem para trabalhá-las — o objetivo deste curso é reconhecê-las tal como operam hoje, e não fazer uma reconstituição biográfica exaustiva.\n\nAlgumas crenças são facilmente verbalizáveis: sabemos que as temos e conseguimos enunciá-las com relativa clareza. Outras operam de forma inconsciente — não as diríamos em voz alta se nos perguntassem diretamente, mas revelam-se nas escolhas que fazemos, nas oportunidades que evitamos e nos padrões que se repetem na nossa vida, muitas vezes sem que estabeleçamos a ligação entre esses padrões e a crença que os sustenta.\n\nUm dos objetivos deste primeiro capítulo — e da aula que o acompanha — é precisamente começar a trazer para o campo consciente aquilo que, até agora, operava em piloto automático.\n\nUma das confusões mais comuns — e mais determinantes nos seus efeitos — é tratar uma crença como se fosse um facto. Um facto pode ser verificado por qualquer pessoa, independentemente do que sente ou pensa sobre ele: «esta frase está escrita em português» é um facto. Uma crença é, pelo contrário, uma conclusão pessoal, carregada de emoção e de história, que apresentamos a nós próprios como se fosse tão sólida quanto um facto, mas que outra pessoa, com outra história, poderia perfeitamente não partilhar.\n\nUm pensamento é, em geral, mais passageiro: surge e desaparece, muitas vezes sem que lhe atribuamos grande importância. Uma opinião é uma avaliação consciente sobre algo externo, que reconhecemos como discutível. Uma crença distingue-se de ambos por um traço particular: deixou de ser sentida como uma entre várias interpretações possíveis, e passou a ser vivida como «a verdade sobre como as coisas são».\n\nA PNL desenvolveu, desde a sua origem, um instrumento particularmente útil para este trabalho: o Meta-Modelo da linguagem, criado por Richard Bandler e John Grinder a partir da observação de terapeutas de referência. O Meta-Modelo parte de uma constatação simples: a linguagem que usamos para descrever a nossa experiência nunca é a experiência completa, é sempre uma versão reduzida dela, construída através de três processos — generalização, distorção e omissão.\n\nGeneralização: tomamos uma ou poucas experiências e alargamo-las a uma regra universal — «isto correu mal uma vez» transforma-se em «isto corre sempre mal comigo».\n\nDistorção: alteramos o significado de uma experiência, frequentemente atribuindo-lhe uma causa ou intenção que não foi verificada — «ele não respondeu à mensagem» transforma-se em «ele já não gosta de mim».\n\nOmissão: retiramos informação da descrição de uma experiência, tornando-a mais vaga e, por isso, mais difícil de questionar — «eu não sou capaz» omite de quê, em que situação, e segundo que critério.\n\nAs crenças limitantes recorrem, quase sempre, a uma combinação destes três processos. Reconhecê-los na linguagem que usamos — e que os outros usam — é uma das formas mais diretas de identificar que estamos perante uma crença, e não perante uma descrição neutra dos factos.\n\nNa prática, os três processos do Meta-Modelo traduzem-se em construções de linguagem reconhecíveis. Algumas das mais frequentes são:\n\nGeneralizações absolutas: «sempre», «nunca», «todos», «ninguém» — «eu nunca consigo terminar o que começo».\n\nIdentidade fixa: frases que começam por «eu sou...» em vez de «eu fiz...» ou «eu senti...» — «eu sou incapaz», em vez de «esta tarefa correu mal».\n\nCerteza sem prova concreta: afirmações proferidas com convicção total, mas sem um facto verificável que as sustente diretamente — «isto nunca vai resultar comigo».\n\nCategorias sobre «pessoas como eu»: «pessoas da minha idade não conseguem mudar de carreira», «na minha família ninguém tem jeito para números».\n\nVerbos de obrigação ou impossibilidade, sem que a sua origem seja questionada: «tenho de...», «não posso...», «é impossível que...», ditos como regras absolutas e não como opções entre outras.\n\nReconhecer estas construções — na própria fala ou na de outra pessoa — é, em coaching, um dos primeiros passos de qualquer processo de mudança: não se pergunta apenas «o que a pessoa disse», mas «que estrutura de crença está por detrás daquilo que foi dito».\n\nNem todos os sinais de uma crença são linguísticos. O corpo regista, muitas vezes, a ativação de uma crença antes de a mente a conseguir nomear: uma tensão súbita, um aperto no peito, uma vontade de fugir ou de justificar-se. Em coaching, este tipo de reação é entendido como um indicador valioso, e não como um obstáculo a ignorar.\n\nUm critério prático para o reconhecer é a desproporção: quando a intensidade da emoção sentida parece maior do que aquilo que a situação, isolada, justificaria, é frequentemente sinal de que uma crença antiga foi ativada, e não apenas a situação presente. A situação atual funciona, nestes casos, como um gatilho que reativa uma interpretação muito mais antiga.\n\nPerante uma afirmação sobre si próprio(a), sobre outra pessoa ou sobre a vida em geral, pode aplicar o seguinte teste, inspirado nas perguntas do Meta-Modelo:\n\nIsto é algo que qualquer pessoa, observando a mesma situação, teria necessariamente de concluir — ou é a conclusão a que eu, com a minha história, cheguei?\n\nExiste alguma situação, ainda que rara, em que esta afirmação não se verifique?\n\nQue prova concreta e verificável sustenta esta afirmação, para além da convicção com que a sinto?\n\nSe, ao responder, notar que a afirmação resiste mal a estas perguntas — se encontrar exceções, se a prova for sobretudo emocional, se a conclusão parecer mais sua do que universal — está muito provavelmente perante uma crença, e não perante um facto.\n\n«Não é a situação que nos perturba, mas a opinião que temos sobre ela.» — Epicteto\n\nEnquanto tratarmos uma crença como um facto inquestionável, não existe espaço para a questionar: «é assim mesmo», dizemos, e paramos por aí. É apenas quando reconhecemos que aquilo em que acreditamos é uma interpretação — um mapa, e não o território — que se torna possível perguntar se essa interpretação ainda nos serve. Em coaching, este reconhecimento é frequentemente descrito como o momento em que se passa de estar fundido com o pensamento para se tornar capaz de o observar. É esse reconhecimento que abre a porta a todo o percurso deste curso.\n\nNo Caderno de Trabalho desta aula, é convidado(a) a aplicar estas ideias a uma frase sua concreta — o primeiro passo, muito prático, de todo o percurso deste curso.", materiaisIds: [45, 32, 48] },
-      { titulo: "De onde vieram as minhas crenças", videoUrl: "https://www.youtube.com/embed/W2uhB1B625w?rel=0&modestbranding=1", descricao: "Família, escola e experiências marcantes que moldaram o que acreditas ser possível.", conteudo: "No capítulo anterior, aprendemos a reconhecer uma crença — a distingui-la de um facto, de um pensamento passageiro ou de uma opinião reconhecida como tal. O passo seguinte, e é esse que este capítulo trata, é perguntar: será que aquilo em que acredito corresponde, de facto, à realidade? Ou estarei a tratar como verdade absoluta algo que, na melhor das hipóteses, é apenas uma interpretação possível entre várias?\n\nEsta distinção — entre o que sabemos e o que supomos — é, provavelmente, a ferramenta mais imediatamente útil de todo este curso. Não porque resolva, por si só, uma crença limitante, mas porque lhe retira a certeza absoluta com que costuma operar. E uma crença que deixou de ser absolutamente certa já não tem o mesmo poder sobre nós.\n\nO investigador organizacional Chris Argyris propôs um modelo, mais tarde popularizado por Peter Senge, conhecido como a Escada de Inferência. O modelo descreve o percurso mental que fazemos, quase sempre sem darmos conta, entre observar algo e agir a partir disso: observamos uma quantidade imensa de dados; selecionamos apenas alguns; atribuímos-lhes significado com base na nossa experiência; fazemos suposições a partir desse significado; tiramos conclusões; adotamos ou reforçamos uma crença; e, por fim, agimos de acordo com essa crença.\n\nO problema não está em subir esta escada — é uma função necessária da mente, sem a qual não conseguiríamos funcionar no mundo. O problema está em subi-la tão depressa que deixamos de notar os degraus intermédios, e passamos a tratar o topo da escada (a nossa conclusão) como se fosse o próprio degrau de base (o dado observável).\n\nUm dos degraus mais decisivos da escada — e o mais invisível — é a seleção. De toda a informação disponível numa situação, reparamos apenas nalguma parte dela. E tendemos a reparar, precisamente, naquilo que já confirma o que esperávamos encontrar — um mecanismo a que a psicologia chama viés de confirmação. Uma pessoa que acredita que \"ninguém se interessa por mim\" tende a notar, numa festa, os dois momentos em que ficou sozinha, e a não registar os cinco em que alguém puxou conversa. Não porque minta a si própria de forma deliberada, mas porque a crença já filtrou, antecipadamente, o que merecia atenção.\n\nVimos, no capítulo anterior, que a linguagem das crenças costuma recorrer à omissão — retira informação, tornando a afirmação mais vaga e mais difícil de questionar. A primeira forma de testar uma crença é, por isso, tentar recuperar essa informação: que provas concretas, verificáveis por outra pessoa, sustentam esta afirmação? Comparado com quê, ou com quem? Segundo que critério?\n\nA autora norte-americana Byron Katie desenvolveu um método de questionamento, conhecido como \"O Trabalho\" (The Work), amplamente usado em coaching e em contextos terapêuticos, que se resume a quatro perguntas simples a colocar sobre qualquer crença:\n\nEstas perguntas não têm como objetivo provar que a crença é falsa — algumas crenças resistem bem ao escrutínio, e isso também é informação valiosa. O objetivo é criar, entre a pessoa e a sua crença, uma distância que antes não existia.\n\nO filósofo da ciência Karl Popper argumentou que uma afirmação só é cientificamente válida se for, em princípio, possível refutá-la — se existir um teste capaz de a provar falsa. Podemos aplicar a mesma lógica, de forma mais informal, às nossas crenças pessoais: uma crença que se apresenta como \"sempre\" ou \"nunca\" resiste, ou não, a uma procura ativa por exceções?\n\nProcurar, de propósito, uma única situação em que a crença não se confirmou — mesmo que pouco frequente — é muitas vezes suficiente para a fazer passar de \"verdade absoluta\" a \"tendência que às vezes se verifica\". E essa mudança, por pequena que pareça, já é uma primeira fissura na certeza que a sustentava.\n\nEntre observar uma situação e agir a partir dela, subimos uma escada de seleção, interpretação e suposição — quase sempre sem dar conta. Testar uma crença não é negá-la à partida; é perguntar, com honestidade, o que sabemos de facto e o que estamos apenas a supor, procurar provas concretas e procurar, ativamente, exceções que a possam contradizer. É esse o trabalho da Aula 2 — e da folha de exercício que a acompanha.", materiaisIds: [45, 32, 49] },
-      { titulo: "Testar a crença", videoUrl: "https://www.youtube.com/embed/3B2h_CbAnW4?rel=0&modestbranding=1", descricao: "Separar factos de interpretações; procurar provas contra a crença, não só a favor.", conteudo: "Já sabemos reconhecer uma crença, e já temos ferramentas para testar se corresponde à realidade. Ainda assim, é comum continuarmos a agir a partir de crenças que já reconhecemos, no plano racional, como pouco fiáveis. Este capítulo trata dessa aparente contradição: porque continuamos a segurar algo que sabemos, pelo menos em parte, não ser inteiramente verdade?\n\nA resposta, quase sempre, é que a crença nos dá alguma coisa. Nenhuma crença sobrevive tanto tempo por acidente — sobrevive porque cumpre uma função. Compreender essa função, e não apenas a crença em si, é o que torna possível uma mudança duradoura.\n\nEm contextos terapêuticos, chama-se ganho secundário à vantagem — muitas vezes inconsciente — que uma pessoa retira de manter um padrão, mesmo quando esse padrão lhe traz sofrimento visível. Uma crença como \"não sou capaz de liderar\" pode, à superfície, ser apenas limitadora; mas pode também poupar a pessoa à exposição de tentar e falhar publicamente, à responsabilidade de decidir por outros, ou ao risco de descobrir que, mesmo tentando, o resultado não é o desejado.\n\nNomear o ganho secundário de uma crença não é procurar um pretexto para a manter — é, pelo contrário, o primeiro passo para lidar com a necessidade real que ela protege, em vez de tentar arrancar a crença à força e deixar essa necessidade desprotegida.\n\nO psicólogo Leon Festinger descreveu, em meados do século XX, o desconforto que sentimos quando duas crenças, ou uma crença e um comportamento, entram em contradição — a que chamou dissonância cognitiva. Para reduzir esse desconforto, tendemos a ajustar uma das partes, e é mais fácil ajustar a perceção do que o comportamento já tomado. Isto explica por que razão continuamos, por vezes, a justificar decisões ou crenças antigas mesmo perante provas em contrário: mudar de ideias custaria mais, no imediato, do que manter a consistência interna.\n\nOs investigadores Daniel Kahneman e Amos Tversky demonstraram que, em geral, sentimos o desconforto de uma perda com mais intensidade do que o prazer de um ganho equivalente — fenómeno a que chamaram aversão à perda. Aplicado às crenças: largar uma crença antiga, mesmo uma que já não serve, é sentido como uma perda de segurança imediata, ao passo que os ganhos de a largar (novas oportunidades, novas formas de agir) são, para já, apenas hipotéticos. É por isso que, racionalmente, sabermos que uma crença nos prejudica raramente basta para a mudarmos — o cálculo emocional não é simétrico.\n\nUm dos custos mais difíceis de contabilizar é aquele que nunca chegamos a ver: as oportunidades que nem sequer consideramos, porque a crença já as descartou antecipadamente. Não é uma escolha consciente de recusar — é uma opção que nunca chega a aparecer no radar.\n\nO objetivo deste exercício não é convencer-nos, de forma forçada, a abandonar uma crença. É olhar, com a maior honestidade possível, para os dois pratos da balança: o que esta crença me dá, e o que me tira. Só depois de vermos os dois lados com clareza é que a decisão de a manter ou a mudar deixa de ser automática, e passa a ser, verdadeiramente, uma escolha.\n\nAs crenças que persistem, mesmo custando-nos, costumam fazê-lo porque nos protegem de algo — rejeição, fracasso, responsabilidade, exposição. Reconhecer essa função, e pesar com honestidade o que ganhamos e o que perdemos ao mantê-la, é o trabalho da Aula 3.", materiaisIds: [45, 32, 50] },
+      { titulo: "O que é uma crença limitadora", videoUrl: "https://www.youtube.com/embed/BbO2wd6QvYk?rel=0&modestbranding=1", descricao: "Como uma ideia repetida se torna \"verdade\" sobre nós e sobre o mundo.", conteudo: "Este é o primeiro capítulo de leitura do curso «Crenças Limitantes», da Escola 3S. Antes de qualquer exercício ou técnica, importa responder com clareza a duas perguntas simples, mas frequentemente mal respondidas: o que é, afinal, uma crença? E como reconhecemos que estamos perante uma, e não apenas perante um facto?\n\nVivemos, com frequência, as nossas crenças como se fossem verdades objetivas sobre o mundo. É precisamente essa confusão — entre aquilo que é e aquilo que interpretamos que é — que lhes confere o seu poder sobre nós. Este capítulo apoia-se em conceitos consolidados do coaching e da Programação Neurolinguística (PNL), duas disciplinas que, desde as últimas décadas do século XX, se dedicam a compreender como a linguagem e o pensamento moldam a experiência humana, e que propõem ferramentas práticas para a transformar.\n\nO convite que aqui se faz é simples de enunciar, ainda que exigente na prática: começar a separar aquilo que observamos daquilo que concluímos sobre o que observamos.\n\n«Não vemos as coisas como elas são. Vemos as coisas como nós somos.» — provérbio atribuído ao Talmude\n\nUm dos pressupostos fundadores da PNL — formulado a partir do trabalho do semanticista Alfred Korzybski — afirma que «o mapa não é o território»: a representação que fazemos da realidade não é a realidade em si, é apenas a nossa leitura dela, construída com a informação, a linguagem e a experiência de que dispomos em cada momento. Uma crença é, precisamente, um elemento desse mapa interno: uma generalização que fazemos a partir da experiência e que passamos a tratar como se fosse o próprio território.\n\nNascemos sem crenças sobre nós próprios. Construímo-las ao longo da vida, a partir daquilo que nos disseram, daquilo que vivemos e, sobretudo, daquilo que concluímos sobre o que vivemos. Em coaching, esta última etapa — a conclusão que tiramos dos factos — é frequentemente mais determinante para o nosso comportamento do que os próprios factos que a originaram.\n\nConsidere-se o seguinte exemplo: uma criança que erra, uma única vez, ao responder a uma pergunta na aula e é ridicularizada pelos colegas pode não concluir apenas «hoje correu mal». Pode concluir «eu sou estúpido» ou «não posso arriscar-me a falar em público». É esta segunda camada — a generalização sobre a identidade, e não apenas sobre o episódio — que dá origem a uma crença.\n\nO coach e formador norte-americano Robert Dilts propôs um modelo amplamente utilizado em coaching, conhecido como Níveis Lógicos, que organiza a experiência humana em diferentes camadas: o ambiente em que nos encontramos, os comportamentos que manifestamos, as capacidades que desenvolvemos, as crenças e valores que sustentamos, a identidade que assumimos e, por fim, um sentido mais amplo de missão ou propósito.\n\nEste modelo é útil porque mostra que as crenças ocupam um nível mais profundo do que o comportamento: não são apenas «coisas que pensamos», são o terreno a partir do qual decidimos o que é possível, permitido ou seguro fazer. Por isso, tentar mudar um comportamento sem tocar na crença que o sustenta tende a produzir resultados frágeis e temporários — e, inversamente, uma mudança de crença tende a refletir-se, com relativa naturalidade, em novos comportamentos.\n\nAs crenças formam-se, tipicamente, a partir de quatro fontes principais:\n\nExperiências marcantes, sobretudo na infância e na adolescência, em que uma emoção intensa — vergonha, medo, rejeição — ficou associada a uma conclusão sobre nós próprios.\n\nMensagens repetidas por figuras de referência — pais, professores, cuidadores — que, ditas muitas vezes, se tornam «verdades» interiorizadas.\n\nModelagem: aquilo que observámos os adultos à nossa volta acreditarem e viverem, mesmo sem nos dizerem nada diretamente — aprendemos padrões de pensamento por observação, e não apenas por instrução direta.\n\nCultura e contexto social: ideias sobre o que é «normal», «possível» ou «apropriado» para alguém como nós — pelo género, pela origem, pela idade, pela profissão.\n\nNenhuma destas origens constitui, em si, um erro. Formar crenças a partir da experiência é uma função saudável da mente: é assim que aprendemos a não repetir perigos e a agir com maior eficiência em contextos semelhantes a outros já vividos. O problema surge quando a crença deixa de servir a função para que foi criada e passa a limitar-nos em contextos onde já não faz sentido. É a essa crença que chamamos crença limitante.\n\nUma crença consolida-se por dois mecanismos principais: a repetição e a emoção. Quanto mais vezes uma ideia é confirmada — mesmo que essa confirmação seja, ela própria, produzida pela crença — mais automática e menos questionada ela se torna. E quanto mais intensa foi a emoção associada ao momento em que a crença se formou, mais forte tende a ser a sua fixação, mesmo quando a memória consciente do episódio original já se perdeu.\n\nÉ por esta razão que muitas crenças limitantes parecem não ter uma origem clara: não porque não a tenham, mas porque se formaram cedo, ou em torno de emoções que preferimos não revisitar. Não é, no entanto, necessário recuperar a memória exata da sua origem para trabalhá-las — o objetivo deste curso é reconhecê-las tal como operam hoje, e não fazer uma reconstituição biográfica exaustiva.\n\nAlgumas crenças são facilmente verbalizáveis: sabemos que as temos e conseguimos enunciá-las com relativa clareza. Outras operam de forma inconsciente — não as diríamos em voz alta se nos perguntassem diretamente, mas revelam-se nas escolhas que fazemos, nas oportunidades que evitamos e nos padrões que se repetem na nossa vida, muitas vezes sem que estabeleçamos a ligação entre esses padrões e a crença que os sustenta.\n\nUm dos objetivos deste primeiro capítulo — e da aula que o acompanha — é precisamente começar a trazer para o campo consciente aquilo que, até agora, operava em piloto automático.\n\nUma das confusões mais comuns — e mais determinantes nos seus efeitos — é tratar uma crença como se fosse um facto. Um facto pode ser verificado por qualquer pessoa, independentemente do que sente ou pensa sobre ele: «esta frase está escrita em português» é um facto. Uma crença é, pelo contrário, uma conclusão pessoal, carregada de emoção e de história, que apresentamos a nós próprios como se fosse tão sólida quanto um facto, mas que outra pessoa, com outra história, poderia perfeitamente não partilhar.\n\nUm pensamento é, em geral, mais passageiro: surge e desaparece, muitas vezes sem que lhe atribuamos grande importância. Uma opinião é uma avaliação consciente sobre algo externo, que reconhecemos como discutível. Uma crença distingue-se de ambos por um traço particular: deixou de ser sentida como uma entre várias interpretações possíveis, e passou a ser vivida como «a verdade sobre como as coisas são».\n\nA PNL desenvolveu, desde a sua origem, um instrumento particularmente útil para este trabalho: o Meta-Modelo da linguagem, criado por Richard Bandler e John Grinder a partir da observação de terapeutas de referência. O Meta-Modelo parte de uma constatação simples: a linguagem que usamos para descrever a nossa experiência nunca é a experiência completa, é sempre uma versão reduzida dela, construída através de três processos — generalização, distorção e omissão.\n\nGeneralização: tomamos uma ou poucas experiências e alargamo-las a uma regra universal — «isto correu mal uma vez» transforma-se em «isto corre sempre mal comigo».\n\nDistorção: alteramos o significado de uma experiência e, com frequência, atribuímos-lhe uma causa ou intenção que não foi verificada — «ele não respondeu à mensagem» transforma-se em «ele já não gosta de mim».\n\nOmissão: retiramos informação da descrição de uma experiência, o que a torna mais vaga e, por isso, mais difícil de questionar — «eu não sou capaz» omite de quê, em que situação, e segundo que critério.\n\nAs crenças limitantes recorrem, quase sempre, a uma combinação destes três processos. Reconhecê-los na linguagem que usamos — e que os outros usam — é uma das formas mais diretas de identificar que estamos perante uma crença, e não perante uma descrição neutra dos factos.\n\nNa prática, os três processos do Meta-Modelo traduzem-se em construções de linguagem reconhecíveis. Algumas das mais frequentes são:\n\nGeneralizações absolutas: «sempre», «nunca», «todos», «ninguém» — «eu nunca consigo terminar o que começo».\n\nIdentidade fixa: frases que começam por «eu sou...» em vez de «eu fiz...» ou «eu senti...» — «eu sou incapaz», em vez de «esta tarefa correu mal».\n\nCerteza sem prova concreta: afirmações proferidas com convicção total, mas sem um facto verificável que as sustente diretamente — «isto nunca vai resultar comigo».\n\nCategorias sobre «pessoas como eu»: «pessoas da minha idade não conseguem mudar de carreira», «na minha família ninguém tem jeito para números».\n\nVerbos de obrigação ou impossibilidade, sem que a sua origem seja questionada: «tenho de...», «não posso...», «é impossível que...», ditos como regras absolutas e não como opções entre outras.\n\nReconhecer estas construções — na própria fala ou na de outra pessoa — é, em coaching, um dos primeiros passos de qualquer processo de mudança: não se pergunta apenas «o que a pessoa disse», mas «que estrutura de crença está por detrás daquilo que foi dito».\n\nNem todos os sinais de uma crença são linguísticos. O corpo regista, muitas vezes, a ativação de uma crença antes de a mente a conseguir nomear: uma tensão súbita, um aperto no peito, uma vontade de fugir ou de justificar-se. Em coaching, este tipo de reação é entendido como um indicador valioso, e não como um obstáculo a ignorar.\n\nUm critério prático para o reconhecer é a desproporção: quando a intensidade da emoção sentida parece maior do que aquilo que a situação, isolada, justificaria, é frequentemente sinal de que uma crença antiga foi ativada, e não apenas a situação presente. A situação atual funciona, nestes casos, como um gatilho que reativa uma interpretação muito mais antiga.\n\nPerante uma afirmação sobre si próprio(a), sobre outra pessoa ou sobre a vida em geral, pode aplicar o seguinte teste, inspirado nas perguntas do Meta-Modelo:\n\nIsto é algo que qualquer pessoa que observasse a mesma situação teria necessariamente de concluir — ou é a conclusão a que eu, com a minha história, cheguei?\n\nExiste alguma situação, ainda que rara, em que esta afirmação não se verifique?\n\nQue prova concreta e verificável sustenta esta afirmação, para além da convicção com que a sinto?\n\nSe, ao responder, notar que a afirmação resiste mal a estas perguntas — se encontrar exceções, se a prova for sobretudo emocional, se a conclusão parecer mais sua do que universal — está muito provavelmente perante uma crença, e não perante um facto.\n\n«Não é a situação que nos perturba, mas a opinião que temos sobre ela.» — Epicteto\n\nEnquanto tratarmos uma crença como um facto inquestionável, não existe espaço para a questionar: «é assim mesmo», dizemos, e paramos por aí. É apenas quando reconhecemos que aquilo em que acreditamos é uma interpretação — um mapa, e não o território — que se torna possível perguntar se essa interpretação ainda nos serve. Em coaching, este reconhecimento é frequentemente descrito como o momento em que se passa de estar fundido com o pensamento para se tornar capaz de o observar. É esse reconhecimento que abre a porta a todo o percurso deste curso.\n\nNo Caderno de Trabalho desta aula, é convidado(a) a aplicar estas ideias a uma frase sua concreta — o primeiro passo, muito prático, de todo o percurso deste curso.", materiaisIds: [45, 32, 48] },
+      { titulo: "De onde vieram as minhas crenças", videoUrl: "https://www.youtube.com/embed/W2uhB1B625w?rel=0&modestbranding=1", descricao: "Família, escola e experiências marcantes que moldaram o que acreditas ser possível.", conteudo: "No capítulo anterior, aprendemos a reconhecer uma crença — a distingui-la de um facto, de um pensamento passageiro ou de uma opinião reconhecida como tal. O passo seguinte, e é esse que este capítulo trata, é perguntar: será que aquilo em que acredito corresponde, de facto, à realidade? Ou estarei a tratar como verdade absoluta algo que, na melhor das hipóteses, é apenas uma interpretação possível entre várias?\n\nEsta distinção — entre o que sabemos e o que supomos — é, provavelmente, a ferramenta mais imediatamente útil de todo este curso. Não porque resolva, por si só, uma crença limitante, mas porque lhe retira a certeza absoluta com que costuma operar. E uma crença que deixou de ser absolutamente certa já não tem o mesmo poder sobre nós.\n\nO investigador organizacional Chris Argyris propôs um modelo, mais tarde popularizado por Peter Senge, conhecido como a Escada de Inferência. O modelo descreve o percurso mental que fazemos, quase sempre sem darmos conta, entre observar algo e agir a partir disso: observamos uma quantidade imensa de dados; selecionamos apenas alguns; atribuímos-lhes significado com base na nossa experiência; fazemos suposições a partir desse significado; tiramos conclusões; adotamos ou reforçamos uma crença; e, por fim, agimos de acordo com essa crença.\n\nO problema não está em subir esta escada — é uma função necessária da mente, sem a qual não conseguiríamos funcionar no mundo. O problema está em subi-la tão depressa que deixamos de notar os degraus intermédios, e passamos a tratar o topo da escada (a nossa conclusão) como se fosse o próprio degrau de base (o dado observável).\n\nUm dos degraus mais decisivos da escada — e o mais invisível — é a seleção. De toda a informação disponível numa situação, reparamos apenas nalguma parte dela. E tendemos a reparar, precisamente, naquilo que já confirma o que esperávamos encontrar — um mecanismo a que a psicologia chama viés de confirmação. Uma pessoa que acredita que \"ninguém se interessa por mim\" tende a notar, numa festa, os dois momentos em que ficou sozinha, e a não registar os cinco em que alguém puxou conversa. Não porque minta a si própria de forma deliberada, mas porque a crença já filtrou, antecipadamente, o que merecia atenção.\n\nVimos, no capítulo anterior, que a linguagem das crenças costuma recorrer à omissão — retira informação e torna a afirmação mais vaga e mais difícil de questionar. A primeira forma de testar uma crença é, por isso, tentar recuperar essa informação: que provas concretas, verificáveis por outra pessoa, sustentam esta afirmação? Comparado com quê, ou com quem? Segundo que critério?\n\nA autora norte-americana Byron Katie desenvolveu um método de questionamento, conhecido como \"O Trabalho\" (The Work), amplamente usado em coaching e em contextos terapêuticos, que se resume a quatro perguntas simples a colocar sobre qualquer crença:\n\nEstas perguntas não têm como objetivo provar que a crença é falsa — algumas crenças resistem bem ao escrutínio, e isso também é informação valiosa. O objetivo é criar, entre a pessoa e a sua crença, uma distância que antes não existia.\n\nO filósofo da ciência Karl Popper argumentou que uma afirmação só é cientificamente válida se for, em princípio, possível refutá-la — se existir um teste capaz de a provar falsa. Podemos aplicar a mesma lógica, de forma mais informal, às nossas crenças pessoais: uma crença que se apresenta como \"sempre\" ou \"nunca\" resiste, ou não, a uma procura ativa por exceções?\n\nProcurar, de propósito, uma única situação em que a crença não se confirmou — mesmo que pouco frequente — é muitas vezes suficiente para a fazer passar de \"verdade absoluta\" a \"tendência que às vezes se verifica\". E essa mudança, por pequena que pareça, já é uma primeira fissura na certeza que a sustentava.\n\nEntre observar uma situação e agir a partir dela, subimos uma escada de seleção, interpretação e suposição — quase sempre sem dar conta. Testar uma crença não é negá-la à partida; é perguntar, com honestidade, o que sabemos de facto e o que estamos apenas a supor, procurar provas concretas e procurar, ativamente, exceções que a possam contradizer. É esse o trabalho da Aula 2 — e da folha de exercício que a acompanha.", materiaisIds: [45, 32, 49] },
+      { titulo: "Testar a crença", videoUrl: "https://www.youtube.com/embed/3B2h_CbAnW4?rel=0&modestbranding=1", descricao: "Separar factos de interpretações; procurar provas contra a crença, não só a favor.", conteudo: "Já sabemos reconhecer uma crença, e já temos ferramentas para testar se corresponde à realidade. Ainda assim, é comum continuarmos a agir a partir de crenças que já reconhecemos, no plano racional, como pouco fiáveis. Este capítulo trata dessa aparente contradição: porque continuamos a segurar algo que sabemos, pelo menos em parte, não ser inteiramente verdade?\n\nA resposta, quase sempre, é que a crença nos dá alguma coisa. Nenhuma crença sobrevive tanto tempo por acidente — sobrevive porque cumpre uma função. Compreender essa função, e não apenas a crença em si, é o que torna possível uma mudança duradoura.\n\nEm contextos terapêuticos, chama-se ganho secundário à vantagem — muitas vezes inconsciente — que uma pessoa retira de manter um padrão, mesmo quando esse padrão lhe traz sofrimento visível. Uma crença como \"não sou capaz de liderar\" pode, à superfície, ser apenas limitadora; mas pode também poupar a pessoa à exposição de tentar e falhar publicamente, à responsabilidade de decidir por outros, ou ao risco de descobrir que, mesmo com esforço, o resultado não é o desejado.\n\nNomear o ganho secundário de uma crença não é procurar um pretexto para a manter — é, pelo contrário, o primeiro passo para lidar com a necessidade real que ela protege, em vez de tentar arrancar a crença à força e deixar essa necessidade desprotegida.\n\nO psicólogo Leon Festinger descreveu, em meados do século XX, o desconforto que sentimos quando duas crenças, ou uma crença e um comportamento, entram em contradição — a que chamou dissonância cognitiva. Para reduzir esse desconforto, tendemos a ajustar uma das partes, e é mais fácil ajustar a perceção do que o comportamento já tomado. Isto explica por que razão continuamos, por vezes, a justificar decisões ou crenças antigas mesmo perante provas em contrário: mudar de ideias custaria mais, no imediato, do que manter a consistência interna.\n\nOs investigadores Daniel Kahneman e Amos Tversky demonstraram que, em geral, sentimos o desconforto de uma perda com mais intensidade do que o prazer de um ganho equivalente — fenómeno a que chamaram aversão à perda. Aplicado às crenças: largar uma crença antiga, mesmo uma que já não serve, é sentido como uma perda de segurança imediata, ao passo que os ganhos de a largar (novas oportunidades, novas formas de agir) são, para já, apenas hipotéticos. É por isso que, racionalmente, sabermos que uma crença nos prejudica raramente basta para a mudarmos — o cálculo emocional não é simétrico.\n\nUm dos custos mais difíceis de contabilizar é aquele que nunca chegamos a ver: as oportunidades que nem sequer consideramos, porque a crença já as descartou antecipadamente. Não é uma escolha consciente de recusar — é uma opção que nunca chega a aparecer no radar.\n\nO objetivo deste exercício não é convencer-nos, de forma forçada, a abandonar uma crença. É olhar, com a maior honestidade possível, para os dois pratos da balança: o que esta crença me dá, e o que me tira. Só depois de vermos os dois lados com clareza é que a decisão de a manter ou a mudar deixa de ser automática, e passa a ser, verdadeiramente, uma escolha.\n\nAs crenças que persistem, mesmo quando nos custam, costumam fazê-lo porque nos protegem de algo — rejeição, fracasso, responsabilidade, exposição. Reconhecer essa função, e pesar com honestidade o que ganhamos e o que perdemos ao mantê-la, é o trabalho da Aula 3.", materiaisIds: [45, 32, 50] },
       { titulo: "Escrever uma crença nova", videoUrl: "https://www.youtube.com/embed/jaxvdcP19s4?rel=0&modestbranding=1", descricao: "Substituir a crença antiga por uma frase que sirva melhor ao que queres construir.", conteudo: "Ao longo das três aulas anteriores, aprendemos a identificar uma crença, a testar se corresponde à realidade, e a reconhecer aquilo que ganhamos e perdemos ao mantê-la. Nenhum destes passos, por si só, muda automaticamente o que fazemos a seguir. Falta o último — e, em muitos sentidos, o mais exigente: escolher, de forma deliberada, uma resposta diferente daquela que o piloto automático nos daria.\n\n«Entre o estímulo e a resposta há um espaço. Nesse espaço está o nosso poder de escolher a nossa resposta. Na nossa resposta está o nosso crescimento e a nossa liberdade.» — ideia atribuída a Viktor Frankl, psiquiatra e sobrevivente do Holocausto, fundador da logoterapia\n\nÉ esse espaço — entre o que nos acontece e o que fazemos a seguir — que este capítulo final procura ampliar.\n\nO psicólogo Albert Ellis, fundador da Terapia Racional-Emotiva Comportamental, propôs um modelo simples e influente, conhecido como Modelo ABC: A (Activating event) é o acontecimento; B (Belief) é a crença ou interpretação que temos sobre esse acontecimento; C (Consequence) é a consequência emocional e comportamental. O contributo central de Ellis foi mostrar que não é A que causa C diretamente — é B, a interpretação, que faz a ponte entre os dois. Ellis acrescentou ainda dois passos: D (Dispute), questionar essa interpretação, e E (Effect), o novo efeito, emocional e comportamental, que resulta de uma interpretação revista.\n\nRessignificar não é negar que algo doeu, nem fingir que uma situação difícil não o foi. Não é otimismo forçado, nem a ideia, por vezes chamada positividade tóxica, de que basta \"pensar pelo lado bom\" para o problema desaparecer. Ressignificar é, antes, reconhecer que um mesmo acontecimento pode sustentar mais do que uma interpretação — e que, entre essas interpretações possíveis, temos alguma margem de escolha sobre qual adotamos.\n\nA maior parte das respostas automáticas acontece porque saltamos, sem darmos conta, diretamente do acontecimento (A) para a consequência (C), sem nunca examinar B — a interpretação que, na verdade, está a conduzir tudo. Parar, ainda que por poucos segundos, antes de responder, é o que torna possível examinar esse B: o que pensei, automaticamente, sobre isto? O que senti? O que tive vontade de fazer?\n\nEsta pausa não elimina a reação inicial — não temos controlo total sobre o primeiro impulso. Mas cria a possibilidade de, antes de agir a partir dele, o questionar.\n\nEscrever uma interpretação nova é um exercício mental valioso, mas não é, por si só, suficiente. As crenças consolidam-se, como vimos no primeiro capítulo, por repetição — e é por repetição, também, que se revêm. Cada pequena ação coerente com a interpretação nova é uma prova, para nós mesmos, de que essa interpretação também é possível, e não apenas a antiga.\n\nNão é necessário — nem realista — mudar tudo de imediato. Uma ação pequena, concreta e repetível, escolhida no fim de cada sessão de trabalho como esta, é geralmente mais eficaz do que uma resolução ambiciosa que não sobrevive à primeira semana.\n\nAo longo destas quatro aulas, percorremos um caminho com quatro etapas: identificar uma crença, questionar se corresponde à realidade, avaliar o que ganhamos e perdemos ao mantê-la, e, por fim, ressignificar — escolher, de forma consciente, o significado que lhe damos e a resposta que construímos a partir daí. Este não é um trabalho que se conclua numa única passagem: as crenças mais antigas, sobretudo, pedem que se volte a este processo mais do que uma vez. O que muda, com a prática, não é a ausência de crenças limitantes — é a rapidez e a clareza com que as reconhecemos, da próxima vez que aparecerem.", materiaisIds: [45, 32, 51] },
     ],
     materiaisIds: [45, 32],
@@ -184,16 +184,16 @@ const TODOS_CURSOS = [
     id: 8,
     escolaId: "ser",
     titulo: "Zona de Conforto",
-    promessa: "Perceber o que te mantém \"segura\" e parada, e dar o primeiro passo para saíres dali.",
+    promessa: "Perceber o que te prende ao que é conhecido e dar o primeiro passo para saíres daí.",
     pergunta: "O que farias hoje se o medo não decidisse por ti?",
     tipo: "video",
     duracao: "4 aulas",
     concluido: false,
     aulas: [
-      { titulo: "O que é a zona de conforto", descricao: "Segurança, previsibilidade, e o preço de nunca a sair.", conteudo: "Ouvimos, com frequência, que é preciso \"sair da zona de conforto\" para crescer. A frase tornou-se tão repetida que raramente paramos para perguntar: o que é, exatamente, esta zona? E será verdade que devemos sair dela sempre, a qualquer custo?\n\nEste capítulo procura responder a estas perguntas com mais precisão do que o costume — porque a resposta certa não é \"sair sempre\", nem \"ficar sempre\". É perceber a função que a zona de conforto cumpre, e decidir, com intenção, quando vale a pena movermo-nos para fora dela.\n\nO investigador Alasdair White propôs um modelo simples, hoje amplamente usado em coaching, que descreve três zonas concêntricas. A zona de conforto é onde o comportamento é automático, o risco é baixo e a ansiedade é mínima — é também onde há pouca ou nenhuma aprendizagem nova. Mais além, está a zona de aprendizagem (ou de esticar, stretch zone), onde existe desafio suficiente para gerar crescimento, mas ainda gerível. Mais além ainda, está a zona de pânico, onde o desafio ultrapassa a capacidade de resposta, e a ansiedade bloqueia, em vez de impulsionar, o desempenho.\n\nJá em 1908, os psicólogos Robert Yerkes e John Dodson descreveram uma relação entre o nível de ativação (arousal) e o desempenho: o desempenho melhora com o aumento da ativação, mas só até um certo ponto — depois desse ponto, mais pressão ou desafio prejudica, em vez de ajudar. Esta curva, em forma de sino invertido, ajuda a perceber porque é que nem \"ficar sempre confortável\" nem \"desafiar-se ao máximo\" produzem o melhor resultado: existe um ponto intermédio, de desafio ótimo, onde o crescimento acontece com mais consistência.\n\nA zona de conforto não é, em si, um problema — é, muitas vezes, um refúgio necessário e merecido. O problema surge quando se torna o único lugar onde vivemos: quando cada oportunidade de crescimento é automaticamente descartada, não por termos avaliado o risco, mas por reflexo. Nesse caso, a segurança que a zona oferece tem um preço invisível — o de tudo aquilo que nunca chegamos a tentar.\n\nA zona de conforto cumpre uma função real: reduz ansiedade e permite recuperar energia. O crescimento, no entanto, acontece principalmente na zona intermédia — de desafio suficiente para esticar, mas não tanto que bloqueie. O trabalho desta aula é começar a identificar, sem julgamento, onde é que a tua zona de conforto está hoje.", materiaisIds: [46, 47, 92] },
+      { titulo: "O que é a zona de conforto", descricao: "Segurança, previsibilidade e o preço de nunca sair dela.", conteudo: "Ouvimos, com frequência, que é preciso \"sair da zona de conforto\" para crescer. A frase tornou-se tão repetida que raramente paramos para perguntar: o que é, exatamente, esta zona? E será verdade que devemos sair dela sempre, a qualquer custo?\n\nEste capítulo procura responder a estas perguntas com mais precisão do que o costume — porque a resposta certa não é \"sair sempre\", nem \"ficar sempre\". É perceber a função que a zona de conforto cumpre, e decidir, com intenção, quando vale a pena movermo-nos para fora dela.\n\nO investigador Alasdair White propôs um modelo simples, hoje amplamente usado em coaching, que descreve três zonas concêntricas. A zona de conforto é onde o comportamento é automático, o risco é baixo e a ansiedade é mínima — é também onde há pouca ou nenhuma aprendizagem nova. Mais além, está a zona de aprendizagem (ou de esticar, stretch zone), onde existe desafio suficiente para gerar crescimento, mas ainda gerível. Mais além ainda, está a zona de pânico, onde o desafio ultrapassa a capacidade de resposta, e a ansiedade bloqueia, em vez de impulsionar, o desempenho.\n\nJá em 1908, os psicólogos Robert Yerkes e John Dodson descreveram uma relação entre o nível de ativação (arousal) e o desempenho: o desempenho melhora com o aumento da ativação, mas só até um certo ponto — depois desse ponto, mais pressão ou desafio prejudica, em vez de ajudar. Esta curva, em forma de sino invertido, ajuda a perceber porque é que nem \"ficar sempre confortável\" nem \"desafiar-se ao máximo\" produzem o melhor resultado: existe um ponto intermédio, de desafio ótimo, onde o crescimento acontece com mais consistência.\n\nA zona de conforto não é, em si, um problema — é, muitas vezes, um refúgio necessário e merecido. O problema surge quando se torna o único lugar onde vivemos: quando cada oportunidade de crescimento é automaticamente descartada, não por termos avaliado o risco, mas por reflexo. Nesse caso, a segurança que a zona oferece tem um preço invisível — o de tudo aquilo que nunca chegamos a tentar.\n\nA zona de conforto cumpre uma função real: reduz ansiedade e permite recuperar energia. O crescimento, no entanto, acontece principalmente na zona intermédia — de desafio suficiente para esticar, mas não tanto que bloqueie. O trabalho desta aula é começar a identificar, sem julgamento, onde é que a tua zona de conforto está hoje.", materiaisIds: [46, 47, 92] },
       { titulo: "O que me mantém aqui", descricao: "Medo do fracasso, do julgamento, ou simplesmente do desconhecido.", conteudo: "Se ficar na zona de conforto tem um custo, porque é tão difícil sair dela? Este capítulo olha para os três medos mais comuns que nos mantêm no lugar conhecido: o medo do fracasso, o medo do julgamento, e o medo do desconhecido em si mesmo.\n\nPara muitas pessoas, o medo de falhar não é apenas o medo de um resultado indesejado — é o medo de que esse resultado confirme algo pior sobre quem são. A psicóloga Carol Dweck, cujo trabalho revisitaremos numa aula futura, mostrou que esta associação entre desempenho e valor pessoal está, em grande parte, ligada a uma mentalidade fixa: a crença de que as nossas capacidades são traços fixos, e não competências que se desenvolvem.\n\nOs psicólogos Thomas Gilovich e Kenneth Savitsky descreveram o chamado efeito holofote (spotlight effect): a tendência para sobrestimar o quanto os outros reparam e julgam as nossas ações. Na prática, os outros pensam muito menos em nós — e muito mais em si próprios — do que costumamos imaginar. Isto não elimina o desconforto social, mas ajuda a colocá-lo em proporção.\n\nPor fim, há um medo mais difuso, que não é de um resultado específico, mas da própria incerteza. A investigação em neurociência sugere que o cérebro trata a ambiguidade como uma forma de ameaça, mesmo quando não há perigo real envolvido — preferimos, muitas vezes, um resultado negativo conhecido a um resultado incerto, ainda que este possa ser positivo.\n\nTrês medos — do fracasso, do julgamento, do desconhecido — costumam estar por trás da resistência a sair da zona de conforto. Nomear qual deles está mais presente numa situação concreta é o primeiro passo para o enfrentar com mais clareza.", materiaisIds: [46, 47, 93] },
-      { titulo: "O primeiro passo pequeno", descricao: "Como o risco calculado é mais sustentável do que o salto grande.", conteudo: "Depois de identificar a zona de conforto e os medos que a sustentam, a pergunta prática é: como se sai dela sem cair na zona de pânico? A resposta, contraintuitivamente, não é o salto grande — é o risco calculado, dado em passos pequenos e sucessivos.\n\nUm salto demasiado grande tende a empurrar-nos diretamente para a zona de pânico, onde, como vimos na Aula 1, o desempenho é prejudicado e a ansiedade bloqueia a aprendizagem. Além disso, se o salto grande correr mal, a experiência tende a reforçar a crença original — \"não sou capaz\" — em vez de a desafiar.\n\nNa psicologia clínica, a técnica de exposição gradual é amplamente usada no tratamento de fobias e ansiedade: em vez de confrontar o medo na sua forma mais intensa, a pessoa é exposta a versões progressivamente mais desafiantes da situação temida, começando por aquelas que já consegue tolerar. O mesmo princípio aplica-se fora do contexto clínico: um passo pequeno, mas real, é mais sustentável do que um grande gesto pontual.\n\nUm bom primeiro passo tem três características: é claramente definido (sabemos exatamente o que fazer), é realizável num curto espaço de tempo, e gera desconforto real, mas gerível — não pânico. Se um passo parece demasiado fácil para gerar qualquer desconforto, está provavelmente ainda dentro da zona de conforto. Se parece impossível de concretizar, está provavelmente já na zona de pânico.\n\nSair da zona de conforto não exige coragem heroica — exige um passo suficientemente pequeno para ser dado, e suficientemente real para contar. É isso que vamos definir no exercício desta aula.", materiaisIds: [46, 47, 94] },
-      { titulo: "Expandir a zona, não sair dela de repente", descricao: "Alargar aos poucos o que é \"seguro\" para ti.", conteudo: "Este capítulo final propõe uma mudança subtil, mas importante, na forma como pensamos este trabalho: o objetivo não é \"sair\" da zona de conforto, como se fosse um lugar a abandonar de vez. É alargá-la, progressivamente, para que aquilo que hoje exige coragem se torne, com o tempo, o novo normal.\n\nUm dos mecanismos mais bem documentados em psicologia é a habituação: a resposta emocional a um estímulo repetido tende a diminuir de intensidade ao longo do tempo. É por isso que uma ação que, na primeira vez, gera ansiedade significativa, tende a gerar cada vez menos desconforto à medida que se repete — e, eventualmente, entra ela própria na zona de conforto.\n\nIsto sugere um ciclo sustentável: dar um passo na zona de aprendizagem; repeti-lo até que se torne confortável; e, a partir desse novo ponto, dar o passo seguinte. Em vez de um único salto heroico, um processo contínuo de expansão gradual — que, com o tempo, cobre uma distância muito maior do que qualquer salto isolado.\n\nExpandir a zona de conforto não significa estar permanentemente desconfortável. Períodos de consolidação — em que voltamos, deliberadamente, ao que já é confortável — são parte necessária do processo, não uma falha nele. O objetivo não é máxima tensão constante; é um movimento sustentável, com fases de esforço e fases de recuperação.\n\nAo longo destas quatro aulas, vimos que a zona de conforto não é inimiga a destruir, mas um espaço a expandir com intenção: reconhecendo as suas três zonas, os medos que nos mantêm perto do centro, o valor do passo pequeno sobre o salto grande, e o facto de que cada zona de conforto de hoje já foi, um dia, um desafio. Continuar a dar pequenos passos, de forma consistente, é como o mapa se vai, de facto, alargando.", materiaisIds: [46, 47, 95] },
+      { titulo: "O primeiro passo pequeno", descricao: "Como o risco calculado é mais sustentável do que o salto grande.", conteudo: "Depois de identificar a zona de conforto e os medos que a sustentam, a pergunta prática é: como se sai dela sem cair na zona de pânico? A resposta, contraintuitivamente, não é o salto grande — é o risco calculado, dado em passos pequenos e sucessivos.\n\nUm salto demasiado grande tende a empurrar-nos diretamente para a zona de pânico, onde, como vimos na Aula 1, o desempenho é prejudicado e a ansiedade bloqueia a aprendizagem. Além disso, se o salto grande correr mal, a experiência tende a reforçar a crença original — \"não sou capaz\" — em vez de a desafiar.\n\nNa psicologia clínica, a técnica de exposição gradual é amplamente usada no tratamento de fobias e ansiedade: em vez de confrontar o medo na sua forma mais intensa, a pessoa é exposta a versões progressivamente mais desafiantes da situação temida, a começar por aquelas que já consegue tolerar. O mesmo princípio aplica-se fora do contexto clínico: um passo pequeno, mas real, é mais sustentável do que um grande gesto pontual.\n\nUm bom primeiro passo tem três características: é claramente definido (sabemos exatamente o que fazer), é realizável num curto espaço de tempo, e gera desconforto real, mas gerível — não pânico. Se um passo parece demasiado fácil para gerar qualquer desconforto, está provavelmente ainda dentro da zona de conforto. Se parece impossível de concretizar, está provavelmente já na zona de pânico.\n\nSair da zona de conforto não exige coragem heroica — exige um passo suficientemente pequeno para ser dado, e suficientemente real para contar. É isso que vamos definir no exercício desta aula.", materiaisIds: [46, 47, 94] },
+      { titulo: "Expandir a zona, não sair dela de repente", descricao: "Alargar aos poucos o que é \"seguro\" para ti.", conteudo: "Este capítulo final propõe uma mudança subtil, mas importante, na forma como pensamos este trabalho: o objetivo não é \"sair\" da zona de conforto, como se fosse um lugar a abandonar de vez. É alargá-la, progressivamente, para que aquilo que hoje exige coragem se torne, com o tempo, o novo normal.\n\nUm dos mecanismos mais bem documentados em psicologia é a habituação: a resposta emocional a um estímulo repetido tende a diminuir de intensidade ao longo do tempo. É por isso que uma ação que, na primeira vez, gera ansiedade significativa, tende a gerar cada vez menos desconforto à medida que se repete — e, eventualmente, entra ela própria na zona de conforto.\n\nIsto sugere um ciclo sustentável: dar um passo na zona de aprendizagem; repeti-lo até que se torne confortável; e, a partir desse novo ponto, dar o passo seguinte. Em vez de um único salto heroico, um processo contínuo de expansão gradual — que, com o tempo, cobre uma distância muito maior do que qualquer salto isolado.\n\nExpandir a zona de conforto não significa estar permanentemente desconfortável. Períodos de consolidação — em que voltamos, deliberadamente, ao que já é confortável — são parte necessária do processo, não uma falha nele. O objetivo não é máxima tensão constante; é um movimento sustentável, com fases de esforço e fases de recuperação.\n\nAo longo destas quatro aulas, vimos que a zona de conforto não é inimiga a destruir, mas um espaço a expandir com intenção: ao reconhecer as suas três zonas, os medos que nos mantêm perto do centro, o valor do passo pequeno sobre o salto grande, e o facto de que cada zona de conforto de hoje já foi, um dia, um desafio. Continuar a dar pequenos passos, de forma consistente, é assim que o mapa, de facto, se alarga.", materiaisIds: [46, 47, 95] },
     ],
     materiaisIds: [46, 47],
   },
@@ -201,14 +201,14 @@ const TODOS_CURSOS = [
     id: 9,
     escolaId: "ser",
     titulo: "Autossabotagem",
-    promessa: "Reconhecer os teus padrões de adiar, desistir ou te bloqueares — e interrompê-los.",
-    pergunta: "Em que momento costumas travar-te a ti mesma, mesmo quando queres avançar?",
+    promessa: "Reconhecer os padrões que te levam a adiar, desistir ou bloquear — e interrompê-los.",
+    pergunta: "Em que momentos te travas, mesmo quando queres avançar?",
     tipo: "video",
     duracao: "4 aulas",
     concluido: false,
     aulas: [
-      { titulo: "O que é a autossabotagem", descricao: "Procrastinação, perfeccionismo, desistência antecipada.", conteudo: "Autossabotagem é o nome que damos a um padrão comum e, à primeira vista, contraditório: agir de forma a prejudicar os nossos próprios objetivos, mesmo quando afirmamos, sinceramente, querer alcançá-los. Procrastinar um projeto importante, desistir perto da meta, ou exigir de nós próprios um nível de perfeição impossível de atingir são exemplos do mesmo mecanismo de fundo.\n\nA investigação de Timothy Pychyl e Fuschia Sirois descreve a procrastinação não como um problema de gestão de tempo, mas como uma forma de regulação emocional a curto prazo: adiamos a tarefa para evitar o desconforto imediato que ela nos provoca, mesmo sabendo que isso cria um custo maior mais tarde.\n\nQuando o padrão exigido é impossível de atingir, o perfeccionismo funciona como uma forma subtil de nunca começar, ou de nunca terminar — porque, enquanto o trabalho não está \"perfeito\", nunca precisa de ser exposto ao julgamento alheio.\n\nDesistir perto da meta, ou antes de um resultado ser conhecido, permite manter uma narrativa mais confortável: \"não sei se teria conseguido\", em vez do risco de tentar por completo e falhar de forma inequívoca.\n\nA autossabotagem raramente é preguiça ou falta de vontade — é, muitas vezes, uma forma de proteção mal direcionada. Reconhecer o padrão, sem julgamento, é o primeiro passo desta aula.", materiaisIds: [33, 34] },
-      { titulo: "A função escondida", descricao: "O que a autossabotagem te protege de sentir ou de arriscar.", conteudo: "Todo o padrão de autossabotagem cumpre uma função — protege-nos de algo que tememos sentir ou arriscar. Este capítulo procura essa função escondida.\n\nOs psicólogos Steven Berglas e Edward Jones descreveram, em 1978, o fenómeno do self-handicapping: criar, de forma antecipada, obstáculos ao nosso próprio desempenho, para que um eventual fracasso possa ser atribuído a esse obstáculo, e não à nossa capacidade real. Estudar à última da hora, por exemplo, permite que um mau resultado seja explicado pela falta de tempo, protegendo a autoimagem de competência.\n\nEm geral, a autossabotagem protege-nos de uma de três coisas: descobrir os nossos limites reais (e sermos confrontados com eles), sermos julgados por um esforço total que não foi suficiente, ou termos de lidar com o sucesso e as expectativas que ele traria.\n\nNomear a função protetora de um padrão de autossabotagem não o justifica — mas torna possível cuidar da necessidade real que está por trás dele, em vez de apenas tentar eliminar o comportamento à superfície.", materiaisIds: [33, 34] },
+      { titulo: "O que é a autossabotagem", descricao: "Procrastinação, perfeccionismo, desistência antecipada.", conteudo: "Autossabotagem é o nome que damos a um padrão comum e, à primeira vista, contraditório: agir de forma a prejudicar os nossos próprios objetivos, mesmo quando afirmamos, sinceramente, querer alcançá-los. Procrastinar um projeto importante, desistir perto da meta, ou exigir de nós próprios um nível de perfeição impossível de atingir são exemplos do mesmo mecanismo de fundo.\n\nA investigação de Timothy Pychyl e Fuschia Sirois descreve a procrastinação não como um problema de gestão de tempo, mas como uma forma de regulação emocional a curto prazo: adiamos a tarefa para evitar o desconforto imediato que ela nos provoca, mesmo que saibamos que isso cria um custo maior mais tarde.\n\nQuando o padrão exigido é impossível de atingir, o perfeccionismo funciona como uma forma subtil de nunca começar, ou de nunca terminar — porque, enquanto o trabalho não está \"perfeito\", nunca precisa de ser exposto ao julgamento alheio.\n\nDesistir perto da meta, ou antes de um resultado ser conhecido, permite manter uma narrativa mais confortável: \"não sei se teria conseguido\", em vez do risco de tentar por completo e falhar de forma inequívoca.\n\nA autossabotagem raramente é preguiça ou falta de vontade — é, muitas vezes, uma forma de proteção mal direcionada. Reconhecer o padrão, sem julgamento, é o primeiro passo desta aula.", materiaisIds: [33, 34] },
+      { titulo: "A função escondida", descricao: "O que a autossabotagem te protege de sentir ou de arriscar.", conteudo: "Todo o padrão de autossabotagem cumpre uma função — protege-nos de algo que tememos sentir ou arriscar. Este capítulo procura essa função escondida.\n\nOs psicólogos Steven Berglas e Edward Jones descreveram, em 1978, o fenómeno do self-handicapping: criar, de forma antecipada, obstáculos ao nosso próprio desempenho, para que um eventual fracasso possa ser atribuído a esse obstáculo, e não à nossa capacidade real. Estudar à última da hora, por exemplo, permite que um mau resultado seja explicado pela falta de tempo, o que protege a autoimagem de competência.\n\nEm geral, a autossabotagem protege-nos de uma de três coisas: descobrir os nossos limites reais (e sermos confrontados com eles), sermos julgados por um esforço total que não foi suficiente, ou termos de lidar com o sucesso e as expectativas que ele traria.\n\nNomear a função protetora de um padrão de autossabotagem não o justifica — mas torna possível cuidar da necessidade real que está por trás dele, em vez de apenas tentar eliminar o comportamento à superfície.", materiaisIds: [33, 34] },
       { titulo: "Os meus gatilhos", descricao: "Situações, pessoas ou pensamentos que ativam o padrão.", conteudo: "A autossabotagem raramente acontece ao acaso — é ativada por situações, pessoas ou pensamentos específicos, que se repetem. Identificar estes gatilhos é o que torna possível intervir antes do padrão se instalar por completo.\n\nCertos contextos — uma tarefa nova, uma avaliação, uma situação de visibilidade — ativam o padrão com mais frequência do que outros.\n\nA presença ou a opinião de determinadas pessoas (uma figura de autoridade, alguém que associamos a julgamento) pode intensificar o padrão.\n\nUm certo tipo de pensamento — \"isto tem de sair perfeito\", \"não vou conseguir\" — pode, por si só, desencadear a resposta de sabotagem, independentemente do contexto externo.\n\nMapear os gatilhos próprios transforma um padrão que parecia imprevisível numa sequência que pode começar a ser antecipada — e, com prática, interrompida.", materiaisIds: [33, 34] },
       { titulo: "Uma resposta nova", descricao: "Um compromisso concreto para a próxima vez que o padrão aparecer.", conteudo: "Depois de reconhecer o padrão, a sua função e os gatilhos que o ativam, este último capítulo foca-se numa única pergunta prática: da próxima vez que o gatilho aparecer, o que posso fazer de diferente?\n\nA intervenção mais eficaz não acontece depois do padrão já instalado — acontece no momento em que o gatilho surge, antes da sequência automática se completar. Por isso, o mapa de gatilhos da aula anterior não é só um exercício de autoconhecimento: é uma ferramenta prática de deteção precoce.\n\nTal como vimos noutros cursos deste ciclo, um compromisso pequeno e claramente definido tem mais probabilidade de se manter do que uma resolução ampla. \"Vou parar de procrastinar\" é vago; \"quando sentir vontade de adiar esta tarefa, vou trabalhar nela durante 10 minutos antes de decidir se paro\" é específico e realizável.\n\nPercorremos, ao longo destas quatro aulas, o padrão de autossabotagem, a função que protege, os gatilhos que o ativam, e uma resposta nova e concreta para a próxima vez que aparecer. Como nos outros cursos, a mudança raramente é imediata — mas a clareza sobre o próprio padrão já é, em si, um progresso real.", materiaisIds: [33, 34] },
     ],
@@ -226,7 +226,7 @@ const TODOS_CURSOS = [
     aulas: [
       { titulo: "Mentalidade fixa vs. mentalidade de crescimento", descricao: "As duas formas de olhar para as tuas capacidades.", conteudo: "A psicóloga Carol Dweck, da Universidade de Stanford, passou décadas a estudar como as pessoas pensam sobre as suas próprias capacidades — e descobriu que essa forma de pensar, por si só, influencia de forma significativa o desempenho, a resiliência perante o erro, e a disposição para se desafiarem.\n\nNa mentalidade fixa, acreditamos que a inteligência, o talento ou a capacidade são traços relativamente estáveis — ou se tem, ou não se tem. Nesta visão, o erro é uma prova desconfortável de falta de capacidade, e por isso tende a ser evitado a todo o custo, mesmo que isso signifique evitar o desafio em si.\n\nNa mentalidade de crescimento, a capacidade é vista como algo que se desenvolve com esforço, estratégia e prática. Nesta visão, o erro deixa de ser uma sentença sobre quem somos, e passa a ser uma fonte de informação sobre o que ainda não sabemos fazer.\n\nÉ importante notar que ninguém vive inteiramente numa mentalidade ou noutra — a maior parte de nós tem áreas onde pensa de forma mais fixa (talvez a matemática, ou a capacidade atlética) e áreas onde pensa de forma mais aberta ao crescimento. O objetivo não é uma etiqueta fixa, mas notar, em cada situação, qual das duas vozes está a falar.\n\nA forma como pensamos sobre as nossas capacidades não é um detalhe menor — molda como reagimos ao erro, se persistimos ou desistimos, e se nos permitimos, sequer, tentar. Reconhecer qual mentalidade está ativa numa situação concreta é o primeiro passo desta aula.", materiaisIds: [35, 36] },
       { titulo: "O erro como informação", descricao: "Separar o resultado de quem és.", conteudo: "Se a mentalidade fixa trata o erro como prova de incapacidade, a mentalidade de crescimento trata-o como uma fonte de dados. Este capítulo explora, na prática, o que significa separar o resultado de quem somos.\n\nUm dos contributos mais úteis da investigação de Dweck é a distinção entre elogiar a pessoa (\"és inteligente\") e elogiar o processo (\"trabalhaste muito nisto\"). Estudos mostram que crianças elogiadas pela inteligência tendem a evitar desafios que possam comprometer essa etiqueta; crianças elogiadas pelo esforço tendem a procurar desafios maiores. O mesmo mecanismo aplica-se, na idade adulta, à forma como falamos connosco próprios.\n\nUm exercício simples, mas eficaz: depois de um erro, em vez de perguntar apenas \"porque falhei?\", perguntar também \"o que este erro me ensina que eu não sabia antes?\". A primeira pergunta tende a fechar-se sobre si mesma; a segunda abre um caminho para a próxima tentativa.\n\nSeparar o resultado de quem somos não elimina o desconforto de errar — mas transforma esse desconforto em algo que podemos usar, em vez de algo que apenas nos define.", materiaisIds: [35, 36] },
-      { titulo: "O poder do \"ainda não\"", descricao: "Como uma palavra muda a forma como falas contigo sobre o que não consegues fazer... ainda.", conteudo: "Carol Dweck popularizou uma ideia simples, mas poderosa: a diferença entre \"não consigo fazer isto\" e \"ainda não consigo fazer isto\". Uma pequena palavra — ainda — muda o tempo verbal de permanente para temporário, e com isso muda também o que parece possível.\n\nQuando dizemos \"não sou bom a falar em público\", a frase tem a forma de um facto definitivo sobre uma característica estável. Quando dizemos \"ainda não desenvolvi confiança a falar em público\", a mesma limitação passa a ser descrita como um estado atual, num percurso — o que deixa implícita a possibilidade de mudança.\n\nEsta mudança de linguagem não promete que qualquer capacidade se desenvolve sem esforço, nem nega que existam limites reais. O que faz é evitar fechar, prematuramente, uma porta que ainda podia estar aberta.\n\nUma palavra pequena pode mudar a forma como falamos connosco sobre o que não conseguimos fazer — ainda. O exercício desta aula convida a experimentar essa mudança de forma prática.", materiaisIds: [35, 36] },
+      { titulo: "O poder do \"ainda não\"", descricao: "Como uma palavra muda a forma como falas contigo sobre o que ainda não consegues fazer.", conteudo: "Carol Dweck popularizou uma ideia simples, mas poderosa: a diferença entre \"não consigo fazer isto\" e \"ainda não consigo fazer isto\". Uma pequena palavra — ainda — muda o tempo verbal de permanente para temporário, e com isso muda também o que parece possível.\n\nQuando dizemos \"não sou bom a falar em público\", a frase tem a forma de um facto definitivo sobre uma característica estável. Quando dizemos \"ainda não desenvolvi confiança a falar em público\", a mesma limitação passa a ser descrita como um estado atual, num percurso — o que deixa implícita a possibilidade de mudança.\n\nEsta mudança de linguagem não promete que qualquer capacidade se desenvolve sem esforço, nem nega que existam limites reais. O que faz é evitar fechar, prematuramente, uma porta que ainda podia estar aberta.\n\nUma palavra pequena pode mudar a forma como falamos connosco sobre o que não conseguimos fazer — ainda. O exercício desta aula convida a experimentar essa mudança de forma prática.", materiaisIds: [35, 36] },
       { titulo: "Praticar o desconforto", descricao: "Escolher, de propósito, uma tarefa que te desafie esta semana.", conteudo: "Compreender a mentalidade de crescimento intelectualmente é diferente de a praticar. Este capítulo final propõe um exercício simples: escolher, de forma deliberada, uma tarefa que desafie — e observar o que acontece.\n\nTal como um músculo se fortalece com resistência gradual, a tolerância ao desconforto de aprender algo novo também se desenvolve com prática repetida — não com a ausência de desconforto, mas com a exposição controlada a ele.\n\nUm dos aspetos mais poderosos desta prática é a diferença entre um desafio que nos é imposto e um desafio que escolhemos. Escolher, de forma ativa, uma tarefa ligeiramente acima do que já dominamos, transforma o desconforto de ameaça em treino deliberado.\n\nAo longo destas quatro aulas, distinguimos mentalidade fixa de mentalidade de crescimento, aprendemos a tratar o erro como informação, experimentámos a palavra \"ainda\", e praticámos, de forma ativa, o desconforto de um novo desafio. Como em todo este ciclo de cursos, a mudança não é um interruptor — é uma prática que se revisita.", materiaisIds: [35, 36] },
     ],
     materiaisIds: [35, 36],
@@ -241,10 +241,10 @@ const TODOS_CURSOS = [
     duracao: "4 aulas",
     concluido: false,
     aulas: [
-      { titulo: "O que é resiliência (e o que não é)", descricao: "Não é não sentir — é continuar a sentir e a seguir em frente.", conteudo: "Resiliência é, talvez, uma das palavras mais usadas — e mais mal compreendidas — no vocabulário do desenvolvimento pessoal. Este capítulo procura uma definição mais precisa, e, tão importante quanto isso, esclarecer o que a resiliência não é.\n\nResiliência não é não sentir dor, tristeza ou dificuldade perante uma adversidade. Não é força de vontade sobre-humana, nem uma característica reservada a um grupo especial de pessoas excecionalmente fortes. E não é, sobretudo, seguir em frente sem parar, ignorando o impacto do que aconteceu.\n\nA psicóloga Ann Masten, investigadora de referência na área, descreve a resiliência como \"magia comum\" — resultado de processos adaptativos ordinários (relações de apoio, capacidades de resolução de problemas, sistemas de regulação emocional), e não de um dom extraordinário e raro. Isto significa que a resiliência pode, em larga medida, ser desenvolvida e fortalecida, e não é um traço fixo com que se nasce ou não.\n\nA definição mais útil de resiliência, para efeitos deste curso, é: a capacidade de continuar a sentir — a dor, a incerteza, o cansaço — e, ainda assim, continuar a mover-se em direção àquilo que importa.\n\nResiliência não é ausência de dificuldade, nem uma qualidade rara e inata. É um conjunto de processos que podem ser reconhecidos, fortalecidos e praticados — e é isso que as próximas três aulas vão explorar.", materiaisIds: [37, 38] },
+      { titulo: "O que é resiliência (e o que não é)", descricao: "Não é não sentir — é continuar a sentir e a seguir em frente.", conteudo: "Resiliência é, talvez, uma das palavras mais usadas — e mais mal compreendidas — no vocabulário do desenvolvimento pessoal. Este capítulo procura uma definição mais precisa, e, tão importante quanto isso, esclarecer o que a resiliência não é.\n\nResiliência não é não sentir dor, tristeza ou dificuldade perante uma adversidade. Não é força de vontade sobre-humana, nem uma característica reservada a um grupo especial de pessoas excecionalmente fortes. E não é, sobretudo, seguir em frente sem parar e ignorar o impacto do que aconteceu.\n\nA psicóloga Ann Masten, investigadora de referência na área, descreve a resiliência como \"magia comum\" — resultado de processos adaptativos ordinários (relações de apoio, capacidades de resolução de problemas, sistemas de regulação emocional), e não de um dom extraordinário e raro. Isto significa que a resiliência pode, em larga medida, ser desenvolvida e fortalecida, e não é um traço fixo com que se nasce ou não.\n\nA definição mais útil de resiliência, para efeitos deste curso, é: a capacidade de continuar a sentir — a dor, a incerteza, o cansaço — e, ainda assim, continuar a mover-se em direção àquilo que importa.\n\nResiliência não é ausência de dificuldade, nem uma qualidade rara e inata. É um conjunto de processos que podem ser reconhecidos, fortalecidos e praticados — e é isso que as próximas três aulas vão explorar.", materiaisIds: [37, 38] },
       { titulo: "Os teus recursos", descricao: "Pessoas, hábitos e valores que já te sustentaram antes.", conteudo: "Se a resiliência assenta em processos, e não num traço fixo, então faz sentido perguntar: que recursos concretos já tenho, hoje, à minha disposição? Este capítulo é um convite a fazer esse inventário.\n\nA investigação em resiliência aponta, de forma consistente, para a qualidade das relações de apoio como o fator protetor mais robusto — mais do que qualquer característica individual. Pessoas com quem podemos ser honestos sobre o que estamos a atravessar.\n\nValores, crenças, sentido de propósito, e experiências anteriores de ter atravessado dificuldades — mesmo que de forma imperfeita — funcionam como recursos internos que podemos voltar a usar.\n\nHábitos concretos — sono, movimento, rotina, momentos de pausa — que sustentam a capacidade de continuar a funcionar, mesmo em períodos difíceis.\n\nFazer um inventário destes recursos, antes de precisarmos deles com urgência, é um dos investimentos mais úteis que podemos fazer na nossa própria resiliência.", materiaisIds: [37, 38] },
-      { titulo: "Recuperar depois de cair", descricao: "A diferença entre recuperar e fingir que não caíste.", conteudo: "Há uma diferença importante entre recuperar depois de uma dificuldade e fingir que ela não aconteceu. Este capítulo explora essa diferença, e o que significa, na prática, recuperar de forma genuína.\n\nOs investigadores Richard Tedeschi e Lawrence Calhoun descreveram o fenómeno do crescimento pós-traumático: a possibilidade de, depois de uma adversidade significativa, emergirmos com novas perspetivas, prioridades mais claras, ou relações mais profundas — não apesar da dificuldade, mas, de alguma forma, através dela. Isto não significa que a dificuldade tenha sido \"boa\", nem substitui o processo de a atravessar com genuinidade.\n\nRecuperar depressa demais, saltando as etapas de processar o que aconteceu, tende a deixar por resolver algo que voltará a emergir mais tarde. Recuperar de forma genuína inclui, quase sempre, espaço para sentir o impacto — antes de seguir em frente.\n\nRecuperar não é fingir que nada aconteceu, nem é ficar parado indefinidamente no impacto do que aconteceu. É um processo, com o seu próprio tempo, que raramente nos devolve ao mesmo lugar onde estávamos antes.", materiaisIds: [37, 38] },
-      { titulo: "Um plano para os dias difíceis", descricao: "O que fazer, concretamente, quando tudo parecer demasiado.", conteudo: "Este capítulo final propõe algo prático: um plano simples, escrito com antecedência, para os dias em que tudo parecer demasiado. Decidir com calma, hoje, o que fazer num dia difícil é mais eficaz do que tentar decidir isso no meio da dificuldade.\n\nEm momentos de grande stress, a capacidade de planear e tomar decisões fica reduzida — é um efeito bem documentado do próprio funcionamento do sistema nervoso sob pressão. Um plano feito com antecedência, num momento de maior clareza, funciona como um mapa a que podemos recorrer quando essa clareza escasseia.\n\nUm plano útil para os dias difíceis costuma incluir: os sinais que indicam que \"hoje é um dia difícil\"; uma ou duas ações imediatas e simples (não grandes mudanças); e a pessoa ou recurso a que recorrer, já identificado, sem ter de decidir isso no momento.\n\nAo longo destas quatro aulas, redefinimos resiliência como a capacidade de continuar a sentir e, ainda assim, seguir em frente; fizemos um inventário dos nossos recursos; distinguimos recuperar de fingir; e preparámos um plano concreto para os dias mais difíceis. Este plano, tal como a resiliência em si, não elimina a dificuldade — prepara-nos para a atravessar com mais apoio.", materiaisIds: [37, 38] },
+      { titulo: "Recuperar depois de cair", descricao: "A diferença entre recuperar e fingir que não caíste.", conteudo: "Há uma diferença importante entre recuperar depois de uma dificuldade e fingir que ela não aconteceu. Este capítulo explora essa diferença, e o que significa, na prática, recuperar de forma genuína.\n\nOs investigadores Richard Tedeschi e Lawrence Calhoun descreveram o fenómeno do crescimento pós-traumático: a possibilidade de, depois de uma adversidade significativa, emergirmos com novas perspetivas, prioridades mais claras, ou relações mais profundas — não apesar da dificuldade, mas, de alguma forma, através dela. Isto não significa que a dificuldade tenha sido \"boa\", nem substitui o processo de a atravessar com genuinidade.\n\nRecuperar depressa demais, sem passar pelas etapas de processar o que aconteceu, tende a deixar por resolver algo que voltará a emergir mais tarde. Recuperar de forma genuína inclui, quase sempre, espaço para sentir o impacto — antes de seguir em frente.\n\nRecuperar não é fingir que nada aconteceu, nem é ficar parado indefinidamente no impacto do que aconteceu. É um processo, com o seu próprio tempo, que raramente nos devolve ao mesmo lugar onde estávamos antes.", materiaisIds: [37, 38] },
+      { titulo: "Um plano para os dias difíceis", descricao: "O que fazer, concretamente, quando tudo parecer demasiado.", conteudo: "Este capítulo final propõe algo prático: um plano simples, escrito com antecedência, para os dias em que tudo parecer demasiado. Decidir com calma, hoje, o que fazer num dia difícil é mais eficaz do que tentar decidir isso no meio da dificuldade.\n\nEm momentos de grande stresse, a capacidade de planear e tomar decisões fica reduzida — é um efeito bem documentado do próprio funcionamento do sistema nervoso sob pressão. Um plano feito com antecedência, num momento de maior clareza, funciona como um mapa a que podemos recorrer quando essa clareza escasseia.\n\nUm plano útil para os dias difíceis costuma incluir: os sinais que indicam que \"hoje é um dia difícil\"; uma ou duas ações imediatas e simples (não grandes mudanças); e a pessoa ou recurso a que recorrer, já identificado, sem ter de decidir isso no momento.\n\nAo longo destas quatro aulas, redefinimos resiliência como a capacidade de continuar a sentir e, ainda assim, seguir em frente; fizemos um inventário dos nossos recursos; distinguimos recuperar de fingir; e preparámos um plano concreto para os dias mais difíceis. Este plano, tal como a resiliência em si, não elimina a dificuldade — prepara-nos para a atravessar com mais apoio.", materiaisIds: [37, 38] },
     ],
     materiaisIds: [37, 38],
   },
@@ -252,16 +252,16 @@ const TODOS_CURSOS = [
     id: 12,
     escolaId: "ser",
     titulo: "Empoderamento Pessoal",
-    promessa: "Recuperar a tua capacidade de escolher, mesmo em contextos onde sentes que não tens controlo.",
+    promessa: "Recuperar a tua capacidade de escolha, mesmo em contextos em que sentes que não tens controlo.",
     pergunta: "Onde é que deixaste de escolher, e passaste só a reagir?",
     tipo: "video",
     duracao: "4 aulas",
     concluido: false,
     aulas: [
       { titulo: "O que é empoderamento", descricao: "A diferença entre ter poder sobre os outros e ter poder sobre a tua própria vida.", conteudo: "Empoderamento é outra palavra usada com frequência, e por vezes de forma vaga. Este capítulo procura uma definição clara e útil: empoderamento pessoal é o reconhecimento — e o exercício — do poder que já temos sobre a nossa própria vida, mesmo dentro de circunstâncias que não escolhemos.\n\nO psicólogo Julian Rotter descreveu o conceito de locus de controlo: o grau em que uma pessoa acredita que os resultados da sua vida dependem de fatores internos (as suas próprias ações e escolhas) ou externos (sorte, destino, outras pessoas). Um locus de controlo mais interno está associado, de forma consistente, a maior sensação de agência e bem-estar — não porque tudo dependa efetivamente de nós, mas porque focar no que está dentro da nossa influência é, geralmente, mais produtivo do que focar apenas no que não está.\n\nÉ importante distinguir empoderamento pessoal de poder sobre os outros. Empoderar-se não é dominar ou controlar quem nos rodeia — é reclamar a autoria sobre as próprias escolhas, respostas e direção, mesmo quando não controlamos tudo o resto.\n\nEmpoderamento pessoal não é a ilusão de controlar tudo — é o reconhecimento realista da área, por vezes pequena, mas real, onde temos escolha. É aí que este curso vai focar-se.", materiaisIds: [39, 40] },
-      { titulo: "Onde entreguei o meu poder", descricao: "Relações, trabalho e crenças onde deixaste de decidir por ti.", conteudo: "Se o empoderamento é o reconhecimento da nossa área de escolha, faz sentido perguntar: onde é que, sem perceber, deixámos de escolher? Este capítulo olha para os lugares mais comuns onde \"entregamos\" o nosso poder de decisão a outros — ou a hábitos que já não questionamos.\n\nPadrões de relação onde deixamos, de forma sistemática, que a opinião ou vontade de outra pessoa decida por nós, mesmo em decisões que nos dizem diretamente respeito.\n\nA ideia, muitas vezes herdada, de que certas decisões \"não são para nós\" tomarmos — que pertencem sempre a alguém com mais experiência, mais estatuto, ou mais autoridade formal.\n\nRotinas e escolhas que, em algum momento, foram decisões conscientes, mas que se tornaram tão automáticas que deixámos de as reconhecer como escolhas — e, por isso, deixámos também de as questionar.\n\nEntregar poder não é sempre um erro — por vezes é apropriado confiar noutros, ou seguir uma rotina que nos serve bem. O objetivo desta aula é apenas tornar essa entrega consciente, e não automática.", materiaisIds: [39, 40] },
-      { titulo: "Pequenas escolhas, todos os dias", descricao: "Como recuperar autonomia começa em decisões pequenas.", conteudo: "Recuperar um sentido de autonomia não exige, necessariamente, grandes decisões dramáticas. Este capítulo defende que a autonomia se reconstrói, sobretudo, através de pequenas escolhas conscientes, repetidas ao longo do tempo.\n\nCada pequena decisão tomada de forma consciente — mesmo algo tão simples como escolher, deliberadamente, como responder a uma mensagem, ou como organizar uma manhã — reforça a experiência de sermos, de facto, autores das nossas próprias escolhas. Este efeito é cumulativo: pequenas escolhas conscientes, repetidas, mudam gradualmente a forma como nos relacionamos com a nossa própria vida.\n\nO psicólogo Albert Bandura descreveu o conceito de autoeficácia: a crença na nossa própria capacidade de produzir um resultado desejado. Esta crença desenvolve-se, sobretudo, através de pequenas experiências de sucesso, mais do que através de grandes feitos isolados.\n\nNão é preciso esperar por uma grande decisão para praticar o empoderamento — as pequenas escolhas do dia a dia são, na verdade, onde esta prática mais acontece.", materiaisIds: [39, 40] },
-      { titulo: "Assumir a responsabilidade sem culpa", descricao: "Escolher sem te veres como vítima nem te culpares por tudo.", conteudo: "Este capítulo final aborda uma distinção delicada, mas essencial: a diferença entre assumir responsabilidade pela nossa parte numa situação, e cair na culpa — seja culpando-nos excessivamente a nós próprios, seja assumindo, de forma desproporcionada, culpa que não é só nossa.\n\nResponsabilidade, no sentido usado aqui, refere-se à capacidade de resposta — à parte da situação que está, de facto, ao nosso alcance influenciar. Culpa é um julgamento sobre o valor moral de uma ação passada. É possível assumir responsabilidade plena pela nossa parte, sem necessidade de carregar culpa excessiva por aquilo que não estava, de facto, sob o nosso controlo.\n\nDois extremos, igualmente pouco úteis: ver-se sempre como vítima das circunstâncias, sem qualquer área de escolha; ou assumir-se responsável por tudo o que acontece, incluindo aquilo que genuinamente não dependia de nós. O empoderamento pessoal situa-se entre estes dois extremos — com clareza sobre onde termina a nossa área de influência.\n\nAo longo destas quatro aulas, definimos empoderamento como o reconhecimento realista da nossa área de escolha, identificámos onde temos entregue esse poder sem perceber, praticámos pequenas escolhas conscientes, e distinguimos responsabilidade de culpa. Como nos outros cursos deste ciclo, este é um trabalho que se revisita — a cada nova situação, a mesma pergunta permanece útil: o que está, aqui, dentro da minha escolha?", materiaisIds: [39, 40] },
+      { titulo: "Onde entreguei o meu poder", descricao: "Relações, trabalho e crenças em que deixaste de decidir por ti.", conteudo: "Se o empoderamento é o reconhecimento da nossa área de escolha, faz sentido perguntar: onde é que, sem perceber, deixámos de escolher? Este capítulo olha para os lugares mais comuns onde \"entregamos\" o nosso poder de decisão a outros — ou a hábitos que já não questionamos.\n\nPadrões de relação onde deixamos, de forma sistemática, que a opinião ou vontade de outra pessoa decida por nós, mesmo em decisões que nos dizem diretamente respeito.\n\nA ideia, muitas vezes herdada, de que certas decisões \"não são para nós\" tomarmos — que pertencem sempre a alguém com mais experiência, mais estatuto, ou mais autoridade formal.\n\nRotinas e escolhas que, em algum momento, foram decisões conscientes, mas que se tornaram tão automáticas que deixámos de as reconhecer como escolhas — e, por isso, deixámos também de as questionar.\n\nEntregar poder não é sempre um erro — por vezes é apropriado confiar noutros, ou seguir uma rotina que nos serve bem. O objetivo desta aula é apenas tornar essa entrega consciente, e não automática.", materiaisIds: [39, 40] },
+      { titulo: "Pequenas escolhas, todos os dias", descricao: "Recuperar a autonomia começa em pequenas decisões.", conteudo: "Recuperar um sentido de autonomia não exige, necessariamente, grandes decisões dramáticas. Este capítulo defende que a autonomia se reconstrói, sobretudo, através de pequenas escolhas conscientes, repetidas ao longo do tempo.\n\nCada pequena decisão tomada de forma consciente — mesmo algo tão simples como escolher, deliberadamente, como responder a uma mensagem, ou como organizar uma manhã — reforça a experiência de sermos, de facto, autores das nossas próprias escolhas. Este efeito é cumulativo: pequenas escolhas conscientes, repetidas, mudam gradualmente a forma como nos relacionamos com a nossa própria vida.\n\nO psicólogo Albert Bandura descreveu o conceito de autoeficácia: a crença na nossa própria capacidade de produzir um resultado desejado. Esta crença desenvolve-se, sobretudo, através de pequenas experiências de sucesso, mais do que através de grandes feitos isolados.\n\nNão é preciso esperar por uma grande decisão para praticar o empoderamento — as pequenas escolhas do dia a dia são, na verdade, onde esta prática mais acontece.", materiaisIds: [39, 40] },
+      { titulo: "Assumir a responsabilidade sem culpa", descricao: "Escolher sem te veres como vítima nem te culpares por tudo.", conteudo: "Este capítulo final aborda uma distinção delicada, mas essencial: a diferença entre assumir responsabilidade pela nossa parte numa situação, e cair na culpa — seja pela culpa excessiva sobre nós próprios, seja por assumirmos, de forma desproporcionada, culpa que não é só nossa.\n\nResponsabilidade, no sentido usado aqui, refere-se à capacidade de resposta — à parte da situação que está, de facto, ao nosso alcance influenciar. Culpa é um julgamento sobre o valor moral de uma ação passada. É possível assumir responsabilidade plena pela nossa parte, sem necessidade de carregar culpa excessiva por aquilo que não estava, de facto, sob o nosso controlo.\n\nDois extremos, igualmente pouco úteis: ver-se sempre como vítima das circunstâncias, sem qualquer área de escolha; ou assumir-se responsável por tudo o que acontece, inclusive aquilo que genuinamente não dependia de nós. O empoderamento pessoal situa-se entre estes dois extremos — com clareza sobre onde termina a nossa área de influência.\n\nAo longo destas quatro aulas, definimos empoderamento como o reconhecimento realista da nossa área de escolha, identificámos onde temos entregue esse poder sem perceber, praticámos pequenas escolhas conscientes, e distinguimos responsabilidade de culpa. Como nos outros cursos deste ciclo, este é um trabalho que se revisita — a cada nova situação, a mesma pergunta permanece útil: o que está, aqui, dentro da minha escolha?", materiaisIds: [39, 40] },
     ],
     materiaisIds: [39, 40],
   },
@@ -293,12 +293,12 @@ const materiais = [
   { id: 2, titulo: "Caderno de Exercícios 3S", formato: "Caderno", preco: "4,99€", url: "/caderno-3s.pdf", tambemFisico: true, precoFisico: "18€" },
   { id: 3, titulo: "Planeador 3S", formato: "PDF", preco: "10€", url: "/planeador-3s.pdf" },
   { id: 4, titulo: "Plano de Ação", formato: "PDF", preco: "10€", url: "/plano-de-acao.pdf" },
-  { id: 5, titulo: "Modelo de Conversas de Feedback", formato: "PDF", preco: "10€", url: "/modelo-conversas-feedback.pdf" },
+  { id: 5, titulo: "Modelo de Conversas de Retorno", formato: "PDF", preco: "10€", url: "/modelo-conversas-feedback.pdf" },
   { id: 6, titulo: "Jogo das Emoções", formato: "Jogo", preco: "18€", url: "/jogo-das-emocoes.pdf" },
-  { id: 7, titulo: "Cartas Motivação", formato: "Cartas", preco: "15€", url: "/cartas-motivacao.pdf" },
-  { id: 8, titulo: "Cartas Comunicação", formato: "Cartas", preco: "15€", url: "/cartas-comunicacao.pdf" },
-  { id: 9, titulo: "Cartas Amor Próprio", formato: "Cartas", preco: "15€", url: "/cartas-amor-proprio.pdf" },
-  { id: 10, titulo: "Cartas Relações", formato: "Cartas", preco: "15€", url: "/cartas-relacoes.pdf" },
+  { id: 7, titulo: "Cartas de Motivação", formato: "Cartas", preco: "15€", url: "/cartas-motivacao.pdf" },
+  { id: 8, titulo: "Cartas de Comunicação", formato: "Cartas", preco: "15€", url: "/cartas-comunicacao.pdf" },
+  { id: 9, titulo: "Cartas de Amor-Próprio", formato: "Cartas", preco: "15€", url: "/cartas-amor-proprio.pdf" },
+  { id: 10, titulo: "Cartas sobre Relações", formato: "Cartas", preco: "15€", url: "/cartas-relacoes.pdf" },
   { id: 11, titulo: "Ficha — Roda da Vida", formato: "Ficha", preco: "1,99€", url: "/roda-da-vida.pdf" },
   { id: 12, titulo: "A Rapariga Descalça", formato: "Livro", preco: "12,99€", url: "", tambemFisico: true, precoFisico: "22€" },
   { id: 13, titulo: "Amina", formato: "Livro", preco: "12,99€", url: "/amina.pdf", tambemFisico: true, precoFisico: "22€" },
@@ -327,17 +327,17 @@ const materiais = [
   { id: 52, titulo: "Manual Aula a Aula — Crenças Limitantes", formato: "Guia do Formador", preco: "—", url: "/manual-crencas-limitantes.pdf", apenasMentor: true },
   { id: 53, titulo: "Livro do Formador — Crenças Limitantes", formato: "Guia do Formador", preco: "—", url: "/livro-formador-crencas-limitantes.pdf", apenasMentor: true },
   { id: 54, titulo: "Caderno do Formador — Crenças Limitantes", formato: "Guia do Formador", preco: "—", url: "/caderno-formador-crencas-limitantes.pdf", apenasMentor: true },
-  { id: 55, titulo: "Plano de Ação Online — Crenças Limitantes", formato: "Guia do Formador", preco: "—", url: "/plano-acao-online-crencas-limitantes.pdf", apenasMentor: true },
+  { id: 55, titulo: "Plano de Ação à Distância — Crenças Limitantes", formato: "Guia do Formador", preco: "—", url: "/plano-acao-online-crencas-limitantes.pdf", apenasMentor: true },
   { id: 56, titulo: "Manual Aula a Aula — Liderança 3S", formato: "Guia do Formador", preco: "—", url: "/manual-liderar-pessoas.pdf", apenasMentor: true },
   { id: 57, titulo: "Livro do Formador — Liderança 3S", formato: "Guia do Formador", preco: "—", url: "/livro-formador-liderar-pessoas.pdf", apenasMentor: true },
   { id: 58, titulo: "Caderno do Formador — Liderança 3S", formato: "Guia do Formador", preco: "—", url: "/caderno-formador-liderar-pessoas.pdf", apenasMentor: true },
-  { id: 59, titulo: "Plano de Ação Online — Liderança 3S", formato: "Guia do Formador", preco: "—", url: "/plano-acao-online-liderar-pessoas.pdf", apenasMentor: true },
+  { id: 59, titulo: "Plano de Ação à Distância — Liderança 3S", formato: "Guia do Formador", preco: "—", url: "/plano-acao-online-liderar-pessoas.pdf", apenasMentor: true },
   { id: 60, titulo: "Manual Aula a Aula — Conversas que Mudam Equipas", formato: "Guia do Formador", preco: "—", url: "/manual-conversas-equipas.pdf", apenasMentor: true },
   { id: 61, titulo: "Livro do Formador — Conversas que Mudam Equipas", formato: "Guia do Formador", preco: "—", url: "/livro-formador-conversas-equipas.pdf", apenasMentor: true },
   { id: 62, titulo: "Caderno do Formador — Conversas que Mudam Equipas", formato: "Guia do Formador", preco: "—", url: "/caderno-formador-conversas-equipas.pdf", apenasMentor: true },
-  { id: 63, titulo: "Plano de Ação Online — Conversas que Mudam Equipas", formato: "Guia do Formador", preco: "—", url: "/plano-acao-online-conversas-equipas.pdf", apenasMentor: true },
+  { id: 63, titulo: "Plano de Ação à Distância — Conversas que Mudam Equipas", formato: "Guia do Formador", preco: "—", url: "/plano-acao-online-conversas-equipas.pdf", apenasMentor: true },
   { id: 64, titulo: "Folha de Exercício — Comunicação Assertiva", formato: "Ficha", preco: "1,99€", url: "/folha-conversas-aula1.pdf" },
-  { id: 65, titulo: "Folha de Exercício — Feedback (Modelo SBI)", formato: "Ficha", preco: "1,99€", url: "/folha-conversas-aula2.pdf" },
+  { id: 65, titulo: "Folha de Exercício — Retorno (Modelo SBI)", formato: "Ficha", preco: "1,99€", url: "/folha-conversas-aula2.pdf" },
   { id: 66, titulo: "Folha de Exercício — Conflito", formato: "Ficha", preco: "1,99€", url: "/folha-conversas-aula3.pdf" },
   { id: 67, titulo: "Folha de Exercício — Limites e Responsabilização", formato: "Ficha", preco: "1,99€", url: "/folha-conversas-aula4.pdf" },
   { id: 68, titulo: "Folha de Exercício — Controlo ou Compromisso", formato: "Ficha", preco: "1,99€", url: "/folha-liderar-pessoas-aula1.pdf" },
@@ -548,7 +548,7 @@ async function iniciarPagamentoMBWay(tipo, descricao, precoTexto, telefone, marc
   const valor = parseFloat(String(precoTexto).replace("€", "").replace(",", "."));
   const { data: sessaoAtual } = await supabase.auth.getSession();
   const token = sessaoAtual?.session?.access_token;
-  if (!token) throw new Error("Sessão inválida — entra na app de novo.");
+  if (!token) throw new Error("Sessão inválida — entra na aplicação de novo.");
   const resp = await fetch("https://hspekqrhttxeckghtryi.supabase.co/functions/v1/criar-pagamento", {
     method: "POST",
     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
@@ -579,7 +579,7 @@ function LoginScreen({ onPedirConfirmacaoEmail, onPedidoRecuperacao, modoInicial
   const [erro, setErro] = useState("");
   const [aceitouConsentimento, setAceitouConsentimento] = useState(false);
 
-  const TEXTO_CONSENTIMENTO_CONTA = "Aceito que a Escola 3S guarde e utilize os meus dados pessoais (email e, sempre que os partilhar, nome, telemóvel e outra informação fornecida nos formulários da app) para gerir a minha conta e o meu percurso na escola.";
+  const TEXTO_CONSENTIMENTO_CONTA = "Aceito que a Escola 3S guarde e utilize os meus dados pessoais (correio eletrónico e, sempre que os partilhar, nome, telemóvel e outra informação fornecida nos formulários da aplicação) para gerir a minha conta e o meu percurso na escola.";
 
   const submeter = async () => {
     if (!email.trim() || !password.trim()) return;
@@ -618,9 +618,9 @@ function LoginScreen({ onPedirConfirmacaoEmail, onPedidoRecuperacao, modoInicial
       }
     } catch (e) {
       if (String(e.message || "").toLowerCase().includes("invalid login")) {
-        setErro("Email ou palavra-passe incorretos.");
+        setErro("Correio eletrónico ou palavra-passe incorretos.");
       } else if (String(e.message || "").toLowerCase().includes("already registered")) {
-        setErro("Já existe uma conta com este email — tenta \"Entrar\".");
+        setErro("Já existe uma conta com este correio eletrónico — tenta \"Entrar\".");
       } else {
         setErro("Não foi possível continuar. Verifica os dados e tenta outra vez.");
       }
@@ -658,7 +658,7 @@ function LoginScreen({ onPedirConfirmacaoEmail, onPedidoRecuperacao, modoInicial
       <div className="w-full max-w-xs space-y-4">
         <label className="block">
           <span className="text-xs tracking-widest font-medium" style={{ color: palette.navySoft }}>
-            EMAIL
+            CORREIO ELETRÓNICO
           </span>
           <div
             className="mt-2 flex items-center gap-2 rounded-xl px-4 py-3"
@@ -700,7 +700,7 @@ function LoginScreen({ onPedirConfirmacaoEmail, onPedidoRecuperacao, modoInicial
           mostrarCodigo ? (
             <label className="block">
               <span className="text-xs tracking-widest font-medium" style={{ color: palette.navySoft }}>
-                CÓDIGO DE MENTORA
+                CÓDIGO DE COACH
               </span>
               <div
                 className="mt-2 flex items-center gap-2 rounded-xl px-4 py-3"
@@ -723,7 +723,7 @@ function LoginScreen({ onPedirConfirmacaoEmail, onPedidoRecuperacao, modoInicial
               className="text-xs font-medium underline underline-offset-2"
               style={{ color: palette.navySoft }}
             >
-              Sou mentora — tenho um código de acesso
+              Sou coach — tenho um código de acesso
             </button>
           )
         )}
@@ -746,7 +746,7 @@ function LoginScreen({ onPedirConfirmacaoEmail, onPedidoRecuperacao, modoInicial
           className="w-full rounded-full py-3.5 font-medium text-sm tracking-wide flex items-center justify-center gap-2 transition active:scale-[0.98] disabled:opacity-60"
           style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
         >
-          {aEnviar ? "Um momento..." : modo === "criar" ? "Criar conta" : "Entrar"}
+          {aEnviar ? "Um momento…" : modo === "criar" ? "Criar conta" : "Entrar"}
           {!aEnviar && <ArrowRight size={16} />}
         </button>
         {erro && (
@@ -756,7 +756,7 @@ function LoginScreen({ onPedirConfirmacaoEmail, onPedidoRecuperacao, modoInicial
           <button
             onClick={async () => {
               if (!email.trim()) {
-                setErro("Escreve o teu email em cima primeiro.");
+                setErro("Escreve primeiro o teu correio eletrónico no campo acima.");
                 return;
               }
               setErro("");
@@ -768,7 +768,7 @@ function LoginScreen({ onPedirConfirmacaoEmail, onPedidoRecuperacao, modoInicial
                 if (error) throw error;
                 onPedidoRecuperacao(email.trim());
               } catch (e) {
-                setErro("Não foi possível enviar o email de recuperação.");
+                setErro("Não foi possível enviar o correio eletrónico de recuperação.");
               } finally {
                 setAEnviar(false);
               }
@@ -781,7 +781,7 @@ function LoginScreen({ onPedirConfirmacaoEmail, onPedidoRecuperacao, modoInicial
         )}
         {modo === "criar" && (
           <p className="text-center text-xs pt-2" style={{ color: palette.navySoft }}>
-            Só precisas de confirmar o email uma vez — depois entras sempre com a palavra-passe.
+            Só precisas de confirmar o correio eletrónico uma vez — depois entras sempre com a palavra-passe.
           </p>
         )}
       </div>
@@ -805,14 +805,14 @@ function AguardaEmailScreen({ email, recuperacao }) {
         <Mail size={22} style={{ color: palette.gold }} />
       </div>
       <p className="font-serif text-xl mb-2" style={{ color: palette.navy }}>
-        {recuperacao ? "Verifica o teu email" : "Confirma o teu email"}
+        {recuperacao ? "Verifica o teu correio eletrónico" : "Confirma o teu correio eletrónico"}
       </p>
       <p className="text-sm max-w-xs" style={{ color: palette.navySoft }}>
         {recuperacao ? (
-          <>Enviámos um link para <strong>{email}</strong> — abre o email e toca no link para definires uma nova palavra-passe.</>
+          <>Enviámos uma ligação para <strong>{email}</strong> — abre o correio eletrónico e toca na ligação para definires uma nova palavra-passe.</>
         ) : (
-          <>Enviámos um link de confirmação para <strong>{email}</strong>. Abre o
-          email e toca no link — depois disso, já podes entrar sempre com a tua
+          <>Enviámos uma ligação de confirmação para <strong>{email}</strong>. Abre o
+          correio eletrónico e toca na ligação — depois disso, já podes entrar sempre com a tua
           palavra-passe.</>
         )}
       </p>
@@ -827,7 +827,7 @@ function NovaPasswordScreen({ onConcluido }) {
 
   const guardar = async () => {
     if (password.trim().length < 6) {
-      setErro("A palavra-passe precisa de ter pelo menos 6 caracteres.");
+      setErro("A palavra-passe deve ter, no mínimo, 6 caracteres.");
       return;
     }
     setErro("");
@@ -875,7 +875,7 @@ function NovaPasswordScreen({ onConcluido }) {
           className="w-full rounded-full py-3.5 font-medium text-sm tracking-wide disabled:opacity-60"
           style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
         >
-          {aGuardar ? "A guardar..." : "Guardar e entrar"}
+          {aGuardar ? "A guardar…" : "Guardar e entrar"}
         </button>
         {erro && <p className="text-center text-xs" style={{ color: "#B23A3A" }}>{erro}</p>}
       </div>
@@ -918,7 +918,7 @@ const areas = [
   { key: "livros", titulo: "Livros", desc: "Liderança 3S e Filosofia 3S", icon: BookOpen },
   { key: "escola-lideranca", titulo: "Liderança 3S", desc: "Comunicação e liderança de pessoas", icon: BookOpen },
   { key: "escola-ser", titulo: "Vida 3S", desc: "Autoconhecimento, emoções e crenças", icon: BookOpen },
-  { key: "workshops", titulo: "Workshops", desc: "Próximas sessões e inscrição", icon: Calendar },
+  { key: "workshops", titulo: "Formações", desc: "Próximas sessões e inscrição", icon: Calendar },
   { key: "podcast", titulo: "Podcast", desc: "Episódios para ouvir", icon: Headphones },
   { key: "marcar", titulo: "Coaching e Mentoria", desc: "Sessões individuais e acompanhamento", icon: PenLine },
 ];
@@ -936,7 +936,7 @@ const areasInicio = [
 const TEMAS_FORMACAO = [
   { chave: "assertiva", titulo: "Comunicação assertiva", desc: "Dizer o que precisa de ser dito, com respeito e clareza.", cursos: [2], materiais: [64, 108, 98, 8] },
   { chave: "cnv", titulo: "Comunicação não violenta", desc: "Observar, sentir, pedir: comunicar sem atacar nem ceder.", cursos: [], materiais: [107, 98, 123, 124] },
-  { chave: "feedback", titulo: "Feedback e conversas difíceis", desc: "Dar e receber feedback, gerir conflitos e pôr limites.", cursos: [2], materiais: [5, 65, 109, 110, 66, 67] },
+  { chave: "feedback", titulo: "Retorno e conversas difíceis", desc: "Dar e receber retorno, gerir conflitos e pôr limites.", cursos: [2], materiais: [5, 65, 109, 110, 66, 67] },
   { chave: "liderar", titulo: "Liderar pessoas", desc: "Que líder sou eu e como crio compromisso na equipa.", cursos: [1], materiais: [71, 68, 69, 70, 97, 99] },
   { chave: "planos", titulo: "Planos de ação", desc: "Transformar objetivos em passos concretos.", cursos: [], materiais: [4, 101, 100, 96] },
   { chave: "planeamento", titulo: "Planeamento", desc: "Organizar o tempo, as prioridades e o ano.", cursos: [], materiais: [3, 25, 99, 126] },
@@ -961,7 +961,7 @@ function FormacaoHubScreen({ onBack, onAbrir, tema, setTema, temAcesso, onAbrirC
                 <button key={c.id} onClick={() => onAbrirCurso(c)} className="w-full text-left rounded-2xl px-4 py-4 flex items-center gap-3" style={{ backgroundColor: palette.navy }}>
                   <div className="flex-1">
                     <p className="font-serif text-lg leading-snug" style={{ color: palette.creamSoft }}>{c.titulo}</p>
-                    <p className="text-xs mt-1" style={{ color: palette.goldSoft }}>{c.gratuito ? "Grátis" : temAcesso(c) ? "Já tens acesso" : `${precoTexto(PRECO_CURSO)} · ver curso`}</p>
+                    <p className="text-xs mt-1" style={{ color: palette.goldSoft }}>{c.gratuito ? "Gratuito" : temAcesso(c) ? "Já tens acesso" : `${precoTexto(PRECO_CURSO)} · ver curso`}</p>
                   </div>
                   <ChevronRight size={18} style={{ color: palette.gold }} />
                 </button>
@@ -1144,7 +1144,7 @@ const ESCOLAS_3S = {
     cursos: [],
     livro: null,
     por: "com coach desportivo certificado",
-    app: { nome: "Movimento 3S", url: "/movimento/", desc: "A app de desporto da Escola 3S: encontros para treinar em grupo, registo dos treinos e plano com o coach." },
+    app: { nome: "Movimento 3S", url: "/movimento/", desc: "A aplicação de desporto da Escola 3S: encontros para treinar em grupo, registo dos treinos e plano com o coach." },
   },
 };
 
@@ -1236,7 +1236,7 @@ const PERGUNTAS_PERFIL = [
     ["C", "Fazer perguntas para pôr todos a pensar."],
     ["F", "Garantir que todos falam e se sentem ouvidos."],
     ["D", "Ouvir e deixar a equipa decidir."]]],
-  ["Quando dás feedback…", [
+  ["Quando dás retorno…", [
     ["O", "Vou direto ao assunto: o que está mal e como corrigir."],
     ["C", "Ajudo a pessoa a chegar às suas conclusões."],
     ["F", "Começo pelo positivo e cuido da forma como é recebido."],
@@ -1270,7 +1270,7 @@ const PERGUNTAS_PERFIL = [
 
 const COMPETENCIAS_3S = [
   { pilar: "Saber", frase: "Dou objetivos claros e explico o porquê." },
-  { pilar: "Saber", frase: "Dou feedback concreto, com exemplos." },
+  { pilar: "Saber", frase: "Dou retorno concreto, com exemplos." },
   { pilar: "Saber", frase: "Faço perguntas antes de dar respostas." },
   { pilar: "Saber", frase: "Conduzo conversas difíceis sem as adiar." },
   { pilar: "Sentir", frase: "Percebo como a pessoa está antes de falar de trabalho." },
@@ -1283,7 +1283,7 @@ const COMPETENCIAS_3S = [
   { pilar: "Ser", frase: "Trato todos com o mesmo respeito, seja qual for o cargo." },
 ];
 const DICAS_PILAR = {
-  Saber: "Treina o feedback com o Modelo SBI e prepara as conversas difíceis antes de as ter.",
+  Saber: "Treina o retorno com o Modelo SBI e prepara as conversas difíceis antes de as ter.",
   Sentir: "Antes de reagir, para e nomeia o que sentes. Pergunta “como estás?” e espera pela resposta.",
   Ser: "Escolhe um compromisso pequeno esta semana e cumpre-o à vista de todos.",
 };
@@ -1291,7 +1291,7 @@ const ESCALA = ["Nunca", "Raramente", "Às vezes", "Muitas vezes", "Sempre"];
 
 const MODELOS_LIDERANCA = [
   { nome: "Modelo GROW", para: "Conduzir uma conversa de coaching", passos: [["Goal", "O que queres alcançar?"], ["Reality", "Onde estás hoje?"], ["Options", "Que caminhos tens?"], ["Will", "O que vais fazer, e quando?"]] },
-  { nome: "Modelo SBI", para: "Dar feedback sem atacar", passos: [["Situação", "Quando e onde aconteceu."], ["Comportamento", "O que a pessoa fez, sem julgar."], ["Impacto", "O efeito que teve em ti, na equipa ou no cliente."]], exemplo: "Na reunião de ontem (S), interrompeste a Ana três vezes (B). Ela deixou de dar ideias (I)." },
+  { nome: "Modelo SBI", para: "Dar retorno sem atacar", passos: [["Situação", "Quando e onde aconteceu."], ["Comportamento", "O que a pessoa fez, sem julgar."], ["Impacto", "O efeito que teve em ti, na equipa ou no cliente."]], exemplo: "Na reunião de ontem (S), interrompeste a Ana três vezes (B). Ela deixou de dar ideias (I)." },
   { nome: "Modelo DESC", para: "Pôr limites com assertividade", passos: [["Descrever", "O facto, sem rótulos."], ["Expressar", "Como te sentes."], ["Especificar", "O que pedes."], ["Consequência", "O que ganham os dois."]] },
   { nome: "Liderança Situacional", para: "Escolher o estilo certo para cada pessoa", passos: [["Dirigir", "Pouca competência, muita vontade: dá instruções claras."], ["Treinar", "Alguma competência, pouca confiança: explica e acompanha."], ["Apoiar", "Competente mas inseguro: escuta e encoraja."], ["Delegar", "Competente e motivado: confia e dá espaço."]] },
   { nome: "Comunicação Não Violenta", para: "Falar de necessidades sem culpar", passos: [["Observação", "O que vi ou ouvi."], ["Sentimento", "O que sinto."], ["Necessidade", "O que preciso."], ["Pedido", "O que peço, de forma concreta."]] },
@@ -1313,14 +1313,14 @@ const PERGUNTAS_REFLEXAO = [
 
 const QUIZZES_LIDERANCA = [
   {
-    id: "feedback", titulo: "Feedback que funciona", desc: "Modelo SBI e feedback que muda comportamentos",
-    desafio: "Dá esta semana um feedback positivo e um de melhoria, ambos com o SBI.",
+    id: "feedback", titulo: "Retorno que funciona", desc: "Modelo SBI e retorno que muda comportamentos",
+    desafio: "Dá esta semana um retorno positivo e um de melhoria, ambos com o SBI.",
     perguntas: [
-      { p: "Qual destas frases é feedback útil?", o: ["Tens de ser mais profissional.", "Na reunião de hoje chegaste 15 minutos atrasado e começámos sem os teus números.", "Estás sempre atrasado.", "Não gosto da tua atitude."], c: 1, e: "Feedback útil é concreto: uma situação e um comportamento que se podem ver.", a: "Antes de dares feedback, escreve a situação e o comportamento concreto, sem adjetivos." },
+      { p: "Qual destas frases é retorno útil?", o: ["Tens de ser mais profissional.", "Na reunião de hoje chegaste 15 minutos atrasado e começámos sem os teus números.", "Estás sempre atrasado.", "Não gosto da tua atitude."], c: 1, e: "Retorno útil é concreto: uma situação e um comportamento que se podem ver.", a: "Antes de dares retorno, escreve a situação e o comportamento concreto, sem adjetivos." },
       { p: "No Modelo SBI, o “I” quer dizer…", o: ["Intenção", "Impacto", "Instrução", "Imagem"], c: 1, e: "Situação, Comportamento (Behaviour) e Impacto: o efeito que o comportamento teve.", a: "Revê o Modelo SBI no Laboratório e treina-o com um exemplo teu." },
-      { p: "Quando dar um feedback de melhoria?", o: ["No fim do ano, na avaliação.", "O mais perto possível do momento, em privado.", "À frente da equipa, para todos aprenderem.", "Só se a pessoa pedir."], c: 1, e: "Perto do momento e em privado: a pessoa lembra-se e não se sente exposta.", a: "Da próxima vez, dá o feedback no próprio dia, a sós." },
-      { p: "Depois de dares feedback, o passo seguinte é…", o: ["Ouvir a outra pessoa.", "Repetir para garantir.", "Mudar de assunto.", "Mandar por email."], c: 0, e: "Feedback é uma conversa: ouvir a outra parte muda tudo.", a: "Depois de cada feedback, pergunta: “Como vês isto?” e ouve até ao fim." },
-      { p: "Um feedback positivo deve ser…", o: ["Genérico: “bom trabalho”.", "Concreto: o que a pessoa fez e o efeito que teve.", "Raro, para ter valor.", "Só em público."], c: 1, e: "O elogio concreto mostra o que repetir.", a: "Faz um elogio concreto por dia durante uma semana." },
+      { p: "Quando dar um retorno de melhoria?", o: ["No fim do ano, na avaliação.", "O mais perto possível do momento, em privado.", "À frente da equipa, para todos aprenderem.", "Só se a pessoa pedir."], c: 1, e: "Perto do momento e em privado: a pessoa lembra-se e não se sente exposta.", a: "Da próxima vez, dá o retorno no próprio dia, a sós." },
+      { p: "Depois de dares retorno, o passo seguinte é…", o: ["Ouvir a outra pessoa.", "Repetir para garantir.", "Mudar de assunto.", "Mandar por correio eletrónico."], c: 0, e: "Retorno é uma conversa: ouvir a outra parte muda tudo.", a: "Depois de cada retorno, pergunta: “Como vês isto?” e ouve até ao fim." },
+      { p: "Um retorno positivo deve ser…", o: ["Genérico: “bom trabalho”.", "Concreto: o que a pessoa fez e o efeito que teve.", "Raro, para ter valor.", "Só em público."], c: 1, e: "O elogio concreto mostra o que repetir.", a: "Faz um elogio concreto por dia durante uma semana." },
     ],
   },
   {
@@ -1328,7 +1328,7 @@ const QUIZZES_LIDERANCA = [
     desafio: "Diz um “não” esta semana com uma alternativa, sem pedir desculpa a mais.",
     perguntas: [
       { p: "Pedem-te mais uma tarefa e não tens tempo. Resposta assertiva:", o: ["“Está bem, eu faço.”", "“Estás a gozar? Não vês como estou?”", "“Agora não consigo. Posso ajudar na quinta, ou vemos o que pode sair da lista.”", "Ignorar o pedido."], c: 2, e: "Assertivo é dizer o limite e propor uma saída.", a: "Prepara a tua frase para dizer “não” com uma alternativa." },
-      { p: "Comunicação assertiva é…", o: ["Dizer sempre o que penso, doa a quem doer.", "Defender o que preciso, respeitando o outro.", "Evitar conflitos a todo o custo.", "Falar mais alto para ser ouvido."], c: 1, e: "Respeito por ti e pelo outro, ao mesmo tempo.", a: "Repara numa conversa desta semana: foste passivo, agressivo ou assertivo?" },
+      { p: "Comunicação assertiva é…", o: ["Dizer sempre o que penso, doa a quem doer.", "Defender o que preciso, com respeito pelo outro.", "Evitar conflitos a todo o custo.", "Falar mais alto para ser ouvido."], c: 1, e: "Respeito por ti e pelo outro, ao mesmo tempo.", a: "Repara numa conversa desta semana: foste passivo, agressivo ou assertivo?" },
       { p: "Qual destas frases fala de ti, e não do outro?", o: ["“Tu nunca me ouves.”", "“Preciso de terminar a ideia antes de passarmos à frente.”", "“Vocês fazem sempre isto.”", "“Toda a gente acha que…”"], c: 1, e: "Falar de ti (o que precisas) não ataca e abre a conversa.", a: "Troca um “tu nunca” por um “eu preciso” numa conversa desta semana." },
       { p: "O corpo também comunica. Uma postura assertiva é…", o: ["Braços cruzados e olhar para o chão.", "Olhar nos olhos, voz calma e firme.", "Apontar o dedo.", "Falar enquanto mexes no telemóvel."], c: 1, e: "Voz calma e olhar direto dão segurança à mensagem.", a: "Na próxima conversa importante, pousa o telemóvel e olha a pessoa nos olhos." },
       { p: "Dizer “não” a um pedido é…", o: ["Falta de espírito de equipa.", "Um limite legítimo, se for explicado com respeito.", "Sempre errado com chefias.", "Sinal de fraqueza."], c: 1, e: "Um “não” claro protege o teu trabalho e a confiança.", a: "Escolhe um pedido a que dirias “sim” por medo, e responde com honestidade." },
@@ -1372,7 +1372,7 @@ const QUIZZES_LIDERANCA = [
 const PLANO_PERFIL = {
   O: ["Em cada reunião, faz duas perguntas antes de dares a tua opinião.", "Escolhe uma tarefa que costumas controlar e delega-a com um objetivo claro.", "Pergunta a uma pessoa: “Do que precisas de mim para fazeres melhor?”", "Volta a fazer o teste e compara."],
   C: ["Escolhe uma decisão que andas a adiar e decide até sexta.", "Usa o Modelo GROW numa conversa e fecha sempre com: o quê, quem e quando.", "Dá uma instrução clara a quem é novo, sem perguntas pelo meio.", "Volta a fazer o teste e compara."],
-  F: ["Escolhe a conversa difícil que andas a adiar e marca-a.", "Prepara essa conversa com o Modelo DESC.", "Dá um feedback de melhoria com o Modelo SBI.", "Volta a fazer o teste e compara."],
+  F: ["Escolhe a conversa difícil que andas a adiar e marca-a.", "Prepara essa conversa com o Modelo DESC.", "Dá um retorno de melhoria com o Modelo SBI.", "Volta a fazer o teste e compara."],
   D: ["Marca 15 minutos por semana com cada pessoa da equipa.", "Pergunta a cada pessoa: “Onde precisas de mais apoio?”", "Num projeto que delegaste, faz um ponto de situação a meio.", "Volta a fazer o teste e compara."],
 };
 const PLANO_PILAR = {
@@ -1458,7 +1458,7 @@ const TREINOS_LIDERANCA = [
       campos: [["desc", "O que aconteceu (só factos)", "na reunião de hoje, as minhas ideias foram interrompidas três vezes"], ["exp", "Como isso te faz sentir", "isso deixa-me com frustração"], ["sug", "O que propões", "que cada pessoa termine antes de outra falar"], ["conc", "O que ganham todos", "as reuniões ficam mais curtas e com todas as ideias"]],
       gerar: (v) => `${cap(v.desc)}. ${cap(v.exp)}. Proponho ${v.sug}. Assim, ${v.conc}.`,
     },
-    plano: ["Identifica uma situação em que costumas calar-te.", "Prepara a tua frase DESC para essa situação.", "Diz um “não” com alternativa.", "Pede a alguém de confiança feedback sobre a tua forma de falar.", "Usa a frase DESC numa conversa real e regista o resultado."],
+    plano: ["Identifica uma situação em que costumas calar-te.", "Prepara a tua frase DESC para essa situação.", "Diz um “não” com alternativa.", "Pede a alguém de confiança retorno sobre a tua forma de falar.", "Usa a frase DESC numa conversa real e regista o resultado."],
   },
   {
     id: "empatica", grupo: "Comunicação", titulo: "Comunicação empática", desc: "Perceber o outro antes de responder",
@@ -1509,7 +1509,7 @@ const TREINOS_LIDERANCA = [
     id: "consistencia", grupo: "Resultados e carácter", titulo: "Consistência", desc: "Pouco, mas todos os dias",
     essencial: ["Pequeno e todos os dias vale mais do que grande e de vez em quando.", "Liga o novo hábito a algo que já fazes.", "Regista: o que se vê, melhora."],
     cenarios: [
-      { p: "Queres dar feedback com mais regularidade. Qual é o melhor plano?", o: ["“Vou dar mais feedback.”", "“Todas as sextas, antes de sair, dou um feedback concreto a uma pessoa.”", "“Quando tiver tempo.”", "“Só na avaliação anual.”"], c: 1, e: "Um hábito precisa de dia, momento e ação concreta." },
+      { p: "Queres dar retorno com mais regularidade. Qual é o melhor plano?", o: ["“Vou dar mais retorno.”", "“Todas as sextas, antes de sair, dou um retorno concreto a uma pessoa.”", "“Quando tiver tempo.”", "“Só na avaliação anual.”"], c: 1, e: "Um hábito precisa de dia, momento e ação concreta." },
       { p: "Falhaste o teu hábito dois dias seguidos. Tu…", o: ["Desistes.", "Recomeças hoje, sem culpa, e tornas o passo mais pequeno.", "Esperas pela próxima segunda-feira.", "Mudas de hábito."], c: 1, e: "Falhar faz parte. O que conta é recomeçar depressa." },
       { p: "A equipa confia mais num líder que…", o: ["Tem dias muito bons e dias muito maus.", "Reage de forma previsível e cumpre o que combina.", "Muda de prioridades todas as semanas.", "Só aparece nas crises."], c: 1, e: "Previsibilidade gera confiança." },
     ],
@@ -1639,12 +1639,12 @@ const LAB_LIDERANCA = {
   planoPilar: PLANO_PILAR, treinos: TREINOS_LIDERANCA, grupos: ["Comunicação", "Resultados e carácter"],
   t: {
     eyebrow: "LIDERANÇA 3S · INTERATIVO", titulo: "Laboratório de Liderança", voltar: "Liderança 3S",
-    intro: "Testes, treinos, quizzes, modelos e perguntas para te conheceres como líder. Grátis e ao teu ritmo.",
+    intro: "Testes, treinos, questionários, modelos e perguntas para te conheceres como líder. Gratuito e ao teu ritmo.",
     treinosDesc: "Comunicação não violenta, assertiva e empática · Conflitos, resultados, consistência e coerência",
     perfilTitulo: "Que líder sou eu?", perfilDesc: "Teste de perfil de liderança · 10 situações · 3 min", perfilPlano: "líder",
     notaPerfil: "Não há perfil certo. Os melhores líderes mudam de estilo consoante a pessoa e a situação: é a Liderança Situacional.",
     compDesc: "Saber, Sentir e Ser: onde estás forte e onde crescer · 12 afirmações",
-    quizzesTitulo: "Quizzes de liderança", quizzesDesc: "Feedback, assertividade, escuta, liderança situacional e segurança psicológica",
+    quizzesTitulo: "Questionários de liderança", quizzesDesc: "Retorno, assertividade, escuta, liderança situacional e segurança psicológica",
     modelosEyebrow: "FERRAMENTAS DO LÍDER", modelosTitulo: "Modelos de liderança", modelosDesc: "GROW, SBI, DESC, Situacional, CNV e Segurança Psicológica, passo a passo",
     perguntasEyebrow: "PERGUNTAS PARA LÍDERES", perguntasTitulo: "Perguntas para líderes", perguntasDesc: "Uma pergunta para refletir e o teu diário de líder", diario: "O MEU DIÁRIO DE LÍDER",
   },
@@ -1694,7 +1694,7 @@ const LAB_DESPORTO = {
   planoPerfil: {
     R: ["Define um objetivo de processo (por exemplo, 3 treinos por semana), não só de tempo.", "Inclui um treino leve por semana, sem relógio.", "Depois de cada treino, escreve uma coisa que correu bem.", "Volta a fazer o teste e compara."],
     E: ["Escolhe um objetivo para as próximas 4 semanas.", "Faz um plano simples: 3 dias fixos por semana.", "Varia o local, mas mantém os dias.", "Volta a fazer o teste e compara."],
-    S: ["Junta-te a um encontro na app Movimento 3S.", "Faz um treino por semana só teu.", "Combina com alguém um objetivo comum.", "Volta a fazer o teste e compara."],
+    S: ["Junta-te a um encontro na aplicação Movimento 3S.", "Faz um treino por semana só teu.", "Combina com alguém um objetivo comum.", "Volta a fazer o teste e compara."],
     D: ["Regista como te sentes antes de cada treino (de 1 a 5).", "Quando o corpo pedir, troca um treino intenso por um leve, sem culpa.", "Experimenta uma atividade nova, só por prazer.", "Volta a fazer o teste e compara."],
   },
   planoPilar: {
@@ -1719,7 +1719,7 @@ const LAB_DESPORTO = {
       desafio: "Cria a tua rotina de 5 minutos antes de treinar: respiração, frase e objetivo do dia.",
       perguntas: [
         { p: "Sentir nervos antes de uma prova é…", o: ["Sinal de que vai correr mal.", "Normal: é o corpo a preparar-se.", "Para esconder.", "Coisa de principiante."], c: 1, e: "Algum nervosismo dá energia. O segredo é usá-lo a teu favor.", a: "Antes da próxima prova, diz: “Isto é energia para a prova.”" },
-        { p: "Uma boa forma de acalmar antes da partida:", o: ["Pensar em tudo o que pode correr mal.", "Respirar devagar, expirando durante mais tempo do que inspiras.", "Beber muito café.", "Comparar-te com os outros."], c: 1, e: "Expirar devagar ajuda o corpo a acalmar.", a: "Treina 3 minutos de respiração lenta por dia." },
+        { p: "Uma boa forma de acalmar antes da partida:", o: ["Pensar em tudo o que pode correr mal.", "Respirar devagar, com a expiração mais longa do que a inspiração.", "Beber muito café.", "Comparar-te com os outros."], c: 1, e: "Expirar devagar ajuda o corpo a acalmar.", a: "Treina 3 minutos de respiração lenta por dia." },
         { p: "A meio da prova, estás a sofrer. Ajuda mais…", o: ["Pensar na meta, que ainda está longe.", "Focar no próximo quilómetro ou na próxima subida.", "Parar para ver o tempo.", "Pensar em desistir."], c: 1, e: "Dividir a prova em partes pequenas torna o esforço gerível.", a: "No próximo treino longo, divide-o em blocos e pensa só no bloco em que estás." },
         { p: "Uma frase útil para usares na prova:", o: ["“Não consigo.”", "“Um passo de cada vez. Treinei para isto.”", "“Sou o pior.”", "“Todos são melhores do que eu.”"], c: 1, e: "O diálogo interno muda o esforço que sentes.", a: "Escolhe a tua frase de prova e repete-a nos treinos difíceis." },
         { p: "Depois de uma prova que correu mal…", o: ["Desistes do desporto.", "Vês o que aprendeste e o que vais mudar.", "Culpas o tempo que fez.", "Não falas disso."], c: 1, e: "Cada prova é informação para a próxima.", a: "Escreve três coisas que aprendeste na última prova." },
@@ -1762,7 +1762,7 @@ const LAB_DESPORTO = {
     },
     {
       id: "ansiedade", grupo: "Mente", titulo: "Gerir a ansiedade de prova", desc: "Transformar nervos em energia",
-      essencial: ["Sentir nervos antes de uma prova é normal.", "Respirar devagar, expirando durante mais tempo, acalma o corpo.", "Uma rotina antes da partida dá segurança."],
+      essencial: ["Sentir nervos antes de uma prova é normal.", "Respirar devagar, com expirações mais longas, acalma o corpo.", "Uma rotina antes da partida dá segurança."],
       cenarios: [
         { p: "Na véspera da prova não consegues dormir.", o: ["Desesperas e dás a prova por perdida.", "Descansas na mesma, de olhos fechados: uma noite má não estraga a prova.", "Bebes muito café de manhã.", "Desistes."], c: 1, e: "O sono das noites anteriores conta mais do que o da véspera." },
         { p: "Na partida, o coração está acelerado.", o: ["Achas que algo está mal.", "Respiras devagar: 4 tempos a inspirar, 6 a expirar.", "Começas muito rápido.", "Comparas-te com os outros."], c: 1, e: "É o corpo a preparar-se. A respiração lenta ajuda a regular." },
@@ -1839,12 +1839,12 @@ const LAB_DESPORTO = {
   grupos: ["Mente", "Hábitos e corpo"],
   t: {
     eyebrow: "DESPORTO 3S · INTERATIVO", titulo: "Laboratório do Atleta", voltar: "Desporto 3S",
-    intro: "Testes, treinos mentais, quizzes e modelos para treinares com cabeça, coração e propósito. Grátis e ao teu ritmo.",
+    intro: "Testes, treinos mentais, questionários e modelos para treinares com cabeça, coração e propósito. Gratuito e ao teu ritmo.",
     treinosDesc: "Foco, ansiedade de prova e confiança · Consistência, recuperação e objetivos",
     perfilTitulo: "Que atleta sou eu?", perfilDesc: "Teste de perfil de atleta · 10 perguntas · 3 min", perfilPlano: "atleta",
     notaPerfil: "Não há perfil certo. Conhecer o teu ajuda-te a escolher como treinar e como te motivares.",
     compDesc: "Saber, Sentir e Ser no desporto: onde estás forte e onde crescer · 12 afirmações",
-    quizzesTitulo: "Quizzes do atleta", quizzesDesc: "Recuperação e sono, mente na prova, hidratação e alimentação, objetivos e motivação",
+    quizzesTitulo: "Questionários do atleta", quizzesDesc: "Recuperação e sono, mente na prova, hidratação e alimentação, objetivos e motivação",
     modelosEyebrow: "FERRAMENTAS DO ATLETA", modelosTitulo: "Modelos para treinar", modelosDesc: "Respiração 4-6, escala de esforço, rotina pré-prova e mais, passo a passo",
     perguntasEyebrow: "PERGUNTAS PARA ATLETAS", perguntasTitulo: "Perguntas para atletas", perguntasDesc: "Uma pergunta para refletir e o teu diário de atleta", diario: "O MEU DIÁRIO DE ATLETA",
   },
@@ -1866,7 +1866,7 @@ const LAB_VIDA = {
     ["Perante um problema, tu…", [["C", "Penso em como afeta os outros."], ["Q", "Faço um plano e avanço."], ["D", "Experimento várias saídas."], ["P", "Analiso até perceber a raiz."]]],
     ["O que te deixa mais em baixo?", [["C", "Sentir que não fui útil a ninguém."], ["Q", "Não conseguir o que me propus."], ["D", "A rotina e a monotonia."], ["P", "Não perceber porque me sinto assim."]]],
     ["Os teus amigos dizem que és…", [["C", "A pessoa que está sempre lá."], ["Q", "A pessoa que faz acontecer."], ["D", "A pessoa das ideias e das aventuras."], ["P", "A pessoa que dá bons conselhos."]]],
-    ["Quando estás em stress…", [["C", "Preocupo-me ainda mais com os outros."], ["Q", "Trabalho ainda mais."], ["D", "Fujo para algo novo."], ["P", "Penso muito, às vezes demais."]]],
+    ["Quando estás em stresse…", [["C", "Preocupo-me ainda mais com os outros."], ["Q", "Trabalho ainda mais."], ["D", "Fujo para algo novo."], ["P", "Penso muito, às vezes demais."]]],
     ["Uma vida com sentido é…", [["C", "Ter à minha volta as pessoas que amo."], ["Q", "Conquistar o que sonhei."], ["D", "Viver muitas experiências."], ["P", "Perceber quem sou e porque estou aqui."]]],
     ["O que te custa mais?", [["C", "Dizer “não”."], ["Q", "Parar e descansar."], ["D", "Ficar muito tempo no mesmo sítio."], ["P", "Decidir sem ter todas as respostas."]]],
     ["Quando consegues algo importante…", [["C", "Partilho com quem me ajudou."], ["Q", "Penso logo no próximo objetivo."], ["D", "Procuro um novo desafio."], ["P", "Paro a pensar no que aprendi."]]],
@@ -1922,7 +1922,7 @@ const LAB_VIDA = {
         { p: "As emoções difíceis (tristeza, raiva, medo)…", o: ["São más e devem ser evitadas.", "Dão informação sobre aquilo de que precisas.", "Só aparecem a pessoas frágeis.", "Devem ser sempre escondidas."], c: 1, e: "Cada emoção aponta para uma necessidade.", a: "Quando sentires raiva, pergunta: “O que é importante para mim aqui?”" },
         { p: "Quando uma emoção é muito forte, ajuda…", o: ["Reagir logo.", "Respirar devagar e dar-lhe uns minutos antes de agir.", "Fingir que não existe.", "Descarregar em alguém."], c: 1, e: "Entre o que sentes e o que fazes pode haver um espaço.", a: "Antes de responder numa situação tensa, respira três vezes." },
         { p: "Validar a emoção de alguém é…", o: ["Concordar com tudo.", "Reconhecer que o que sente é real e compreensível.", "Dar logo uma solução.", "Dizer que não é nada."], c: 1, e: "Validar não é concordar: é reconhecer.", a: "Diz a alguém esta semana: “Faz sentido que te sintas assim.”" },
-        { p: "Uma tristeza que dura muito tempo e não melhora é sinal para…", o: ["Aguentar sem falar com ninguém.", "Procurar apoio, incluindo de um profissional.", "Esconder da família.", "Esperar que passe."], c: 1, e: "Pedir ajuda é um ato de cuidado contigo.", a: "Se a tristeza persistir, fala com alguém de confiança ou com um profissional de saúde." },
+        { p: "Uma tristeza que dura muito tempo e não melhora é sinal para…", o: ["Aguentar sem falar com ninguém.", "Procurar apoio, também junto de um profissional.", "Esconder da família.", "Esperar que passe."], c: 1, e: "Pedir ajuda é um ato de cuidado contigo.", a: "Se a tristeza persistir, fala com alguém de confiança ou com um profissional de saúde." },
       ],
     },
     {
@@ -2010,7 +2010,7 @@ const LAB_VIDA = {
       cenarios: [
         { p: "Sentes que vives em piloto automático. Ajuda…", o: ["Mudar tudo de uma vez.", "Perguntar o que te dá sentido e dar um passo pequeno nessa direção.", "Esperar pelas férias.", "Trabalhar mais para não pensar."], c: 1, e: "O sentido constrói-se com passos pequenos e conscientes." },
         { p: "Na Roda da Vida, uma área está muito em baixo. O primeiro passo é…", o: ["Tentar melhorar todas as áreas ao mesmo tempo.", "Escolher uma área e um passo pequeno para a próxima semana.", "Ignorar essa área.", "Sentir culpa."], c: 1, e: "Uma área de cada vez, um passo de cada vez." },
-        { p: "Propósito é…", o: ["Uma resposta que aparece de repente.", "Algo que se descobre e constrói ao longo da vida.", "Só para pessoas famosas.", "O mesmo que profissão."], c: 1, e: "O propósito vai-se revelando enquanto vives e escolhes." },
+        { p: "Propósito é…", o: ["Uma resposta que aparece de repente.", "Algo que se descobre e constrói ao longo da vida.", "Só para pessoas famosas.", "O mesmo que profissão."], c: 1, e: "O propósito revela-se à medida que vives e escolhes." },
       ],
       construtor: { titulo: "O teu rumo", campos: [["importa", "O que mais importa para ti", "estar presente para os meus filhos"], ["area", "A área da vida que queres cuidar agora", "a saúde"], ["passo", "O teu primeiro passo", "caminhar 20 minutos três vezes por semana"]], gerar: (v) => `O que mais importa para mim é ${v.importa}. A área que quero cuidar agora é ${v.area}. O meu primeiro passo é ${v.passo}.` },
       plano: ["Faz a Roda da Vida e dá uma nota de 1 a 10 a cada área.", "Escolhe a área que queres cuidar primeiro.", "Dá o primeiro passo que escreveste.", "Repete esse passo mais duas vezes esta semana.", "Escreve o que mudou em ti esta semana."],
@@ -2039,12 +2039,12 @@ const LAB_VIDA = {
   grupos: ["Conhecer-me", "Viver melhor"],
   t: {
     eyebrow: "VIDA 3S · INTERATIVO", titulo: "Laboratório da Vida", voltar: "Vida 3S",
-    intro: "Testes, treinos, quizzes e perguntas para te conheceres melhor e viveres com mais sentido. Grátis e ao teu ritmo.",
+    intro: "Testes, treinos, questionários e perguntas para te conheceres melhor e viveres com mais sentido. Gratuito e ao teu ritmo.",
     treinosDesc: "Valores, crenças e emoções · Autoestima, limites e propósito",
     perfilTitulo: "Como vivo a minha vida?", perfilDesc: "Teste de perfil · 10 perguntas · 3 min", perfilPlano: "perfil",
     notaPerfil: "Não há perfil certo. Todos temos um pouco de cada; o teu perfil mostra para onde costumas ir primeiro.",
     compDesc: "Saber, Sentir e Ser na tua vida: onde estás forte e onde crescer · 12 afirmações",
-    quizzesTitulo: "Quizzes da vida", quizzesDesc: "Crenças limitantes, emoções, autoestima e hábitos",
+    quizzesTitulo: "Questionários da vida", quizzesDesc: "Crenças limitantes, emoções, autoestima e hábitos",
     modelosEyebrow: "FERRAMENTAS DE VIDA", modelosTitulo: "Modelos para a vida", modelosDesc: "Roda da Vida, as quatro perguntas, zonas de crescimento e mais, passo a passo",
     perguntasEyebrow: "PERGUNTAS PARA TI", perguntasTitulo: "Perguntas para ti", perguntasDesc: "Uma pergunta para refletir e o teu diário", diario: "O MEU DIÁRIO",
   },
@@ -2269,7 +2269,7 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
       const escolha = respostas[passo];
       return (
         <div className="pb-28">
-          {cabecalho(`PERGUNTA ${passo + 1} DE ${quiz.perguntas.length}`, quiz.titulo, voltarQuizzes, "Quizzes")}
+          {cabecalho(`PERGUNTA ${passo + 1} DE ${quiz.perguntas.length}`, quiz.titulo, voltarQuizzes, "Questionários")}
           <div className="px-6">
             <div className="h-1.5 rounded-full mb-5 overflow-hidden" style={{ backgroundColor: `${palette.navy}14` }}>
               <div className="h-full" style={{ width: `${(passo / quiz.perguntas.length) * 100}%`, backgroundColor: palette.gold }} />
@@ -2311,7 +2311,7 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
     };
     return (
       <div className="pb-28">
-        {cabecalho("O TEU RESULTADO", quiz.titulo, voltarQuizzes, "Quizzes")}
+        {cabecalho("O TEU RESULTADO", quiz.titulo, voltarQuizzes, "Questionários")}
         <div className="px-6 space-y-4">
           <div className="rounded-3xl px-5 py-6 text-center" style={{ background: `linear-gradient(150deg, ${palette.navy} 0%, #24436E 100%)` }}>
             <p className="font-serif text-5xl" style={{ color: palette.gold }}>{pontos}<span className="text-2xl" style={{ color: palette.creamSoft }}> / {total}</span></p>
@@ -2321,7 +2321,7 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
           {botaoPrincipal("Guardar este plano", guardar)}
           {guardadoMsg && <p className="text-xs text-center" style={{ color: palette.navySoft }}>{guardadoMsg}</p>}
           <button onClick={onMarcar} className="w-full rounded-full py-3 text-sm font-medium" style={{ border: `1px solid ${palette.navy}`, color: palette.navy }}>Treinar isto numa sessão</button>
-          <button onClick={() => { setPasso(0); setRespostas([]); setGuardadoMsg(""); }} className="w-full text-xs underline" style={{ color: palette.navySoft }}>Repetir o quiz</button>
+          <button onClick={() => { setPasso(0); setRespostas([]); setGuardadoMsg(""); }} className="w-full text-xs underline" style={{ color: palette.navySoft }}>Repetir o questionário</button>
         </div>
       </div>
     );
@@ -2422,7 +2422,7 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
         {cartao("Treinos de competências", TX.treinosDesc, Object.keys(resultados.treinos || {}).length ? `${Object.keys(resultados.treinos).length} de ${TREINOS_LIDERANCA.length} feitos` : "7 treinos · frase e plano no fim", () => setVista("treinos"))}
         {cartao(TX.perfilTitulo, TX.perfilDesc, perfilGuardado ? `O teu perfil: ${perfilGuardado.nome}` : null, () => { setVista("perfil"); setPasso(0); setRespostas([]); setGuardadoMsg(""); })}
         {cartao("Competências 3S", TX.compDesc, compGuardadas ? compGuardadas.map((p) => `${p.pilar} ${p.pct}%`).join(" · ") : null, () => { setVista("competencias"); setPasso(0); setRespostas([]); setGuardadoMsg(""); })}
-        {cartao(TX.quizzesTitulo, TX.quizzesDesc, Object.keys(resultados.quizzes || {}).length ? `${Object.keys(resultados.quizzes).length} de ${QUIZZES_LIDERANCA.length} feitos` : "5 quizzes · plano automático no fim", () => setVista("quizzes"))}
+        {cartao(TX.quizzesTitulo, TX.quizzesDesc, Object.keys(resultados.quizzes || {}).length ? `${Object.keys(resultados.quizzes).length} de ${QUIZZES_LIDERANCA.length} feitos` : "5 questionários · plano automático no fim", () => setVista("quizzes"))}
         {cartao(TX.modelosTitulo, TX.modelosDesc, null, () => setVista("modelos"))}
         {cartao(TX.perguntasTitulo, TX.perguntasDesc, (resultados.reflexoes || []).length ? `${resultados.reflexoes.length} resposta(s) no teu diário` : null, () => { setVista("perguntas"); setGuardadoMsg(""); })}
       </div>
@@ -2448,7 +2448,7 @@ function EscolherAreaSessaoScreen({ onBack, onEscolher }) {
   return (
     <div className="pb-28">
       <SectionHeader eyebrow="MARCAR SESSÃO" title="Em que área queres trabalhar?" onBack={onBack} />
-      <p className="px-6 -mt-2 mb-5 text-sm leading-relaxed" style={{ color: palette.navySoft }}>Cada área tem o seu coach. Escolhe e vês logo os horários livres. A primeira sessão (20 min) é grátis.</p>
+      <p className="px-6 -mt-2 mb-5 text-sm leading-relaxed" style={{ color: palette.navySoft }}>Cada área tem o seu coach. Escolhe e vês logo os horários livres. A primeira sessão (20 min) é gratuita.</p>
       <div className="px-6 space-y-2.5">
         {Object.entries(ESCOLAS_3S).map(([area, e]) => {
           const Icon = e.icon;
@@ -2498,12 +2498,12 @@ function EscolaScreen({ escola, onBack, onOpen, temAcesso, onAbrirCurso, desbloq
   const tiles = [];
   if (curso) {
     const acesso = temAcesso(curso);
-    tiles.push({ chave: "curso", Ico: GraduationCap, rot: "Curso", titulo: curso.titulo, info: curso.emBreve ? "Em breve" : curso.gratuito ? "Grátis" : acesso ? "Entrar" : precoTexto(PRECO_CURSO), acao: () => onAbrirCurso(curso), destaque: true });
+    tiles.push({ chave: "curso", Ico: GraduationCap, rot: "Curso", titulo: curso.titulo, info: curso.emBreve ? "Em breve" : curso.gratuito ? "Gratuito" : acesso ? "Entrar" : precoTexto(PRECO_CURSO), acao: () => onAbrirCurso(curso), destaque: true });
   }
   if (e.app) tiles.push({ chave: "app", Ico: Footprints, rot: "Aplicação", titulo: e.app.nome, info: "Treinos e tempos", href: e.app.url, destaque: true });
-  if (lab) tiles.push({ chave: "lab", Ico: Layers, rot: "Grátis", titulo: "Laboratório", info: "Testes e treinos", acao: () => onOpen(lab.secao) });
+  if (lab) tiles.push({ chave: "lab", Ico: Layers, rot: "Gratuito", titulo: "Laboratório", info: "Testes e treinos", acao: () => onOpen(lab.secao) });
   if (livro) tiles.push({ chave: "livro", Ico: BookOpen, rot: "Livro", titulo: "O livro", info: livro.emBreve ? "Em breve" : livroAberto ? "Ler" : livro.preco, acao: () => (livroAberto ? window.open(livro.url, "_blank") : onOpen("livros")) });
-  tiles.push({ chave: "marcar", Ico: Calendar, rot: "Sessão", titulo: "Marcar sessão", info: "1.ª sessão gratuita", acao: () => onOpen("marcar:" + escola) });
+  tiles.push({ chave: "marcar", Ico: Calendar, rot: "Sessão", titulo: "Marcar sessão", info: "20 min gratuitos", acao: () => onOpen("marcar:" + escola) });
   if (tiles.length % 2 === 1) tiles.push({ chave: "coach", Ico: User, rot: "Coach", titulo: coach === undefined ? "…" : coach ? coach.nome : "Em breve", info: "Responsável pela área", acao: () => onOpen("marcar:" + escola) });
 
   return (
@@ -2539,7 +2539,7 @@ function EscolaScreen({ escola, onBack, onOpen, temAcesso, onAbrirCurso, desbloq
                 <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ border: `1.5px solid ${escuro ? e.acento : palette.gold}` }}>
                   <t.Ico size={16} strokeWidth={1.6} style={{ color: escuro ? e.acento : palette.gold }} />
                 </div>
-                <span className="text-[9px] tracking-[0.2em] font-semibold" style={{ color: escuro ? e.acento : palette.gold }}>{t.rot.toUpperCase()}</span>
+                <span className="text-[9px] tracking-[0.12em] font-semibold" style={{ color: escuro ? e.acento : palette.gold }}>{t.rot.toUpperCase()}</span>
               </div>
               <div>
                 <p className="font-serif text-[16px] leading-tight" style={{ color: cTit }}>{t.titulo}</p>
@@ -2575,7 +2575,7 @@ function DivisorArea({ texto, id }) {
 const areasLideranca = [
   { key: "marcar", titulo: "Marcar sessões", desc: "Coaching e mentoria individual com a Conceição", icon: PenLine, full: true },
   { key: "escola-lideranca", titulo: "Cursos de liderança", desc: "Comunicar e liderar pessoas", icon: GraduationCap },
-  { key: "workshops", titulo: "Workshops", desc: "Próximas sessões e inscrição", icon: Calendar },
+  { key: "workshops", titulo: "Formações", desc: "Próximas sessões e inscrição", icon: Calendar },
 ];
 const areasDesenvolvimento = [
   { key: "escola-ser", titulo: "Cursos de desenvolvimento", desc: "Autoconhecimento, emoções e crenças limitantes", icon: GraduationCap, full: true },
@@ -2672,7 +2672,7 @@ function InicioScreen({ onOpen, email, papel, naoLidas, onVerAgenda, onVerNotifi
             );
           })}
         </div>
-        <p className="text-[10.5px] text-center mt-2.5" style={{ color: palette.navySoft }}>Três escolas de coaching · a primeira sessão (20 min) é grátis</p>
+        <p className="text-[10.5px] text-center mt-2.5" style={{ color: palette.navySoft }}>Três escolas de coaching · a primeira sessão (20 min) é gratuita</p>
       </div>
       {(papel === "dona" || papel === "mentora") && (
         <div className="px-6 mb-6">
@@ -2845,7 +2845,7 @@ function AreaAlunoScreen({ onBack, onOpenCurso, cursosConcluidos, materiaisDesbl
       })}
 
       <div className="px-6 mt-8">
-        <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>MEUS CERTIFICADOS</p>
+        <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>OS MEUS CERTIFICADOS</p>
         {concluidosLista.length === 0 ? (
           <p className="text-sm" style={{ color: palette.navySoft }}>
             Ainda não concluíste nenhum curso — assim que concluíres um, o certificado aparece aqui.
@@ -2899,7 +2899,7 @@ function AreaAlunoScreen({ onBack, onOpenCurso, cursosConcluidos, materiaisDesbl
 function WorkshopsScreen({ onBack, inscricoes, onToggleInscricao }) {
   return (
     <div className="pb-28">
-      <SectionHeader eyebrow="PRÓXIMOS" title="Workshops" onBack={onBack} />
+      <SectionHeader eyebrow="PRÓXIMAS" title="Formações" onBack={onBack} />
       <div className="px-6 space-y-3">
         {workshops.map((w) => {
           const inscrito = Boolean(inscricoes[w.id]);
@@ -3041,7 +3041,7 @@ function PodcastScreen({ onBack, souDona }) {
             </div>
             <div className="flex-1">
               <p className="font-serif text-lg leading-tight" style={{ color: palette.navy }}>Programa a chegar</p>
-              <p className="text-xs mt-0.5" style={{ color: palette.navySoft }}>Ainda sem link do Spotify</p>
+              <p className="text-xs mt-0.5" style={{ color: palette.navySoft }}>Ainda sem ligação do Spotify</p>
             </div>
           </div>
         )}
@@ -3078,14 +3078,14 @@ function PodcastScreen({ onBack, souDona }) {
               <input
                 value={novaDuracao}
                 onChange={(e) => setNovaDuracao(e.target.value)}
-                placeholder="Duração (ex: 15 min)"
+                placeholder="Duração (ex.: 15 min)"
                 className="w-full rounded-xl px-3.5 py-2.5 text-sm"
                 style={{ backgroundColor: palette.creamSoft, color: palette.ink }}
               />
               <input
                 value={novoUrl}
                 onChange={(e) => setNovoUrl(e.target.value)}
-                placeholder="Link do episódio no Spotify"
+                placeholder="Ligação do episódio no Spotify"
                 className="w-full rounded-xl px-3.5 py-2.5 text-sm"
                 style={{ backgroundColor: palette.creamSoft, color: palette.ink }}
               />
@@ -3103,7 +3103,7 @@ function PodcastScreen({ onBack, souDona }) {
                   className="flex-1 rounded-xl py-2.5 text-sm font-medium disabled:opacity-50"
                   style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
                 >
-                  {aGuardar ? "A guardar..." : "Guardar episódio"}
+                  {aGuardar ? "A guardar…" : "Guardar episódio"}
                 </button>
               </div>
             </div>
@@ -3113,7 +3113,7 @@ function PodcastScreen({ onBack, souDona }) {
 
       <div className="px-6 space-y-3">
         {carregando ? (
-          <p className="text-sm text-center py-6" style={{ color: palette.navySoft }}>A carregar episódios...</p>
+          <p className="text-sm text-center py-6" style={{ color: palette.navySoft }}>A carregar episódios…</p>
         ) : episodios.length === 0 ? (
           <p className="text-sm text-center py-6" style={{ color: palette.navySoft }}>Ainda sem episódios aqui.</p>
         ) : (
@@ -3403,7 +3403,7 @@ function CursoInterativoScreen({ curso, estado, onGuardar, concluidoEm, onConclu
 }
 
 function AulaInterativaScreen({ curso, indice, aula, dados, estadoCurso, onGuardar, onGuardarCurso, onBack, onSeguinte, onAbrirLab, materiaisDesbloqueados, onDesbloquearMaterial, acessoTotal, formadorAutorizado }) {
-  const passos = ["Aprender", "Exercício", ...(aula.avaliacao ? ["Avaliação 3S"] : []), "Quiz", "Desafio"];
+  const passos = ["Aprender", "Exercício", ...(aula.avaliacao ? ["Avaliação 3S"] : []), "Questionário", "Desafio"];
   const [passo, setPasso] = useState(0);
   const [respostas, setRespostas] = useState(dados.respostas || []);
   const [quiz, setQuiz] = useState(dados.quiz || {});
@@ -3419,11 +3419,11 @@ function AulaInterativaScreen({ curso, indice, aula, dados, estadoCurso, onGuard
   const certas = aula.quiz.filter((q, qi) => quiz[qi] === q.certa).length;
   const avaliacao = estadoCurso.avaliacao || {};
   const avaliacaoCompleta = AVALIACAO_3S.every((_, k) => avaliacao[k]);
-  const podeAvancar = nomePasso === "Quiz" ? quizCompleto : nomePasso === "Avaliação 3S" ? avaliacaoCompleta : true;
+  const podeAvancar = nomePasso === "Questionário" ? quizCompleto : nomePasso === "Avaliação 3S" ? avaliacaoCompleta : true;
 
   const avancar = () => {
     if (nomePasso === "Exercício") guardarRespostas();
-    if (nomePasso === "Quiz") onGuardar({ quiz });
+    if (nomePasso === "Questionário") onGuardar({ quiz });
     if (ultimo) {
       onGuardar({ respostas, quiz, concluida: dados.concluida || new Date().toISOString() });
       onSeguinte();
@@ -3530,7 +3530,7 @@ function AulaInterativaScreen({ curso, indice, aula, dados, estadoCurso, onGuard
           <Avaliacao3S avaliacao={avaliacao} estadoCurso={estadoCurso} onGuardarCurso={onGuardarCurso} />
         )}
 
-        {nomePasso === "Quiz" && (
+        {nomePasso === "Questionário" && (
           <>
             {aula.quiz.map((q, qi) => {
               const escolhida = quiz[qi];
@@ -3565,7 +3565,7 @@ function AulaInterativaScreen({ curso, indice, aula, dados, estadoCurso, onGuard
                 <p className="font-serif text-lg" style={{ color: palette.gold }}>{certas} de {aula.quiz.length} certas</p>
                 <p className="text-xs mt-0.5" style={{ color: palette.creamSoft }}>{certas === aula.quiz.length ? "Excelente! Dominas esta aula." : "Relê a explicação das que falhaste: é aí que está a aprendizagem."}</p>
                 {certas < aula.quiz.length && (
-                  <button onClick={() => setQuiz({})} className="mt-2 text-xs underline" style={{ color: palette.goldSoft }}>Repetir o quiz</button>
+                  <button onClick={() => setQuiz({})} className="mt-2 text-xs underline" style={{ color: palette.goldSoft }}>Repetir o questionário</button>
                 )}
               </div>
             )}
@@ -3601,7 +3601,7 @@ function AulaInterativaScreen({ curso, indice, aula, dados, estadoCurso, onGuard
           </button>
         </div>
         {!podeAvancar && (
-          <p className="text-[11px] text-center" style={{ color: palette.navySoft }}>{nomePasso === "Quiz" ? "Responde às perguntas para avançar." : "Responde a todas as frases para veres o teu resultado e avançar."}</p>
+          <p className="text-[11px] text-center" style={{ color: palette.navySoft }}>{nomePasso === "Questionário" ? "Responde às perguntas para avançar." : "Responde a todas as frases para veres o teu resultado e avançar."}</p>
         )}
       </div>
     </div>
@@ -3832,7 +3832,7 @@ function ConteudoDetalhe({ curso, concluido, onToggleConcluido, onBack, materiai
         {curso.materiaisFormadorIds && curso.materiaisFormadorIds.length > 0 && (acessoTotal || formadorAutorizado) && (
           <div className="mt-7">
             <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>MATERIAIS DO FORMADOR</p>
-            <p className="text-xs mb-3" style={{ color: palette.navySoft }}>Visíveis só para ti, como formadora autorizada para este curso.</p>
+            <p className="text-xs mb-3" style={{ color: palette.navySoft }}>Visíveis só para ti, como coach autorizado/a para este curso.</p>
             <div className="space-y-2">
               {curso.materiaisFormadorIds.map((mid) => {
                 const m = materiais.find((mat) => mat.id === mid);
@@ -3881,10 +3881,10 @@ const FL_TOOLS = [
     subtitle: "Conversas que geram ação",
     type: "letters",
     items: [
-      { code: "G", label: "Goal | Objetivo", desc: "O que queres alcançar?" },
-      { code: "R", label: "Reality | Realidade", desc: "Como está a situação hoje?" },
-      { code: "O", label: "Options | Opções", desc: "Que alternativas existem?" },
-      { code: "W", label: "Will | Compromisso", desc: "O que vais fazer, quando e como?" },
+      { code: "G", label: "Objetivo (Goal)", desc: "O que queres alcançar?" },
+      { code: "R", label: "Realidade (Reality)", desc: "Como está a situação hoje?" },
+      { code: "O", label: "Opções (Options)", desc: "Que alternativas existem?" },
+      { code: "W", label: "Compromisso (Will)", desc: "O que vais fazer, quando e como?" },
     ],
     quote: "Da conversa nasce o movimento.",
   },
@@ -3980,7 +3980,7 @@ const FL_TOOLS = [
     items: [
       { label: "Generalizações", desc: "\u201cTodos\u201d, \u201cninguém\u201d, \u201csempre\u201d, \u201cnunca\u201d… → O que acontece em concreto?" },
       { label: "Omissões", desc: "O que está a ser deixado de fora? → Podes dar mais detalhes?" },
-      { label: "Distorções", desc: "Interpretações que não são factos. → Como sabes? Que evidências tens?" },
+      { label: "Distorções", desc: "Interpretações que não são factos. → Como sabes? Que provas tens?" },
     ],
     example: "Torna a linguagem mais precisa: usa palavras concretas e descritivas.",
     quote: "Palavras criam realidades. Usa-as com precisão.",
@@ -4007,9 +4007,9 @@ const FL_TOOLS = [
     subtitle: "Vê a situação de diferentes ângulos",
     type: "bullets",
     items: [
-      { label: "1. Eu (1ª posição)", desc: "Como eu vejo? O que penso, sinto e quero?" },
-      { label: "2. O Outro (2ª posição)", desc: "Como o outro vê? O que pensa, sente e quer?" },
-      { label: "3. Observador (3ª posição)", desc: "Que outra perspetiva existe? O que é importante para o todo?" },
+      { label: "1. Eu (1.ª posição)", desc: "Como eu vejo? O que penso, sinto e quero?" },
+      { label: "2. O Outro (2.ª posição)", desc: "Como o outro vê? O que pensa, sente e quer?" },
+      { label: "3. Observador (3.ª posição)", desc: "Que outra perspetiva existe? O que é importante para o todo?" },
     ],
     example: "Usa as 3 posições para ganhar empatia, clareza e melhores decisões.",
     quote: "A realidade tem muitas perspetivas.",
@@ -4078,7 +4078,7 @@ const FL_TOOLS = [
     id: "sbi",
     category: "Comunicação",
     title: "Modelo SBI",
-    subtitle: "Dá feedback claro e eficaz",
+    subtitle: "Dá retorno claro e eficaz",
     type: "letters",
     items: [
       { code: "S", label: "Situação", desc: "Quando e onde aconteceu? (ser específico)" },
@@ -4087,7 +4087,7 @@ const FL_TOOLS = [
     ],
     example:
       "\u201cNa reunião de ontem (S), interrompeste duas vezes o colega (B), o que fez com que ele não conseguisse terminar a sua ideia (I).\u201d",
-    quote: "Feedback é uma ponte, não um ataque.",
+    quote: "Retorno é uma ponte, não um ataque.",
   },
   {
     id: "feedforward",
@@ -4558,7 +4558,7 @@ const DP_TOOLS = [
       { from: "O que ganho ao mantê-la", to: "Segurança, proteção, menor exposição" },
       { from: "O que perco ao mantê-la", to: "Oportunidades, liberdade, crescimento" },
       { from: "De que me protege", to: "Rejeição, fracasso, julgamento" },
-      { from: "O que me custa", to: "Nomeie o preço real, com honestidade" },
+      { from: "O que me custa", to: "Nomeia o preço real, com honestidade" },
     ],
     quote: "Nenhuma crença sobrevive por acaso — sobrevive porque cumpre uma função.",
   },
@@ -4608,7 +4608,7 @@ const DP_TOOLS = [
     id: "ganho-secundario",
     category: "Hábitos",
     title: "Ganho Secundário",
-    subtitle: "O que um padrão protege, mesmo custando caro",
+    subtitle: "O que um padrão protege, mesmo quando custa caro",
     type: "bullets",
     items: [
       { label: "O padrão", desc: "Que comportamento se repete, mesmo sem eu querer?" },
@@ -5363,7 +5363,7 @@ function MaterialCard({ material, desbloqueado, onDesbloquear, desbloqueadoFisic
       ) : estadoPagamentoFisico === "a_confirmar" ? (
         <div className="text-center py-3">
           <p className="text-xs font-medium" style={{ color: palette.navy }}>Confirma no teu telemóvel</p>
-          <p className="text-[11px]" style={{ color: palette.navySoft }}>Abre a app MB WAY e aprova.</p>
+          <p className="text-[11px]" style={{ color: palette.navySoft }}>Abre a aplicação MB WAY e aprova.</p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -5381,7 +5381,7 @@ function MaterialCard({ material, desbloqueado, onDesbloquear, desbloqueadoFisic
             className="w-full rounded-lg py-2 text-xs font-medium tracking-wide transition active:scale-[0.98] disabled:opacity-60"
             style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
           >
-            {estadoPagamentoFisico === "a_enviar" ? "A enviar pedido..." : `Pagar ${material.precoFisico} e encomendar`}
+            {estadoPagamentoFisico === "a_enviar" ? "A enviar pedido…" : `Pagar ${material.precoFisico} e encomendar`}
           </button>
           {erroPagamentoFisico && <p className="text-[11px] text-center" style={{ color: "#B23A3A" }}>{erroPagamentoFisico}</p>}
         </div>
@@ -5408,7 +5408,7 @@ function MaterialCard({ material, desbloqueado, onDesbloquear, desbloqueadoFisic
               style={{ color: palette.navy, opacity: aDescarregar ? 0.6 : 1 }}
             >
               <Download size={14} />
-              {aDescarregar ? "A descarregar..." : "Descarregar"}
+              {aDescarregar ? "A descarregar…" : "Descarregar"}
             </button>
           ) : (
             <span className="flex items-center gap-1.5 text-xs font-medium" style={{ color: palette.navySoft, opacity: 0.6 }}>
@@ -5470,7 +5470,7 @@ function MaterialCard({ material, desbloqueado, onDesbloquear, desbloqueadoFisic
           {estadoPagamento === "a_confirmar" ? (
             <div className="text-center py-3">
               <p className="text-xs font-medium" style={{ color: palette.navy }}>Confirma no teu telemóvel</p>
-              <p className="text-[11px]" style={{ color: palette.navySoft }}>Abre a app MB WAY e aprova.</p>
+              <p className="text-[11px]" style={{ color: palette.navySoft }}>Abre a aplicação MB WAY e aprova.</p>
             </div>
           ) : (
             <>
@@ -5501,7 +5501,7 @@ function MaterialCard({ material, desbloqueado, onDesbloquear, desbloqueadoFisic
                 className="w-full rounded-lg py-2 text-xs font-medium tracking-wide transition active:scale-[0.98] disabled:opacity-60"
                 style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
               >
-                {estadoPagamento === "a_enviar" ? "A enviar pedido..." : `Pagar ${descontoValido ? precoComDesconto(material.preco) : material.preco} e desbloquear`}
+                {estadoPagamento === "a_enviar" ? "A enviar pedido…" : `Pagar ${descontoValido ? precoComDesconto(material.preco) : material.preco} e desbloquear`}
               </button>
               {erroPagamento && <p className="text-[11px] text-center" style={{ color: "#B23A3A" }}>{erroPagamento}</p>}
             </>
@@ -5533,7 +5533,7 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
   const [nomeCompleto, setNomeCompleto] = useState("");
   const [aceitouConsentimento, setAceitouConsentimento] = useState(false);
 
-  const TEXTO_CONSENTIMENTO = "Aceito fornecer os meus dados pessoais (nome, email e telemóvel) à Escola 3S, para fins de marcação e contacto sobre esta sessão.";
+  const TEXTO_CONSENTIMENTO = "Aceito fornecer os meus dados pessoais (nome, correio eletrónico e telemóvel) à Escola 3S, para fins de marcação e contacto sobre esta sessão.";
 
   const CODIGO_DESCONTO_COMUNIDADE = "COMUNIDADE10";
   const descontoValido = codigoDesconto.trim().toUpperCase() === CODIGO_DESCONTO_COMUNIDADE;
@@ -5655,7 +5655,7 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
       setEstadoPagamento("a_confirmar");
       const pago = await aguardarConfirmacaoPagamento(resultado.pagamento_id);
       if (!pago) {
-        setErro("O horário fica reservado durante 20 minutos. Se aprovares o pagamento na app MB WAY nesse tempo, a marcação fica confirmada automaticamente e recebes o link por email.");
+        setErro("O horário fica reservado durante 20 minutos. Se aprovares o pagamento na aplicação MB WAY nesse tempo, a marcação fica confirmada automaticamente e recebes a ligação por correio eletrónico.");
         setAConfirmar(false);
         return;
       }
@@ -5760,7 +5760,7 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
         <div className="px-6">
           <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>2. O PROFISSIONAL</p>
           {aCarregar ? (
-            <p className="text-sm" style={{ color: palette.navySoft }}>A carregar...</p>
+            <p className="text-sm" style={{ color: palette.navySoft }}>A carregar…</p>
           ) : mentoras.length === 0 ? (
             <p className="text-sm" style={{ color: palette.navySoft }}>{area ? "O coach desta área ainda não tem horários. Volta em breve." : "Ainda não há profissionais com horários definidos."}</p>
           ) : (
@@ -5856,7 +5856,7 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
               {estadoPagamento === "a_confirmar" ? (
                 <div className="text-center py-4">
                   <p className="text-sm font-medium mb-1" style={{ color: palette.navy }}>Confirma o pagamento no teu telemóvel</p>
-                  <p className="text-xs" style={{ color: palette.navySoft }}>Abre a notificação da app MB WAY e aprova — pode demorar até 90 segundos.</p>
+                  <p className="text-xs" style={{ color: palette.navySoft }}>Abre a notificação da aplicação MB WAY e aprova — pode demorar até 90 segundos.</p>
                 </div>
               ) : (
                 <button
@@ -5865,7 +5865,7 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
                   className="w-full rounded-full py-3 font-medium text-sm tracking-wide disabled:opacity-60"
                   style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
                 >
-                  {aConfirmar ? "A enviar pedido..." : usaCiclo ? `Confirmar · usar 1 sessão do ciclo (restam ${creditos[servicoEscolhido.tipo]})` : eGratis ? "Confirmar sessão gratuita" : `Confirmar e pagar · ${descontoValido ? precoComDesconto(servicoEscolhido.preco) : servicoEscolhido.preco}`}
+                  {aConfirmar ? "A enviar pedido…" : usaCiclo ? `Confirmar · usar 1 sessão do ciclo (restam ${creditos[servicoEscolhido.tipo]})` : eGratis ? "Confirmar sessão gratuita" : `Confirmar e pagar · ${descontoValido ? precoComDesconto(servicoEscolhido.preco) : servicoEscolhido.preco}`}
                 </button>
               )}
               {!aConfirmar && estadoPagamento !== "a_confirmar" && (!nomeCompleto.trim() || !telemovel.trim() || !aceitouConsentimento) && (
@@ -6031,7 +6031,7 @@ function AgendaScreen({ inscricoesWorkshops, sessoesMarcadas }) {
 
         {nada && !diaSelecionado && (
           <p className="text-sm" style={{ color: palette.navySoft }}>
-            Ainda não tens workshops nem sessões marcadas.
+            Ainda não tens formações nem sessões marcadas.
           </p>
         )}
 
@@ -6054,7 +6054,7 @@ function AgendaScreen({ inscricoesWorkshops, sessoesMarcadas }) {
 
         {!diaSelecionado && workshopsInscritos.length > 0 && (
           <div>
-            <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>WORKSHOPS</p>
+            <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>FORMAÇÕES</p>
             <div className="space-y-2">
               {workshopsInscritos.map((w) => (
                 <div key={w.id} className="flex items-center gap-3 rounded-xl px-4 py-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
@@ -6150,14 +6150,14 @@ function AgendaMentoraScreen({ onBack, linkVideochamada, onVista }) {
 
       <div className="px-6 mb-5">
         <p className="text-xs rounded-xl px-4 py-3" style={{ backgroundColor: `${palette.gold}1F`, color: palette.navy }}>
-          Cada marcação tem um link de videochamada criado automaticamente, que também é enviado por email ao cliente e a ti.
-          {linkVideochamada ? " Estás a usar o teu link fixo (definido em Disponibilidade)." : ""}
+          Cada marcação tem uma ligação de videochamada criada automaticamente, que é também enviada por correio eletrónico ao cliente e a ti.
+          {linkVideochamada ? " Estás a usar a tua ligação fixa (definida em Disponibilidade)." : ""}
         </p>
       </div>
 
       <div className="px-6">
         <EventosOnlineMentora />
-        {aCarregar && <p className="text-sm" style={{ color: palette.navySoft }}>A carregar...</p>}
+        {aCarregar && <p className="text-sm" style={{ color: palette.navySoft }}>A carregar…</p>}
         {!aCarregar && diasOrdenados.length === 0 && (
           <p className="text-sm" style={{ color: palette.navySoft }}>Ainda não tens sessões marcadas.</p>
         )}
@@ -6180,7 +6180,7 @@ function AgendaMentoraScreen({ onBack, linkVideochamada, onVista }) {
                       {cliente?.nome || "Pessoa sem ficha"}
                     </p>
                     <p className="text-xs" style={{ color: palette.navySoft }}>
-                      {cliente?.email || "sem email"}
+                      {cliente?.email || "sem correio eletrónico"}
                       {cliente?.telefone ? ` · ${cliente.telefone}` : ""}
                     </p>
                     <BotaoLinkSessao link={linksPorId[m.id] || linkVideochamada} />
@@ -6224,7 +6224,7 @@ function DisponibilidadeRapida({ disponibilidade, onDefinir }) {
   return (
     <div className="rounded-2xl px-4 py-4 mb-8" style={{ backgroundColor: palette.card, border: `1.5px solid ${palette.gold}` }}>
       <p className="font-serif text-lg" style={{ color: palette.navy }}>Forma rápida</p>
-      <p className="text-xs mb-4" style={{ color: palette.navySoft }}>Escolhe os dias da semana e as horas. A app repete para as próximas semanas.</p>
+      <p className="text-xs mb-4" style={{ color: palette.navySoft }}>Escolhe os dias da semana e as horas. A aplicação repete para as próximas semanas.</p>
       {rotulo("1. DIAS DA SEMANA")}
       <div className="grid grid-cols-7 gap-1.5 mb-4">
         {DIAS_SEMANA_CURTOS.map(([n, v]) => (
@@ -6283,9 +6283,9 @@ function DisponibilidadeScreen({ onBack, disponibilidade, onAdicionarData, onRem
         </p>
         <DisponibilidadeRapida disponibilidade={disponibilidade} onDefinir={onDefinir} />
 
-        <p className="text-[11px] tracking-[0.2em] font-medium mb-2" style={{ color: palette.gold }}>LINK DA VIDEOCHAMADA</p>
+        <p className="text-[11px] tracking-[0.2em] font-medium mb-2" style={{ color: palette.gold }}>LIGAÇÃO DA VIDEOCHAMADA</p>
         <p className="text-xs mb-3" style={{ color: palette.navySoft }}>
-          O teu link fixo (Google Meet, Zoom...) — aparece na tua Agenda, em cada sessão marcada contigo.
+          A tua ligação fixa (Google Meet, Zoom…) — aparece na tua Agenda, em cada sessão marcada contigo.
         </p>
         <div className="flex gap-2 mb-8">
           <input
@@ -6541,15 +6541,15 @@ function DashboardMentoraScreen({ onBack, onAbrirCliente }) {
   if (carregando) {
     return (
       <div className="pb-28">
-        <SectionHeader eyebrow="VISÃO DA ESCOLA" title="Dashboard" onBack={onBack} />
-        <p className="px-6 text-sm" style={{ color: palette.navySoft }}>A carregar...</p>
+        <SectionHeader eyebrow="VISÃO DA ESCOLA" title="Painel" onBack={onBack} />
+        <p className="px-6 text-sm" style={{ color: palette.navySoft }}>A carregar…</p>
       </div>
     );
   }
 
   return (
     <div className="pb-28">
-      <SectionHeader eyebrow="VISÃO DA ESCOLA" title="Dashboard" onBack={onBack} />
+      <SectionHeader eyebrow="VISÃO DA ESCOLA" title="Painel" onBack={onBack} />
 
       <div className="px-6 grid grid-cols-2 gap-3 mb-8">
         <div className="rounded-2xl px-3 py-4 text-center" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
@@ -6564,7 +6564,7 @@ function DashboardMentoraScreen({ onBack, onAbrirCliente }) {
 
       {pedidos.length > 0 && (
         <div className="px-6 mb-8">
-          <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>PEDIDOS DE ACESSO COMO MENTORA</p>
+          <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>PEDIDOS DE ACESSO COMO COACH</p>
           <div className="space-y-2">
             {pedidos.map((p) => (
               <div key={p.id} className="rounded-xl px-4 py-3" style={{ backgroundColor: `${palette.gold}1F`, border: `1px solid ${palette.gold}` }}>
@@ -6609,7 +6609,7 @@ function DashboardMentoraScreen({ onBack, onAbrirCliente }) {
                   <p className="text-xs font-medium" style={{ color: palette.gold }}>{formatarChaveHorario(m.horario)}</p>
                 </div>
                 <p className="text-xs mt-1" style={{ color: palette.navySoft }}>
-                  {cliente ? cliente.email : "email desconhecido"}{cliente?.telefone ? ` · ${cliente.telefone}` : ""}
+                  {cliente ? cliente.email : "correio eletrónico desconhecido"}{cliente?.telefone ? ` · ${cliente.telefone}` : ""}
                 </p>
                 {souDona && mentora && (
                   <p className="text-[10px] mt-1 tracking-wide" style={{ color: palette.gold }}>COM {mentora.email.toUpperCase()}</p>
@@ -6636,7 +6636,7 @@ function DashboardMentoraScreen({ onBack, onAbrirCliente }) {
                 </div>
                 <div className="flex items-center justify-between mt-1">
                   <p className="text-xs" style={{ color: palette.navySoft }}>
-                    {cliente ? cliente.email : "email desconhecido"}
+                    {cliente ? cliente.email : "correio eletrónico desconhecido"}
                   </p>
                   <span
                     className="text-[10px] tracking-wide font-medium"
@@ -6652,7 +6652,7 @@ function DashboardMentoraScreen({ onBack, onAbrirCliente }) {
                     className="w-full mt-2 rounded-lg py-2 text-xs font-medium tracking-wide disabled:opacity-60"
                     style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
                   >
-                    {aEmitirFatura === p.id ? "A emitir fatura..." : "Confirmar pagamento e emitir fatura"}
+                    {aEmitirFatura === p.id ? "A emitir fatura…" : "Confirmar pagamento e emitir fatura"}
                   </button>
                 )}
               </div>
@@ -6729,7 +6729,7 @@ function DashboardMentoraScreen({ onBack, onAbrirCliente }) {
         ) : (
           <>
             {clientes.length === 0 && (
-              <p className="text-sm" style={{ color: palette.navySoft }}>Ainda não há subscritores.</p>
+              <p className="text-sm" style={{ color: palette.navySoft }}>Ainda não há clientes registados.</p>
             )}
             <div className="space-y-2">
               {clientes.map((c) => {
@@ -6856,7 +6856,7 @@ function FichaClienteScreen({ cliente, onBack, onNomeAtualizado }) {
     return (
       <div className="pb-28">
         <SectionHeader eyebrow="FICHA DE CLIENTE" title={cliente.nome || cliente.email} onBack={onBack} />
-        <p className="px-6 text-sm" style={{ color: palette.navySoft }}>A carregar...</p>
+        <p className="px-6 text-sm" style={{ color: palette.navySoft }}>A carregar…</p>
       </div>
     );
   }
@@ -6902,7 +6902,7 @@ function FichaClienteScreen({ cliente, onBack, onNomeAtualizado }) {
             className="w-full rounded-full py-2.5 text-xs font-medium tracking-wide disabled:opacity-60"
             style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
           >
-            {aGuardar ? "A guardar..." : "Guardar ficha"}
+            {aGuardar ? "A guardar…" : "Guardar ficha"}
           </button>
           {guardado && <p className="text-center text-xs mt-2" style={{ color: palette.gold }}>Guardado</p>}
         </div>
@@ -6916,14 +6916,14 @@ function FichaClienteScreen({ cliente, onBack, onNomeAtualizado }) {
             type="text"
             value={tituloNota}
             onChange={(e) => setTituloNota(e.target.value)}
-            placeholder="Título (ex: Sessão 12 set)"
+            placeholder="Título (ex.: Sessão de 12 de setembro)"
             className="w-full rounded-xl px-3.5 py-2.5 text-sm outline-none mb-2"
             style={{ backgroundColor: palette.creamSoft, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
           />
           <textarea
             value={novaNota}
             onChange={(e) => setNovaNota(e.target.value)}
-            placeholder="O que aconteceu nesta sessão, observações, próximos passos..."
+            placeholder="O que aconteceu nesta sessão, observações, próximos passos…"
             rows={4}
             className="w-full rounded-xl px-3.5 py-3 text-sm outline-none resize-none mb-2"
             style={{ backgroundColor: palette.creamSoft, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
@@ -6934,7 +6934,7 @@ function FichaClienteScreen({ cliente, onBack, onNomeAtualizado }) {
             className="w-full rounded-full py-2.5 text-xs font-medium tracking-wide disabled:opacity-60"
             style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
           >
-            {aGuardarNota ? "A adicionar..." : "Adicionar nota"}
+            {aGuardarNota ? "A adicionar…" : "Adicionar nota"}
           </button>
         </div>
 
@@ -6995,16 +6995,16 @@ function AcessoFormadoresScreen({ onBack }) {
 
   return (
     <div className="pb-28">
-      <SectionHeader eyebrow="PAINEL DA MENTORA" title="Acesso de Formadores" onBack={onBack} />
+      <SectionHeader eyebrow="PAINEL DE GESTÃO" title="Acesso de Formadores" onBack={onBack} />
       <div className="px-6 mb-5">
         <p className="text-sm" style={{ color: palette.navySoft }}>
-          Escolhe, para cada curso, quais mentoras podem ver os materiais de formador (Manual, Livro do Formador, Caderno do Formador). Tu, como dona, vês sempre tudo.
+          Escolhe, para cada curso, que coaches podem consultar os materiais de formador (Manual, Livro do Formador, Caderno do Formador). Tu, como dona, vês sempre tudo.
         </p>
       </div>
       {carregando ? (
-        <p className="px-6 text-sm" style={{ color: palette.navySoft }}>A carregar...</p>
+        <p className="px-6 text-sm" style={{ color: palette.navySoft }}>A carregar…</p>
       ) : mentoras.length === 0 ? (
-        <p className="px-6 text-sm" style={{ color: palette.navySoft }}>Ainda não há mentoras registadas.</p>
+        <p className="px-6 text-sm" style={{ color: palette.navySoft }}>Ainda não há coaches registados.</p>
       ) : (
         <div className="px-6 space-y-2">
           {cursosComFormador.map((c) => {
@@ -7048,7 +7048,7 @@ function CoachPorAreaPainel() {
       const { data: ms } = await supabase.from("mentores_disponibilidade").select("user_id, nome, email").order("nome", { ascending: true });
       setMentores(ms || []);
       const { data: ac, error } = await supabase.from("areas_coach").select("area, mentor_user_id");
-      if (error) { setEscolhas({ ...COACH_POR_AREA_PADRAO }); setEstado("Por agora a escolha está fixa: Liderança e Vida com a Conceição, Desporto com o coach desportivo."); return; }
+      if (error) { setEscolhas({ ...COACH_POR_AREA_PADRAO }); setEstado("Por agora, a escolha está fixa: Liderança e Vida com a Conceição, Desporto com o coach desportivo."); return; }
       const e = {};
       (ac || []).forEach((r) => { e[r.area] = r.mentor_user_id || ""; });
       setEscolhas(e);
@@ -7056,7 +7056,7 @@ function CoachPorAreaPainel() {
   }, []);
   const guardar = async (area, mentorId) => {
     setEscolhas((x) => ({ ...x, [area]: mentorId }));
-    setEstado("A guardar...");
+    setEstado("A guardar…");
     const { error } = await supabase.from("areas_coach").upsert({ area, mentor_user_id: mentorId || null, atualizado_em: new Date().toISOString() });
     setEstado(error ? "Não foi possível guardar." : "Guardado.");
   };
@@ -7064,7 +7064,7 @@ function CoachPorAreaPainel() {
     <div className="px-6 mb-6">
       <div className="rounded-2xl px-5 py-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
         <p className="font-serif text-lg" style={{ color: palette.navy }}>Coach por área</p>
-        <p className="text-xs mt-0.5 mb-3" style={{ color: palette.navySoft }}>Quem recebe as marcações de cada escola. Só aparecem coaches com conta de mentora aprovada.</p>
+        <p className="text-xs mt-0.5 mb-3" style={{ color: palette.navySoft }}>Quem recebe as marcações de cada escola. Só aparecem coaches com conta de coach aprovada.</p>
         {Object.entries(ESCOLAS_3S).map(([area, e]) => (
           <div key={area} className="mb-3">
             <p className="text-[11px] tracking-[0.15em] font-semibold mb-1" style={{ color: palette.gold }}>{e.curto.toUpperCase()} 3S</p>
@@ -7120,7 +7120,7 @@ function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFor
 
   return (
     <div className="pb-28">
-      <SectionHeader eyebrow="VISÃO DA ESCOLA" title="Painel da Mentora" onBack={onBack} />
+      <SectionHeader eyebrow="VISÃO DA ESCOLA" title="Painel de Gestão" onBack={onBack} />
 
       <div className="px-6 mb-6">
         <button
@@ -7129,7 +7129,7 @@ function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFor
           style={{ backgroundColor: palette.navy }}
         >
           <div className="text-left">
-            <p className="font-serif text-lg" style={{ color: palette.creamSoft }}>Dashboard de Subscritores</p>
+            <p className="font-serif text-lg" style={{ color: palette.creamSoft }}>Painel de Clientes</p>
             <p className="text-xs mt-0.5" style={{ color: palette.goldSoft }}>Clientes, telefones, pagamentos e pedidos de acesso</p>
           </div>
           <ChevronRight size={18} style={{ color: palette.gold }} />
@@ -7163,7 +7163,7 @@ function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFor
           >
             <div className="text-left">
               <p className="font-serif text-lg" style={{ color: palette.navy }}>Acesso de Formadores</p>
-              <p className="text-xs mt-0.5" style={{ color: palette.navySoft }}>Escolhe que mentoras podem dar cada curso</p>
+              <p className="text-xs mt-0.5" style={{ color: palette.navySoft }}>Escolhe que coaches podem lecionar cada curso</p>
             </div>
             <ChevronRight size={18} style={{ color: palette.navySoft }} />
           </button>
@@ -7179,7 +7179,7 @@ function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFor
           >
             <div className="text-left">
               <p className="font-serif text-lg" style={{ color: palette.navy }}>Anunciar Novidade</p>
-              <p className="text-xs mt-0.5" style={{ color: palette.navySoft }}>Avisa todos os registados por email (curso ou material novo)</p>
+              <p className="text-xs mt-0.5" style={{ color: palette.navySoft }}>Avisa todos os registados por correio eletrónico (curso ou material novo)</p>
             </div>
             {novidadeAberta ? <ChevronDown size={18} style={{ color: palette.navySoft }} /> : <ChevronRight size={18} style={{ color: palette.navySoft }} />}
           </button>
@@ -7191,7 +7191,7 @@ function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFor
                   type="text"
                   value={tituloNovidade}
                   onChange={(e) => setTituloNovidade(e.target.value)}
-                  placeholder="Ex: Novo curso — Resiliência"
+                  placeholder="Ex.: Novo curso — Resiliência"
                   className="w-full rounded-xl px-3.5 py-2.5 text-sm"
                   style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
                 />
@@ -7201,7 +7201,7 @@ function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFor
                 <textarea
                   value={mensagemNovidade}
                   onChange={(e) => setMensagemNovidade(e.target.value)}
-                  placeholder="Escreve aqui a novidade..."
+                  placeholder="Escreve aqui a novidade…"
                   rows={4}
                   className="w-full rounded-xl px-3.5 py-2.5 text-sm resize-none"
                   style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
@@ -7213,7 +7213,7 @@ function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFor
                 className="w-full py-3 rounded-xl font-medium text-sm"
                 style={{ backgroundColor: palette.navy, color: palette.creamSoft, opacity: aEnviar || !tituloNovidade.trim() ? 0.6 : 1 }}
               >
-                {aEnviar ? "A enviar..." : "Enviar a todos"}
+                {aEnviar ? "A enviar…" : "Enviar a todos"}
               </button>
               {enviado && (
                 <p className="text-xs text-center" style={{ color: palette.navySoft }}>{enviado}</p>
@@ -7226,7 +7226,7 @@ function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFor
       <div className="px-6 grid grid-cols-3 gap-3 mb-8">
         <div className="rounded-2xl px-3 py-4 text-center" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
           <p className="font-serif text-2xl" style={{ color: palette.navy }}>{totalInscricoes}</p>
-          <p className="text-[10px] tracking-wide mt-1" style={{ color: palette.navySoft }}>INSCRIÇÕES WORKSHOPS</p>
+          <p className="text-[10px] tracking-wide mt-1" style={{ color: palette.navySoft }}>INSCRIÇÕES EM FORMAÇÕES</p>
         </div>
         <div className="rounded-2xl px-3 py-4 text-center" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
           <p className="font-serif text-2xl" style={{ color: palette.navy }}>{progresso.sessoesMarcadas.length}</p>
@@ -7258,7 +7258,7 @@ function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFor
       </div>
 
       <div className="px-6 mb-8">
-        <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>INSCRIÇÕES POR WORKSHOP</p>
+        <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>INSCRIÇÕES POR FORMAÇÃO</p>
         <div className="space-y-2">
           {workshops.map((w) => {
             const inscrito = Boolean(progresso.inscricoesWorkshops[w.id]);
@@ -7278,7 +7278,7 @@ function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFor
       <div className="px-6">
         <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>DISPONIBILIDADE ATUAL</p>
         {progresso.disponibilidade.dias.length === 0 || progresso.disponibilidade.horas.length === 0 ? (
-          <p className="text-sm" style={{ color: palette.navySoft }}>Ainda não definiste datas/horas para sessões.</p>
+          <p className="text-sm" style={{ color: palette.navySoft }}>Ainda não definiste datas nem horas para sessões.</p>
         ) : (
           <p className="text-sm leading-relaxed" style={{ color: palette.ink }}>
             {[...progresso.disponibilidade.dias].sort().map((d) => {
@@ -7311,10 +7311,10 @@ function PerfilScreen({ onVerAreaAluno, onVerDisponibilidade, onVerPainelMentora
             style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}
           >
             <p className="text-sm font-medium" style={{ color: palette.ink }}>
-              {papel === "dona" ? "És a dona da escola" : "És mentora"}
+              {papel === "dona" ? "És a dona da escola" : "És coach da escola"}
             </p>
             <p className="text-xs mt-0.5" style={{ color: palette.navySoft }}>
-              {papel === "dona" ? "Vês tudo — todas as mentoras, clientes e marcações" : "Acesso aprovado pela dona da escola"}
+              {papel === "dona" ? "Vês tudo: coaches, clientes e marcações" : "Acesso aprovado pela dona da escola"}
             </p>
           </div>
         </div>
@@ -7327,7 +7327,7 @@ function PerfilScreen({ onVerAreaAluno, onVerDisponibilidade, onVerPainelMentora
             className="w-full flex items-center justify-between rounded-xl px-4 py-3.5 text-left"
             style={{ backgroundColor: palette.navy }}
           >
-            <span className="text-sm font-medium" style={{ color: palette.creamSoft }}>Painel da Mentora</span>
+            <span className="text-sm font-medium" style={{ color: palette.creamSoft }}>Painel de Gestão</span>
             <ChevronRight size={16} style={{ color: palette.gold }} />
           </button>
         )}
@@ -7410,7 +7410,7 @@ function NotificacoesScreen({ onBack }) {
     <div className="pb-28">
       <SectionHeader eyebrow="ATIVIDADE RECENTE" title="Notificações" onBack={onBack} />
       <div className="px-6 space-y-2">
-        {aCarregar && <p className="text-sm" style={{ color: palette.navySoft }}>A carregar...</p>}
+        {aCarregar && <p className="text-sm" style={{ color: palette.navySoft }}>A carregar…</p>}
         {!aCarregar && notificacoes.length === 0 && (
           <p className="text-sm" style={{ color: palette.navySoft }}>Ainda não tens notificações.</p>
         )}
@@ -7593,7 +7593,7 @@ const comunidadeEmDia = (p) => Boolean(p?.comunidadePagaAte && new Date(p.comuni
 async function criarPagamento(tipo, valor, descricao, telemovel, itens) {
   const { data: sessaoAtual } = await supabase.auth.getSession();
   const token = sessaoAtual?.session?.access_token;
-  if (!token) throw new Error("Sessão inválida — entra na app de novo.");
+  if (!token) throw new Error("Sessão inválida — entra na aplicação de novo.");
   const resp = await fetch("https://hspekqrhttxeckghtryi.supabase.co/functions/v1/criar-pagamento", {
     method: "POST",
     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
@@ -7717,7 +7717,7 @@ function CarrinhoScreen({ onBack, onPagamentoConfirmado }) {
           onPagamentoConfirmado();
         } else {
           setEstado("falhou");
-          setErro("Não recebemos a confirmação a tempo. Se já aprovaste na app MB WAY, o acesso fica desbloqueado assim que o pagamento chegar.");
+          setErro("Não recebemos a confirmação a tempo. Se já aprovaste na aplicação MB WAY, o acesso fica desbloqueado assim que o pagamento chegar.");
         }
       } else {
         setReferencia({ metodo, entidade: r.entidade, referencia: r.referencia, valor: r.valor || total, validade: r.validade });
@@ -7768,7 +7768,7 @@ function CarrinhoScreen({ onBack, onPagamentoConfirmado }) {
 
         {estado === "referencia" && referencia && (
           <>
-            <p className="text-sm" style={{ color: palette.ink }}>Usa estes dados para pagar {referencia.metodo === "mb" ? "no multibanco ou no homebanking" : "num agente Payshop (CTT, papelarias, quiosques)"}. Assim que o pagamento chegar, o acesso fica desbloqueado automaticamente.</p>
+            <p className="text-sm" style={{ color: palette.ink }}>Usa estes dados para pagar {referencia.metodo === "mb" ? "num terminal Multibanco ou no serviço bancário pela internet" : "num agente Payshop (CTT, papelarias, quiosques)"}. Assim que o pagamento chegar, o acesso fica desbloqueado automaticamente.</p>
             {blocoReferencia(referencia)}
           </>
         )}
@@ -7808,8 +7808,8 @@ function CarrinhoScreen({ onBack, onPagamentoConfirmado }) {
             </div>
 
             <p className="text-[11px] tracking-[0.2em] font-medium pt-2" style={{ color: palette.gold }}>ESCOLHE COMO QUERES PAGAR</p>
-            {cartaoMetodo("mbway", "MB WAY", "Aprovas na app MB WAY e o acesso fica logo desbloqueado.")}
-            {cartaoMetodo("mb", "Referência Multibanco", "Pagas no multibanco ou no homebanking.")}
+            {cartaoMetodo("mbway", "MB WAY", "Aprovas na aplicação MB WAY e o acesso fica logo desbloqueado.")}
+            {cartaoMetodo("mb", "Referência Multibanco", "Pagas num terminal Multibanco ou no serviço bancário pela internet.")}
             {cartaoMetodo("payshop", "Payshop", "Pagas em dinheiro num agente Payshop (CTT, papelarias).")}
 
             {metodo === "mbway" && estado !== "a_confirmar" && (
@@ -7826,7 +7826,7 @@ function CarrinhoScreen({ onBack, onPagamentoConfirmado }) {
             {estado === "a_confirmar" ? (
               <div className="text-center py-4">
                 <p className="text-sm font-medium" style={{ color: palette.navy }}>Confirma no teu telemóvel</p>
-                <p className="text-xs" style={{ color: palette.navySoft }}>Abre a app MB WAY e aprova o pagamento de {precoTexto(total)}.</p>
+                <p className="text-xs" style={{ color: palette.navySoft }}>Abre a aplicação MB WAY e aprova o pagamento de {precoTexto(total)}.</p>
               </div>
             ) : (
               <button
@@ -7835,7 +7835,7 @@ function CarrinhoScreen({ onBack, onPagamentoConfirmado }) {
                 className="w-full rounded-full py-3.5 font-medium text-sm tracking-wide disabled:opacity-50"
                 style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
               >
-                {estado === "a_enviar" ? "A preparar pagamento..." : metodo === "mbway" ? `Pagar ${precoTexto(total)}` : metodo ? `Gerar referência de ${precoTexto(total)}` : "Escolhe a forma de pagamento"}
+                {estado === "a_enviar" ? "A preparar pagamento…" : metodo === "mbway" ? `Pagar ${precoTexto(total)}` : metodo ? `Gerar referência de ${precoTexto(total)}` : "Escolhe a forma de pagamento"}
               </button>
             )}
           </>
@@ -7905,48 +7905,48 @@ function FichaCursoScreen({ curso, session, onBack, onGuardada }) {
 /* ---------- Inscrição pública em eventos (sem conta) ---------- */
 const EVENTOS_PUBLICOS = {
   encontro: {
-    nome: "Encontro Online — O que é liderar, afinal? (2 out, 21h)",
+    nome: "Encontro à distância — O que é liderar, afinal? (2 out, 21h)",
     titulo: "O que é liderar, afinal?",
-    subtitulo: "Encontro online gratuito",
+    subtitulo: "Encontro à distância gratuito",
     data: "Sexta-feira, 2 de outubro · 21h00",
     inicio: "2026-10-02T21:00:00+01:00",
     chamada: "O que é ser líder nos dias de hoje?",
     quandoCurto: "Sexta, 2 out · 21h",
-    descricao: "Um encontro para olhar para a liderança por dentro: o que é, o que não é e por onde começar. Online e gratuito.",
+    descricao: "Um encontro para olhar para a liderança por dentro: o que é, o que não é e por onde começar. À distância e gratuito.",
   },
 };
 EVENTOS_PUBLICOS.imersao = EVENTOS_PUBLICOS.encontro;
 EVENTOS_PUBLICOS.outubro = {
-  nome: "Encontro Online da Escola 3S — 30 de outubro (21h)",
-  titulo: "Encontro Online da Escola 3S",
-  subtitulo: "Encontro online",
+  nome: "Encontro à distância da Escola 3S — 30 de outubro (21h)",
+  titulo: "Encontro à distância da Escola 3S",
+  subtitulo: "Encontro à distância",
   data: "Sexta-feira, 30 de outubro · 21h00",
   inicio: "2026-10-30T21:00:00+00:00",
-  chamada: "Encontro online da Escola 3S",
+  chamada: "Encontro à distância da Escola 3S",
   quandoCurto: "Sexta, 30 out · 21h",
-  descricao: "Um encontro ao vivo, online, para refletir, partilhar e crescer em conjunto com a Escola 3S.",
+  descricao: "Um encontro ao vivo, à distância, para refletir, partilhar e crescer em conjunto com a Escola 3S.",
 };
 EVENTOS_PUBLICOS.novembro = {
-  nome: "Encontro Online da Escola 3S — 27 de novembro (21h)",
-  titulo: "Encontro Online da Escola 3S",
-  subtitulo: "Encontro online",
+  nome: "Encontro à distância da Escola 3S — 27 de novembro (21h)",
+  titulo: "Encontro à distância da Escola 3S",
+  subtitulo: "Encontro à distância",
   data: "Sexta-feira, 27 de novembro · 21h00",
   inicio: "2026-11-27T21:00:00+00:00",
-  chamada: "Encontro online da Escola 3S",
+  chamada: "Encontro à distância da Escola 3S",
   quandoCurto: "Sexta, 27 nov · 21h",
-  descricao: "Um encontro ao vivo, online, para refletir, partilhar e crescer em conjunto com a Escola 3S.",
+  descricao: "Um encontro ao vivo, à distância, para refletir, partilhar e crescer em conjunto com a Escola 3S.",
 };
 EVENTOS_PUBLICOS.dezembro = {
-  nome: "Encontro Online da Escola 3S — 18 de dezembro (21h)",
-  titulo: "Encontro Online da Escola 3S",
-  subtitulo: "Encontro online",
+  nome: "Encontro à distância da Escola 3S — 18 de dezembro (21h)",
+  titulo: "Encontro à distância da Escola 3S",
+  subtitulo: "Encontro à distância",
   data: "Sexta-feira, 18 de dezembro · 21h00",
   inicio: "2026-12-18T21:00:00+00:00",
-  chamada: "Encontro online da Escola 3S",
+  chamada: "Encontro à distância da Escola 3S",
   quandoCurto: "Sexta, 18 dez · 21h",
-  descricao: "Um encontro ao vivo, online, para refletir, partilhar e crescer em conjunto com a Escola 3S.",
+  descricao: "Um encontro ao vivo, à distância, para refletir, partilhar e crescer em conjunto com a Escola 3S.",
 };
-const TEXTO_CONSENTIMENTO_EVENTO = "Aceito que a Escola 3S guarde os meus dados (nome, email e telemóvel) para gerir a minha inscrição neste evento e me enviar o link e informações sobre ele.";
+const TEXTO_CONSENTIMENTO_EVENTO = "Aceito que a Escola 3S guarde os meus dados (nome, correio eletrónico e telemóvel) para gerir a minha inscrição neste evento e me enviar a ligação e informações sobre ele.";
 
 function BannerEncontro() {
   const chaves = ["encontro"];
@@ -7960,7 +7960,7 @@ function BannerEncontro() {
         className="block rounded-3xl px-5 py-6 text-center transition active:scale-[0.99]"
         style={{ backgroundColor: palette.navy, boxShadow: "0 10px 30px rgba(20,30,60,0.18)" }}
       >
-        <p className="text-[10px] tracking-[0.25em] font-medium" style={{ color: palette.gold }}>ENCONTRO ONLINE GRATUITO · {ev.quandoCurto.toUpperCase()}</p>
+        <p className="text-[10px] tracking-[0.25em] font-medium" style={{ color: palette.gold }}>ENCONTRO GRATUITO À DISTÂNCIA · {ev.quandoCurto.toUpperCase()}</p>
         <p className="font-serif text-3xl leading-tight mt-3" style={{ color: palette.creamSoft }}>{ev.chamada}</p>
         <span className="inline-block mt-5 rounded-full px-6 py-3 text-sm font-medium" style={{ backgroundColor: palette.gold, color: palette.navy }}>
           Quero participar
@@ -8034,14 +8034,14 @@ function InscricaoEventoPublica({ eventoId }) {
               {estado === "ok" ? (
                 <div className="rounded-2xl px-5 py-6 text-center" style={{ backgroundColor: palette.card, border: `1px solid ${palette.gold}` }}>
                   <CheckCircle2 size={30} style={{ color: palette.gold, margin: "0 auto" }} />
-                  <p className="font-serif text-2xl mt-2" style={{ color: palette.navy }}>Inscrição feita!</p>
-                  <p className="text-sm mt-2 leading-relaxed" style={{ color: palette.ink }}>Obrigada, {nome.trim().split(" ")[0]}. Vais receber o link de acesso antes do evento, no email {email.trim()}.</p>
+                  <p className="font-serif text-2xl mt-2" style={{ color: palette.navy }}>Inscrição concluída!</p>
+                  <p className="text-sm mt-2 leading-relaxed" style={{ color: palette.ink }}>Obrigada, {nome.trim().split(" ")[0]}. Vais receber a ligação de acesso antes do evento, no correio eletrónico {email.trim()}.</p>
                 </div>
               ) : (
                 <div className="space-y-3">
                   <p className="text-sm leading-relaxed mb-2" style={{ color: palette.ink }}>{evento.descricao}</p>
                   {campo(nome, setNome, "Nome completo")}
-                  {campo(email, setEmail, "Email", "email")}
+                  {campo(email, setEmail, "Correio eletrónico", "email")}
                   {campo(telefone, setTelefone, "Telemóvel", "tel")}
                   {campo(localidade, setLocalidade, "Localidade (opcional)")}
                   <label className="flex items-start gap-2.5 px-1 pt-1">
@@ -8082,7 +8082,7 @@ function incluiCurso(curso) {
   const lista = [];
   const nAulas = (curso.aulas || []).length;
   if (nAulas) lista.push(`${nAulas} aula${nAulas === 1 ? "" : "s"}${(curso.aulas || []).some((a) => a.videoUrl) ? " em vídeo" : ""}`);
-  if (curso.interativo) lista.push("Exercícios, quizzes e desafios em cada aula", "Avaliação 3S e plano de 30 dias à tua medida");
+  if (curso.interativo) lista.push("Exercícios, questionários e desafios em cada aula", "Avaliação 3S e plano de 30 dias à tua medida");
   if (mats.some((m) => m.formato === "Caderno")) lista.push("Caderno de trabalho");
   if (mats.some((m) => m.formato === "Livro")) lista.push("Livro do aluno");
   if (mats.some((m) => m.formato === "Ficha")) lista.push("Material didático");
@@ -8301,7 +8301,7 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher }) {
             Para quem lidera equipas, negócios, famílias ou a própria vida. Cursos em vídeo, testes interativos, livros e sessões de coaching, com a Conceição Alves.
           </p>
           <div className="mt-6 space-y-2.5">
-            {botao("Começar grátis", onCriarConta)}
+            {botao("Começar gratuitamente", onCriarConta)}
             <button onClick={onEntrar} className="text-xs underline underline-offset-2" style={{ color: palette.navySoft }}>Já tenho conta</button>
           </div>
         </div>
@@ -8311,9 +8311,9 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher }) {
           {titulo("O MÉTODO 3S", "Saber, Sentir, Ser")}
           <div className="space-y-3">
             {[
-              ["Saber", "Saber o que dizer.", "Ouvir, perguntar, dar feedback e conduzir conversas difíceis."],
+              ["Saber", "Saber o que dizer.", "Ouvir, perguntar, dar retorno e conduzir conversas difíceis."],
               ["Sentir", "Sentir quem está à tua frente.", "Perceber as emoções do outro, e as tuas, antes de reagir."],
-              ["Ser", "Ser o líder que os outros querem seguir.", "Coerência e exemplo. As pessoas seguem quem tu és, não o cargo."],
+              ["Ser", "Ser alguém que os outros querem seguir.", "Coerência e exemplo. As pessoas seguem quem tu és, não o cargo."],
             ].map(([n, f, d]) => (
               <div key={n} className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
                 <p className="text-[11px] tracking-[0.25em] font-medium" style={{ color: palette.gold }}>{n.toUpperCase()}</p>
@@ -8336,7 +8336,7 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher }) {
                   <p key={i} className="text-xs" style={{ color: palette.creamSoft }}>▸ Aula {i + 1} — {a.titulo}</p>
                 ))}
               </div>
-              <div className="mt-5">{botao("Quero o curso grátis", onCriarConta, true)}</div>
+              <div className="mt-5">{botao("Quero o curso gratuito", onCriarConta, true)}</div>
             </div>
           </div>
         )}
@@ -8357,7 +8357,7 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher }) {
               <div className="space-y-3">
                 {e.app && (
                   <a href={e.app.url} className="block rounded-2xl px-4 py-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
-                    <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>APP</p>
+                    <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>APLICAÇÃO</p>
                     <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{e.app.nome}</p>
                     <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{e.app.desc}</p>
                     <span className="inline-flex items-center gap-1 mt-3 text-xs font-medium rounded-full px-4 py-2" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Abrir <ChevronRight size={14} /></span>
@@ -8411,7 +8411,7 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher }) {
           {titulo("COMO FUNCIONA", "Comprar é simples")}
           <div className="space-y-3">
             {[
-              ["1", "Cria a tua conta grátis", "Só precisas de email e palavra-passe."],
+              ["1", "Cria a tua conta gratuita", "Só precisas de correio eletrónico e palavra-passe."],
               ["2", "Escolhe o que queres", "O que escolheste fica guardado no teu carrinho."],
               ["3", "Paga como preferires", "MB WAY, referência Multibanco ou Payshop."],
               ["4", "Acesso automático", "Assim que o pagamento é confirmado, o conteúdo abre."],
@@ -8432,7 +8432,7 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher }) {
           <div className="rounded-3xl px-5 py-6 text-center" style={{ backgroundColor: palette.navy }}>
             <p className="font-serif text-2xl leading-tight" style={{ color: palette.creamSoft }}>Começa hoje a liderar melhor, ao teu ritmo.</p>
             <p className="text-xs mt-2" style={{ color: palette.goldSoft }}>O primeiro curso é por nossa conta.</p>
-            <div className="mt-4">{botao("Criar conta grátis", onCriarConta, true)}</div>
+            <div className="mt-4">{botao("Criar conta gratuita", onCriarConta, true)}</div>
           </div>
           <p className="text-[11px] text-center mt-6" style={{ color: palette.navySoft }}>Escola 3S · Coaching de Liderança, Vida e Desporto · Saber · Sentir · Ser</p>
         </div>
@@ -8475,11 +8475,11 @@ function EventosOnlineMentora({ compacto }) {
   if (eventos.length === 0) return null;
   return (
     <div className={compacto ? "" : "mb-6"}>
-      {!compacto && <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>EVENTOS ONLINE</p>}
+      {!compacto && <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>EVENTOS À DISTÂNCIA</p>}
       <div className="space-y-2">
         {eventos.map((e) => (
           <div key={e.id} className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.navy }}>
-            {compacto && <p className="text-[11px] tracking-[0.2em] font-medium" style={{ color: palette.gold }}>PRÓXIMO EVENTO ONLINE</p>}
+            {compacto && <p className="text-[11px] tracking-[0.2em] font-medium" style={{ color: palette.gold }}>PRÓXIMO EVENTO À DISTÂNCIA</p>}
             <p className="font-serif text-lg mt-1 leading-snug" style={{ color: palette.creamSoft }}>{e.titulo}</p>
             <p className="text-xs mt-0.5" style={{ color: palette.goldSoft }}>
               {formatarHorarioSessao(new Date(e.inicio).toISOString())} · {e.inscritos} inscrito{e.inscritos === 1 ? "" : "s"}
@@ -8505,7 +8505,7 @@ function BotaoLinkSessao({ link }) {
         className="rounded-lg px-3 py-2 text-xs font-medium"
         style={{ backgroundColor: palette.creamSoft, color: palette.navy, border: `1px solid ${palette.goldSoft}55` }}
       >
-        {copiado ? "Copiado ✓" : "Copiar link"}
+        {copiado ? "Copiado ✓" : "Copiar ligação"}
       </button>
     </div>
   );
@@ -8627,7 +8627,7 @@ function AvisosMentoraInicio({ naoLidas, onVerAgenda, onVerNotificacoes }) {
       if (!m) { setProxima(null); return; }
       const [{ data: l }, { data: c }] = await Promise.all([
         supabase.from("marcacoes_links").select("link").eq("marcacao_id", m.id).maybeSingle(),
-        supabase.from("clientes").select("nome, email").eq("user_id", m.user_id).maybeSingle(),
+        supabase.from("clientes").select("nome, correio eletrónico").eq("user_id", m.user_id).maybeSingle(),
       ]);
       setProxima({ ...m, link: l?.link, cliente: c?.nome || c?.email || "" });
     })();
@@ -8661,7 +8661,7 @@ function AvisosMentoraInicio({ naoLidas, onVerAgenda, onVerNotificacoes }) {
 }
 
 /* ---------- Arquivo da Escola (só a dona) ---------- */
-const TEXTO_CONSENTIMENTO_GERAL = "Aceito que a Escola 3S guarde e utilize os meus dados pessoais (email e, sempre que os partilhar, nome, telemóvel e outra informação fornecida nos formulários da app) para gerir a minha conta e o meu percurso na escola.";
+const TEXTO_CONSENTIMENTO_GERAL = "Aceito que a Escola 3S guarde e utilize os meus dados pessoais (correio eletrónico e, sempre que os partilhar, nome, telemóvel e outra informação fornecida nos formulários da aplicação) para gerir a minha conta e o meu percurso na escola.";
 
 function ConsentimentoGate({ session, onAceite }) {
   const [aceitou, setAceitou] = useState(false);
@@ -8741,7 +8741,7 @@ function numeroWhatsApp(tel) {
 function mensagemEvento(nome, ev) {
   const primeiro = String(nome || "").trim().split(" ")[0];
   const quando = new Date(ev.inicio).toLocaleDateString("pt-PT", { weekday: "long", day: "numeric", month: "long" }) + " às " + new Date(ev.inicio).toLocaleTimeString("pt-PT", { hour: "2-digit", minute: "2-digit" });
-  return `Olá${primeiro ? " " + primeiro : ""}! 😊 Obrigada pela tua inscrição no ${ev.titulo}.\n\n📅 ${quando}\n🔗 Link para entrar: ${ev.link}\n\nAté já!\nConceição Alves · Escola 3S`;
+  return `Olá${primeiro ? " " + primeiro : ""}! 😊 Obrigada pela tua inscrição no ${ev.titulo}.\n\n📅 ${quando}\n🔗 Ligação para entrar: ${ev.link}\n\nAté já!\nConceição Alves · Escola 3S`;
 }
 
 function ArquivoCartao({ titulo, linhas }) {
@@ -8895,7 +8895,7 @@ function ArquivoEscolaScreen({ onBack }) {
             type="text"
             value={pesquisa}
             onChange={(e) => setPesquisa(e.target.value)}
-            placeholder="Pesquisar por nome, email ou telefone"
+            placeholder="Pesquisar por nome, correio eletrónico ou telefone"
             className="w-full rounded-xl px-4 py-2.5 text-sm outline-none"
             style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
           />
@@ -8908,8 +8908,8 @@ function ArquivoEscolaScreen({ onBack }) {
         {!carregando && tab === "autorizacoes" && (
           <>
             <div className="flex items-center justify-between">
-              <p className="text-xs" style={{ color: palette.navySoft }}>Autorizações RGPD aceites na app</p>
-              {botaoExportar(() => exportarCSV("autorizacoes-rgpd.csv", ["Data", "Nome", "Email", "Telefone", "Texto aceite"],
+              <p className="text-xs" style={{ color: palette.navySoft }}>Autorizações RGPD aceites na aplicação</p>
+              {botaoExportar(() => exportarCSV("autorizacoes-rgpd.csv", ["Data", "Nome", "Correio eletrónico", "Telefone", "Texto aceite"],
                 consentimentos.map((c) => [arquivoData(c.aceite_em), c.nome, c.email, c.telefone, c.texto_aceite])))}
             </div>
             {consentimentos.length === 0 && <p className="text-sm" style={{ color: palette.navySoft }}>Ainda não há autorizações registadas.</p>}
@@ -8923,7 +8923,7 @@ function ArquivoEscolaScreen({ onBack }) {
           <>
             <div className="flex items-center justify-between">
               <p className="text-xs" style={{ color: palette.navySoft }}>Todas as pessoas registadas</p>
-              {botaoExportar(() => exportarCSV("fichas-clientes.csv", ["Nome", "Email", "Telefone", "Registo"],
+              {botaoExportar(() => exportarCSV("fichas-clientes.csv", ["Nome", "Correio eletrónico", "Telefone", "Registo"],
                 clientes.map((c) => [c.nome, c.email, c.telefone, arquivoData(c.criado_em)])))}
             </div>
             {clientes.filter((c) => filtro(`${c.nome} ${c.email} ${c.telefone}`)).map((c) => (
@@ -8935,8 +8935,8 @@ function ArquivoEscolaScreen({ onBack }) {
         {!carregando && tab === "inscricoes" && (
           <>
             <div className="flex items-center justify-between">
-              <p className="text-xs" style={{ color: palette.navySoft }}>Ações, formações, workshops e lives</p>
-              {botaoExportar(() => exportarCSV("inscricoes.csv", ["Ação", "Data", "Nome", "Email", "Telefone", "Localidade"],
+              <p className="text-xs" style={{ color: palette.navySoft }}>Ações, formações, encontros e diretos</p>
+              {botaoExportar(() => exportarCSV("inscricoes.csv", ["Ação", "Data", "Nome", "Correio eletrónico", "Telefone", "Localidade"],
                 inscricoesTodas.map((i) => [i.acao, i.data, i.nome, i.email, i.telefone, i.localidade])))}
             </div>
             {inscricoesTodas.length === 0 && <p className="text-sm" style={{ color: palette.navySoft }}>Ainda não há inscrições.</p>}
@@ -8945,13 +8945,13 @@ function ArquivoEscolaScreen({ onBack }) {
               return (
                 <div key={e.id} className="rounded-2xl px-4 py-3" style={{ backgroundColor: palette.navy }}>
                   <p className="text-sm font-medium" style={{ color: palette.creamSoft }}>{e.titulo}</p>
-                  <p className="text-xs" style={{ color: palette.goldSoft }}>{n} inscrito{n === 1 ? "" : "s"} · link: {e.link}</p>
+                  <p className="text-xs" style={{ color: palette.goldSoft }}>{n} inscrito{n === 1 ? "" : "s"} · ligação: {e.link}</p>
                   <button
                     onClick={() => { try { navigator.clipboard.writeText(mensagemEvento("", e)); alert("Mensagem copiada! Cola-a no grupo ou na lista de transmissão do WhatsApp."); } catch (err) {} }}
                     className="mt-2 w-full rounded-lg py-2 text-xs font-medium"
                     style={{ backgroundColor: palette.gold, color: palette.navy }}
                   >
-                    Copiar mensagem com o link (para grupos do WhatsApp)
+                    Copiar mensagem com a ligação (para grupos do WhatsApp)
                   </button>
                 </div>
               );
@@ -8970,7 +8970,7 @@ function ArquivoEscolaScreen({ onBack }) {
                       className="mt-1.5 flex items-center justify-center rounded-lg py-2 text-xs font-medium"
                       style={{ backgroundColor: "#25D366", color: "#fff" }}
                     >
-                      Enviar link por WhatsApp
+                      Enviar ligação por WhatsApp
                     </a>
                   )}
                 </div>
@@ -8987,7 +8987,7 @@ function ArquivoEscolaScreen({ onBack }) {
             </div>
             <div className="flex items-center justify-between">
               <p className="text-xs" style={{ color: palette.navySoft }}>Quem pagou e o quê</p>
-              {botaoExportar(() => exportarCSV("pagamentos.csv", ["Data", "Nome", "Email", "O que pagou", "Método", "Valor (€)", "Estado"],
+              {botaoExportar(() => exportarCSV("pagamentos.csv", ["Data", "Nome", "Correio eletrónico", "O que pagou", "Método", "Valor (€)", "Estado"],
                 pagamentos.map((p) => { const pe = pessoa(p.user_id); return [arquivoData(p.pago_em || p.criado_em), pe.nome, pe.email, p.descricao, p.tipo, String(p.valor).replace(".", ","), p.estado]; })))}
             </div>
             {pagamentos.length === 0 && <p className="text-sm" style={{ color: palette.navySoft }}>Ainda não há pagamentos.</p>}
@@ -9009,7 +9009,7 @@ function ArquivoEscolaScreen({ onBack }) {
           <>
             <div className="flex items-center justify-between">
               <p className="text-xs" style={{ color: palette.navySoft }}>Quem abriu cada aula dos cursos</p>
-              {botaoExportar(() => exportarCSV("quem-viu-aulas.csv", ["Data", "Nome", "Email", "Telefone", "Curso", "Aula"],
+              {botaoExportar(() => exportarCSV("quem-viu-aulas.csv", ["Data", "Nome", "Correio eletrónico", "Telefone", "Curso", "Aula"],
                 visualizacoes.map((v) => { const pe = pessoa(v.user_id); return [arquivoData(v.visto_em), pe.nome, pe.email, pe.telefone, v.curso_titulo, `Aula ${v.aula_numero} — ${v.aula_titulo}`]; })))}
             </div>
             {visualizacoes.length === 0 && <p className="text-sm" style={{ color: palette.navySoft }}>Ainda ninguém abriu aulas.</p>}
@@ -9036,7 +9036,7 @@ function ArquivoEscolaScreen({ onBack }) {
           <>
             <div className="flex items-center justify-between">
               <p className="text-xs" style={{ color: palette.navySoft }}>Quem usou códigos de oferta</p>
-              {botaoExportar(() => exportarCSV("codigos-usados.csv", ["Data", "Código", "Nome", "Email", "Telefone"],
+              {botaoExportar(() => exportarCSV("codigos-usados.csv", ["Data", "Código", "Nome", "Correio eletrónico", "Telefone"],
                 codigosUsados.map((c) => { const pe = pessoa(c.user_id); return [arquivoData(c.resgatado_em), c.codigo, pe.nome, pe.email, pe.telefone]; })))}
             </div>
             {codigosUsados.length === 0 && <p className="text-sm" style={{ color: palette.navySoft }}>Ainda ninguém usou um código.</p>}
@@ -9133,9 +9133,9 @@ export function InstalarApp() {
   const instalar = async () => { if (!evento) return; evento.prompt(); try { await evento.userChoice; } catch (e) {} setEvento(null); setMostrar(false); };
   let instrucoes = null;
   if (!evento) {
-    if (appInterna) instrucoes = "Abre este link no Safari (iPhone) ou no Chrome (Android) para instalares a app.";
+    if (appInterna) instrucoes = "Abre esta ligação no Safari (iPhone) ou no Chrome (Android) para instalares a aplicação.";
     else if (ios) instrucoes = "Toca em Partilhar (o quadrado com a seta para cima) e depois em \u201cAdicionar ao ecrã principal\u201d.";
-    else if (android) instrucoes = "Toca nos três pontos \u22ee do Chrome e depois em \u201cInstalar app\u201d ou \u201cAdicionar ao ecrã principal\u201d.";
+    else if (android) instrucoes = "Toca nos três pontos \u22ee do Chrome e depois em \u201cInstalar aplicação\u201d ou \u201cAdicionar ao ecrã principal\u201d.";
   }
   return (
     <div style={{ position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 9999, display: "flex", justifyContent: "center", padding: "0 10px calc(10px + env(safe-area-inset-bottom, 0px))", pointerEvents: "none" }}>
@@ -9143,8 +9143,8 @@ export function InstalarApp() {
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <img src="/apple-touch-icon.png" alt="" width={40} height={40} style={{ borderRadius: 10, flexShrink: 0 }} />
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontWeight: 600, fontSize: 14 }}>Instala a app Escola 3S</div>
-            <div style={{ fontSize: 11.5, opacity: 0.85, lineHeight: 1.35 }}>{instrucoes || "Fica no teu telemóvel, como uma app normal. É grátis."}</div>
+            <div style={{ fontWeight: 600, fontSize: 14 }}>Instala a aplicação Escola 3S</div>
+            <div style={{ fontSize: 11.5, opacity: 0.85, lineHeight: 1.35 }}>{instrucoes || "Fica no teu telemóvel, como uma aplicação normal. É gratuita."}</div>
           </div>
           <button onClick={fechar} aria-label="Fechar" style={{ background: "transparent", border: "none", color: palette.goldSoft, fontSize: 20, lineHeight: 1, padding: 4, cursor: "pointer" }}>×</button>
         </div>

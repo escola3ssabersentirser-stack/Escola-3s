@@ -499,7 +499,7 @@
     <h3 style="font-size:17px; margin-bottom:12px;" id="authTitle">Entra na tua conta</h3>
     <div class="pick" id="authTabs"><button type="button" class="on" onclick="setAuthMode('entrar')">Já tenho conta</button><button type="button" onclick="setAuthMode('criar')">Criar conta</button></div>
     <div id="emailFields">
-      <label for="lgEmail">Email</label><input id="lgEmail" type="email" autocomplete="email" placeholder="o.teu@email.pt">
+      <label for="lgEmail">Correio eletrónico</label><input id="lgEmail" type="email" autocomplete="email" placeholder="o.teu@email.pt">
       <label for="lgPass">Palavra-passe</label><input id="lgPass" type="password" autocomplete="current-password" placeholder="Mínimo 8 caracteres">
     </div>
     <div id="signupFields" hidden>
@@ -511,8 +511,8 @@
       <label id="lgSportsLbl">Atividades de que gostas</label>
       <div class="pick" id="lgSports"></div>
       <div class="only-inst" hidden>
-        <label for="lgInstCont">Contacto público (email ou telefone)</label><input id="lgInstCont" maxlength="120" placeholder="Ex.: geral@clube.pt">
-        <label for="lgInstSite">Site ou rede social (opcional)</label><input id="lgInstSite" maxlength="200" placeholder="Ex.: instagram.com/clube">
+        <label for="lgInstCont">Contacto público (correio eletrónico ou telefone)</label><input id="lgInstCont" maxlength="120" placeholder="Ex.: geral@clube.pt">
+        <label for="lgInstSite">Página na internet ou rede social (opcional)</label><input id="lgInstSite" maxlength="200" placeholder="Ex.: instagram.com/clube">
         <label for="lgInstDesc">Apresentação curta</label><textarea id="lgInstDesc" maxlength="600" placeholder="O que fazem, para quem, onde treinam"></textarea>
       </div>
       <div class="only-atleta">
@@ -589,7 +589,7 @@
       <div class="card">
         <h3>Provas na zona</h3>
         <p class="muted" style="margin:-4px 0 6px;">Escolham uma prova, treinem juntos e vão em grupo. Depois criem um encontro "Prova em grupo".</p>
-        <a class="ext" href="https://gotrail.run/calendario-trail-running/portugal" target="_blank" rel="noopener"><span>Provas de trail<span class="tiny">GoTrail · calendário por região</span></span><span class="go">Abrir ↗</span></a>
+        <a class="ext" href="https://gotrail.run/calendario-trail-running/portugal" target="_blank" rel="noopener"><span>Provas de corrida em trilho<span class="tiny">GoTrail · calendário por região</span></span><span class="go">Abrir ↗</span></a>
         <a class="ext" href="https://www.intervals.icu/events/PT/" target="_blank" rel="noopener"><span>Corridas e outras provas<span class="tiny">Intervals.icu · eventos em Portugal</span></span><span class="go">Abrir ↗</span></a>
       </div>
     </section>
@@ -607,9 +607,9 @@
       </div>
       <div class="card">
         <h3>Explorar esta zona</h3>
-        <p class="tiny" style="margin:-4px 0 6px;">Abre noutros sites a zona que está no centro do mapa.</p>
+        <p class="tiny" style="margin:-4px 0 6px;">Abre noutras páginas a zona que está no centro do mapa.</p>
         <a class="ext" id="lnkTrails" href="https://www.google.com/maps/search/trilhos+pedestres" target="_blank" rel="noopener"><span>Percursos pedestres<span class="tiny">Trilhos oficiais e pequenas rotas (PR) na zona</span></span><span class="go">Abrir ↗</span></a>
-        <a class="ext" href="https://gotrail.run/calendario-trail-running/portugal" target="_blank" rel="noopener"><span>Provas de trail<span class="tiny">Calendário de trails em Portugal, com filtro por região</span></span><span class="go">Abrir ↗</span></a>
+        <a class="ext" href="https://gotrail.run/calendario-trail-running/portugal" target="_blank" rel="noopener"><span>Provas de corrida em trilho<span class="tiny">Calendário de provas em trilho em Portugal, com filtro por região</span></span><span class="go">Abrir ↗</span></a>
         <a class="ext" href="https://www.intervals.icu/events/PT/" target="_blank" rel="noopener"><span>Corridas e provas<span class="tiny">Calendário de corridas, BTT e triatlo em Portugal</span></span><span class="go">Abrir ↗</span></a>
         <a class="ext" id="lnkWiki" href="https://www.wikiloc.com" target="_blank" rel="noopener"><span>Wikiloc<span class="tiny">Percursos partilhados por outras pessoas</span></span><span class="go">Abrir ↗</span></a>
       </div>
@@ -642,7 +642,7 @@
             <button class="primary mintbtn" id="tStart" onclick="timerToggle()">Começar</button>
             <button class="ghost" style="margin:0;" onclick="timerFinish()">Terminar e registar</button>
           </div>
-          <p class="tiny" style="margin:10px 0 0;">Para treinos sem percurso, como pilates. Mantém a app aberta.</p>
+          <p class="tiny" style="margin:10px 0 0;">Para treinos sem percurso, como pilates. Mantém a aplicação aberta.</p>
           <button class="primary" style="width:100%; margin:12px 0 0; background:var(--gold); color:var(--navy);" onclick="abrirGps()">📍 Gravar com GPS: percurso, km e ritmo</button>
         </div>
         <input type="file" id="gpxFile" accept=".gpx,.tcx,.fit,application/gpx+xml,application/xml,text/xml" multiple hidden onchange="onImportFile(this)">
@@ -697,13 +697,13 @@
       <div class="card">
         <h3>Confiança</h3>
         <div class="list-row"><span>Encontros em que participei</span><b class="num" id="pfMeets">0</b></div>
-        <div class="list-row"><span>Conta com email confirmado</span><span class="badge mint">Sim</span></div>
+        <div class="list-row"><span>Conta com correio eletrónico confirmado</span><span class="badge mint">Sim</span></div>
       </div>
 
       <div class="card">
         <h3>Regras da comunidade</h3>
         <div class="safety">
-          <b>Encontros sempre em locais públicos.</b> Diz a alguém onde vais e com quem. Respeita o ritmo do grupo e avisa se faltares. Qualquer comportamento de assédio leva à expulsão da app.
+          <b>Encontros sempre em locais públicos.</b> Diz a alguém onde vais e com quem. Respeita o ritmo do grupo e avisa se faltares. Qualquer comportamento de assédio leva à expulsão da aplicação.
         </div>
       </div>
 
@@ -714,8 +714,8 @@
 
       <div class="card" id="donaCard" hidden>
         <h3>Dar acesso de coach</h3>
-        <p class="muted" style="margin:-4px 0 10px;">A pessoa tem de criar conta na app primeiro. Depois escreve aqui o email dela.</p>
-        <label for="mkEmail">Email da conta do coach</label><input id="mkEmail" type="email" placeholder="email@exemplo.pt">
+        <p class="muted" style="margin:-4px 0 10px;">A pessoa tem de criar conta na aplicação primeiro. Depois escreve aqui o correio eletrónico dela.</p>
+        <label for="mkEmail">Correio eletrónico da conta do coach</label><input id="mkEmail" type="email" placeholder="email@exemplo.pt">
         <label for="mkTitle">Título</label><input id="mkTitle" value="Coach desportivo certificado">
         <label for="mkBio">Apresentação (separada por vírgulas)</label><input id="mkBio" value="Coach desportivo certificado, Corrida, trilhos, bicicleta e pilates, Acompanhamento personalizado">
         <label style="display:flex; gap:10px; align-items:center; font-size:13px; color:var(--ink); margin-bottom:12px;"><input id="mkPrincipal" type="checkbox" checked style="width:auto; margin:0; accent-color:var(--navy); transform:scale(1.2);"><span>Coach principal: acompanha todos os atletas e modera os encontros</span></label>
@@ -1374,7 +1374,7 @@ function openPane(p, fromHistory){
   window.scrollTo(0,0);
   renderTreino();
 }
-const PANE_TITLES={coaching:'Sessões de coaching', plano:'Plano de treino', saude:'Saúde', corpo:'Corpo', mente:'Mente', nutricao:'Nutrição', evolucao:'Evolução', atletas:'Os meus atletas', testes:'Testes e quizzes'};
+const PANE_TITLES={coaching:'Sessões de coaching', plano:'Plano de treino', saude:'Saúde', corpo:'Corpo', mente:'Mente', nutricao:'Nutrição', evolucao:'Evolução', atletas:'Os meus atletas', testes:'Testes e questionários'};
 
 /* ---------- render principal ---------- */
 function renderTreino(){
@@ -1403,7 +1403,7 @@ function renderHub(){
     tc = `<div class="goal-top"><div class="eyebrow">Treino de hoje</div>${todays.map(s=>`<h2>${esc(s.title)}</h2><div style="font-size:13px; opacity:.85; position:relative; z-index:1;">${esc(s.desc)}</div>`).join('')}
       <div style="display:flex; gap:8px; margin-top:12px; position:relative; z-index:1;"><button class="primary small" style="background:var(--gold);" onclick="doSession('${todays[0].key}')">${sessionDone(todays[0],S.planDone,S.logs)?'Feito ✓':'Marcar como feito'}</button><button class="ghost small" style="color:#fff; border-color:rgba(255,255,255,.3);" onclick="openPane('plano')">Ver plano</button></div></div>`;
   } else if(!S.goal && !isCoach()){
-    tc = `<div class="goal-top"><div class="eyebrow">O teu PT online</div><h2>Qual é o teu objetivo?</h2><div style="font-size:13px; opacity:.85; position:relative; z-index:1;">Diz-nos se queres fazer uma prova ou ganhar forma. A app cria o teu plano semana a semana.</div><button class="primary small" style="background:var(--gold); margin-top:12px;" onclick="openGoalForm()">Definir objetivo</button></div>`;
+    tc = `<div class="goal-top"><div class="eyebrow">O teu treinador à distância</div><h2>Qual é o teu objetivo?</h2><div style="font-size:13px; opacity:.85; position:relative; z-index:1;">Diz-nos se queres fazer uma prova ou ganhar forma. A aplicação cria o teu plano semana a semana.</div><button class="primary small" style="background:var(--gold); margin-top:12px;" onclick="openGoalForm()">Definir objetivo</button></div>`;
   }
   document.getElementById('todayCard').innerHTML = tc;
 
@@ -1472,7 +1472,7 @@ function openGoalForm(){
         <label for="gfName">Nome da prova</label><input id="gfName" placeholder="Ex.: Trail Pé do Negro" value="${esc(gf.name||'')}">
         <div class="two"><div><label for="gfKm">Distância (km)</label><input id="gfKm" type="number" min="1" step="0.5" value="${gf.km||10}"></div>
         <div><label for="gfDate">Data da prova</label><input id="gfDate" type="date" min="${addDays(14)}" value="${gf.date||addDays(70)}"></div></div>
-        <a class="tiny" href="https://gotrail.run/calendario-trail-running/portugal" target="_blank" rel="noopener" style="color:var(--navy); display:block; margin:-4px 0 10px;">Procurar provas de trail ↗</a>
+        <a class="tiny" href="https://gotrail.run/calendario-trail-running/portugal" target="_blank" rel="noopener" style="color:var(--navy); display:block; margin:-4px 0 10px;">Procurar provas de corrida em trilho ↗</a>
       </div>
       <label>Quantos dias por semana podes treinar?</label>
       <div class="opt-grid" style="grid-template-columns:repeat(4,1fr);" id="gfDays">${[2,3,4,5].map(n=>`<button type="button" class="${gf.days===n?'on':''}" onclick="gfSet('days',${n})">${n} dias</button>`).join('')}</div>
@@ -1731,8 +1731,8 @@ function openSession(){
     <label for="sType">Tipo de sessão</label><select id="sType">${types.filter(t=>!(hasTrial&&t.startsWith('Sessão experimental'))).map(t=>`<option>${t}</option>`).join('')}</select>
     <div class="two"><div><label for="sDate">Dia</label><input id="sDate" type="date" min="${addDays(1)}" value="${addDays(3)}"></div>
     <div><label for="sTime">Hora</label><input id="sTime" type="time" value="19:00"></div></div>
-    <label for="sMode">Como</label><select id="sMode"><option>Online</option><option>Presencial</option></select>
-    <label for="sTopic">O que queres trabalhar?</label><textarea id="sTopic" placeholder="Ex.: preparar a minha primeira prova de trail"></textarea>
+    <label for="sMode">Como</label><select id="sMode"><option value="Online">À distância</option><option>Presencial</option></select>
+    <label for="sTopic">O que queres trabalhar?</label><textarea id="sTopic" placeholder="Ex.: preparar a minha primeira prova de corrida em trilho"></textarea>
     <button class="primary" onclick="saveSession()">${isCoach()?'Marcar':'Pedir sessão'}</button></div>`);
 }
 function saveSession(){
@@ -1953,7 +1953,7 @@ function setAuthMode(m){
 async function doAuth(){
   if(!sb){ toast('Sem ligação à internet'); return; }
   const email=document.getElementById('lgEmail').value.trim(), pass=document.getElementById('lgPass').value;
-  if(!email || !pass){ toast('Escreve o email e a palavra-passe'); return; }
+  if(!email || !pass){ toast('Escreve o correio eletrónico e a palavra-passe'); return; }
   const btn=document.getElementById('authBtn'); btn.disabled=true;
   try{
     if(authMode==='criar'){
@@ -1964,7 +1964,7 @@ async function doAuth(){
       const {data, error} = await sb.auth.signUp({email, password:pass, options:{emailRedirectTo: location.origin+location.pathname}});
       if(error){ toast(authErr(error)); return; }
       try{ localStorage.setItem('mov_perfil_pendente', JSON.stringify(profileFromForm())); }catch(e){}
-      if(!data.session){ showAuthMsg('Enviámos um email para '+email+'. Abre o link para confirmar a conta e depois entra aqui.'); return; }
+      if(!data.session){ showAuthMsg('Enviámos uma mensagem para '+email+'. Abre a ligação para confirmar a conta e depois entra aqui.'); return; }
       await afterLogin(data.session.user);
     } else {
       const {data, error} = await sb.auth.signInWithPassword({email, password:pass});
@@ -1975,16 +1975,16 @@ async function doAuth(){
 }
 function authErr(e){
   const m=(e.message||'').toLowerCase();
-  if(m.includes('invalid login')) return 'Email ou palavra-passe errados';
-  if(m.includes('already registered')) return 'Já existe uma conta com este email. Usa "Entrar".';
-  if(m.includes('email not confirmed')) return 'Confirma primeiro o email (vê a tua caixa de correio)';
+  if(m.includes('invalid login')) return 'Correio eletrónico ou palavra-passe errados';
+  if(m.includes('already registered')) return 'Já existe uma conta com este correio eletrónico. Usa "Entrar".';
+  if(m.includes('email not confirmed')) return 'Confirma primeiro o correio eletrónico (vê a tua caixa de entrada)';
   return 'Não foi possível entrar: '+e.message;
 }
 async function forgotPass(){
   const email=document.getElementById('lgEmail').value.trim();
-  if(!email){ toast('Escreve primeiro o teu email'); return; }
+  if(!email){ toast('Escreve primeiro o teu correio eletrónico'); return; }
   const {error}=await sb.auth.resetPasswordForEmail(email, {redirectTo: location.origin+location.pathname});
-  showAuthMsg(error? 'Não foi possível enviar: '+error.message : 'Se existir uma conta, recebes um email para mudar a palavra-passe.');
+  showAuthMsg(error? 'Não foi possível enviar: '+error.message : 'Se existir uma conta, recebes uma mensagem para mudar a palavra-passe.');
 }
 function showAuthMsg(t){ const b=document.getElementById('authMsg'); b.textContent=t; b.hidden=false; }
 function profileFromForm(){
@@ -2154,8 +2154,8 @@ function openSession(){
     <label for="sType">Tipo de sessão</label><select id="sType">${types.filter(t=>!(hasTrial&&t.startsWith('Sessão experimental'))).map(t=>`<option>${t}</option>`).join('')}</select>
     <div class="two"><div><label for="sDate">Dia</label><input id="sDate" type="date" min="${addDays(1)}" value="${addDays(3)}"></div>
     <div><label for="sTime">Hora</label><input id="sTime" type="time" value="19:00"></div></div>
-    <label for="sMode">Como</label><select id="sMode"><option>Online</option><option>Presencial</option></select>
-    <label for="sTopic">O que queres trabalhar?</label><textarea id="sTopic" placeholder="Ex.: preparar a minha primeira prova de trail"></textarea>
+    <label for="sMode">Como</label><select id="sMode"><option value="Online">À distância</option><option>Presencial</option></select>
+    <label for="sTopic">O que queres trabalhar?</label><textarea id="sTopic" placeholder="Ex.: preparar a minha primeira prova de corrida em trilho"></textarea>
     <button class="primary" onclick="saveSession()">${isCoach()?'Marcar':'Pedir sessão'}</button></div>`);
 }
 async function saveSession(){
@@ -2219,10 +2219,10 @@ async function adjKm(id,v){ const a=S.athletes.find(x=>x.id===id); a.goal.km=Num
 async function makeCoach(){
   const email=document.getElementById('mkEmail').value.trim(), titulo=document.getElementById('mkTitle').value.trim()||'Coach desportivo';
   const bio=document.getElementById('mkBio').value.split(',').map(s=>s.trim()).filter(Boolean);
-  if(!email){ toast('Escreve o email da conta do coach'); return; }
+  if(!email){ toast('Escreve o correio eletrónico da conta do coach'); return; }
   const principal=document.getElementById('mkPrincipal').checked;
   const {data, error}=await sb.rpc('mov_tornar_coach',{p_email:email, p_titulo:titulo, p_bio:bio, p_principal:principal});
-  if(error){ toast(error.message.includes('Não existe')?'Essa pessoa ainda não criou conta na app':'Erro: '+error.message); return; }
+  if(error){ toast(error.message.includes('Não existe')?'Essa pessoa ainda não criou conta na aplicação':'Erro: '+error.message); return; }
   document.getElementById('mkResult').innerHTML= principal ? `Feito. Este coach passa a acompanhar todos os atletas, os que já existem e os novos. Código (para atletas de outros coaches): <b>${esc(data)}</b>` : `Acesso de coach dado. Código para os atletas: <b>${esc(data)}</b>`;
 }
 
@@ -2306,7 +2306,7 @@ function nutriAlvo(p, body){
   const bmr = 10*kg + 6.25*h - 5*age + (p.sexo==='M'?5:-161);
   const tdee = bmr*({sedentaria:1.2, leve:1.375, moderada:1.55, alta:1.725}[p.atividade]||1.55);
   let kcal=tdee, nota='';
-  if(age<18){ nota='Para menores de 18 anos a app não calcula défice calórico. Fala com um nutricionista.'; }
+  if(age<18){ nota='Para menores de 18 anos a aplicação não calcula défice calórico. Fala com um nutricionista.'; }
   else if(p.objetivo==='perder'){ kcal = tdee - Math.min(500, tdee*0.15); kcal = Math.max(kcal, bmr, p.sexo==='M'?1500:1200); }
   else if(p.objetivo==='massa'){ kcal = tdee + Math.min(300, tdee*0.10); }
   const protKg = {perder:1.8, massa:1.8, performance:1.6, manter:1.4}[p.objetivo]||1.4;
@@ -2382,7 +2382,7 @@ function renderNutri(){
 function mealPlanHtml(){
   const P=S.mealPlan, hoje=addDays(0);
   const btn=`<button class="${P&&P.data===hoje?'ghost':'primary'}" onclick="genMealPlan()" ${S.nutri&&S.nutri.consentimento_ia?'':'disabled'}>${P&&P.data===hoje?'Gerar outro plano para hoje':'Gerar plano alimentar para hoje'}</button>`;
-  if(!P || !P.refeicoes) return `<div class="card"><h3>Plano alimentar</h3><p class="muted" style="margin:-4px 0 10px;">A app sugere as refeições do dia de acordo com o teu objetivo, os treinos e as tuas alergias.</p>${btn}</div>`;
+  if(!P || !P.refeicoes) return `<div class="card"><h3>Plano alimentar</h3><p class="muted" style="margin:-4px 0 10px;">A aplicação sugere as refeições do dia de acordo com o teu objetivo, os treinos e as tuas alergias.</p>${btn}</div>`;
   return `<div class="card"><h3>Plano alimentar · ${niceDate(P.data)}</h3>
     ${P.refeicoes.map(r=>`<div class="list-row" style="align-items:flex-start;"><div style="min-width:0;"><div class="tiny" style="text-transform:uppercase; letter-spacing:.6px;">${REF_TIPOS[r.tipo]||r.tipo}</div><div style="font-weight:600;">${esc(r.prato)}</div><div class="tiny" style="margin-top:2px;">${(r.ingredientes||[]).map(esc).join(' · ')}</div></div><span class="num muted" style="flex-shrink:0;">${Math.round(r.kcal)} kcal</span></div>`).join('')}
     ${(P.dicas||[]).length?`<div class="reflect" style="margin-top:10px;"><div class="q">Dicas</div>${P.dicas.map(d=>`<div style="font-size:13.5px; margin-top:4px;">• ${esc(d)}</div>`).join('')}</div>`:''}
@@ -2398,7 +2398,7 @@ function nutriSetupHtml(p, inline){
   const extra = (arr, base)=> (arr||[]).filter(x=>!base.includes(x)).join(', ');
   nsel = {alergias:new Set((p.alergias||[]).filter(x=>ALERGIAS.includes(x))), intolerancias:new Set((p.intolerancias||[]).filter(x=>INTOLER.includes(x))), condicoes:new Set((p.condicoes||[]).filter(x=>CONDICOES.includes(x)))};
   const sel=(id,obj,v)=>`<select id="${id}">${Object.entries(obj).map(([k,t])=>`<option value="${k}" ${k===v?'selected':''}>${t}</option>`).join('')}</select>`;
-  return `${inline?`<div class="goal-top"><div class="eyebrow">Nutrição</div><h2>O teu plano alimentar</h2><div style="font-size:13px; opacity:.85; position:relative; z-index:1;">Fotografa o prato e a app calcula as calorias e dá-te dicas de acordo com o teu objetivo, a tua saúde e as tuas alergias.</div></div>`:''}
+  return `${inline?`<div class="goal-top"><div class="eyebrow">Nutrição</div><h2>O teu plano alimentar</h2><div style="font-size:13px; opacity:.85; position:relative; z-index:1;">Fotografa o prato e a aplicação calcula as calorias e dá-te dicas de acordo com o teu objetivo, a tua saúde e as tuas alergias.</div></div>`:''}
   <div class="card">
     <div class="two"><div><label for="nSexo">Sexo</label>${sel('nSexo',{F:'Feminino',M:'Masculino'},p.sexo||'F')}</div>
       <div><label for="nNasc">Data de nascimento</label><input id="nNasc" type="date" max="${addDays(0)}" value="${p.nascimento||''}"></div></div>
@@ -2428,7 +2428,7 @@ async function saveNutriSetup(){
   await q(sb.from('mov_nutricao_perfil').upsert(row, {onConflict:'user_id'}));
   if(sheetOpen()) closeSheet();
   await refresh(); toast('Perfil alimentar guardado');
-  if(idadeDe(row.nascimento)<18 && row.objetivo==='perder') toast('Para menores de 18 anos a app não sugere perda de peso.');
+  if(idadeDe(row.nascimento)<18 && row.objetivo==='perder') toast('Para menores de 18 anos a aplicação não sugere perda de peso.');
 }
 
 /* ---------- foto da refeição ---------- */
@@ -2676,7 +2676,7 @@ function renderHub(){
     tc = `<div class="goal-top"><div class="eyebrow">Treino de hoje</div><h2>${esc(s.title)}</h2><div style="font-size:13px; opacity:.85; position:relative; z-index:1;">${esc(s.desc)}</div>
       <div style="display:flex; gap:8px; margin-top:12px; position:relative; z-index:1;"><button class="primary small" style="background:var(--gold);" onclick="doSession('${s.key}')">${ok?'Feito ✓':'Marcar como feito'}</button><button class="ghost small" style="color:#fff; border-color:rgba(255,255,255,.3);" onclick="openPane('plano')">Ver plano</button></div></div>`;
   } else if(!S.goal && !isCoach()){
-    tc = `<div class="goal-top"><div class="eyebrow">O teu PT online</div><h2>Qual é o teu objetivo?</h2><div style="font-size:13px; opacity:.85; position:relative; z-index:1;">Uma prova ou ganhar forma. A app cria o teu plano de treino semana a semana.</div><button class="primary small" style="background:var(--gold); margin-top:12px;" onclick="openGoalForm()">Definir objetivo</button></div>`;
+    tc = `<div class="goal-top"><div class="eyebrow">O teu treinador à distância</div><h2>Qual é o teu objetivo?</h2><div style="font-size:13px; opacity:.85; position:relative; z-index:1;">Uma prova ou ganhar forma. A aplicação cria o teu plano de treino semana a semana.</div><button class="primary small" style="background:var(--gold); margin-top:12px;" onclick="openGoalForm()">Definir objetivo</button></div>`;
   }
   document.getElementById('todayCard').innerHTML = tc;
 
@@ -2698,7 +2698,7 @@ function renderHub(){
     cards+=hc('plano',{wide:true, title:'Plano de treino', metric:`${feitos}/${wk.sessions.length}`, unit:' esta semana',
       sub: `${quando}${prox?` · Próximo: ${esc(prox.title)}`:''}`, extra:dots, act:'Ver semana', actFn:"openPane('plano')"});
   } else {
-    cards+=hc('plano',{wide:true, title:'Plano de treino', sub:'Diz qual é o teu objetivo e a app cria o plano para ti.', act:'Definir objetivo', actFn:'openGoalForm()'});
+    cards+=hc('plano',{wide:true, title:'Plano de treino', sub:'Diz qual é o teu objetivo e a aplicação cria o plano para ti.', act:'Definir objetivo', actFn:'openGoalForm()'});
   }
 
   // evolução
@@ -2733,7 +2733,7 @@ function renderHub(){
 
   // testes e quizzes (largo)
   if(!isCoach()){ const dT=ttLer(), pfT=dT.perfil&&TT_PERFIS[dT.perfil.perfil];
-    cards+=hc('testes',{wide:true, title:'Testes e quizzes', metric: pfT? pfT.nome : null,
+    cards+=hc('testes',{wide:true, title:'Testes e questionários', metric: pfT? pfT.nome : null,
       sub: pfT? 'O teu perfil de atleta' + (dT.plano? ` · plano: ${dT.plano.passos.filter(x=>x.feito).length}/${dT.plano.passos.length}`:'') : 'Responde e recebe o teu perfil de atleta e um plano feito para ti.',
       act: pfT? 'Ver' : 'Fazer o teste', actFn:"openPane('testes')"}); }
 
@@ -2842,7 +2842,7 @@ function desafioHtml(compact){
     </div>
   </div>`;
 }
-function openDesafio(){ openSheet('Desafio da semana', desafioHtml(false)+`<p class="tiny" style="text-align:center; margin-top:12px;">Os desafios de treinos, quilómetros, encontros, sono, humor e refeições contam sozinhos com o que registas na app.</p>`); }
+function openDesafio(){ openSheet('Desafio da semana', desafioHtml(false)+`<p class="tiny" style="text-align:center; margin-top:12px;">Os desafios de treinos, quilómetros, encontros, sono, humor e refeições contam automaticamente com o que registas na aplicação.</p>`); }
 async function saveDesafios(){
   await q(sb.from('mov_estado').upsert({user_id:ME, objetivo:S.goal, plano_feito:S.planDone||{}, intencoes:S.intentions||{}, meta_km:S.goalKm||15, desafios:S.desafios||{}, updated_at:new Date().toISOString()}));
 }
@@ -2882,9 +2882,9 @@ const ATIVIDADES = {
   trilho: {nome:'Trilhos', cor:'#3F7A5A', soft:'#E1EEE6',
     lema:'Caminhar na natureza, ao teu ritmo.',
     resumo:'Percursos a pé por montanha, floresta, rio ou costa. Do passeio de 5 km em família à travessia de um dia inteiro, cada trilho escolhe-se pela distância e pelo desnível.',
-    vantagens:['Melhora a resistência do coração e dos pulmões','Fortalece pernas, glúteos e o centro do corpo (core)','Treina o equilíbrio e a coordenação em terreno irregular','Impacto mais suave nas articulações do que a corrida','Estar na natureza ajuda a baixar o stress e a clarear a cabeça','Ótimo para conhecer pessoas e lugares novos'],
+    vantagens:['Melhora a resistência do coração e dos pulmões','Fortalece pernas, glúteos e o centro do corpo','Treina o equilíbrio e a coordenação em terreno irregular','Impacto mais suave nas articulações do que a corrida','Estar na natureza ajuda a baixar o stresse e a clarear a cabeça','Ótimo para conhecer pessoas e lugares novos'],
     paraQuem:'Para todos os níveis. Começa por percursos curtos e marcados (pequenas rotas, PR) de 5 a 8 km e pouco desnível.',
-    comecar:['Escolhe um trilho marcado e curto','Vai com alguém ou num encontro da app','Aumenta a distância aos poucos, de semana para semana'],
+    comecar:['Escolhe um trilho marcado e curto','Vai com alguém ou num encontro da aplicação','Aumenta a distância aos poucos, de semana para semana'],
     levar:['Calçado com boa sola (de trilho ou caminhada)','Mochila com água e um lanche','Roupa por camadas e corta-vento','Telemóvel com bateria e o percurso descarregado'],
     cuidados:['Vê a meteorologia antes de saíres','Diz a alguém onde vais e a que horas contas voltar','Respeita a sinalização e não saias do trilho'],
     tres:{Saber:'Ler o mapa, conhecer o percurso e o teu limite.', Sentir:'Respirar o ar da montanha e notar o corpo a responder.', Ser:'Chegar ao fim e saber que foste capaz.'},
@@ -2912,7 +2912,7 @@ const ATIVIDADES = {
   pilates: {nome:'Pilates', cor:'#6A4C8A', soft:'#EFE7F6',
     lema:'Força, postura e respiração.',
     resumo:'Exercícios controlados no tapete que trabalham o centro do corpo, a postura e a flexibilidade, sempre ligados à respiração. É o complemento perfeito para quem corre, pedala ou faz trilhos.',
-    vantagens:['Fortalece o core e protege a coluna','Melhora a postura e alivia tensões nas costas','Aumenta a flexibilidade e a mobilidade','Ajuda a prevenir lesões na corrida, na bike e nos trilhos','Treina a concentração e a respiração consciente','Baixo impacto: adapta-se a todas as idades'],
+    vantagens:['Fortalece o tronco e protege a coluna','Melhora a postura e alivia tensões nas costas','Aumenta a flexibilidade e a mobilidade','Ajuda a prevenir lesões na corrida, na bike e nos trilhos','Treina a concentração e a respiração consciente','Baixo impacto: adapta-se a todas as idades'],
     paraQuem:'Para todos os níveis e idades. Ideal como treino de força e mobilidade 1 a 2 vezes por semana.',
     comecar:['2 sessões por semana de 20 a 40 minutos','Começa pelos exercícios básicos e com poucas repetições','Faz em grupo para corrigir a técnica'],
     levar:['Tapete','Roupa confortável','Água'],
@@ -2927,7 +2927,7 @@ function openAtividade(k){
   const lista=(t,arr)=>`<div class="card"><h3>${t}</h3>${arr.map(x=>`<div class="at-li">${esc(x)}</div>`).join('')}</div>`;
   const ctas = logged
     ? `<div class="two"><button class="primary" onclick="verEncontrosDe('${k}')">Ver encontros</button>${a.plano && !isInst() ? `<button class="ghost" style="margin:0;" onclick="closeSheet(); goView('treino'); setTimeout(openGoalForm,60)">Criar o meu plano</button>` : `<button class="ghost" style="margin:0;" onclick="closeSheet(); openCreate({sport:'${k}'})">Criar encontro</button>`}</div>`
-    : `<button class="primary" onclick="closeSheet(); setAuthMode('criar'); document.getElementById('lgEmail').focus()">Criar conta grátis</button>`;
+    : `<button class="primary" onclick="closeSheet(); setAuthMode('criar'); document.getElementById('lgEmail').focus()">Criar conta gratuita</button>`;
   openSheet(a.nome, `
     <div class="at-hero" style="--tone:${a.cor}; --tone-soft:${a.soft};"><div class="at-ic">${SPORTS[k].ic}</div><div><div class="at-lema">${esc(a.lema)}</div></div></div>
     <p style="font-size:14.5px; line-height:1.55; margin:0 0 12px;">${esc(a.resumo)}</p>
@@ -2972,7 +2972,7 @@ function renderInst(){
     <div class="card"><h3>Sobre nós</h3>
       <p style="margin:0 0 8px; font-size:14px; line-height:1.5;">${esc(me.instDesc||'Sem descrição.')}</p>
       ${me.instContacto?`<div class="list-row"><span class="muted">Contacto</span><span style="user-select:all;">${esc(me.instContacto)}</span></div>`:''}
-      ${me.instSite?`<div class="list-row"><span class="muted">Site</span><a href="${esc(/^https?:/.test(me.instSite)?me.instSite:'https://'+me.instSite)}" target="_blank" rel="noopener">${esc(me.instSite)}</a></div>`:''}
+      ${me.instSite?`<div class="list-row"><span class="muted">Página</span><a href="${esc(/^https?:/.test(me.instSite)?me.instSite:'https://'+me.instSite)}" target="_blank" rel="noopener">${esc(me.instSite)}</a></div>`:''}
       <button class="ghost" onclick="openInstEdit()">Editar dados</button></div>`;
 }
 function openInstEdit(){
@@ -2981,8 +2981,8 @@ function openInstEdit(){
     <label for="ieTipo">Tipo</label><select id="ieTipo">${Object.entries(INST_TIPOS).map(([k,v])=>`<option value="${k}" ${k===me.instTipo?'selected':''}>${v}</option>`).join('')}</select>
     <label for="ieZona">Localidade</label><input id="ieZona" value="${esc(me.zone||'')}">
     <label for="ieDesc">Descrição</label><textarea id="ieDesc" maxlength="600">${esc(me.instDesc||'')}</textarea>
-    <label for="ieCont">Contacto público (email ou telefone)</label><input id="ieCont" maxlength="120" value="${esc(me.instContacto||'')}">
-    <label for="ieSite">Site ou rede social</label><input id="ieSite" maxlength="200" value="${esc(me.instSite||'')}">
+    <label for="ieCont">Contacto público (correio eletrónico ou telefone)</label><input id="ieCont" maxlength="120" value="${esc(me.instContacto||'')}">
+    <label for="ieSite">Página na internet ou rede social</label><input id="ieSite" maxlength="200" value="${esc(me.instSite||'')}">
     <button class="primary" onclick="saveInstEdit()">Guardar</button></div>`);
 }
 async function saveInstEdit(){
@@ -3235,7 +3235,7 @@ function gpsEcra(){
       </div>
       <div id="gpsSinal" style="margin-top:22px; font-size:13px; opacity:.8;">${gpsSinalTxt()}</div>
     </div>
-    <div style="font-size:12px; opacity:.75; text-align:center; margin-bottom:12px; line-height:1.45;">Deixa a app aberta e o ecrã ligado durante o treino.<br>Se bloqueares o telemóvel, a gravação para.</div>
+    <div style="font-size:12px; opacity:.75; text-align:center; margin-bottom:12px; line-height:1.45;">Deixa a aplicação aberta e o ecrã ligado durante o treino.<br>Se bloqueares o telemóvel, a gravação para.</div>
     ${a ? `<div style="display:flex; gap:10px;">
         <button onclick="${pausa?'gpsRetomar()':'gpsPausar()'}" style="flex:1; padding:16px; border-radius:99px; font-size:16px; font-weight:600; border:1.5px solid var(--gold); background:transparent; color:#fff;">${pausa?'Retomar':'Pausa'}</button>
         <button onclick="gpsTerminar()" style="flex:1; padding:16px; border-radius:99px; font-size:16px; font-weight:600; border:none; background:var(--gold); color:var(--navy);">Terminar</button></div>`
@@ -3481,10 +3481,10 @@ function openSession(){
     <label for="sType">Tipo de sessão</label><select id="sType">${types.filter(t=>!(hasTrial&&t.startsWith('Sessão experimental'))).map(t=>`<option>${t}</option>`).join('')}</select>
     <div class="two"><div><label for="sDate">Dia</label><input id="sDate" type="date" min="${addDays(1)}" value="${addDays(3)}"></div>
     <div><label for="sTime">Hora</label><input id="sTime" type="time" value="19:00"></div></div>
-    <label for="sMode">Como</label><select id="sMode" onchange="sessModo()"><option>Online</option><option>Presencial</option></select>
-    <div id="sLinkBox">${isCoach()?`<label for="sLink">Link da reunião (Zoom, Meet, Teams…)</label><input id="sLink" type="url" inputmode="url" placeholder="https://meet.google.com/…">`:`<p class="tiny" style="margin:6px 0 0;">O coach envia-te o link da reunião quando confirmar.</p>`}</div>
+    <label for="sMode">Como</label><select id="sMode" onchange="sessModo()"><option value="Online">À distância</option><option>Presencial</option></select>
+    <div id="sLinkBox">${isCoach()?`<label for="sLink">Ligação da reunião (Zoom, Meet, Teams…)</label><input id="sLink" type="url" inputmode="url" placeholder="https://meet.google.com/…">`:`<p class="tiny" style="margin:6px 0 0;">O coach envia-te a ligação da reunião quando confirmar.</p>`}</div>
     <div id="sMoradaBox" hidden><label for="sMorada">${isCoach()?'Morada ou ponto de encontro':'Onde te dá jeito? (opcional)'}</label><input id="sMorada" maxlength="200" placeholder="Ex.: Parque da Cidade, entrada norte"></div>
-    <label for="sTopic">O que queres trabalhar?</label><textarea id="sTopic" placeholder="Ex.: preparar a minha primeira prova de trail"></textarea>
+    <label for="sTopic">O que queres trabalhar?</label><textarea id="sTopic" placeholder="Ex.: preparar a minha primeira prova de corrida em trilho"></textarea>
     <button class="primary" onclick="saveSession()">${isCoach()?'Marcar':'Pedir sessão'}</button></div>`);
 }
 function sessModo(){ const on=document.getElementById('sMode').value==='Online'; document.getElementById('sLinkBox').hidden=!on; document.getElementById('sMoradaBox').hidden=on; }
@@ -3493,7 +3493,7 @@ async function saveSession(){
   const atleta = isCoach() ? g('sAth') : ME, coach = isCoach() ? ME : S.coach.coachId;
   if(!atleta){ toast('Escolhe o atleta'); return; }
   const modo=g('sMode'), linkIn=g('sLink'), link=linkSeguro(linkIn);
-  if(modo==='Online' && linkIn && !link){ toast('O link tem de começar por https://'); return; }
+  if(modo==='Online' && linkIn && !link){ toast('A ligação tem de começar por https://'); return; }
   try{ await q(sb.from('mov_sessoes').insert({atleta_id:atleta, coach_id:coach, tipo:g('sType'), data:g('sDate')||addDays(3), hora:g('sTime')||'19:00', modo, tema:g('sTopic')||null,
     estado:isCoach()?'confirmada':'pedida', link: modo==='Online' ? (link||null) : null, morada: modo==='Presencial' ? (g('sMorada')||null) : null})); }catch(e){ return; }
   closeSheet(); await refresh(); toast(isCoach()?'Sessão marcada':'Pedido enviado ao coach');
@@ -3501,15 +3501,15 @@ async function saveSession(){
 function editarSessao(id){
   const s=S.sessions.find(x=>x.id===id); if(!s) return;
   const on=s.mode==='Online';
-  openSheet(on?'Link da reunião':'Local da sessão', `<div class="card">
+  openSheet(on?'Ligação da reunião':'Local da sessão', `<div class="card">
     <p class="muted" style="margin-top:0;">${esc(s.type)} · ${niceDate(s.date)} · ${esc(s.time)}${s.athlete?' · '+esc(s.athlete):''}</p>
-    ${on?`<label for="eLink">Link (Zoom, Meet, Teams…)</label><input id="eLink" type="url" inputmode="url" value="${esc(s.link||'')}" placeholder="https://meet.google.com/…">`
+    ${on?`<label for="eLink">Ligação (Zoom, Meet, Teams…)</label><input id="eLink" type="url" inputmode="url" value="${esc(s.link||'')}" placeholder="https://meet.google.com/…">`
         :`<label for="eMorada">Morada ou ponto de encontro</label><input id="eMorada" maxlength="200" value="${esc(s.morada||'')}" placeholder="Ex.: Parque da Cidade, entrada norte">`}
     <button class="primary" onclick="guardarSessaoExtra('${id}', ${on})">${s.status==='pedida'&&isCoach()?'Guardar e confirmar':'Guardar'}</button></div>`);
 }
 async function guardarSessaoExtra(id, on){
   const s=S.sessions.find(x=>x.id===id); const upd={};
-  if(on){ const v=document.getElementById('eLink').value.trim(), l=linkSeguro(v); if(v && !l){ toast('O link tem de começar por https://'); return; } upd.link=l||null; }
+  if(on){ const v=document.getElementById('eLink').value.trim(), l=linkSeguro(v); if(v && !l){ toast('A ligação tem de começar por https://'); return; } upd.link=l||null; }
   else upd.morada=document.getElementById('eMorada').value.trim()||null;
   if(isCoach() && s && s.status==='pedida') upd.estado='confirmada';
   try{ await q(sb.from('mov_sessoes').update(upd).eq('id', id)); }catch(e){ return; }
@@ -3521,11 +3521,11 @@ function renderCoaching(){
   const past=S.sessions.filter(s=>s.date<today).sort((a,b)=>b.date.localeCompare(a.date));
   const row=s=>{
     const fut=s.date>=today, on=s.mode==='Online';
-    const ond = on ? (s.link ? (fut?`<a class="primary small sess-go" href="${esc(s.link)}" target="_blank" rel="noopener">Entrar na reunião ↗</a>`:'') : (fut?`<div class="tiny" style="margin-top:4px;">${isCoach()?'Falta o link da reunião.':'O link aparece aqui quando o coach o enviar.'}</div>`:''))
+    const ond = on ? (s.link ? (fut?`<a class="primary small sess-go" href="${esc(s.link)}" target="_blank" rel="noopener">Entrar na reunião ↗</a>`:'') : (fut?`<div class="tiny" style="margin-top:4px;">${isCoach()?'Falta a ligação da reunião.':'A ligação aparece aqui quando o coach a enviar.'}</div>`:''))
                    : (s.morada ? `<a class="ghost small sess-go" href="${mapsLink(s.morada)}" target="_blank" rel="noopener">📍 ${esc(s.morada)}</a>` : (fut&&isCoach()?`<div class="tiny" style="margin-top:4px;">Falta indicar o local.</div>`:''));
     return `<div class="list-row" style="align-items:flex-start;"><div class="left" style="align-items:flex-start;"><span class="sport" style="width:40px;height:40px;font-size:16px;">${on?'💻':'🤝'}</span><div style="min-width:0;"><div style="font-weight:600;">${esc(s.type)}</div><div class="tiny">${niceDate(s.date)} · ${esc(s.time)} · ${esc(s.mode)}${isCoach()&&s.athlete?' · '+esc(s.athlete):''}</div>${s.topic?`<div class="tiny" style="margin-top:2px;">${esc(s.topic)}</div>`:''}${ond}</div></div>
       <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end; flex-shrink:0;"><span class="badge ${s.status==='confirmada'?'mint':'coral'}">${s.status==='confirmada'?'Confirmada':'Pedida'}</span>
-      ${(isCoach()&&fut)?`<button class="${s.status==='pedida'?'primary small mintbtn':'ghost small'}" onclick="editarSessao('${s.id}')">${s.status==='pedida'?'Confirmar':(on?'Link':'Local')}</button>`:''}
+      ${(isCoach()&&fut)?`<button class="${s.status==='pedida'?'primary small mintbtn':'ghost small'}" onclick="editarSessao('${s.id}')">${s.status==='pedida'?'Confirmar':(on?'Ligação':'Local')}</button>`:''}
       ${fut?`<button class="ghost small" onclick="cancelSession('${s.id}')">Desmarcar</button>`:''}</div></div>`;
   };
   document.getElementById('pane-coaching').innerHTML = `
@@ -3559,7 +3559,7 @@ function renderPalestrasHome(){
   const prox=L.filter(p=>palFim(p)>=agora).slice(0,3);
   const gravadas=L.filter(p=>palFim(p)<agora).slice(-2).reverse();
   if(!prox.length && !gravadas.length && !podeGerirPalestras()){ el.innerHTML=''; return; }
-  el.innerHTML = `<div class="sec-head"><h3>Palestras online</h3>${podeGerirPalestras()?`<button class="ghost small" onclick="formPalestra()">+ Nova</button>`:''}</div>
+  el.innerHTML = `<div class="sec-head"><h3>Palestras à distância</h3>${podeGerirPalestras()?`<button class="ghost small" onclick="formPalestra()">+ Nova</button>`:''}</div>
     ${prox.length? prox.map(palCard).join('') : `<div class="card empty" style="padding:14px;">${podeGerirPalestras()?'Ainda não marcaste nenhuma palestra. Carrega em "+ Nova".':'Sem palestras marcadas.'}</div>`}
     ${gravadas.length? `<div class="tiny" style="margin:10px 4px 6px;">Anteriores</div>`+gravadas.map(palCard).join('') : ''}`;
 }
@@ -3569,18 +3569,18 @@ async function openPalestra(id){
   let links={link:null, gravacao:null};
   if(ins || gere){ const {data}=await sb.rpc('mov_palestra_links',{p_id:id}); if(data && data[0]) links=data[0]; }
   const agora=Date.now(), ini=new Date(p.inicio).getTime(), fim=palFim(p), aberta=agora>=ini-15*60000 && agora<=fim, passou=agora>fim;
-  const gcal='https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(p.titulo)+'&dates='+new Date(ini).toISOString().replace(/[-:]|\.\d{3}/g,'')+'/'+new Date(fim).toISOString().replace(/[-:]|\.\d{3}/g,'')+'&details='+encodeURIComponent('Palestra online Movimento 3S. O link está na app.');
+  const gcal='https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(p.titulo)+'&dates='+new Date(ini).toISOString().replace(/[-:]|\.\d{3}/g,'')+'/'+new Date(fim).toISOString().replace(/[-:]|\.\d{3}/g,'')+'&details='+encodeURIComponent('Palestra à distância Movimento 3S. A ligação está na aplicação.');
   const L=linkSeguro(links.link), G=linkSeguro(links.gravacao);
   let acoes='';
   if(passou){ acoes = G ? `<a class="primary" style="display:block; text-align:center;" href="${esc(G)}" target="_blank" rel="noopener">▶ Ver gravação</a>` : `<p class="muted" style="text-align:center;">${ins||gere?'A gravação ainda não está disponível.':'Esta palestra já aconteceu.'}</p>`; }
   else if(ins || gere){
     acoes = aberta && L ? `<a class="primary" style="display:block; text-align:center;" href="${esc(L)}" target="_blank" rel="noopener">Entrar na palestra ↗</a>`
-      : `<div class="note" style="margin:0 0 10px;"><div class="from">${L?'Link pronto':'Link'}</div>${L?'O botão para entrar aparece aqui 15 minutos antes do início.':'O link aparece aqui antes do início.'}</div>`;
+      : `<div class="note" style="margin:0 0 10px;"><div class="from">${L?'Ligação pronta':'Ligação'}</div>${L?'O botão para entrar aparece aqui 15 minutos antes do início.':'A ligação aparece aqui antes do início.'}</div>`;
     acoes += `<a class="ghost" style="display:block; text-align:center; margin-top:8px;" href="${gcal}" target="_blank" rel="noopener">📅 Pôr no Google Calendar</a>`;
     if(ins && !meu) acoes += `<button class="ghost" style="width:100%; margin-top:8px;" onclick="sairPalestra('${id}')">Cancelar inscrição</button>`;
   } else acoes = `<button class="primary" style="width:100%;" onclick="inscreverPalestra('${id}')">Inscrever-me</button>${p.acesso==='pago'?'<p class="tiny" style="text-align:center;">Para quem tem um plano PT 3S.</p>':''}`;
   const inscritos=palInscritos(p);
-  openSheet('Palestra online', `<div class="goal-top" style="margin-bottom:12px;"><div class="eyebrow">${passou?'Já aconteceu':'Palestra online'}</div><h2>${esc(p.titulo)}</h2>
+  openSheet('Palestra à distância', `<div class="goal-top" style="margin-bottom:12px;"><div class="eyebrow">${passou?'Já aconteceu':'Palestra à distância'}</div><h2>${esc(p.titulo)}</h2>
       <div style="font-size:13px; opacity:.85; position:relative; z-index:1;">${quandoTxt(p.inicio)} · ${p.duracao} min · com ${esc(p.criador_id===ME?'contigo':nomeDe(p.criador_id))}</div></div>
     ${p.descricao?`<div class="card"><div style="white-space:pre-line;">${esc(p.descricao)}</div></div>`:''}
     <div class="card">${acoes}</div>
@@ -3609,15 +3609,15 @@ async function formPalestra(id){
   const d=p? new Date(p.inicio) : null;
   const dv=d? ymd(d) : addDays(7), hv=d? pad(d.getHours())+':'+pad(d.getMinutes()) : '21:00';
   if(sheetOpen()) removeSheet();
-  openSheet(p?'Editar palestra':'Nova palestra online', `<div class="card">
-    <label for="pTit">Título</label><input id="pTit" maxlength="140" value="${esc(p?p.titulo:'')}" placeholder="Ex.: Como preparar o teu primeiro trail">
+  openSheet(p?'Editar palestra':'Nova palestra à distância', `<div class="card">
+    <label for="pTit">Título</label><input id="pTit" maxlength="140" value="${esc(p?p.titulo:'')}" placeholder="Ex.: Como preparar a tua primeira corrida em trilho">
     <label for="pDesc">Descrição</label><textarea id="pDesc" maxlength="2000" placeholder="O que vão aprender, para quem é…">${esc(p?p.descricao||'':'')}</textarea>
     <div class="two"><div><label for="pData">Dia</label><input id="pData" type="date" value="${dv}"></div><div><label for="pHora">Hora</label><input id="pHora" type="time" value="${hv}"></div></div>
     <div class="two"><div><label for="pDur">Duração (min)</label><input id="pDur" type="number" min="10" max="600" value="${p?p.duracao:60}"></div>
       <div><label for="pAcesso">Para quem</label><select id="pAcesso"><option value="todos" ${!p||p.acesso==='todos'?'selected':''}>Todos</option><option value="pago" ${p&&p.acesso==='pago'?'selected':''}>Planos PT 3S</option></select></div></div>
-    <label for="pLink">Link da palestra (Zoom, Meet, YouTube…)</label><input id="pLink" type="url" inputmode="url" value="${esc(links.link)}" placeholder="https://…">
-    <p class="tiny" style="margin:4px 0 0;">Só quem se inscreve vê o link.</p>
-    ${p?`<label for="pGrav">Link da gravação (depois da palestra)</label><input id="pGrav" type="url" inputmode="url" value="${esc(links.gravacao)}" placeholder="https://…">`:''}
+    <label for="pLink">Ligação da palestra (Zoom, Meet, YouTube…)</label><input id="pLink" type="url" inputmode="url" value="${esc(links.link)}" placeholder="https://…">
+    <p class="tiny" style="margin:4px 0 0;">Só quem se inscreve vê a ligação.</p>
+    ${p?`<label for="pGrav">Ligação da gravação (depois da palestra)</label><input id="pGrav" type="url" inputmode="url" value="${esc(links.gravacao)}" placeholder="https://…">`:''}
     <button class="primary" style="margin-top:12px;" onclick="guardarPalestra(${p?`'${id}'`:'null'})">${p?'Guardar':'Marcar palestra'}</button></div>`);
 }
 async function guardarPalestra(id){
@@ -3625,9 +3625,9 @@ async function guardarPalestra(id){
   const titulo=g('pTit'); if(!titulo){ toast('Escreve o título'); return; }
   const dt=new Date(g('pData')+'T'+(g('pHora')||'21:00')); if(isNaN(dt)){ toast('Escolhe o dia e a hora'); return; }
   const dur=Math.min(600, Math.max(10, Number(g('pDur'))||60));
-  const lk=g('pLink'), L=linkSeguro(lk); if(lk && !L){ toast('O link tem de começar por https://'); return; }
+  const lk=g('pLink'), L=linkSeguro(lk); if(lk && !L){ toast('A ligação tem de começar por https://'); return; }
   const row={titulo, descricao:g('pDesc')||null, inicio:dt.toISOString(), duracao:dur, acesso:g('pAcesso')||'todos', link:L||null};
-  if(id){ const gv=g('pGrav'), G=linkSeguro(gv); if(gv && !G){ toast('O link da gravação tem de começar por https://'); return; } row.gravacao=G||null; }
+  if(id){ const gv=g('pGrav'), G=linkSeguro(gv); if(gv && !G){ toast('A ligação da gravação tem de começar por https://'); return; } row.gravacao=G||null; }
   try{
     if(id) await q(sb.from('mov_palestras').update(row).eq('id', id));
     else await q(sb.from('mov_palestras').insert({...row, criador_id:ME}));
@@ -3645,7 +3645,7 @@ function novidades(){
   (S.notasMe||[]).filter(n=>novo(n.created_at)).forEach(n=>L.push({t:n.created_at, ic:'📝', txt:'Nova nota do coach', sub:n.texto, fn:"openPane('coaching')", view:'treino'}));
   (S.comentarios||[]).filter(c=>c.autor_id!==ME && novo(c.created_at)).forEach(c=>L.push({t:c.created_at, ic:'💬', txt:(isCoach()?nomeDe(c.autor_id)+' comentou ':'O coach comentou ')+(c.alvo_tipo==='treino'?'um treino':'uma refeição'), sub:c.texto, fn:`openComentarios('${c.alvo_tipo}','${c.alvo_id}','${c.atleta_id}')`}));
   (S.sessions||[]).filter(s=>novo(s.created) && s.date>=addDays(0) && (isCoach()? s.status==='pedida' : s.status==='confirmada')).forEach(s=>L.push({t:s.created, ic:'📅', txt:isCoach()?'Pedido de sessão de '+(s.athlete||'atleta'):'Sessão marcada: '+niceDate(s.date)+' às '+s.time, sub:s.type, fn:"goView('treino'); openPane('coaching')"}));
-  (S.palestras||[]).filter(p=>p.criador_id!==ME && novo(p.created_at) && palFim(p)>Date.now()).forEach(p=>L.push({t:p.created_at, ic:'🎤', txt:'Nova palestra online', sub:p.titulo+' · '+quandoTxt(p.inicio), fn:`openPalestra('${p.id}')`}));
+  (S.palestras||[]).filter(p=>p.criador_id!==ME && novo(p.created_at) && palFim(p)>Date.now()).forEach(p=>L.push({t:p.created_at, ic:'🎤', txt:'Nova palestra à distância', sub:p.titulo+' · '+quandoTxt(p.inicio), fn:`openPalestra('${p.id}')`}));
   return L.sort((a,b)=>b.t.localeCompare(a.t));
 }
 function renderNovidades(){
@@ -3747,7 +3747,7 @@ function avaliacao3S(src, opts){
       let est, txt;
       if(med<al.min-1 || curtas>=3){ est='mau'; txt=`${tu?'Estás':'Está'} a dormir bastante menos do que o recomendado para ${idade!=null&&idade<18?'esta idade':'adultos'} (${al.txt}). Dormir pouco de forma repetida baixa o rendimento, a recuperação e aumenta o risco de lesão.`; }
       else if(med<al.min){ est='atencao'; txt=`Um pouco abaixo do recomendado (${al.txt}). Tenta deitar-te 30 minutos mais cedo durante uma semana.`; }
-      else if(med>al.max+1){ est='atencao'; txt=`Acima do habitual (${al.txt}). Se acordas cansada/o mesmo dormindo muito, vale a pena falar com o médico.`; }
+      else if(med>al.max+1){ est='atencao'; txt=`Acima do habitual (${al.txt}). Se acordas com cansaço mesmo depois de dormires muito, vale a pena falar com o médico.`; }
       else { est='bom'; txt=`Dentro do recomendado (${al.txt}).${atleta&&med<8?' Para quem treina com regularidade, os especialistas sugerem apontar para 8 h ou mais para recuperar melhor.':''}`; }
       if(dp>1.25) txt+=' Os horários variam muito de noite para noite: manter horas parecidas para deitar e acordar também conta.';
       if(curtas && est!=='mau') txt+=` ${curtas} ${curtas===1?'noite':'noites'} com menos de 6 h.`;
@@ -3761,7 +3761,7 @@ function avaliacao3S(src, opts){
     const dias={}; ms.forEach(m=>{ (dias[m.data]=dias[m.data]||[]).push(m); });
     const diasOk=Object.values(dias).filter(l=>l.length>=2);
     if(!nutri){ html+=avalLinha('falta','Alimentação','—', `Para avaliar, preenche o perfil alimentar${tu?' em Nutrição':''} e regista as refeições com foto.`); }
-    else if(idade!=null && idade<18){ html+=avalLinha('falta','Alimentação','—','Para menores de 18 anos a app não avalia quantidades. O melhor é acompanhar com um nutricionista.'); }
+    else if(idade!=null && idade<18){ html+=avalLinha('falta','Alimentação','—','Para menores de 18 anos a aplicação não avalia quantidades. O melhor é acompanhar com um nutricionista.'); }
     else if(diasOk.length<3){ html+=avalLinha('falta','Alimentação', diasOk.length+' de 7 dias', 'Para avaliar, regista pelo menos 2 refeições por dia em 3 dias da semana. Com poucos registos a avaliação engana.'); }
     else {
       const alvo=nutriAlvo(nutri, src.body||[]);
@@ -3896,7 +3896,7 @@ function aguaAvalHtml(src, tu){
     : 'Dentro do recomendado (1,5 a 2 L por dia). Nos dias de treino, junta cerca de meio litro por cada hora de exercício.';
   return avalLinha(est,'Água', nm(Math.round(med*10)/10)+' L/dia', txt);
 }
-FONTES_AVAL.push(['Autoridade Europeia para a Segurança dos Alimentos (EFSA, 2010)', 'ingestão diária de água: cerca de 2 L para mulheres e 2,5 L para homens, incluindo a água dos alimentos']);
+FONTES_AVAL.push(['Autoridade Europeia para a Segurança dos Alimentos (EFSA, 2010)', 'ingestão diária de água: cerca de 2 L para mulheres e 2,5 L para homens, já com a água dos alimentos incluída']);
 const _avaliacaoAgua = avaliacao3S;
 avaliacao3S = function(src, opts){
   const h=_avaliacaoAgua(src, opts);
@@ -4024,7 +4024,7 @@ renderNutri = function(){
 const _nutriSetupSemIA = nutriSetupHtml;
 nutriSetupHtml = function(p, inline){
   let h=_nutriSetupSemIA(p, inline);
-  h=h.replace('Fotografa o prato e a app calcula as calorias e dá-te dicas de acordo com o teu objetivo, a tua saúde e as tuas alergias.','Regista o que comes e a app calcula as calorias e diz-te se estás a comer bem para o teu objetivo.');
+  h=h.replace('Fotografa o prato e a aplicação calcula as calorias e dá-te dicas de acordo com o teu objetivo, a tua saúde e as tuas alergias.','Regista o que comes e a aplicação calcula as calorias e diz-te se estás a comer bem para o teu objetivo.');
   h=h.replace(/<label style="display:flex; gap:10px; align-items:flex-start; font-size:13px; color:var\(--ink\); margin:4px 0 12px;"><input id="nConsent"[\s\S]*?<\/label>/, '<input id="nConsent" type="checkbox" hidden>');
   return h;
 };
@@ -4080,7 +4080,7 @@ async function saveNewPass(){
 const TT_PERFIS = {
   R:{nome:'Competidor', frase:'Vives para o desafio e para a meta.', forca:'Foco no resultado, garra e vontade de te superares.', risco:'Frustração quando o tempo não sai e tendência para treinar em excesso.', quando:'Provas e objetivos com data marcada.', crescer:'Celebra o processo, não só o tempo final. Descansar também é treinar.'},
   E:{nome:'Explorador', frase:'Treinas pelo prazer de descobrir.', forca:'Curiosidade, variedade e gosto genuíno pelo movimento.', risco:'Falta de regularidade e de plano.', quando:'Trilhos novos, modalidades diferentes, fases de experimentar.', crescer:'Escolhe um objetivo e mantém um plano simples durante 4 semanas.'},
-  S:{nome:'Social', frase:'Treinas melhor em grupo.', forca:'Energia do grupo e compromisso com os outros.', risco:'Depender dos outros para treinar.', quando:'Treinos em grupo e encontros da app.', crescer:'Garante um treino por semana só teu, para te conheceres.'},
+  S:{nome:'Social', frase:'Treinas melhor em grupo.', forca:'Energia do grupo e compromisso com os outros.', risco:'Depender dos outros para treinar.', quando:'Treinos em grupo e encontros da aplicação.', crescer:'Garante um treino por semana só teu, para te conheceres.'},
   D:{nome:'Disciplinado', frase:'A tua força é a rotina.', forca:'Consistência, organização e cumprimento do plano.', risco:'Rigidez, culpa quando falhas e ignorar sinais do corpo.', quando:'Preparações longas e objetivos exigentes.', crescer:'Ouve o corpo: ajustar o plano não é falhar.'},
 };
 const TT_PERGUNTAS = [
@@ -4098,7 +4098,7 @@ const TT_PERGUNTAS = [
 const TT_PLANO_PERFIL = {
   R:['Define um objetivo de processo (por exemplo, 3 treinos por semana), não só de tempo.','Inclui um treino leve por semana, sem relógio.','Depois de cada treino, escreve uma coisa que correu bem.','Volta a fazer o teste e compara.'],
   E:['Escolhe um objetivo para as próximas 4 semanas.','Faz um plano simples: 3 dias fixos por semana.','Varia o local, mas mantém os dias.','Volta a fazer o teste e compara.'],
-  S:['Junta-te a um encontro aqui na app.','Faz um treino por semana só teu.','Combina com alguém um objetivo comum.','Volta a fazer o teste e compara.'],
+  S:['Junta-te a um encontro aqui na aplicação.','Faz um treino por semana só teu.','Combina com alguém um objetivo comum.','Volta a fazer o teste e compara.'],
   D:['Regista como te sentes antes de cada treino (de 1 a 5).','Quando o corpo pedir, troca um treino intenso por um leve, sem culpa.','Experimenta uma atividade nova, só por prazer.','Volta a fazer o teste e compara.'],
 };
 const TT_COMP = [
@@ -4123,7 +4123,7 @@ const TT_QUIZZES = [
   ]},
   {id:'prova', titulo:'Mente na prova', desc:'Nervos, foco e diálogo interno', desafio:'Cria a tua rotina de 5 minutos antes de treinar: respiração, frase e objetivo do dia.', perguntas:[
     {p:'Sentir nervos antes de uma prova é…', o:['Sinal de que vai correr mal.','Normal: é o corpo a preparar-se.','Para esconder.','Coisa de principiante.'], c:1, e:'Algum nervosismo dá energia. O segredo é usá-lo a teu favor.', a:'Antes da próxima prova, diz: “Isto é energia para a prova.”'},
-    {p:'Uma boa forma de acalmar antes da partida:', o:['Pensar em tudo o que pode correr mal.','Respirar devagar, expirando durante mais tempo do que inspiras.','Beber muito café.','Comparar-te com os outros.'], c:1, e:'Expirar devagar ajuda o corpo a acalmar.', a:'Treina 3 minutos de respiração lenta por dia.'},
+    {p:'Uma boa forma de acalmar antes da partida:', o:['Pensar em tudo o que pode correr mal.','Respirar devagar, com a expiração mais longa do que a inspiração.','Beber muito café.','Comparar-te com os outros.'], c:1, e:'Expirar devagar ajuda o corpo a acalmar.', a:'Treina 3 minutos de respiração lenta por dia.'},
     {p:'A meio da prova, estás a sofrer. Ajuda mais…', o:['Pensar na meta, que ainda está longe.','Focar no próximo quilómetro ou na próxima subida.','Parar para ver o tempo.','Pensar em desistir.'], c:1, e:'Dividir a prova em partes pequenas torna o esforço gerível.', a:'No próximo treino longo, divide-o em blocos e pensa só no bloco em que estás.'},
     {p:'Uma frase útil para usares na prova:', o:['“Não consigo.”','“Um passo de cada vez. Treinei para isto.”','“Sou o pior.”','“Todos são melhores do que eu.”'], c:1, e:'O diálogo interno muda o esforço que sentes.', a:'Escolhe a tua frase de prova e repete-a nos treinos difíceis.'},
     {p:'Depois de uma prova que correu mal…', o:['Desistes do desporto.','Vês o que aprendeste e o que vais mudar.','Culpas o tempo que fez.','Não falas disso.'], c:1, e:'Cada prova é informação para a próxima.', a:'Escreve três coisas que aprendeste na última prova.'},
@@ -4155,7 +4155,7 @@ function ttResponder(v){ TT.resp.push(v); TT.passo++; renderTestes(); window.scr
 function ttQuizEscolher(i){ if(TT.resp.length>TT.passo) return; TT.resp.push(i); renderTestes(); }
 function ttQuizSeguinte(){ TT.passo++; renderTestes(); window.scrollTo(0,0); }
 function ttAlternar(i){ const d=ttLer(); if(!d.plano) return; d.plano.passos[i].feito=!d.plano.passos[i].feito; ttGravar('plano', d.plano); renderTestes(); }
-function ttGuardar(chave, valor, plano){ ttGravar(chave, valor); ttGravar('plano', plano); TT.msg='Guardado. Encontras o plano em Testes e quizzes.'; toast('Plano guardado'); renderTestes(); }
+function ttGuardar(chave, valor, plano){ ttGravar(chave, valor); ttGravar('plano', plano); TT.msg='Guardado. Encontras o plano em Testes e questionários.'; toast('Plano guardado'); renderTestes(); }
 function ttBarra(rot, pct, dest){ return `<div style="margin-bottom:9px;"><div class="row" style="font-size:12.5px; margin-bottom:4px;"><span style="${dest?'font-weight:600':''}">${esc(rot)}</span><span style="color:var(--gold)">${pct}%</span></div><div class="bar-bg"><div class="bar-fill" style="width:${pct}%; background:${dest?'var(--gold)':'var(--navy)'}"></div></div></div>`; }
 function ttPlanoHtml(p, interativo){
   const feitos=p.passos.filter(x=>x.feito).length;
@@ -4163,7 +4163,7 @@ function ttPlanoHtml(p, interativo){
     ${p.passos.map((x,i)=>`<div class="tt-passo ${x.feito?'ok':''}" ${interativo?`role="button" tabindex="0" onclick="ttAlternar(${i})"`:''}><span class="tt-n">${x.feito?'✓':i+1}</span><span><b>${esc(x.etiqueta)}:</b> ${esc(x.texto)}</span></div>`).join('')}
     ${interativo?'<p class="tiny" style="margin:8px 0 0;">Toca em cada passo quando o fizeres.</p>':''}</div>`;
 }
-function ttCab(eyebrow, titulo){ return `<div class="tt-cab"><button class="ghost small" style="width:auto; margin:0 0 10px;" onclick="ttIr(${TT.vista==='quiz'?"'quizzes'":'null'})">‹ ${TT.vista==='quiz'?'Quizzes':'Testes e quizzes'}</button><div class="tt-eye">${esc(eyebrow)}</div><h2 style="margin:2px 0 12px;">${esc(titulo)}</h2></div>`; }
+function ttCab(eyebrow, titulo){ return `<div class="tt-cab"><button class="ghost small" style="width:auto; margin:0 0 10px;" onclick="ttIr(${TT.vista==='quiz'?"'quizzes'":'null'})">‹ ${TT.vista==='quiz'?'Questionários':'Testes e questionários'}</button><div class="tt-eye">${esc(eyebrow)}</div><h2 style="margin:2px 0 12px;">${esc(titulo)}</h2></div>`; }
 function ttProgresso(i,n){ return `<div class="bar-bg" style="height:6px; margin-bottom:14px;"><div class="bar-fill" style="width:${Math.round(i/n*100)}%; background:var(--gold)"></div></div>`; }
 function renderTestes(){
   const box=document.getElementById('pane-testes'); if(!box) return;
@@ -4205,7 +4205,7 @@ function renderTestes(){
     }
   } else if(TT.vista==='quizzes'){
     const qz=d.quizzes||{};
-    h=ttCab('TESTA O QUE SABES','Quizzes do atleta')+`<p class="muted" style="margin:-4px 0 12px;">5 perguntas cada. No fim recebes a explicação e um plano de 7 dias feito para ti.</p>`+TT_QUIZZES.map(q=>`<button class="tt-card" onclick="ttIr('quiz','${q.id}')"><b>${esc(q.titulo)}</b><span class="tiny" style="display:block;">${esc(q.desc)}</span>${qz[q.id]?`<span class="tt-eye" style="display:block; margin-top:4px;">Última vez: ${qz[q.id].pontos} de 5</span>`:''}</button>`).join('');
+    h=ttCab('TESTA O QUE SABES','Questionários do atleta')+`<p class="muted" style="margin:-4px 0 12px;">5 perguntas cada. No fim recebes a explicação e um plano de 7 dias feito para ti.</p>`+TT_QUIZZES.map(q=>`<button class="tt-card" onclick="ttIr('quiz','${q.id}')"><b>${esc(q.titulo)}</b><span class="tiny" style="display:block;">${esc(q.desc)}</span>${qz[q.id]?`<span class="tt-eye" style="display:block; margin-top:4px;">Última vez: ${qz[q.id].pontos} de 5</span>`:''}</button>`).join('');
   } else if(TT.vista==='quiz'){
     const Q=TT_QUIZZES.find(q=>q.id===TT.quiz);
     if(TT.passo<Q.perguntas.length){
@@ -4224,15 +4224,15 @@ function renderTestes(){
         ${ttPlanoHtml(plano,false)}
         <button class="primary" onclick="ttGuardar(_ttPend.chave,_ttPend.valor,_ttPend.plano)">Guardar este plano</button>
         ${TT.msg?`<p class="tiny" style="text-align:center;">${esc(TT.msg)}</p>`:''}
-        <button class="ghost" onclick="ttIr('quiz','${Q.id}')">Repetir o quiz</button>`;
+        <button class="ghost" onclick="ttIr('quiz','${Q.id}')">Repetir o questionário</button>`;
     }
   } else {
     const pf=d.perfil&&TT_PERFIS[d.perfil.perfil];
-    h=`<div class="goal-top"><div class="eyebrow">Testes e quizzes</div><h2>Conhece-te como atleta</h2><div style="font-size:13px; opacity:.85; position:relative; z-index:1;">Responde às perguntas e recebe o teu perfil e um plano feito para ti.</div></div>`+
+    h=`<div class="goal-top"><div class="eyebrow">Testes e questionários</div><h2>Conhece-te como atleta</h2><div style="font-size:13px; opacity:.85; position:relative; z-index:1;">Responde às perguntas e recebe o teu perfil e um plano feito para ti.</div></div>`+
       (d.plano?ttPlanoHtml(d.plano,true):'')+
       `<button class="tt-card" onclick="ttIr('perfil')"><b>Que atleta sou eu?</b><span class="tiny" style="display:block;">10 perguntas · perfil e plano de 4 semanas</span>${pf?`<span class="tt-eye" style="display:block; margin-top:4px;">O teu perfil: ${esc(pf.nome)}</span>`:''}</button>
        <button class="tt-card" onclick="ttIr('comp')"><b>Competências 3S do atleta</b><span class="tiny" style="display:block;">Saber, Sentir e Ser no desporto · 12 afirmações</span>${d.comp?`<span class="tt-eye" style="display:block; margin-top:4px;">${d.comp.pil.map(p=>p.pilar+' '+p.pct+'%').join(' · ')}</span>`:''}</button>
-       <button class="tt-card" onclick="ttIr('quizzes')"><b>Quizzes do atleta</b><span class="tiny" style="display:block;">Recuperação, mente na prova, hidratação e objetivos · plano de 7 dias</span>${d.quizzes?`<span class="tt-eye" style="display:block; margin-top:4px;">${Object.keys(d.quizzes).length} de ${TT_QUIZZES.length} feitos</span>`:''}</button>
+       <button class="tt-card" onclick="ttIr('quizzes')"><b>Questionários do atleta</b><span class="tiny" style="display:block;">Recuperação, mente na prova, hidratação e objetivos · plano de 7 dias</span>${d.quizzes?`<span class="tt-eye" style="display:block; margin-top:4px;">${Object.keys(d.quizzes).length} de ${TT_QUIZZES.length} feitos</span>`:''}</button>
        <p class="tiny" style="text-align:center; margin:8px;">Informação geral. Se tens dores, lesões ou algum problema de saúde, fala com um profissional de saúde.</p>`;
   }
   box.innerHTML=h;

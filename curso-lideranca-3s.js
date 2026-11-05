@@ -79,7 +79,7 @@ export const AULAS_LIDERANCA_3S = [
       {
         titulo: "O erro de liderar todos da mesma forma",
         texto:
-          "Muitos líderes têm um estilo preferido e usam-no com toda a gente. Quem gosta de controlar, controla toda a equipa, incluindo quem já sabe mais do que ele. Quem gosta de dar liberdade, larga também quem está a começar e precisava de apoio. Em ambos os casos, o problema não é o estilo: é usá-lo na pessoa errada.",
+          "Muitos líderes têm um estilo preferido e usam-no com toda a gente. Quem gosta de controlar, controla toda a equipa, inclusive quem já sabe mais do que ele. Quem gosta de dar liberdade, larga também quem está a começar e precisava de apoio. Em ambos os casos, o problema não é o estilo: é usá-lo na pessoa errada.",
       },
       {
         titulo: "Competência e confiança",
@@ -235,7 +235,7 @@ export const AULAS_LIDERANCA_3S = [
       },
       {
         p: "Segurança psicológica significa…",
-        opcoes: ["Baixar a exigência para não criar tensão", "Poder falar e errar sem humilhação, mantendo a exigência", "Evitar conversas difíceis"],
+        opcoes: ["Baixar a exigência para não criar tensão", "Poder falar e errar sem humilhação, sem baixar a exigência", "Evitar conversas difíceis"],
         certa: 1,
         explica: "Exigência e respeito ao mesmo tempo. Não é facilitismo.",
       },
@@ -323,7 +323,7 @@ export const AULAS_LIDERANCA_3S = [
           "A pergunta mais honesta que um líder pode fazer não é \"que tipo de líder acho que sou?\", é \"como é trabalhar comigo?\". Há sempre uma parte de nós que os outros veem e nós não. A única forma de a conhecer é perguntar, ouvir sem te defenderes e agradecer.",
       },
       {
-        titulo: "Pedir feedback sem medo",
+        titulo: "Pedir retorno sem medo",
         texto:
           "Escolhe duas ou três pessoas de confiança e faz-lhes apenas duas perguntas: \"O que devo continuar a fazer?\" e \"O que faria a maior diferença se eu mudasse?\". Ouve, anota e responde só \"obrigado/a\". Não expliques nem justifiques: estás a recolher informação, não a defender-te.",
       },
@@ -334,14 +334,14 @@ export const AULAS_LIDERANCA_3S = [
       },
     ],
     ciencia: [
-      "Tasha Eurich (2018) estimou que, embora cerca de 95% das pessoas se considerem autoconscientes, apenas 10 a 15% o são de facto. Pedir feedback é a forma mais fiável de fechar essa diferença.",
+      "Tasha Eurich (2018) estimou que, embora cerca de 95% das pessoas se considerem autoconscientes, apenas 10 a 15% o são de facto. Pedir retorno é a forma mais fiável de fechar essa diferença.",
       "Peter Gollwitzer mostrou que as \"intenções de implementação\" (planos do tipo se… então…) aumentam claramente a probabilidade de cumprir um objetivo. Phillippa Lally (UCL, 2010) observou que um novo hábito leva, em média, cerca de 66 dias a tornar-se automático.",
     ],
     ideia: "A tua liderança não é o que pretendes: é o que os outros vivem quando trabalham contigo.",
     exercicio: {
-      intro: "Prepara o teu pedido de feedback.",
+      intro: "Prepara o teu pedido de retorno.",
       perguntas: [
-        "A quem vou pedir feedback (2 ou 3 pessoas)?",
+        "A quem vou pedir retorno (2 ou 3 pessoas)?",
         "O que acho que me vão dizer para continuar a fazer?",
         "O que tenho medo que me digam para mudar?",
       ],
@@ -349,8 +349,8 @@ export const AULAS_LIDERANCA_3S = [
     avaliacao: true,
     quiz: [
       {
-        p: "Quando recebes feedback, a melhor resposta é…",
-        opcoes: ["Explicar porque fizeste assim", "Ouvir, anotar e agradecer", "Dar feedback de volta"],
+        p: "Quando recebes retorno, a melhor resposta é…",
+        opcoes: ["Explicar porque fizeste assim", "Ouvir, anotar e agradecer", "Dar retorno de volta"],
         certa: 1,
         explica: "Estás a recolher informação. Defender-te faz com que as pessoas deixem de ser honestas contigo.",
       },
@@ -367,7 +367,7 @@ export const AULAS_LIDERANCA_3S = [
         explica: "Cerca de 66 dias, com grande variação entre pessoas. Por isso o plano começa com 30 dias e continua.",
       },
     ],
-    desafio: "Pede feedback a pelo menos duas pessoas esta semana com as duas perguntas da aula. Segue o teu plano de 30 dias e revê-o no fim.",
+    desafio: "Pede retorno a pelo menos duas pessoas esta semana com as duas perguntas da aula. Segue o teu plano de 30 dias e revê-o no fim.",
     materiaisIds: [41, 42, 71],
     materiaisFormadorIds: [78, 79],
   },
