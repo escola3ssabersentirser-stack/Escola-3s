@@ -1,12 +1,16 @@
 <!doctype html>
 <html lang="pt">
   <head>
+    <style>html,body{background:#F1E1CB;margin:0}</style>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <meta name="theme-color" content="#1B3355" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Escola 3S" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
     <link rel="manifest" href="/manifest.json" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -17,7 +21,17 @@
     <meta property="og:url" content="https://www.escola-3s.pt" />
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"><div id="abertura" style="position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(160deg,#1B3355 0%,#24436E 100%);">
+      <img src="/marca-3s.png" alt="" width="120" height="135" style="width:120px;height:auto;animation:abrir 1.1s ease-out both;" />
+      <p style="margin:26px 0 0;font:600 38px/1 'Cormorant Garamond',Georgia,serif;color:#F7EEDD;letter-spacing:0.02em;animation:subir 1s .25s ease-out both;">Escola <span style="color:#C6A253">3S</span></p>
+      <div style="margin-top:14px;width:56px;height:1px;background:#C6A253;animation:subir 1s .35s ease-out both;"></div>
+      <p style="margin:14px 0 0;font:500 11px/1 Inter,-apple-system,sans-serif;letter-spacing:0.32em;color:#DCC48A;animation:subir 1s .45s ease-out both;">SABER · SENTIR · SER</p>
+      <div style="position:absolute;bottom:calc(56px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;align-items:center;">
+        <div style="width:110px;height:2px;border-radius:2px;background:rgba(220,196,138,0.22);overflow:hidden;"><div style="width:40%;height:100%;background:#C6A253;animation:carregar 1.3s ease-in-out infinite;"></div></div>
+        <p style="margin:14px 0 0;font:400 10px/1 Inter,-apple-system,sans-serif;letter-spacing:0.25em;color:rgba(247,238,221,0.6);">LIDERANÇA · VIDA · DESPORTO</p>
+      </div>
+    </div></div>
+    <style>@keyframes abrir{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}@keyframes subir{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}@keyframes carregar{from{transform:translateX(-100%)}to{transform:translateX(260%)}}</style>
     <script type="module" src="/main.jsx"></script>
   </body>
 </html>

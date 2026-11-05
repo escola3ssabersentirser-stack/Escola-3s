@@ -303,6 +303,14 @@
   .at-li::before{content:'•'; position:absolute; left:6px; color:var(--gold); font-weight:700;}
   .at-li.ok::before{content:'✓'; left:2px; color:var(--mint);}
 
+.tab-wrap{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:0 -4px;}
+  .tab{width:100%; border-collapse:collapse; font-size:12.5px;}
+  .tab th{font-size:10.5px; font-weight:600; letter-spacing:.4px; text-transform:uppercase; color:var(--ink-soft); text-align:left; padding:6px 4px; border-bottom:1px solid var(--line); white-space:nowrap;}
+  .tab td{padding:8px 4px; border-bottom:1px solid var(--line); white-space:nowrap;}
+  .tab tr:last-child td{border-bottom:0;}
+  .tab .n{text-align:right; font-variant-numeric:tabular-nums;}
+  .tab-nome{white-space:normal !important; max-width:150px;}
+  .tab-x{background:none; border:0; color:var(--ink-soft); font-size:18px; line-height:1; padding:0 4px;}
   .evo-h{font-size:17px; margin:16px 4px 10px;}
   .evo-filters{margin-bottom:6px;}
 
@@ -557,6 +565,7 @@
       <div id="desafioHome"></div>
 
       <button class="tt-card" style="border:1.5px solid var(--gold);" onclick="goView('treino'); openPane('testes')"><span class="tt-eye" style="display:block;">Teste rápido · 3 min</span><b>Que atleta és tu?</b><span class="tiny" style="display:block;">Responde a 10 perguntas e recebe o teu perfil e um plano de 4 semanas.</span></button>
+      <button class="tt-card" style="margin-top:10px;" onclick="goView('treino'); openPane('evolucao'); setTimeout(()=>{const h=[...document.querySelectorAll('#pane-evolucao .evo-h')].find(x=>x.textContent==='Tempos e provas'); if(h) h.scrollIntoView({behavior:'smooth'});},250)"><span class="tt-eye" style="display:block;">Os teus dados</span><b>Tempos e provas</b><span class="tiny" style="display:block;">Tabela e gráfico dos teus tempos, melhores marcas e previsão para 5 km, 10 km, meia maratona e maratona.</span></button>
 
       <div class="actions">
         <button class="action free" onclick="openFree()">
@@ -3070,8 +3079,8 @@ function openRoute(logId, athleteId){
    ========================================================= */
 let evoSemanas=8, evoSport='todas', evoAlvo=null; // evoAlvo = id do atleta (coach) ou null (eu)
 function evoDados(){
-  if(evoAlvo){ const a=(S.athletes||[]).find(x=>x.id===evoAlvo)||{}; return {nome:a.name, logs:a.logs||[], meals:a.meals||[], body:a.body||[], nutri:a.nutri||null, share:a.share||{}}; }
-  return {nome:null, logs:S.logs||[], meals:S.meals||[], body:S.body||[], nutri:S.nutri||null, share:{treinos:true, corpo:true, saude:true}};
+  if(evoAlvo){ const a=(S.athletes||[]).find(x=>x.id===evoAlvo)||{}; return {nome:a.name, logs:a.logs||[], meals:a.meals||[], body:a.body||[], nutri:a.nutri||null, share:a.share||{}, provas:((a.intencoes||{})._provas)||[]}; }
+  return {nome:null, logs:S.logs||[], meals:S.meals||[], body:S.body||[], nutri:S.nutri||null, share:{treinos:true, corpo:true, saude:true}, provas:((S.intentions||{})._provas)||[]};
 }
 function fmtMin(m){ m=Math.round(m); return m>=60? Math.floor(m/60)+'h'+String(m%60).padStart(2,'0') : m+' min'; }
 function fmtPace(p){ const mm=Math.floor(p), ss=Math.round((p-mm)*60); return mm+':'+String(ss===60?59:ss).padStart(2,'0'); }
@@ -3165,6 +3174,7 @@ function evolucaoHtml(){
     <div class="card"><h3>Tempo de treino por semana</h3>${barSvg(porSem.map(x=>({label:x.w.label, v:Math.round(x.min), title:`Semana de ${niceDate(x.w.ini)}: ${fmtMin(x.min)}`})),{color:'var(--gold)', aria:'Minutos de treino por semana', tickFmt:v=>v>=60?Math.round(v/60)+'h':v, valFmt:fmtMin})}</div>
     ${(evoSport==='todas'||evoSport==='corrida')?`<div class="card"><div class="row"><h3 style="margin:0;">Ritmo na corrida</h3>${deltaBadge(corridas,'min/km',true)}</div><p class="tiny" style="margin:2px 0 6px;">Minutos por quilómetro. Quanto mais alto no gráfico, mais rápido.</p>${lineSvg(corridas,{color:'#B5603E', aria:'Ritmo por corrida', invert:true, fmt:fmtPace, unit:'/km', vazio:'Regista pelo menos 2 corridas com distância e tempo.'})}</div>`:''}
     ${(evoSport==='todas'||evoSport==='bike')&&bikes.length?`<div class="card"><div class="row"><h3 style="margin:0;">Velocidade na bicicleta</h3>${deltaBadge(bikes,'km/h',false)}</div>${lineSvg(bikes,{color:'var(--navy)', aria:'Velocidade média por saída de bicicleta', unit:'km/h'})}</div>`:''}
+    ${temposHtml(D, logs)}
     `:'<div class="card empty">Treinos não partilhados.</div>'}
 
     ${D.share.saude?`
@@ -3187,6 +3197,93 @@ function evolucaoHtml(){
     <div class="card"><div class="row"><h3 style="margin:0;">Gordura corporal</h3>${deltaBadge(gord,'%',true)}</div>${lineSvg(gord,{color:'#B5603E', aria:'Evolução da gordura corporal', unit:'%', vazio:'Regista a percentagem de gordura em pelo menos 2 dias.'})}</div>
     `:''}
     <p class="tiny" style="text-align:center; margin:4px 8px 12px;">Toca num ponto ou numa barra para ver o valor.</p>`;
+}
+
+/* =========================================================
+   TEMPOS E PROVAS: tabela, gráfico, melhores marcas e previsão
+   ========================================================= */
+let evoTabTodos=false, provaDist=null;
+const DIST_REF=[[5,'5 km'],[10,'10 km'],[21.0975,'Meia maratona'],[42.195,'Maratona']];
+const dCurta=d=>{ const x=parseDate(d); return x.getDate()+'/'+(x.getMonth()+1)+'/'+String(x.getFullYear()).slice(2); };
+const distCurta=km=>distNome(km).replace('Meia maratona','Meia');
+function fmtSeg(t){ t=Math.round(t); const h=Math.floor(t/3600), m=Math.floor(t%3600/60), x=t%60; return h? h+':'+String(m).padStart(2,'0')+':'+String(x).padStart(2,'0') : m+':'+String(x).padStart(2,'0'); }
+function lerTempo(txt){ const p=String(txt||'').trim().replace(/[hm]/g,':').replace(/s$/,'').split(':').map(Number); if(!p.length||p.some(isNaN)) return null; let s=0; for(const v of p) s=s*60+v; return s>0? s : null; }
+function ritmoSeg(seg, km, sport){ if(!(km>0&&seg>0)) return '—'; if(sport==='bike') return nm(km/(seg/3600))+' km/h'; return fmtSeg(seg/km)+' /km'; }
+function distNome(km){ const r=DIST_REF.find(([d])=>Math.abs(d-km)/d<0.02); return r? r[1] : nm(km,2)+' km'; }
+function melhoresMarcas(D){
+  const corr=D.logs.filter(l=>['corrida','trilho'].includes(l.sport) && l.km>0 && l.min>0).map(l=>({date:l.date, km:Number(l.km), seg:Number(l.min)*60, fonte:'treino'}));
+  const prov=(D.provas||[]).filter(p=>p.sport!=='bike').map(p=>({date:p.date, km:Number(p.km), seg:Number(p.seg), fonte:'prova', nome:p.nome}));
+  const todos=[...corr,...prov];
+  // previsão (fórmula de Riegel) a partir do melhor esforço recente com 3 km ou mais
+  const base=todos.filter(x=>x.km>=3 && x.date>=addDays(-120)).map(x=>({...x, idx:x.seg/Math.pow(x.km,1.06)})).sort((a,b)=>a.idx-b.idx)[0];
+  return DIST_REF.map(([d,nome])=>{
+    const feitos=todos.filter(x=>x.km>=d*0.98 && x.km<=d*1.06).map(x=>({...x, t:x.seg*d/x.km})).sort((a,b)=>a.t-b.t);
+    return {d, nome, melhor:feitos[0]||null, prev: base? base.seg*Math.pow(d/base.km,1.06) : null};
+  });
+}
+function temposHtml(D, logsFiltrados){
+  const eu=!evoAlvo;
+  const provas=[...(D.provas||[])].sort((a,b)=>b.date.localeCompare(a.date));
+  const mm=melhoresMarcas(D);
+  // tabela de treinos
+  const lista=[...logsFiltrados].sort((a,b)=>b.date.localeCompare(a.date));
+  const vis=evoTabTodos? lista : lista.slice(0,12);
+  const tabTreinos = lista.length ? `<div class="tab-wrap"><table class="tab">
+      <thead><tr><th>Data</th><th>Atividade</th><th class="n">Km</th><th class="n">Tempo</th><th class="n">Ritmo</th></tr></thead>
+      <tbody>${vis.map(l=>`<tr><td>${dCurta(l.date)}</td><td>${SPORTS[l.sport].ic||''} ${esc(SPORTS[l.sport].name)}</td><td class="n">${l.km>0?nm(l.km,2):'—'}</td><td class="n">${l.min>0?fmtSeg(l.min*60):'—'}</td><td class="n">${l.km>0&&l.min>0?esc(paceTxt(l)):'—'}</td></tr>`).join('')}</tbody></table></div>
+      ${lista.length>12?`<button class="ghost small" style="margin:10px 0 0;" onclick="evoTabTodos=!evoTabTodos; reEvo()">${evoTabTodos?'Mostrar menos':'Ver todos ('+lista.length+')'}</button>`:''}`
+    : `<div class="empty" style="padding:12px;">Ainda não há treinos neste período.</div>`;
+  // provas: gráfico por distância
+  const cont={}; provas.forEach(p=>{const k=distNome(Number(p.km)); cont[k]=(cont[k]||0)+1;}); const dists=Object.keys(cont).sort((a,b)=>cont[b]-cont[a]);
+  if(!provaDist || !dists.includes(provaDist)) provaDist=dists[0]||null;
+  const pontos=provas.filter(p=>distNome(Number(p.km))===provaDist).map(p=>({date:p.date, v:Number(p.seg)/60}));
+  const grafProvas = dists.length ? `
+      ${dists.length>1?`<div class="chips" style="margin:4px 0 8px;">${dists.map(d=>`<button class="chip ${provaDist===d?'on':''}" onclick="provaDist='${esc(d)}'; reEvo()">${esc(d)}</button>`).join('')}</div>`:''}
+      ${lineSvg(pontos,{color:'var(--gold)', aria:'Tempo final nas provas de '+provaDist, invert:true, fmt:v=>fmtSeg(v*60), vazio:'Regista pelo menos 2 provas desta distância para veres a evolução do tempo.'})}
+      <p class="tiny" style="margin:4px 0 0;">Quanto mais alto no gráfico, mais rápido.</p>` : '';
+  const tabProvas = provas.length ? `<div class="tab-wrap"><table class="tab">
+      <thead><tr><th>Data</th><th>Prova</th><th class="n">Dist.</th><th class="n">Tempo</th>${eu?'<th></th>':''}</tr></thead>
+      <tbody>${provas.map(p=>`<tr><td>${dCurta(p.date)}</td><td class="tab-nome">${esc(p.nome||'Prova')}<span class="tiny" style="display:block;">${esc(ritmoSeg(p.seg,Number(p.km),p.sport))}</span></td><td class="n">${esc(distCurta(Number(p.km)))}</td><td class="n"><b>${fmtSeg(p.seg)}</b></td>${eu?`<td class="n"><button class="tab-x" aria-label="Apagar" onclick="apagarProva('${esc(p.id)}')">×</button></td>`:''}</tr>`).join('')}</tbody></table></div>`
+    : `<div class="empty" style="padding:12px;">${eu?'Ainda não registaste nenhuma prova. Regista o tempo final de cada prova para acompanhares a tua evolução.':'Este atleta ainda não registou provas.'}</div>`;
+  return `
+    <h3 class="evo-h">Tempos e provas</h3>
+    <div class="card"><h3>Melhores marcas</h3>
+      <p class="tiny" style="margin:2px 0 8px;">Melhor tempo em cada distância (treinos de corrida e provas) e previsão com base no teu melhor esforço dos últimos 4 meses.</p>
+      <div class="tab-wrap"><table class="tab">
+        <thead><tr><th>Distância</th><th class="n">Melhor</th><th class="n">Ritmo</th><th class="n">Previsão</th></tr></thead>
+        <tbody>${mm.map(x=>`<tr><td>${x.nome}</td><td class="n">${x.melhor?'<b>'+fmtSeg(x.melhor.t)+'</b>':'—'}</td><td class="n">${x.melhor?fmtSeg(x.melhor.t/x.d)+' /km':'—'}</td><td class="n">${x.prev?fmtSeg(x.prev):'—'}</td></tr>`).join('')}</tbody>
+      </table></div>
+    </div>
+    <div class="card"><div class="row"><h3 style="margin:0;">Provas</h3>${eu?`<button class="primary small" onclick="abrirNovaProva()">+ Registar prova</button>`:''}</div>
+      ${grafProvas}
+      <div style="margin-top:10px;">${tabProvas}</div>
+    </div>
+    <div class="card"><h3>Tabela de treinos</h3>${tabTreinos}</div>`;
+}
+function abrirNovaProva(){
+  openSheet('Registar prova', `
+    <label for="pvNome">Nome da prova</label><input id="pvNome" maxlength="80" placeholder="Ex.: Corrida de São Silvestre">
+    <label for="pvData">Data</label><input id="pvData" type="date" value="${addDays(0)}">
+    <label>Atividade</label><div class="pick" id="pvSport">${['corrida','trilho','bike'].map((k,i)=>`<button type="button" class="${i===0?'on':''}" onclick="[...this.parentNode.children].forEach(b=>b.classList.remove('on')); this.classList.add('on');" data-v="${k}">${SPORTS[k].name}</button>`).join('')}</div>
+    <label>Distância</label><div class="pick" id="pvDistR">${DIST_REF.map(([d,t])=>`<button type="button" onclick="document.getElementById('pvKm').value='${d}'">${t}</button>`).join('')}</div>
+    <input id="pvKm" type="number" inputmode="decimal" step="0.01" min="0.1" placeholder="Quilómetros (ex.: 10)">
+    <label for="pvTempo">Tempo final</label><input id="pvTempo" inputmode="numeric" placeholder="h:mm:ss ou mm:ss (ex.: 52:30)">
+    <button class="primary" style="width:100%; margin-top:14px;" onclick="guardarProva()">Guardar prova</button>`);
+}
+async function guardarProva(){
+  const g=id=>document.getElementById(id);
+  const km=Number(String(g('pvKm').value).replace(',','.')), seg=lerTempo(g('pvTempo').value);
+  const sb_=g('pvSport').querySelector('.on'); const sport=sb_? sb_.dataset.v : 'corrida';
+  if(!(km>0)){ toast('Indica a distância da prova'); return; }
+  if(!seg){ toast('Indica o tempo final, por exemplo 52:30'); return; }
+  S.intentions=S.intentions||{}; const L=[...(S.intentions._provas||[])];
+  L.push({id:uid(), nome:g('pvNome').value.trim()||'Prova', date:g('pvData').value||addDays(0), km, seg, sport});
+  S.intentions._provas=L;
+  await saveEstado(); removeSheet(); toast('Prova guardada'); reEvo();
+}
+async function apagarProva(id){
+  S.intentions=S.intentions||{}; S.intentions._provas=(S.intentions._provas||[]).filter(p=>p.id!==id);
+  await saveEstado(); toast('Prova apagada'); reEvo();
 }
 function renderEvo(){ const el=document.getElementById('pane-evolucao'); if(el){ evoAlvo=null; el.innerHTML=evolucaoHtml(); } }
 function reEvo(){ if(evoAlvo){ const b=document.getElementById('evoSheet'); if(b) b.innerHTML=evolucaoHtml(); } else renderEvo(); }

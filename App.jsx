@@ -9516,11 +9516,21 @@ export default function App() {
     return (
       <>
         <style>{FONTS}</style>
+        <style>{`@keyframes abrir{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}@keyframes subir{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}@keyframes carregar{from{transform:translateX(-100%)}to{transform:translateX(260%)}}`}</style>
         <div
-          className="min-h-screen w-full flex items-center justify-center"
-          style={{ backgroundColor: palette.cream, fontFamily: "Inter, sans-serif" }}
+          className="fixed inset-0 flex flex-col items-center justify-center"
+          style={{ background: `linear-gradient(160deg, ${palette.navy} 0%, #24436E 100%)`, fontFamily: "Inter, sans-serif" }}
         >
-          <Brand size="sm" />
+          <img src="/marca-3s.png" alt="" style={{ width: 120, height: "auto", animation: "abrir 1.1s ease-out both" }} />
+          <p style={{ margin: "26px 0 0", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600, fontSize: 38, lineHeight: 1, color: palette.creamSoft, letterSpacing: "0.02em", animation: "subir 1s .25s ease-out both" }}>Escola <span style={{ color: palette.gold }}>3S</span></p>
+          <div style={{ marginTop: 14, width: 56, height: 1, background: palette.gold, animation: "subir 1s .35s ease-out both" }} />
+          <p style={{ margin: "14px 0 0", fontSize: 11, fontWeight: 500, letterSpacing: "0.32em", color: palette.goldSoft, animation: "subir 1s .45s ease-out both" }}>SABER · SENTIR · SER</p>
+          <div style={{ position: "absolute", bottom: "calc(56px + env(safe-area-inset-bottom, 0px))", display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <div style={{ width: 110, height: 2, borderRadius: 2, background: "rgba(220,196,138,0.22)", overflow: "hidden" }}>
+              <div style={{ width: "40%", height: "100%", background: palette.gold, animation: "carregar 1.3s ease-in-out infinite" }} />
+            </div>
+            <p style={{ margin: "14px 0 0", fontSize: 10, letterSpacing: "0.25em", color: "rgba(247,238,221,0.6)" }}>LIDERANÇA · VIDA · DESPORTO</p>
+          </div>
         </div>
       </>
     );

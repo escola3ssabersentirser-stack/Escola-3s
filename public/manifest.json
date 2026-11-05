@@ -1,10 +1,10 @@
 {
   "name": "Escola 3S",
   "short_name": "Escola 3S",
-  "description": "Saber · Sentir · Ser",
+  "description": "Coaching de Liderança, Vida e Desporto · Saber · Sentir · Ser",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#F1E1CB",
+  "background_color": "#1B3355",
   "theme_color": "#1B3355",
   "icons": [
     {
