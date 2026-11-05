@@ -2493,6 +2493,19 @@ function EscolaScreen({ escola, onBack, onOpen, temAcesso, onAbrirCurso, desbloq
   const lista = e.cursos.map((id) => cursos.find((c) => c.id === id)).filter(Boolean);
   const livro = materiais.find((m) => m.id === e.livro);
   const rotulo = (t) => <p className="text-[11px] tracking-[0.25em] font-medium mb-3" style={{ color: palette.gold }}>{t}</p>;
+  const curso = lista[0];
+  const livroAberto = livro && !livro.emBreve && (acessoTotal || desbloqueados[livro.id]);
+  const tiles = [];
+  if (curso) {
+    const acesso = temAcesso(curso);
+    tiles.push({ chave: "curso", Ico: GraduationCap, rot: "Curso", titulo: curso.titulo, info: curso.emBreve ? "Em breve" : curso.gratuito ? "Grátis" : acesso ? "Entrar" : precoTexto(PRECO_CURSO), acao: () => onAbrirCurso(curso), destaque: true });
+  }
+  if (e.app) tiles.push({ chave: "app", Ico: Footprints, rot: "Aplicação", titulo: e.app.nome, info: "Treinos e tempos", href: e.app.url, destaque: true });
+  if (lab) tiles.push({ chave: "lab", Ico: Layers, rot: "Grátis", titulo: "Laboratório", info: "Testes e treinos", acao: () => onOpen(lab.secao) });
+  if (livro) tiles.push({ chave: "livro", Ico: BookOpen, rot: "Livro", titulo: "O livro", info: livro.emBreve ? "Em breve" : livroAberto ? "Ler" : livro.preco, acao: () => (livroAberto ? window.open(livro.url, "_blank") : onOpen("livros")) });
+  tiles.push({ chave: "marcar", Ico: Calendar, rot: "Sessão", titulo: "Marcar sessão", info: "1.ª sessão gratuita", acao: () => onOpen("marcar:" + escola) });
+  if (tiles.length % 2 === 1) tiles.push({ chave: "coach", Ico: User, rot: "Coach", titulo: coach === undefined ? "…" : coach ? coach.nome : "Em breve", info: "Responsável pela área", acao: () => onOpen("marcar:" + escola) });
+
   return (
     <div className="pb-28">
       <div className="px-6 pt-6">
@@ -2501,132 +2514,46 @@ function EscolaScreen({ escola, onBack, onOpen, temAcesso, onAbrirCurso, desbloq
           <span className="text-sm">Escola 3S</span>
         </button>
       </div>
-      <div className="px-6 pt-3 pb-5">
-        <div className="relative overflow-hidden rounded-2xl px-5 py-4 text-center" style={{ background: e.fundo, border: e.borda ? `1.5px solid ${e.borda}` : "none" }}>
-          <Icon size={100} strokeWidth={1} className="absolute -right-4 -bottom-6" style={{ color: e.texto, opacity: 0.07 }} />
-          <div className="w-10 h-10 mx-auto rounded-full flex items-center justify-center" style={{ border: `1.5px solid ${e.acento}` }}>
-            <Icon size={18} strokeWidth={1.6} style={{ color: e.acento }} />
-          </div>
-          <p className="text-[10px] tracking-[0.25em] font-semibold mt-2" style={{ color: e.suave }}>COACHING</p>
-          <p className="font-serif text-3xl leading-tight" style={{ color: e.texto }}>{e.curto} <span style={{ color: e.acento, fontWeight: 600 }}>3S</span></p>
-          <p className="text-sm mt-2 leading-relaxed" style={{ color: e.texto, opacity: 0.9 }}>{e.frase}</p>
-          <p className="text-[11px] mt-3" style={{ color: e.texto, opacity: 0.75 }}>{e.por || "com Conceição Alves"}</p>
+      <div className="px-6 pt-4 pb-6 flex items-center gap-3">
+        <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ background: e.fundo, border: e.borda ? `1.5px solid ${e.borda}` : "none" }}>
+          <Icon size={22} strokeWidth={1.6} style={{ color: e.acento }} />
+        </div>
+        <div className="min-w-0">
+          <p className="font-serif text-2xl leading-tight" style={{ color: palette.navy }}>{e.curto} <span style={{ color: palette.gold }}>3S</span></p>
+          <p className="text-xs mt-0.5" style={{ color: palette.navySoft }}>{coach && coach.nome ? `com ${coach.nome}` : e.por || "com Conceição Alves"}</p>
         </div>
       </div>
+      <p className="px-6 -mt-2 mb-5 text-sm leading-relaxed" style={{ color: palette.ink }}>{e.frase}</p>
 
-      {lab && (
-        <div className="px-6 mb-7">
-          {rotulo("INTERATIVO · GRÁTIS")}
-          <button onClick={() => onOpen(lab.secao)} className="relative overflow-hidden w-full text-left rounded-xl px-4 py-3 transition active:scale-[0.99]" style={{ background: `linear-gradient(150deg, ${palette.gold} 0%, #E4C98C 100%)` }}>
-            <p className="font-serif text-lg leading-tight" style={{ color: palette.navy }}>{lab.cfg.t.titulo}</p>
-            <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navy }}>Testes · Treinos · Quizzes · Planos automáticos · Modelos · {lab.cfg.t.perguntasTitulo}</p>
-            <span className="inline-flex items-center gap-1 mt-2 text-[11px] font-medium rounded-full px-3 py-1" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Começar <ChevronRight size={13} /></span>
-          </button>
-        </div>
-      )}
-
-      {lab && (
-        <div className="px-6 mb-7">
-          {rotulo(lab.rotuloTreinos)}
-          {lab.cfg.grupos.map((g) => (
-            <div key={g} className="mb-3">
-              <p className="text-xs font-medium mb-2" style={{ color: palette.navy }}>{g}</p>
-              <div className="flex flex-wrap gap-2">
-                {lab.cfg.treinos.filter((t) => t.grupo === g).map((t) => (
-                  <button key={t.id} onClick={() => onOpen(lab.secao + ":" + t.id)} className="rounded-full px-3.5 py-2 text-xs font-medium" style={{ backgroundColor: palette.card, border: `1px solid ${palette.gold}`, color: palette.navy }}>
-                    {cap(t.titulo.replace("Comunicação ", ""))}
-                  </button>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {e.app && (
-        <div className="px-6 mb-7">
-          {rotulo("A APP")}
-          <a href={e.app.url} className="block rounded-2xl px-5 py-4 transition active:scale-[0.99]" style={{ background: e.fundo, border: e.borda ? `1.5px solid ${e.borda}` : "none" }}>
-            <p className="font-serif text-xl" style={{ color: e.texto }}>{e.app.nome}</p>
-            <p className="text-xs mt-1 leading-relaxed" style={{ color: e.texto, opacity: 0.85 }}>{e.app.desc}</p>
-            <span className="inline-flex items-center gap-1 mt-3 text-xs font-medium rounded-full px-3 py-1.5" style={{ backgroundColor: e.acento, color: palette.navy }}>Abrir o {e.app.nome} <ChevronRight size={14} /></span>
-          </a>
-        </div>
-      )}
-
-      {lista.length > 0 && <div className="px-6 mb-7">
-        {rotulo(lista.length > 1 ? "CURSOS" : "O CURSO")}
-        <div className="space-y-3">
-          {lista.map((c) => {
-            const acesso = temAcesso(c);
-            return (
-              <button key={c.id} onClick={() => onAbrirCurso(c)} className="w-full text-left rounded-xl px-4 py-3 transition active:scale-[0.99]" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, boxShadow: "0 4px 14px -8px rgba(27,51,85,0.25)" }}>
-                <div className="flex items-start justify-between gap-2">
-                  <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{c.titulo}</p>
-                  {c.gratuito && <span className="text-[10px] font-semibold rounded-full px-2 py-0.5 shrink-0" style={{ backgroundColor: `${palette.gold}26`, color: palette.navy }}>GRÁTIS</span>}
+      <div className="px-6 pb-10 grid grid-cols-2 gap-3">
+        {tiles.map((t) => {
+          const escuro = t.destaque;
+          const estilo = escuro
+            ? { background: e.fundo, border: e.borda ? `1.5px solid ${e.borda}` : "none" }
+            : { backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66` };
+          const cTit = escuro ? e.texto : palette.navy;
+          const cSub = escuro ? e.texto : palette.navySoft;
+          const conteudo = (
+            <>
+              <div className="flex items-center justify-between">
+                <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ border: `1.5px solid ${escuro ? e.acento : palette.gold}` }}>
+                  <t.Ico size={16} strokeWidth={1.6} style={{ color: escuro ? e.acento : palette.gold }} />
                 </div>
-                {c.promessa && <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{c.promessa}</p>}
-                <div className="flex items-center justify-between mt-3">
-                  <span className="font-serif text-lg" style={{ color: palette.gold }}>
-                    {c.emBreve ? "Em breve" : c.gratuito ? "Grátis" : acesso ? "Tens acesso" : precoTexto(PRECO_CURSO)}
-                  </span>
-                  <span className="text-xs font-medium flex items-center gap-1 rounded-full px-3 py-1.5" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>
-                    {acesso || c.gratuito ? "Entrar" : "Ver o curso"} <ChevronRight size={14} />
-                  </span>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </div>}
-
-      {livro && (
-        <div className="px-6 mb-7">
-          {rotulo("O LIVRO")}
-          <div className="rounded-2xl px-4 py-4 flex gap-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
-            <div className="w-16 h-22 shrink-0 rounded-lg flex flex-col items-center justify-center px-1 py-3" style={{ background: e.fundo, minHeight: 88 }}>
-              <span className="font-serif text-lg leading-none" style={{ color: e.acento }}>3S</span>
-              <span className="text-[7px] tracking-[0.15em] mt-1 text-center" style={{ color: e.texto }}>{e.curto.toUpperCase()}</span>
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{livro.titulo}</p>
-              {livro.desc && <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{livro.desc}</p>}
-              <div className="mt-3">
-                {livro.emBreve ? (
-                  <span className="inline-block text-xs font-medium rounded-full px-3 py-1.5" style={{ border: `1px dashed ${palette.gold}`, color: palette.navy }}>Em breve · {livro.preco}</span>
-                ) : (acessoTotal || desbloqueados[livro.id]) ? (
-                  <a href={livro.url} target="_blank" rel="noreferrer" className="inline-block text-xs font-medium rounded-full px-3 py-1.5" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Ler o livro</a>
-                ) : (
-                  <BotaoCarrinho pequeno item={{ chave: `material-${livro.id}`, tipo: "material", materialId: livro.id, titulo: livro.titulo, valor: precoNumero(livro.preco) }} />
-                )}
+                <span className="text-[9px] tracking-[0.2em] font-semibold" style={{ color: escuro ? e.acento : palette.gold }}>{t.rot.toUpperCase()}</span>
               </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div className="px-6">
-        {rotulo("O TEU COACH")}
-        <div className="rounded-2xl px-4 py-4 mb-3 flex items-center gap-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
-          <div className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 font-serif" style={{ background: e.fundo, border: e.borda ? `1px solid ${e.borda}` : "none", color: e.acento }}>
-            {coach && coach.nome ? coach.nome.slice(0, 1).toUpperCase() : "3S"}
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>COACH RESPONSÁVEL</p>
-            <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{coach === undefined ? "…" : coach ? coach.nome : "Em breve"}</p>
-            <p className="text-[11px]" style={{ color: palette.navySoft }}>{coach && coach.titulo ? coach.titulo : coach === null ? "Estamos a escolher o coach desta área" : ""}</p>
-          </div>
-        </div>
-        <button onClick={() => onOpen("marcar:" + escola)} className="w-full flex items-center gap-3 rounded-xl px-4 py-3 text-left transition active:scale-[0.99]" style={{ background: `linear-gradient(150deg, ${palette.navy} 0%, #24436E 100%)` }}>
-          <div className="w-11 h-11 rounded-full flex items-center justify-center shrink-0" style={{ border: `1.5px solid ${palette.gold}` }}>
-            <PenLine size={18} strokeWidth={1.6} style={{ color: palette.gold }} />
-          </div>
-          <div className="flex-1">
-            <p className="font-serif text-lg leading-tight" style={{ color: palette.creamSoft }}>Marcar Coaching ou Mentoria</p>
-            <p className="text-[11px] mt-0.5" style={{ color: palette.goldSoft }}>A primeira sessão de 20 min é grátis</p>
-          </div>
-          <ChevronRight size={18} style={{ color: palette.gold }} />
-        </button>
+              <div>
+                <p className="font-serif text-[16px] leading-tight" style={{ color: cTit }}>{t.titulo}</p>
+                <p className="text-[11px] mt-1 flex items-center gap-0.5" style={{ color: cSub, opacity: 0.85 }}>{t.info} <ChevronRight size={12} /></p>
+              </div>
+            </>
+          );
+          const cls = "aspect-square rounded-2xl p-3.5 flex flex-col justify-between text-left transition active:scale-[0.97]";
+          return t.href ? (
+            <a key={t.chave} href={t.href} className={cls} style={estilo}>{conteudo}</a>
+          ) : (
+            <button key={t.chave} onClick={t.acao} className={cls} style={estilo}>{conteudo}</button>
+          );
+        })}
       </div>
     </div>
   );
