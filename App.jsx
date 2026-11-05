@@ -1,6 +1,7 @@
-// VERSAO-05-NOV-SEM-COMUNIDADE-MENSAL
+// VERSAO-05-NOV-CURSO-LIDERANCA-3S
 import { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "./supabase.js";
+import { AULAS_LIDERANCA_3S, AVALIACAO_3S, PLANO_3S, PILARES_3S } from "./curso-lideranca-3s.js";
 import {
   Home,
   Compass,
@@ -108,41 +109,13 @@ const TODOS_CURSOS = [
     id: 1,
     escolaId: "lideranca",
     titulo: "Liderança 3S",
-    promessa: "Liderar pessoas diferentes, criar compromisso e conseguir resultados sem cair no controlo constante. Quatro aulas: Controlo ou Compromisso, Liderança Situacional, Segurança Psicológica e Que Líder Sou Eu.",
+    interativo: true,
+    promessa: "O curso da Escola 3S para quem lidera pessoas: equipas, lojas, projetos, associações ou desporto. Trabalhas os três pilares (Saber, Sentir e Ser) com texto, ciência, exercícios, quizzes e desafios, e sais com o teu perfil 3S e um plano de 30 dias.",
     pergunta: "Que líder encontram os outros quando trabalham comigo?",
     tipo: "video",
-    duracao: "45 min",
+    duracao: "6 aulas · cerca de 2 h",
     concluido: false,
-    aulas: [
-      {
-        titulo: "Controlo ou Compromisso",
-        descricao: "Duas formas de obter resultados, e o que cada uma custa à equipa a longo prazo.",
-        conteudo: "Liderar pelo controlo — supervisão constante, microgestão, pressão sobre prazos — pode gerar resultados no curto prazo, mas tende a esgotar a equipa, a reduzir a iniciativa própria, e a criar dependência do líder para qualquer decisão. Liderar para o compromisso — criar clareza sobre o porquê do trabalho, confiar responsabilidade real, e desenvolver as pessoas — costuma demorar mais a instalar-se, mas produz resultados mais consistentes e sustentáveis.\n\nJá em 1960, o investigador Douglas McGregor descreveu duas visões opostas sobre as pessoas no trabalho. Na Teoria X, presume-se que as pessoas evitam responsabilidade e precisam de ser supervisionadas de perto. Na Teoria Y, presume-se que as pessoas procuram, naturalmente, sentido e responsabilidade no trabalho, quando as condições o permitem — continua no Livro do Aluno.",
-        materiaisIds: [41, 42, 68],
-        materiaisFormadorIds: [72, 73],
-      },
-      {
-        titulo: "Liderança Situacional",
-        descricao: "Não existe um único estilo correto de liderar — depende da pessoa e da tarefa.",
-        conteudo: "Paul Hersey e Ken Blanchard propuseram um modelo influente, conhecido como liderança situacional: o estilo eficaz depende do nível de competência e de confiança de cada pessoa, em cada tarefa específica. Uma pessoa nova numa função pode beneficiar de mais direção; uma pessoa experiente e motivada tende a render mais com autonomia e apoio — continua no Livro do Aluno.",
-        materiaisIds: [41, 42, 69],
-        materiaisFormadorIds: [74, 75],
-      },
-      {
-        titulo: "Segurança Psicológica",
-        descricao: "As equipas com melhor desempenho são as que têm segurança para reportar erros cedo.",
-        conteudo: "A investigadora de Harvard Amy Edmondson demonstrou que as equipas com melhor desempenho não são as que têm menos erros — são as que têm segurança psicológica suficiente para os erros serem reportados, discutidos e corrigidos cedo, sem medo de punição ou humilhação — continua no Livro do Aluno.",
-        materiaisIds: [41, 42, 70],
-        materiaisFormadorIds: [76, 77],
-      },
-      {
-        titulo: "Que Líder Sou Eu",
-        descricao: "Como a experiência de trabalhar contigo é sentida do outro lado.",
-        conteudo: "Esta é, talvez, a pergunta mais honesta que um líder pode fazer a si próprio: não como a pessoa se vê a si mesma, mas como a experiência de trabalhar consigo é sentida do outro lado. A resposta raramente é confortável na primeira vez que se procura, com sinceridade, obtê-la — continua no Livro do Aluno.",
-        materiaisIds: [41, 42, 71],
-        materiaisFormadorIds: [78, 79],
-      },
-    ],
+    aulas: AULAS_LIDERANCA_3S,
     materiaisIds: [41, 42],
     materiaisFormadorIds: [56, 57, 58, 59],
   },
@@ -355,10 +328,10 @@ const materiais = [
   { id: 53, titulo: "Livro do Formador — Crenças Limitantes", formato: "Guia do Formador", preco: "—", url: "/livro-formador-crencas-limitantes.pdf", apenasMentor: true },
   { id: 54, titulo: "Caderno do Formador — Crenças Limitantes", formato: "Guia do Formador", preco: "—", url: "/caderno-formador-crencas-limitantes.pdf", apenasMentor: true },
   { id: 55, titulo: "Plano de Ação Online — Crenças Limitantes", formato: "Guia do Formador", preco: "—", url: "/plano-acao-online-crencas-limitantes.pdf", apenasMentor: true },
-  { id: 56, titulo: "Manual Aula a Aula — Liderar Pessoas", formato: "Guia do Formador", preco: "—", url: "/manual-liderar-pessoas.pdf", apenasMentor: true },
-  { id: 57, titulo: "Livro do Formador — Liderar Pessoas", formato: "Guia do Formador", preco: "—", url: "/livro-formador-liderar-pessoas.pdf", apenasMentor: true },
-  { id: 58, titulo: "Caderno do Formador — Liderar Pessoas", formato: "Guia do Formador", preco: "—", url: "/caderno-formador-liderar-pessoas.pdf", apenasMentor: true },
-  { id: 59, titulo: "Plano de Ação Online — Liderar Pessoas", formato: "Guia do Formador", preco: "—", url: "/plano-acao-online-liderar-pessoas.pdf", apenasMentor: true },
+  { id: 56, titulo: "Manual Aula a Aula — Liderança 3S", formato: "Guia do Formador", preco: "—", url: "/manual-liderar-pessoas.pdf", apenasMentor: true },
+  { id: 57, titulo: "Livro do Formador — Liderança 3S", formato: "Guia do Formador", preco: "—", url: "/livro-formador-liderar-pessoas.pdf", apenasMentor: true },
+  { id: 58, titulo: "Caderno do Formador — Liderança 3S", formato: "Guia do Formador", preco: "—", url: "/caderno-formador-liderar-pessoas.pdf", apenasMentor: true },
+  { id: 59, titulo: "Plano de Ação Online — Liderança 3S", formato: "Guia do Formador", preco: "—", url: "/plano-acao-online-liderar-pessoas.pdf", apenasMentor: true },
   { id: 60, titulo: "Manual Aula a Aula — Conversas que Mudam Equipas", formato: "Guia do Formador", preco: "—", url: "/manual-conversas-equipas.pdf", apenasMentor: true },
   { id: 61, titulo: "Livro do Formador — Conversas que Mudam Equipas", formato: "Guia do Formador", preco: "—", url: "/livro-formador-conversas-equipas.pdf", apenasMentor: true },
   { id: 62, titulo: "Caderno do Formador — Conversas que Mudam Equipas", formato: "Guia do Formador", preco: "—", url: "/caderno-formador-conversas-equipas.pdf", apenasMentor: true },
@@ -445,8 +418,8 @@ const materiais = [
   { id: 38, titulo: "Caderno de Trabalho — Resiliência", formato: "Caderno", preco: "4,99€", url: "/caderno-resiliencia.pdf" },
   { id: 39, titulo: "Livro do Aluno — Empoderamento Pessoal", formato: "Livro", preco: "6,99€", url: "/livro-empoderamento.pdf" },
   { id: 40, titulo: "Caderno de Trabalho — Empoderamento Pessoal", formato: "Caderno", preco: "4,99€", url: "/caderno-empoderamento.pdf" },
-  { id: 41, titulo: "Livro do Aluno — Liderar Pessoas", formato: "Livro", preco: "6,99€", url: "/livro-liderar-pessoas-v2.pdf" },
-  { id: 42, titulo: "Caderno de Trabalho — Liderar Pessoas", formato: "Caderno", preco: "4,99€", url: "/caderno-liderar-pessoas.pdf" },
+  { id: 41, titulo: "Livro do Aluno — Liderança 3S", formato: "Livro", preco: "6,99€", url: "/livro-liderar-pessoas-v2.pdf" },
+  { id: 42, titulo: "Caderno de Trabalho — Liderança 3S", formato: "Caderno", preco: "4,99€", url: "/caderno-liderar-pessoas.pdf" },
   { id: 43, titulo: "Livro do Aluno — Conversas que Mudam Equipas", formato: "Livro", preco: "6,99€", url: "/livro-conversas-equipas.pdf" },
   { id: 44, titulo: "Caderno de Trabalho — Conversas que Mudam Equipas", formato: "Caderno", preco: "4,99€", url: "/caderno-conversas-equipas.pdf" },
   { id: 45, titulo: "Livro do Aluno — Crenças que Limitam", formato: "Livro", preco: "6,99€", url: "/livro-crencas-limitantes.pdf" },
@@ -3358,6 +3331,426 @@ function FormacaoScreen({ onBack, onOpenCurso, cursosConcluidos, escolaFixa }) {
         })}
       </div>
     </div>
+  );
+}
+
+/* ---------------------------------------------------------
+   Curso Liderança 3S — curso interativo completo
+--------------------------------------------------------- */
+
+function PilarEtiqueta({ pilar }) {
+  const p = PILARES_3S[pilar] || PILARES_3S["3S"];
+  return (
+    <span className="inline-block text-[10px] tracking-[0.15em] font-semibold px-2 py-0.5 rounded-full" style={{ backgroundColor: p.fundo, color: p.texto, border: `1px solid ${p.cor}33` }}>
+      {p.nome.toUpperCase()}
+    </span>
+  );
+}
+
+function CursoInterativoScreen({ curso, estado, onGuardar, concluidoEm, onConcluirCurso, onCertificado, onBack, onAbrirLab, materiaisDesbloqueados, onDesbloquearMaterial, acessoTotal, formadorAutorizado }) {
+  const [aulaAberta, setAulaAberta] = useState(null);
+  const aulas = curso.aulas || [];
+  const est = estado || {};
+  const estAulas = est.aulas || {};
+  const feitas = aulas.filter((_, i) => estAulas[i] && estAulas[i].concluida).length;
+  const pct = Math.round((feitas / Math.max(aulas.length, 1)) * 100);
+  const todas = feitas === aulas.length && aulas.length > 0;
+
+  useEffect(() => {
+    if (todas && !concluidoEm) onConcluirCurso();
+  }, [todas, concluidoEm]);
+
+  const guardarAula = (i, dados) => onGuardar((e) => { const ea = (e && e.aulas) || {}; return { ...(e || {}), aulas: { ...ea, [i]: { ...(ea[i] || {}), ...dados } } }; });
+
+  if (aulaAberta !== null) {
+    return (
+      <AulaInterativaScreen
+        curso={curso}
+        indice={aulaAberta}
+        aula={aulas[aulaAberta]}
+        dados={estAulas[aulaAberta] || {}}
+        estadoCurso={est}
+        onGuardar={(dados) => guardarAula(aulaAberta, dados)}
+        onGuardarCurso={onGuardar}
+        onBack={() => setAulaAberta(null)}
+        onSeguinte={() => setAulaAberta(aulaAberta + 1 < aulas.length ? aulaAberta + 1 : null)}
+        onAbrirLab={onAbrirLab}
+        materiaisDesbloqueados={materiaisDesbloqueados}
+        onDesbloquearMaterial={onDesbloquearMaterial}
+        acessoTotal={acessoTotal}
+        formadorAutorizado={formadorAutorizado}
+      />
+    );
+  }
+
+  const proxima = aulas.findIndex((_, i) => !(estAulas[i] && estAulas[i].concluida));
+
+  return (
+    <div className="pb-28">
+      <SectionHeader eyebrow="COACHING DE LIDERANÇA 3S" title={curso.titulo} onBack={onBack} />
+      <div className="px-6 space-y-5">
+        <div className="rounded-2xl px-5 py-5" style={{ backgroundColor: palette.navy }}>
+          <p className="font-serif text-lg leading-snug" style={{ color: palette.creamSoft }}>“{curso.pergunta}”</p>
+          <div className="flex gap-2 mt-4">
+            {["Saber", "Sentir", "Ser"].map((p) => (
+              <div key={p} className="flex-1 rounded-xl py-2 text-center" style={{ backgroundColor: "rgba(255,255,255,0.08)", border: `1px solid ${palette.gold}55` }}>
+                <p className="font-serif text-base" style={{ color: palette.gold }}>{p}</p>
+                <p className="text-[10px]" style={{ color: palette.goldSoft }}>{p === "Saber" ? "cabeça" : p === "Sentir" ? "coração" : "identidade"}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4">
+            <div className="flex justify-between text-xs mb-1.5" style={{ color: palette.goldSoft }}>
+              <span>{feitas} de {aulas.length} aulas concluídas</span>
+              <span>{pct}%</span>
+            </div>
+            <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: "rgba(255,255,255,0.15)" }}>
+              <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: palette.gold }} />
+            </div>
+          </div>
+          {proxima >= 0 && (
+            <button onClick={() => setAulaAberta(proxima)} className="mt-4 w-full rounded-full py-3 text-sm font-medium" style={{ backgroundColor: palette.gold, color: palette.navy }}>
+              {feitas === 0 ? "Começar a aula 1" : `Continuar: aula ${proxima + 1}`}
+            </button>
+          )}
+        </div>
+
+        {todas && (
+          <div className="rounded-2xl px-5 py-5 text-center" style={{ backgroundColor: palette.card, border: `1.5px solid ${palette.gold}` }}>
+            <CheckCircle2 size={28} style={{ color: palette.gold, margin: "0 auto" }} />
+            <p className="font-serif text-xl mt-2" style={{ color: palette.navy }}>Curso concluído</p>
+            <p className="text-sm mt-1" style={{ color: palette.navySoft }}>Parabéns! Continua o teu plano de 30 dias e volta às aulas sempre que precisares.</p>
+            <button onClick={onCertificado} className="mt-4 rounded-full px-5 py-2.5 text-sm font-medium" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Ver o meu certificado</button>
+          </div>
+        )}
+
+        <div>
+          <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>AULAS</p>
+          <div className="space-y-2.5">
+            {aulas.map((a, i) => {
+              const ok = estAulas[i] && estAulas[i].concluida;
+              return (
+                <button key={i} onClick={() => setAulaAberta(i)} className="w-full flex items-center gap-3 rounded-2xl px-4 py-3.5 text-left transition active:scale-[0.98]" style={{ backgroundColor: palette.card, border: `1px solid ${ok ? palette.gold : palette.goldSoft + "55"}` }}>
+                  <span className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-sm font-semibold" style={ok ? { backgroundColor: palette.gold, color: palette.navy } : { border: `1.5px solid ${palette.navy}`, color: palette.navy }}>
+                    {ok ? "✓" : i + 1}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-0.5"><PilarEtiqueta pilar={a.pilar} /><span className="text-[11px]" style={{ color: palette.navySoft }}>{a.duracao}</span></div>
+                    <p className="font-serif text-[15px] leading-snug" style={{ color: palette.navy }}>{a.titulo}</p>
+                  </div>
+                  <ChevronRight size={16} style={{ color: palette.navySoft, flexShrink: 0 }} />
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {curso.materiaisIds && curso.materiaisIds.length > 0 && (
+          <div>
+            <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>MATERIAIS DO CURSO</p>
+            <div className="space-y-2">
+              {curso.materiaisIds.map((mid) => {
+                const m = materiais.find((mat) => mat.id === mid);
+                if (!m) return null;
+                return <MaterialCard key={mid} material={m} desbloqueado={acessoTotal || Boolean(materiaisDesbloqueados[mid])} onDesbloquear={() => onDesbloquearMaterial(mid)} desbloqueadoFisico={acessoTotal || Boolean(materiaisDesbloqueados[mid + "-fisico"])} onDesbloquearFisico={() => onDesbloquearMaterial(mid + "-fisico")} />;
+              })}
+            </div>
+          </div>
+        )}
+        {curso.materiaisFormadorIds && curso.materiaisFormadorIds.length > 0 && (acessoTotal || formadorAutorizado) && (
+          <div>
+            <p className="text-[11px] tracking-[0.2em] font-medium mb-1" style={{ color: palette.gold }}>MATERIAIS DO FORMADOR</p>
+            <p className="text-xs mb-3" style={{ color: palette.navySoft }}>Visíveis só para coaches e formadores.</p>
+            <div className="space-y-2">
+              {curso.materiaisFormadorIds.map((mid) => {
+                const m = materiais.find((mat) => mat.id === mid);
+                if (!m) return null;
+                return <MaterialCard key={mid} material={m} desbloqueado={true} onDesbloquear={() => {}} />;
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function AulaInterativaScreen({ curso, indice, aula, dados, estadoCurso, onGuardar, onGuardarCurso, onBack, onSeguinte, onAbrirLab, materiaisDesbloqueados, onDesbloquearMaterial, acessoTotal, formadorAutorizado }) {
+  const passos = ["Aprender", "Exercício", ...(aula.avaliacao ? ["Avaliação 3S"] : []), "Quiz", "Desafio"];
+  const [passo, setPasso] = useState(0);
+  const [respostas, setRespostas] = useState(dados.respostas || []);
+  const [quiz, setQuiz] = useState(dados.quiz || {});
+  const nomePasso = passos[passo];
+  const ultimo = passo === passos.length - 1;
+  const pil = PILARES_3S[aula.pilar] || PILARES_3S["3S"];
+
+  useEffect(() => { window.scrollTo(0, 0); }, [passo, indice]);
+  useEffect(() => { setPasso(0); setRespostas(dados.respostas || []); setQuiz(dados.quiz || {}); }, [indice]);
+
+  const guardarRespostas = () => onGuardar({ respostas });
+  const quizCompleto = aula.quiz.every((_, qi) => quiz[qi] !== undefined);
+  const certas = aula.quiz.filter((q, qi) => quiz[qi] === q.certa).length;
+  const avaliacao = estadoCurso.avaliacao || {};
+  const avaliacaoCompleta = AVALIACAO_3S.every((_, k) => avaliacao[k]);
+  const podeAvancar = nomePasso === "Quiz" ? quizCompleto : nomePasso === "Avaliação 3S" ? avaliacaoCompleta : true;
+
+  const avancar = () => {
+    if (nomePasso === "Exercício") guardarRespostas();
+    if (nomePasso === "Quiz") onGuardar({ quiz });
+    if (ultimo) {
+      onGuardar({ respostas, quiz, concluida: dados.concluida || new Date().toISOString() });
+      onSeguinte();
+    } else setPasso(passo + 1);
+  };
+
+  return (
+    <div className="pb-28">
+      <div className="px-6 pt-8">
+        <button onClick={() => { guardarRespostas(); onBack(); }} className="flex items-center gap-1 text-sm font-medium" style={{ color: palette.navySoft }}>
+          <ChevronLeft size={16} /> Aulas
+        </button>
+      </div>
+      <div className="px-6 pt-4">
+        <div className="flex items-center gap-2 mb-2"><PilarEtiqueta pilar={aula.pilar} /><span className="text-[11px]" style={{ color: palette.navySoft }}>Aula {indice + 1} de {curso.aulas.length} · {aula.duracao}</span></div>
+        <h1 className="font-serif text-2xl leading-tight" style={{ color: palette.navy }}>{aula.titulo}</h1>
+        <div className="flex gap-1.5 mt-4">
+          {passos.map((p, k) => (
+            <button key={p} onClick={() => { if (k <= passo || dados.concluida) { if (nomePasso === "Exercício") guardarRespostas(); setPasso(k); } }} className="flex-1 text-center">
+              <div className="h-1.5 rounded-full" style={{ backgroundColor: k <= passo ? pil.cor : palette.goldSoft + "66" }} />
+              <p className="text-[10px] mt-1 truncate" style={{ color: k === passo ? palette.navy : palette.navySoft, fontWeight: k === passo ? 600 : 400 }}>{p}</p>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="px-6 pt-5 space-y-4">
+        {nomePasso === "Aprender" && (
+          <>
+            {aula.videoUrl && (
+              <div className="rounded-2xl overflow-hidden aspect-video" style={{ backgroundColor: palette.navy }}>
+                <iframe src={aula.videoUrl} title={aula.titulo} className="w-full h-full" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen />
+              </div>
+            )}
+            <div className="rounded-2xl px-4 py-3" style={{ backgroundColor: pil.fundo }}>
+              <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: pil.texto }}>OBJETIVO DA AULA</p>
+              <p className="text-sm mt-1 leading-relaxed" style={{ color: pil.texto }}>{aula.objetivo}</p>
+            </div>
+            {aula.secoes.map((s, k) => (
+              <div key={k}>
+                <p className="font-serif text-lg leading-snug mb-1.5" style={{ color: palette.navy }}>{s.titulo}</p>
+                <p className="text-[15px] leading-relaxed" style={{ color: palette.ink }}>{s.texto}</p>
+              </div>
+            ))}
+            <div className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}88` }}>
+              <p className="text-[10px] tracking-[0.2em] font-semibold mb-2" style={{ color: palette.gold }}>O QUE DIZ A CIÊNCIA</p>
+              <div className="space-y-2">
+                {aula.ciencia.map((c, k) => <p key={k} className="text-[13px] leading-relaxed" style={{ color: palette.ink }}>• {c}</p>)}
+              </div>
+            </div>
+            <div className="rounded-2xl px-5 py-4" style={{ backgroundColor: palette.navy }}>
+              <p className="text-[10px] tracking-[0.2em] font-semibold mb-1" style={{ color: palette.gold }}>IDEIA-CHAVE</p>
+              <p className="font-serif text-lg leading-snug" style={{ color: palette.creamSoft }}>{aula.ideia}</p>
+            </div>
+            {aula.materiaisIds && aula.materiaisIds.length > 0 && (
+              <div>
+                <p className="text-[10px] tracking-[0.2em] font-medium mb-2" style={{ color: palette.gold }}>MATERIAL DESTA AULA</p>
+                <div className="space-y-2">
+                  {aula.materiaisIds.map((mid) => {
+                    const m = materiais.find((mat) => mat.id === mid);
+                    if (!m) return null;
+                    return <MaterialCard key={mid} material={m} desbloqueado={acessoTotal || Boolean(materiaisDesbloqueados[mid])} onDesbloquear={() => onDesbloquearMaterial(mid)} desbloqueadoFisico={acessoTotal || Boolean(materiaisDesbloqueados[mid + "-fisico"])} onDesbloquearFisico={() => onDesbloquearMaterial(mid + "-fisico")} />;
+                  })}
+                </div>
+              </div>
+            )}
+            {aula.materiaisFormadorIds && aula.materiaisFormadorIds.length > 0 && (acessoTotal || formadorAutorizado) && (
+              <div>
+                <p className="text-[10px] tracking-[0.2em] font-medium mb-2" style={{ color: palette.gold }}>MATERIAL DO FORMADOR — ESTA AULA</p>
+                <div className="space-y-2">
+                  {aula.materiaisFormadorIds.map((mid) => {
+                    const m = materiais.find((mat) => mat.id === mid);
+                    if (!m) return null;
+                    return <MaterialCard key={mid} material={m} desbloqueado={true} onDesbloquear={() => {}} />;
+                  })}
+                </div>
+              </div>
+            )}
+          </>
+        )}
+
+        {nomePasso === "Exercício" && (
+          <>
+            <p className="text-[15px] leading-relaxed" style={{ color: palette.ink }}>{aula.exercicio.intro}</p>
+            {aula.exercicio.perguntas.map((q, k) => (
+              <div key={k}>
+                <p className="text-sm font-medium mb-1.5" style={{ color: palette.navy }}>{k + 1}. {q}</p>
+                <textarea
+                  value={respostas[k] || ""}
+                  onChange={(e) => { const r = [...respostas]; r[k] = e.target.value; setRespostas(r); }}
+                  onBlur={guardarRespostas}
+                  rows={3}
+                  placeholder="Escreve aqui…"
+                  className="w-full rounded-xl px-3 py-2.5 text-sm outline-none"
+                  style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}`, color: palette.ink }}
+                />
+              </div>
+            ))}
+            <p className="text-[11px]" style={{ color: palette.navySoft }}>As tuas respostas ficam guardadas na tua conta. Só tu as vês.</p>
+          </>
+        )}
+
+        {nomePasso === "Avaliação 3S" && (
+          <Avaliacao3S avaliacao={avaliacao} estadoCurso={estadoCurso} onGuardarCurso={onGuardarCurso} />
+        )}
+
+        {nomePasso === "Quiz" && (
+          <>
+            {aula.quiz.map((q, qi) => {
+              const escolhida = quiz[qi];
+              const respondida = escolhida !== undefined;
+              return (
+                <div key={qi} className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66` }}>
+                  <p className="text-sm font-medium leading-snug mb-3" style={{ color: palette.navy }}>{qi + 1}. {q.p}</p>
+                  <div className="space-y-2">
+                    {q.opcoes.map((o, oi) => {
+                      const certa = oi === q.certa;
+                      const marcada = escolhida === oi;
+                      let estilo = { backgroundColor: "#fff", border: `1px solid ${palette.goldSoft}`, color: palette.ink };
+                      if (respondida && certa) estilo = { backgroundColor: "#E8EDF4", border: `1.5px solid ${palette.navy}`, color: palette.navy };
+                      else if (respondida && marcada) estilo = { backgroundColor: "#F6EDD8", border: `1.5px solid ${palette.gold}`, color: palette.ink };
+                      return (
+                        <button key={oi} disabled={respondida} onClick={() => setQuiz({ ...quiz, [qi]: oi })} className="w-full text-left rounded-xl px-3 py-2.5 text-sm" style={estilo}>
+                          {respondida && certa ? "✓ " : respondida && marcada ? "✗ " : ""}{o}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {respondida && (
+                    <p className="text-[13px] leading-relaxed mt-3" style={{ color: palette.navySoft }}>
+                      <strong style={{ color: palette.navy }}>{escolhida === q.certa ? "Certo. " : "Ainda não. "}</strong>{q.explica}
+                    </p>
+                  )}
+                </div>
+              );
+            })}
+            {quizCompleto && (
+              <div className="rounded-2xl px-4 py-3 text-center" style={{ backgroundColor: palette.navy }}>
+                <p className="font-serif text-lg" style={{ color: palette.gold }}>{certas} de {aula.quiz.length} certas</p>
+                <p className="text-xs mt-0.5" style={{ color: palette.creamSoft }}>{certas === aula.quiz.length ? "Excelente! Dominas esta aula." : "Relê a explicação das que falhaste: é aí que está a aprendizagem."}</p>
+                {certas < aula.quiz.length && (
+                  <button onClick={() => setQuiz({})} className="mt-2 text-xs underline" style={{ color: palette.goldSoft }}>Repetir o quiz</button>
+                )}
+              </div>
+            )}
+          </>
+        )}
+
+        {nomePasso === "Desafio" && (
+          <>
+            <div className="rounded-2xl px-5 py-5" style={{ backgroundColor: palette.navy }}>
+              <p className="text-[10px] tracking-[0.2em] font-semibold mb-2" style={{ color: palette.gold }}>DESAFIO DA SEMANA</p>
+              <p className="font-serif text-lg leading-snug" style={{ color: palette.creamSoft }}>{aula.desafio}</p>
+            </div>
+            <button onClick={() => onGuardar({ desafioAceite: !dados.desafioAceite })} className="w-full flex items-center gap-3 rounded-2xl px-4 py-3.5 text-left" style={{ backgroundColor: palette.card, border: `1px solid ${dados.desafioAceite ? palette.gold : palette.goldSoft + "66"}` }}>
+              <span className="w-6 h-6 rounded-md flex items-center justify-center text-sm" style={dados.desafioAceite ? { backgroundColor: palette.gold, color: palette.navy } : { border: `1.5px solid ${palette.navySoft}` }}>{dados.desafioAceite ? "✓" : ""}</span>
+              <span className="text-sm" style={{ color: palette.navy }}>Aceito o desafio desta semana</span>
+            </button>
+            {onAbrirLab && (
+              <button onClick={() => { onGuardar({ respostas, quiz }); onAbrirLab(); }} className="w-full rounded-2xl px-4 py-3.5 text-left flex items-center gap-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66` }}>
+                <Compass size={18} style={{ color: palette.navy }} />
+                <span className="flex-1 text-sm" style={{ color: palette.navy }}>Treinar mais no Laboratório de Liderança</span>
+                <ChevronRight size={16} style={{ color: palette.navySoft }} />
+              </button>
+            )}
+          </>
+        )}
+
+        <div className="flex gap-3 pt-2">
+          {passo > 0 && (
+            <button onClick={() => { if (nomePasso === "Exercício") guardarRespostas(); setPasso(passo - 1); }} className="rounded-full px-5 py-3 text-sm font-medium" style={{ border: `1px solid ${palette.navy}`, color: palette.navy }}>Anterior</button>
+          )}
+          <button disabled={!podeAvancar} onClick={avancar} className="flex-1 rounded-full py-3 text-sm font-medium" style={{ backgroundColor: podeAvancar ? palette.navy : palette.goldSoft, color: palette.creamSoft, opacity: podeAvancar ? 1 : 0.7 }}>
+            {ultimo ? (indice + 1 < curso.aulas.length ? "Concluir aula e seguir" : "Concluir o curso") : "Seguinte"}
+          </button>
+        </div>
+        {!podeAvancar && (
+          <p className="text-[11px] text-center" style={{ color: palette.navySoft }}>{nomePasso === "Quiz" ? "Responde às perguntas para avançar." : "Responde a todas as frases para veres o teu resultado e avançar."}</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function Avaliacao3S({ avaliacao, estadoCurso, onGuardarCurso }) {
+  const completa = AVALIACAO_3S.every((_, k) => avaliacao[k]);
+  const medias = {};
+  ["Saber", "Sentir", "Ser"].forEach((p) => {
+    const ks = AVALIACAO_3S.map((a, k) => (a.pilar === p ? k : null)).filter((k) => k !== null);
+    medias[p] = ks.reduce((s, k) => s + (avaliacao[k] || 0), 0) / ks.length;
+  });
+  const foco = ["Saber", "Sentir", "Ser"].reduce((a, b) => (medias[b] < medias[a] ? b : a), "Saber");
+  const plano = PLANO_3S[foco];
+  const feitos = (estadoCurso.planoFeito || {});
+  const definir = (k, v) => onGuardarCurso((e) => ({ ...(e || {}), avaliacao: { ...((e && e.avaliacao) || {}), [k]: v } }));
+
+  const partilhar = () => {
+    const texto = `O meu plano Liderança 3S — ${plano.titulo}\n\n${plano.semanas.join("\n")}\n\n${plano.seEntao}`;
+    if (navigator.share) navigator.share({ title: "O meu plano Liderança 3S", text: texto }).catch(() => {});
+    else if (navigator.clipboard) navigator.clipboard.writeText(texto).catch(() => {});
+  };
+
+  return (
+    <>
+      <p className="text-[15px] leading-relaxed" style={{ color: palette.ink }}>Responde com honestidade: 1 = nada verdade, 5 = totalmente verdade.</p>
+      {AVALIACAO_3S.map((a, k) => (
+        <div key={k} className="rounded-2xl px-4 py-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66` }}>
+          <div className="mb-2"><PilarEtiqueta pilar={a.pilar} /></div>
+          <p className="text-sm leading-snug mb-2.5" style={{ color: palette.navy }}>{a.frase}</p>
+          <div className="flex gap-1.5">
+            {[1, 2, 3, 4, 5].map((v) => (
+              <button key={v} onClick={() => definir(k, v)} className="flex-1 rounded-lg py-2 text-sm font-medium" style={avaliacao[k] === v ? { backgroundColor: palette.navy, color: palette.creamSoft } : { border: `1px solid ${palette.goldSoft}`, color: palette.navy, backgroundColor: "#fff" }}>{v}</button>
+            ))}
+          </div>
+        </div>
+      ))}
+      {completa && (
+        <>
+          <div className="rounded-2xl px-5 py-5" style={{ backgroundColor: palette.navy }}>
+            <p className="text-[10px] tracking-[0.2em] font-semibold mb-3" style={{ color: palette.gold }}>O TEU PERFIL 3S</p>
+            {["Saber", "Sentir", "Ser"].map((p) => (
+              <div key={p} className="mb-2.5">
+                <div className="flex justify-between text-sm mb-1" style={{ color: palette.creamSoft }}><span>{p}{p === foco ? " · foco" : ""}</span><span>{medias[p].toFixed(1)} / 5</span></div>
+                <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: "rgba(255,255,255,0.15)" }}>
+                  <div className="h-full rounded-full" style={{ width: `${(medias[p] / 5) * 100}%`, backgroundColor: p === foco ? palette.gold : palette.goldSoft }} />
+                </div>
+              </div>
+            ))}
+            <p className="text-sm leading-relaxed mt-3" style={{ color: palette.creamSoft }}>O pilar com mais margem para crescer agora é <strong style={{ color: palette.gold }}>{foco}</strong>. O teu plano de 30 dias começa aqui.</p>
+          </div>
+          <div className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.card, border: `1.5px solid ${palette.gold}` }}>
+            <p className="text-[10px] tracking-[0.2em] font-semibold mb-1" style={{ color: palette.gold }}>PLANO DE 30 DIAS</p>
+            <p className="font-serif text-lg mb-3" style={{ color: palette.navy }}>{plano.titulo}</p>
+            <div className="space-y-2">
+              {plano.semanas.map((s, k) => {
+                const chave = `${foco}-${k}`;
+                const ok = feitos[chave];
+                return (
+                  <button key={k} onClick={() => onGuardarCurso((e) => ({ ...(e || {}), planoFeito: { ...((e && e.planoFeito) || {}), [chave]: !ok } }))} className="w-full flex items-start gap-2.5 text-left">
+                    <span className="w-5 h-5 mt-0.5 rounded-md flex items-center justify-center text-xs shrink-0" style={ok ? { backgroundColor: palette.gold, color: palette.navy } : { border: `1.5px solid ${palette.navySoft}` }}>{ok ? "✓" : ""}</span>
+                    <span className="text-sm leading-snug" style={{ color: palette.ink, textDecoration: ok ? "line-through" : "none" }}>{s}</span>
+                  </button>
+                );
+              })}
+            </div>
+            <div className="rounded-xl px-3 py-2.5 mt-3" style={{ backgroundColor: PILARES_3S[foco].fundo }}>
+              <p className="text-[10px] tracking-[0.15em] font-semibold" style={{ color: PILARES_3S[foco].texto }}>A TUA REGRA SE… ENTÃO…</p>
+              <p className="text-sm mt-0.5" style={{ color: PILARES_3S[foco].texto }}>{plano.seEntao}</p>
+            </div>
+            <button onClick={partilhar} className="mt-3 w-full rounded-full py-2.5 text-sm font-medium" style={{ border: `1px solid ${palette.navy}`, color: palette.navy }}>Guardar ou enviar o meu plano</button>
+          </div>
+        </>
+      )}
+    </>
   );
 }
 
@@ -7762,6 +8155,7 @@ function incluiCurso(curso) {
   const lista = [];
   const nAulas = (curso.aulas || []).length;
   if (nAulas) lista.push(`${nAulas} aula${nAulas === 1 ? "" : "s"}${(curso.aulas || []).some((a) => a.videoUrl) ? " em vídeo" : ""}`);
+  if (curso.interativo) lista.push("Exercícios, quizzes e desafios em cada aula", "Avaliação 3S e plano de 30 dias à tua medida");
   if (mats.some((m) => m.formato === "Caderno")) lista.push("Caderno de trabalho");
   if (mats.some((m) => m.formato === "Livro")) lista.push("Livro do aluno");
   if (mats.some((m) => m.formato === "Ficha")) lista.push("Material didático");
@@ -9297,6 +9691,23 @@ export default function App() {
     content = <CursoVendaScreen curso={cursoAberto} onBack={() => setCursoAberto(null)} />;
   } else if (cursoAberto && cursoAberto.gratuito && progresso.papel !== "dona" && fichaCliente && !(fichaCliente.nome && fichaCliente.telefone)) {
     content = <FichaCursoScreen curso={cursoAberto} session={session} onBack={() => setCursoAberto(null)} onGuardada={setFichaCliente} />;
+  } else if (cursoAberto && cursoAberto.interativo) {
+    content = (
+      <CursoInterativoScreen
+        curso={cursoAberto}
+        estado={(progresso.cursosInterativos || {})[cursoAberto.id]}
+        onGuardar={(fn) => setProgresso((p) => { const todos = p.cursosInterativos || {}; return { ...p, cursosInterativos: { ...todos, [cursoAberto.id]: fn(todos[cursoAberto.id] || {}) } }; })}
+        concluidoEm={progresso.cursosConcluidos[cursoAberto.id]}
+        onConcluirCurso={() => setProgresso((p) => (p.cursosConcluidos[cursoAberto.id] ? p : { ...p, cursosConcluidos: { ...p.cursosConcluidos, [cursoAberto.id]: new Date().toISOString() } }))}
+        onCertificado={() => setCertificadoAberto(cursoAberto)}
+        onBack={() => setCursoAberto(null)}
+        onAbrirLab={cursoAberto.escolaId === "lideranca" ? () => { setCursoAberto(null); setSecao("lab-lideranca"); } : null}
+        materiaisDesbloqueados={materiaisAcesso}
+        onDesbloquearMaterial={desbloquearMaterial}
+        acessoTotal={progresso.papel === "dona"}
+        formadorAutorizado={formadorAcessoCursos.includes(cursoAberto.id)}
+      />
+    );
   } else if (cursoAberto) {
     content = (
       <ConteudoDetalhe
