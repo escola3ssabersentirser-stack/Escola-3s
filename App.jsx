@@ -1,4 +1,4 @@
-// VERSAO-04-NOV-SEM-COMUNIDADE
+// VERSAO-05-NOV-SEM-COMUNIDADE-MENSAL
 import { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "./supabase.js";
 import {
@@ -187,70 +187,6 @@ const TODOS_CURSOS = [
     ],
     materiaisIds: [43, 44],
     materiaisFormadorIds: [60, 61, 62, 63],
-  },
-  {
-    id: 3,
-    escolaId: "comunidade",
-    titulo: "Pertença — O Lugar Onde Sou Eu",
-    promessa: "Pertença, vínculos e identidade relacional — a diferença entre pertencer e encaixar.",
-    pergunta: "Com quem consigo ser eu sem me explicar?",
-    tipo: "video",
-    duracao: "4 aulas",
-    concluido: false,
-    aulas: [
-      { titulo: "Porque precisamos de pertencer", descricao: "Necessidade de pertença; vínculo; segurança emocional; rejeição e exclusão; influência das primeiras relações." },
-      { titulo: "Pertencer não é encaixar", descricao: "Adaptação; máscaras sociais; necessidade de aprovação; medo da rejeição; quando começamos a diminuir-nos para caber." },
-      { titulo: "Os lugares onde deixei de ser eu", descricao: "Família, amizades, amor e trabalho; relações de pertença versus dependência; limites; reciprocidade." },
-      { titulo: "Construir casa dentro de nós", descricao: "Autenticidade; valores; segurança interna; escolher relações; criar novos lugares de pertença." },
-    ],
-  },
-  {
-    id: 4,
-    escolaId: "comunidade",
-    titulo: "Libertar — Os Padrões que nos Prendem",
-    promessa: "Crenças, padrões relacionais e comportamentos que repetimos mesmo sabendo que nos fazem mal.",
-    pergunta: "Qual é o meu \"último cadeado\"?",
-    tipo: "video",
-    duracao: "4 aulas",
-    concluido: false,
-    aulas: [
-      { titulo: "Como nasce um cadeado", descricao: "Experiência → interpretação → crença → comportamento → padrão." },
-      { titulo: "Porque repetimos aquilo que nos faz sofrer", descricao: "Familiaridade emocional; medo; padrões relacionais; abandono; rejeição; controlo; procura de reconhecimento." },
-      { titulo: "Os meus cadeados", descricao: "Culpa; medo; necessidade de aprovação; relações; passado; perfeccionismo; expectativas." },
-      { titulo: "Encontrar a chave", descricao: "Consciência; responsabilidade; limites; novas respostas; pequenas ruturas comportamentais." },
-    ],
-  },
-  {
-    id: 5,
-    escolaId: "comunidade",
-    titulo: "Identidade — Quem Sou Quando Posso Escolher?",
-    promessa: "Identidade atribuída versus escolhida — família, cultura, papéis, autoconceito e autenticidade.",
-    pergunta: "Se não tivesse de provar nada a ninguém, o que mudaria?",
-    tipo: "video",
-    duracao: "4 aulas",
-    concluido: false,
-    aulas: [
-      { titulo: "Quem disseram que eu era?", descricao: "Família, sociedade, cultura, escola; etiquetas; expectativas; identidade atribuída." },
-      { titulo: "Quem aprendi a ser?", descricao: "Papéis; adaptação; comparação; autoconceito; necessidade de reconhecimento." },
-      { titulo: "Quem sou?", descricao: "Valores; necessidades; forças; vulnerabilidades; contradições; identidade presente." },
-      { titulo: "Quem escolho ser?", descricao: "Identidade possível; escolhas; coerência; responsabilidade; ação." },
-    ],
-  },
-  {
-    id: 6,
-    escolaId: "comunidade",
-    titulo: "Vergonha — Aquilo que Escondemos",
-    promessa: "A diferença entre culpa e vergonha, o corpo, o julgamento, a vulnerabilidade e a autocompaixão.",
-    pergunta: "Isto nasceu em mim ou ensinaram-me a sentir isto?",
-    tipo: "video",
-    duracao: "4 aulas",
-    concluido: false,
-    aulas: [
-      { titulo: "Como nasce a vergonha", descricao: "Vergonha versus culpa; julgamento; exposição; pertença; normas sociais; estigma." },
-      { titulo: "O olhar dos outros", descricao: "Corpo; dinheiro; profissão; sexualidade; família; estatuto; fracasso; reputação; comparação." },
-      { titulo: "O segredo", descricao: "O esforço de esconder; máscaras; silêncio; isolamento; medo de ser descoberto; impacto nas relações." },
-      { titulo: "De quem é esta vergonha?", descricao: "Vergonha interiorizada; dignidade; autocompaixão; vulnerabilidade com limites; reconstrução da narrativa." },
-    ],
   },
   {
     id: 7,
@@ -575,7 +511,6 @@ const servicosSessao = [
 ];
 
 const DIAS_SEMANA = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
-const COMUNIDADE_MES_GRATIS = new Date().getFullYear() === 2026 && new Date().getMonth() === 8; // Setembro 2026 grátis
 const MESES_ABREV = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
 const INDICE_DIA_SEMANA = { "Domingo": 0, "Segunda": 1, "Terça": 2, "Quarta": 3, "Quinta": 4, "Sexta": 5, "Sábado": 6 };
 
@@ -611,92 +546,7 @@ function formatarChaveHorario(chave) {
   return `${nomeDia}, ${dia} ${MESES_ABREV[mes - 1]} ${ano} · ${hora}`;
 }
 
-const comunidadeMeses = [
-  {
-    mes: "Setembro",
-    tema: "Pertença",
-    livro: "Porta 15",
-    formacaoId: 3,
-    perguntaPrincipal: "Onde pertenço?",
-    perguntasReflexao: [
-      "Onde me sinto verdadeiramente em casa?",
-      "Quando comecei a acreditar que precisava de mudar para ser aceite?",
-      "A que lugares continuo a tentar pertencer?",
-      "Com quem consigo ser eu sem me explicar?",
-    ],
-    desafio: {
-      titulo: "7 Dias de Pertença",
-      descricao: "Mapeia pessoas, lugares e relações onde pertenço, onde tento encaixar, e onde já não pertenço.",
-    },
-    materialPrincipalIds: [17, 18, 14],
-    linkEncontro: "https://meet.google.com/PLACEHOLDER-TROCAR-LINK",
-  },
-  {
-    mes: "Outubro",
-    tema: "Prisões",
-    livro: "O Último Cadeado",
-    formacaoId: 4,
-    perguntaPrincipal: "O que me prende?",
-    perguntasReflexao: [
-      "O que sei que preciso de deixar mas continuo a agarrar?",
-      "O que temo perder se mudar?",
-      "Que padrão se repete nas minhas relações?",
-      "Qual é o meu \"último cadeado\"?",
-    ],
-    desafio: {
-      titulo: "21 Dias — Uma Chave por Dia",
-      descricao: "Identifica um padrão e realiza, durante o mês, uma ação concreta que o contrarie.",
-    },
-    materialPrincipalIds: [19, 20],
-  },
-  {
-    mes: "Novembro",
-    tema: "Identidade",
-    livro: "Amina",
-    formacaoId: 5,
-    perguntaPrincipal: "Quem sou quando ninguém decide por mim?",
-    perguntasReflexao: [
-      "Quem me ensinaram que eu devia ser?",
-      "Que parte de mim escondo para não desiludir os outros?",
-      "Que escolhas minhas foram realmente minhas?",
-      "Se não tivesse de provar nada a ninguém, o que mudaria?",
-    ],
-    desafio: {
-      titulo: "30 Perguntas para Descobrir Quem Sou",
-      descricao: "Escreve quem és sem usar profissão, relações familiares, estatuto, idade ou características físicas.",
-    },
-    materialPrincipalIds: [21, 22],
-  },
-  {
-    mes: "Dezembro",
-    tema: "Vergonha",
-    livro: "O Preço do Silêncio",
-    formacaoId: 6,
-    perguntaPrincipal: "O que tenho medo que saibam sobre mim?",
-    perguntasReflexao: [
-      "O que tento esconder para continuar a ser aceite?",
-      "Quem me ensinou a ter vergonha?",
-      "O que julgo nos outros que também temo em mim?",
-      "Quanto me custa manter determinadas partes de mim escondidas?",
-    ],
-    desafio: {
-      titulo: "Devolver a Vergonha",
-      descricao: "Identifica uma vergonha interiorizada e questiona: \"Isto nasceu em mim ou ensinaram-me a sentir isto?\"",
-    },
-    materialPrincipalIds: [23, 24],
-  },
-];
 
-const comunidade = {
-  exclusivo: [
-    { id: 1, titulo: "Vídeo do mês: Recomeçar sem culpa" },
-    { id: 2, titulo: "Áudio guiado: Respiração para recomeços" },
-  ],
-  partilhas: [
-    { id: 1, texto: "Recomecei a escrever no meu diário depois de meses parada. Foi mais fácil do que pensava." },
-    { id: 2, texto: "O desafio desta semana lembrou-me de ligar à minha mãe. Obrigada, Escola 3S." },
-  ],
-};
 
 const tipoIcon = { video: Play, texto: FileText, pdf: FileIcon };
 const tipoLabel = { video: "Vídeo", texto: "Texto", pdf: "PDF" };
@@ -3058,7 +2908,6 @@ function AreaAlunoScreen({ onBack, onOpenCurso, cursosConcluidos, materiaisDesbl
       {[
         { id: "lideranca", nome: "Liderança 3S", frase: "Comunicar, liderar pessoas e conduzir conversas" },
         { id: "ser", nome: "Vida 3S", frase: "A mudança começa em ti: autoconhecimento e emoções" },
-        { id: "comunidade", nome: "Formações da Comunidade", frase: "A formação de cada mês da Comunidade 3S" },
       ].map((escola) => {
         const lista = cursos.filter((c) => c.escolaId === escola.id);
         if (lista.length === 0) return null;
@@ -3146,711 +2995,6 @@ function AreaAlunoScreen({ onBack, onOpenCurso, cursosConcluidos, materiaisDesbl
 
 /* ---------------------------------------------------------
    Comunidade 3S
---------------------------------------------------------- */
-function FichaEntradaGratisScreen({ onBack, onConcluido }) {
-  const [oQueProcura, setOQueProcura] = useState("");
-  const [oQuePretendeDesenvolver, setOQuePretendeDesenvolver] = useState("");
-  const [pontosATrabalhar, setPontosATrabalhar] = useState("");
-  const [aEnviar, setAEnviar] = useState(false);
-  const [erro, setErro] = useState("");
-
-  const podeEnviar = oQueProcura.trim() && oQuePretendeDesenvolver.trim() && pontosATrabalhar.trim();
-
-  const enviar = async () => {
-    if (!podeEnviar) return;
-    setAEnviar(true);
-    setErro("");
-    try {
-      const { data: sessaoAtual } = await supabase.auth.getSession();
-      const userId = sessaoAtual.session.user.id;
-      const email = sessaoAtual.session.user.email;
-
-      await supabase
-        .from("clientes")
-        .upsert(
-          { user_id: userId, email, atualizado_em: new Date().toISOString() },
-          { onConflict: "user_id" }
-        )
-        .then(() => {})
-        .catch(() => {});
-
-      await supabase.from("fichas_anamnese").upsert(
-        {
-          user_id: userId,
-          expectativas: oQueProcura.trim(),
-          objetivos: oQuePretendeDesenvolver.trim(),
-          notas_gerais: pontosATrabalhar.trim(),
-          atualizado_em: new Date().toISOString(),
-        },
-        { onConflict: "user_id" }
-      );
-
-      const mesChave = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`;
-      await supabase
-        .from("entradas_gratis_comunidade")
-        .insert({ user_id: userId, email, mes: mesChave })
-        .then(() => {})
-        .catch(() => {});
-
-      onConcluido();
-    } catch {
-      setErro("Não foi possível guardar. Tenta de novo.");
-    }
-    setAEnviar(false);
-  };
-
-  return (
-    <div className="pb-28">
-      <SectionHeader eyebrow="ANTES DE ENTRARES" title="Sobre Ti" onBack={onBack} />
-      <div className="px-6">
-        <p className="text-sm mb-6 leading-relaxed" style={{ color: palette.navySoft }}>
-          Este mês a Comunidade é gratuita. Antes de entrares, conta-nos um pouco sobre ti —
-          ajuda-nos a acompanhar-te melhor.
-        </p>
-
-        <div className="space-y-5">
-          <div>
-            <p className="text-xs font-medium mb-2" style={{ color: palette.gold }}>O QUE PROCURAS?</p>
-            <textarea
-              value={oQueProcura}
-              onChange={(e) => setOQueProcura(e.target.value)}
-              placeholder="O que te trouxe até aqui..."
-              rows={3}
-              className="w-full rounded-xl px-4 py-3 text-sm resize-none outline-none"
-              style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
-            />
-          </div>
-          <div>
-            <p className="text-xs font-medium mb-2" style={{ color: palette.gold }}>O QUE PRETENDES DESENVOLVER?</p>
-            <textarea
-              value={oQuePretendeDesenvolver}
-              onChange={(e) => setOQuePretendeDesenvolver(e.target.value)}
-              placeholder="Uma área, uma competência, uma parte de ti..."
-              rows={3}
-              className="w-full rounded-xl px-4 py-3 text-sm resize-none outline-none"
-              style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
-            />
-          </div>
-          <div>
-            <p className="text-xs font-medium mb-2" style={{ color: palette.gold }}>QUE PONTOS QUERES TRABALHAR PARA SERES MELHOR?</p>
-            <textarea
-              value={pontosATrabalhar}
-              onChange={(e) => setPontosATrabalhar(e.target.value)}
-              placeholder="Sê tão concreto/a quanto conseguires..."
-              rows={3}
-              className="w-full rounded-xl px-4 py-3 text-sm resize-none outline-none"
-              style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
-            />
-          </div>
-        </div>
-
-        <button
-          onClick={enviar}
-          disabled={!podeEnviar || aEnviar}
-          className="w-full mt-7 rounded-full py-3 font-medium text-sm tracking-wide disabled:opacity-50"
-          style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
-        >
-          {aEnviar ? "A guardar..." : "Continuar para a Comunidade"}
-        </button>
-        {erro && <p className="text-xs text-center mt-2" style={{ color: "#B23A3A" }}>{erro}</p>}
-      </div>
-    </div>
-  );
-}
-
-function ComunidadeBloqueada({ onBack, onDesbloquear, terminouEm }) {
-  const [modo, setModo] = useState(null); // null | "codigo" | "pagar"
-  const [codigo, setCodigo] = useState("");
-  const [telemovel, setTelemovel] = useState("");
-  const [estadoPagamento, setEstadoPagamento] = useState(null); // null | "a_enviar" | "a_confirmar" | "falhou"
-  const [erroPagamento, setErroPagamento] = useState("");
-
-  const pagarComunidade = async () => {
-    if (!telemovel.trim()) return;
-    setErroPagamento("");
-    setEstadoPagamento("a_enviar");
-    try {
-      guardarTelefone(telemovel.trim());
-      const resultado = await iniciarPagamentoMBWay("comunidade", "Comunidade 3S — mensalidade", "4,99€", telemovel.trim());
-      setEstadoPagamento("a_confirmar");
-      const pago = await aguardarConfirmacaoPagamento(resultado.pagamento_id);
-      if (pago) {
-        onDesbloquear();
-      } else {
-        setEstadoPagamento("falhou");
-        setErroPagamento("Não recebemos a confirmação a tempo. Se já pagaste na app MB WAY, aguarda mais um pouco e tenta \"Já tenho um código\" com o código que te dermos, ou tenta de novo.");
-      }
-    } catch (e) {
-      setEstadoPagamento("falhou");
-      setErroPagamento(e.message || "Não foi possível iniciar o pagamento.");
-    }
-  };
-
-  return (
-    <div className="pb-28">
-      <SectionHeader eyebrow="ESTE MÊS" title="Comunidade 3S" onBack={onBack} />
-      <div className="px-6">
-        <div className="rounded-2xl px-5 py-6 text-center" style={{ backgroundColor: palette.navy }}>
-          <div
-            className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4"
-            style={{ border: `1.5px solid ${palette.gold}` }}
-          >
-            <Users size={19} strokeWidth={1.6} style={{ color: palette.gold }} />
-          </div>
-          <p className="font-serif text-xl" style={{ color: palette.creamSoft }}>
-            Acesso à Comunidade 3S
-          </p>
-          <p className="text-sm mt-2 leading-relaxed" style={{ color: palette.goldSoft }}>
-            Todos os materiais da escola, num só valor:
-          </p>
-          <div className="text-left text-sm mt-3 space-y-1.5 mx-auto" style={{ color: palette.creamSoft, maxWidth: 280 }}>
-            <p>✓ Todos os cadernos de trabalho</p>
-            <p>✓ Todos os livros do aluno</p>
-            <p>✓ Todo o material didático</p>
-            <p>✓ Aulas gravadas</p>
-            <p>✓ 1 encontro online por mês</p>
-          </div>
-          <p className="text-xs mt-4 line-through" style={{ color: palette.goldSoft }}>Os materiais, em separado, valem mais de 500€</p>
-          <p className="font-serif text-2xl mt-1" style={{ color: palette.gold }}>4,99€ / mês</p>
-        </div>
-
-        <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>PROGRAMA SETEMBRO–DEZEMBRO</p>
-        <div className="space-y-2 mb-6">
-          {comunidadeMeses.map((m) => {
-            const formacao = m.formacaoId ? cursos.find((c) => c.id === m.formacaoId) : null;
-            return (
-              <div key={m.mes} className="flex items-center gap-4 rounded-xl px-4 py-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
-                <p className="text-[11px] tracking-[0.15em] font-medium w-20 shrink-0" style={{ color: palette.navySoft }}>{m.mes.toUpperCase()}</p>
-                <div className="flex-1 min-w-0">
-                  <p className="font-serif text-base leading-tight" style={{ color: palette.navy }}>{m.tema}</p>
-                  {formacao && <p className="text-xs mt-0.5" style={{ color: palette.ink }}>Curso: {formacao.titulo}</p>}
-                  {m.livro && <p className="text-xs mt-0.5" style={{ color: palette.navySoft }}>Livro: {m.livro}</p>}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {modo === null && (
-          <div className="mt-5 space-y-2.5">
-            {terminouEm && (
-              <p className="text-xs text-center" style={{ color: palette.navySoft }}>
-                A tua mensalidade terminou a {new Date(terminouEm).toLocaleDateString("pt-PT", { day: "2-digit", month: "long" })}. Renova para continuares.
-              </p>
-            )}
-            <BotaoCarrinho rotulo="Adicionar 1 mês ao carrinho" item={{ chave: "comunidade", tipo: "comunidade", titulo: "Comunidade 3S — mensalidade", valor: 4.99 }} />
-            <p className="text-[11px] text-center" style={{ color: palette.navySoft }}>Pagas por MB WAY, Multibanco ou Payshop. Cada pagamento dá acesso durante 1 mês.</p>
-            <ResgatarCodigo titulo="Recebeste um código de oferta?" onAtivado={() => onDesbloquear && onDesbloquear()} />
-          </div>
-        )}
-
-        {modo === "codigo" && (
-          <div className="mt-5 space-y-2.5">
-            <input
-              type="text"
-              value={codigo}
-              onChange={(e) => setCodigo(e.target.value)}
-              placeholder="Código de acesso"
-              className="w-full rounded-xl px-4 py-2.5 text-sm outline-none"
-              style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
-            />
-            <button
-              onClick={() => codigo.trim() && onDesbloquear()}
-              className="w-full rounded-full py-3 font-medium text-sm tracking-wide transition active:scale-[0.98]"
-              style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
-            >
-              Desbloquear
-            </button>
-          </div>
-        )}
-
-        {modo === "pagar" && (
-          <div className="mt-5 space-y-2.5">
-            {estadoPagamento === "a_confirmar" ? (
-              <div className="text-center py-4">
-                <p className="text-sm font-medium mb-1" style={{ color: palette.navy }}>Confirma o pagamento no teu telemóvel</p>
-                <p className="text-xs" style={{ color: palette.navySoft }}>Abre a notificação da app MB WAY e aprova — pode demorar até 90 segundos.</p>
-              </div>
-            ) : (
-              <>
-                <input
-                  type="tel"
-                  value={telemovel}
-                  onChange={(e) => setTelemovel(e.target.value)}
-                  placeholder="Número de telemóvel (MB WAY)"
-                  className="w-full rounded-xl px-4 py-2.5 text-sm outline-none"
-                  style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
-                />
-                <button
-                  onClick={pagarComunidade}
-                  disabled={estadoPagamento === "a_enviar"}
-                  className="w-full rounded-full py-3 font-medium text-sm tracking-wide transition active:scale-[0.98] disabled:opacity-60"
-                  style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
-                >
-                  {estadoPagamento === "a_enviar" ? "A enviar pedido..." : "Pagar 4,99€ e entrar"}
-                </button>
-                {erroPagamento && <p className="text-xs text-center" style={{ color: "#B23A3A" }}>{erroPagamento}</p>}
-              </>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function ChatComunidadeScreen({ onBack }) {
-  const [mensagens, setMensagens] = useState([]);
-  const [perfis, setPerfis] = useState({});
-  const [texto, setTexto] = useState("");
-  const [meuId, setMeuId] = useState(null);
-  const [aEnviar, setAEnviar] = useState(false);
-
-  const carregar = async () => {
-    const { data: sessaoAtual } = await supabase.auth.getSession();
-    setMeuId(sessaoAtual.session.user.id);
-    const [rMsgs, rPerfis] = await Promise.all([
-      supabase.from("mensagens_comunidade").select("*").order("criado_em", { ascending: true }).limit(200),
-      supabase.from("perfis_comunidade").select("*"),
-    ]);
-    setMensagens(rMsgs.data || []);
-    const mapa = {};
-    (rPerfis.data || []).forEach((p) => { mapa[p.user_id] = p; });
-    setPerfis(mapa);
-  };
-
-  useEffect(() => { carregar(); }, []);
-
-  const enviar = async () => {
-    if (!texto.trim()) return;
-    setAEnviar(true);
-    const { data: sessaoAtual } = await supabase.auth.getSession();
-    await supabase.from("mensagens_comunidade").insert({ user_id: sessaoAtual.session.user.id, conteudo: texto.trim() });
-    setTexto("");
-    setAEnviar(false);
-    carregar();
-  };
-
-  return (
-    <div className="pb-40">
-      <SectionHeader eyebrow="COMUNIDADE 3S" title="Chat da Comunidade" onBack={onBack} />
-      <div className="px-6 space-y-3 mb-4">
-        {mensagens.length === 0 && (
-          <p className="text-sm" style={{ color: palette.navySoft }}>Ainda ninguém escreveu nada — sê a primeira.</p>
-        )}
-        {mensagens.map((m) => {
-          const perfil = perfis[m.user_id];
-          const souEu = m.user_id === meuId;
-          return (
-            <div key={m.id} className={`flex ${souEu ? "justify-end" : "justify-start"}`}>
-              <div
-                className="max-w-[80%] rounded-2xl px-4 py-2.5"
-                style={{ backgroundColor: souEu ? palette.navy : palette.card, border: souEu ? "none" : `1px solid ${palette.goldSoft}55` }}
-              >
-                {!souEu && (
-                  <p className="text-[10px] font-medium mb-0.5" style={{ color: palette.gold }}>
-                    {perfil?.nome || perfil?.email || "Membro"}
-                  </p>
-                )}
-                <p className="text-sm" style={{ color: souEu ? palette.creamSoft : palette.ink }}>{m.conteudo}</p>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-      <div className="fixed bottom-16 left-0 right-0 px-6 py-3" style={{ backgroundColor: palette.cream, borderTop: `1px solid ${palette.goldSoft}55` }}>
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={texto}
-            onChange={(e) => setTexto(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter") enviar(); }}
-            placeholder="Escreve uma mensagem..."
-            className="flex-1 rounded-full px-4 py-2.5 text-sm outline-none"
-            style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
-          />
-          <button
-            onClick={enviar}
-            disabled={aEnviar || !texto.trim()}
-            className="rounded-full px-4 py-2.5 text-sm font-medium disabled:opacity-50"
-            style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
-          >
-            Enviar
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function MensagensListaScreen({ onBack, onAbrirConversa }) {
-  const [membros, setMembros] = useState([]);
-  const [conversas, setConversas] = useState([]);
-  const [meuId, setMeuId] = useState(null);
-  const [carregando, setCarregando] = useState(true);
-
-  const carregar = async () => {
-    setCarregando(true);
-    const { data: sessaoAtual } = await supabase.auth.getSession();
-    const userId = sessaoAtual.session.user.id;
-    setMeuId(userId);
-
-    const [rPerfis, rMsgs] = await Promise.all([
-      supabase.from("perfis_comunidade").select("*").neq("user_id", userId),
-      supabase
-        .from("mensagens_privadas")
-        .select("*")
-        .or(`remetente_id.eq.${userId},destinatario_id.eq.${userId}`)
-        .order("criado_em", { ascending: false }),
-    ]);
-    setMembros(rPerfis.data || []);
-
-    const porPessoa = {};
-    (rMsgs.data || []).forEach((m) => {
-      const outraPessoa = m.remetente_id === userId ? m.destinatario_id : m.remetente_id;
-      if (!porPessoa[outraPessoa]) porPessoa[outraPessoa] = m;
-    });
-    setConversas(Object.entries(porPessoa).map(([userId, ultima]) => ({ userId, ultima })));
-    setCarregando(false);
-  };
-
-  useEffect(() => { carregar(); }, []);
-
-  const encontrarPerfil = (userId) => membros.find((m) => m.user_id === userId);
-  const membrosSemConversa = membros.filter((m) => !conversas.some((c) => c.userId === m.user_id));
-
-  return (
-    <div className="pb-28">
-      <SectionHeader eyebrow="COMUNIDADE 3S" title="Mensagens" onBack={onBack} />
-      {carregando ? (
-        <p className="px-6 text-sm" style={{ color: palette.navySoft }}>A carregar...</p>
-      ) : (
-        <>
-          {conversas.length > 0 && (
-            <div className="px-6 mb-6">
-              <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>CONVERSAS</p>
-              <div className="space-y-2">
-                {conversas.map(({ userId, ultima }) => {
-                  const perfil = encontrarPerfil(userId);
-                  return (
-                    <button
-                      key={userId}
-                      onClick={() => onAbrirConversa({ user_id: userId, ...perfil })}
-                      className="w-full text-left rounded-xl px-4 py-3 transition active:scale-[0.98]"
-                      style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}
-                    >
-                      <p className="text-sm font-medium" style={{ color: palette.ink }}>{perfil?.nome || perfil?.email || "Membro"}</p>
-                      <p className="text-xs mt-0.5 truncate" style={{ color: palette.navySoft }}>{ultima.conteudo}</p>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-          <div className="px-6">
-            <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>MEMBROS DA COMUNIDADE</p>
-            {membrosSemConversa.length === 0 && conversas.length === 0 && (
-              <p className="text-sm" style={{ color: palette.navySoft }}>Ainda não há outros membros na Comunidade.</p>
-            )}
-            <div className="space-y-2">
-              {membrosSemConversa.map((m) => (
-                <button
-                  key={m.user_id}
-                  onClick={() => onAbrirConversa(m)}
-                  className="w-full text-left rounded-xl px-4 py-3 transition active:scale-[0.98]"
-                  style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}
-                >
-                  <p className="text-sm font-medium" style={{ color: palette.ink }}>{m.nome || m.email}</p>
-                </button>
-              ))}
-            </div>
-          </div>
-        </>
-      )}
-    </div>
-  );
-}
-
-function ChatPrivadoScreen({ pessoa, onBack }) {
-  const [mensagens, setMensagens] = useState([]);
-  const [texto, setTexto] = useState("");
-  const [meuId, setMeuId] = useState(null);
-  const [aEnviar, setAEnviar] = useState(false);
-
-  const carregar = async () => {
-    const { data: sessaoAtual } = await supabase.auth.getSession();
-    const userId = sessaoAtual.session.user.id;
-    setMeuId(userId);
-    const { data } = await supabase
-      .from("mensagens_privadas")
-      .select("*")
-      .or(`and(remetente_id.eq.${userId},destinatario_id.eq.${pessoa.user_id}),and(remetente_id.eq.${pessoa.user_id},destinatario_id.eq.${userId})`)
-      .order("criado_em", { ascending: true });
-    setMensagens(data || []);
-  };
-
-  useEffect(() => { carregar(); }, [pessoa.user_id]);
-
-  const enviar = async () => {
-    if (!texto.trim()) return;
-    setAEnviar(true);
-    const { data: sessaoAtual } = await supabase.auth.getSession();
-    await supabase.from("mensagens_privadas").insert({
-      remetente_id: sessaoAtual.session.user.id,
-      destinatario_id: pessoa.user_id,
-      conteudo: texto.trim(),
-    });
-    setTexto("");
-    setAEnviar(false);
-    carregar();
-  };
-
-  return (
-    <div className="pb-40">
-      <SectionHeader eyebrow="MENSAGEM PRIVADA" title={pessoa.nome || pessoa.email} onBack={onBack} />
-      <div className="px-6 space-y-3 mb-4">
-        {mensagens.length === 0 && (
-          <p className="text-sm" style={{ color: palette.navySoft }}>Ainda não há mensagens. Escreve a primeira.</p>
-        )}
-        {mensagens.map((m) => {
-          const souEu = m.remetente_id === meuId;
-          return (
-            <div key={m.id} className={`flex ${souEu ? "justify-end" : "justify-start"}`}>
-              <div
-                className="max-w-[80%] rounded-2xl px-4 py-2.5"
-                style={{ backgroundColor: souEu ? palette.navy : palette.card, border: souEu ? "none" : `1px solid ${palette.goldSoft}55` }}
-              >
-                <p className="text-sm" style={{ color: souEu ? palette.creamSoft : palette.ink }}>{m.conteudo}</p>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-      <div className="fixed bottom-16 left-0 right-0 px-6 py-3" style={{ backgroundColor: palette.cream, borderTop: `1px solid ${palette.goldSoft}55` }}>
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={texto}
-            onChange={(e) => setTexto(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter") enviar(); }}
-            placeholder="Escreve uma mensagem..."
-            className="flex-1 rounded-full px-4 py-2.5 text-sm outline-none"
-            style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
-          />
-          <button
-            onClick={enviar}
-            disabled={aEnviar || !texto.trim()}
-            className="rounded-full px-4 py-2.5 text-sm font-medium disabled:opacity-50"
-            style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
-          >
-            Enviar
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ComunidadeScreen({ onBack, onOpenCurso, reflexoes, onGuardarReflexao, onAbrirChat, onAbrirMensagens, materiaisDesbloqueados, onDesbloquearMaterial, mensalidadeAte }) {
-  const [mesIndex, setMesIndex] = useState(0);
-  const [rascunho, setRascunho] = useState(reflexoes[comunidadeMeses[0].mes] || "");
-  const [guardado, setGuardado] = useState(false);
-  const mesAtivo = comunidadeMeses[mesIndex];
-  const formacaoDoMes = mesAtivo.formacaoId ? cursos.find((c) => c.id === mesAtivo.formacaoId) : null;
-
-  return (
-    <div className="pb-28">
-      <SectionHeader eyebrow="ESTE MÊS" title="Comunidade 3S" onBack={onBack} />
-      <div className="px-6 mb-5">
-        {mensalidadeAte && new Date(mensalidadeAte) > new Date() ? (
-          <div className="rounded-2xl px-4 py-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
-            <p className="text-xs" style={{ color: palette.navySoft }}>Mensalidade paga até <b style={{ color: palette.navy }}>{new Date(mensalidadeAte).toLocaleDateString("pt-PT", { day: "2-digit", month: "long" })}</b>.</p>
-            <div className="mt-2"><BotaoCarrinho pequeno rotulo="Renovar mais 1 mês" item={{ chave: "comunidade", tipo: "comunidade", titulo: "Comunidade 3S — mensalidade", valor: 4.99 }} /></div>
-          </div>
-        ) : (
-          <div className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.navy }}>
-            <p className="font-serif text-lg" style={{ color: palette.creamSoft }}>Torna-te membro da Comunidade</p>
-            <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.goldSoft }}>Todos os materiais didáticos, aulas gravadas e 1 encontro online por mês — tudo por 4,99€/mês.</p>
-            <div className="mt-3"><BotaoCarrinho rotulo="Aderir à Comunidade" item={{ chave: "comunidade", tipo: "comunidade", titulo: "Comunidade 3S — mensalidade", valor: 4.99 }} /></div>
-          </div>
-        )}
-      </div>
-
-      <div className="px-6 mb-5 flex gap-2">
-        <button
-          onClick={onAbrirChat}
-          className="flex-1 flex items-center justify-center gap-2 rounded-full py-2.5 text-xs font-medium tracking-wide"
-          style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
-        >
-          <Users size={14} />
-          Chat da Comunidade
-        </button>
-        <button
-          onClick={onAbrirMensagens}
-          className="flex-1 flex items-center justify-center gap-2 rounded-full py-2.5 text-xs font-medium tracking-wide"
-          style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, color: palette.navy }}
-        >
-          <Mail size={14} />
-          Mensagens
-        </button>
-      </div>
-
-      <div className="px-6 mb-5 flex gap-2 overflow-x-auto">
-        {comunidadeMeses.map((m, i) => {
-          const ativo = i === mesIndex;
-          return (
-            <button
-              key={m.mes}
-              onClick={() => {
-                setMesIndex(i);
-                setRascunho(reflexoes[m.mes] || "");
-                setGuardado(false);
-              }}
-              className="shrink-0 rounded-full px-3.5 py-1.5 text-xs font-medium tracking-wide transition"
-              style={
-                ativo
-                  ? { backgroundColor: palette.navy, color: palette.creamSoft }
-                  : { backgroundColor: palette.card, color: palette.navySoft, border: `1px solid ${palette.goldSoft}55` }
-              }
-            >
-              {m.mes}
-            </button>
-          );
-        })}
-      </div>
-
-      <div className="px-6">
-        <div className="rounded-2xl px-5 py-5 mb-6" style={{ backgroundColor: palette.navy }}>
-          <p className="text-[11px] tracking-[0.2em] font-medium mb-2" style={{ color: palette.goldSoft }}>{mesAtivo.mes.toUpperCase()}</p>
-          <span
-            className="inline-block font-serif text-xl px-4 py-1.5 rounded-full"
-            style={{ color: palette.creamSoft, border: `1px solid ${palette.gold}` }}
-          >
-            {mesAtivo.tema}
-          </span>
-
-          {mesAtivo.livro && (
-            <div className="mt-4 pt-4" style={{ borderTop: `1px solid ${palette.navySoft}` }}>
-              <p className="text-[11px] tracking-[0.2em] font-medium mb-1" style={{ color: palette.goldSoft }}>LIVRO DO MÊS</p>
-              <p className="font-serif text-lg" style={{ color: palette.creamSoft }}>{mesAtivo.livro}</p>
-            </div>
-          )}
-          {formacaoDoMes && (
-            <div className="mt-4 pt-4" style={{ borderTop: `1px solid ${palette.navySoft}` }}>
-              <p className="text-[11px] tracking-[0.2em] font-medium mb-1" style={{ color: palette.goldSoft }}>FORMAÇÃO DO MÊS</p>
-              <button
-                onClick={() => onOpenCurso(formacaoDoMes)}
-                className="flex items-center justify-between w-full text-left"
-              >
-                <p className="font-serif text-lg pr-3" style={{ color: palette.creamSoft }}>{formacaoDoMes.titulo}</p>
-                <ArrowRight size={16} style={{ color: palette.gold }} className="shrink-0" />
-              </button>
-            </div>
-          )}
-        </div>
-
-        <div className="rounded-2xl px-5 py-4 mb-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
-          <p className="text-[11px] tracking-[0.2em] font-medium mb-1.5" style={{ color: palette.gold }}>PERGUNTA DO MÊS</p>
-          <p className="font-serif text-xl leading-snug" style={{ color: palette.navy }}>{mesAtivo.perguntaPrincipal}</p>
-        </div>
-
-        <div className="rounded-2xl px-5 py-4 mb-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
-          <p className="text-[11px] tracking-[0.2em] font-medium mb-2" style={{ color: palette.gold }}>PARA REFLETIRES ESTE MÊS</p>
-          <div className="space-y-2">
-            {mesAtivo.perguntasReflexao.map((p, i) => (
-              <p key={i} className="text-sm leading-relaxed" style={{ color: palette.ink }}>· {p}</p>
-            ))}
-          </div>
-          <textarea
-            value={rascunho}
-            onChange={(e) => { setRascunho(e.target.value); setGuardado(false); }}
-            placeholder="Escreve aqui a tua reflexão..."
-            rows={4}
-            className="w-full rounded-xl px-3.5 py-3 text-sm outline-none resize-none mt-3"
-            style={{ backgroundColor: palette.creamSoft, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
-          />
-          <button
-            onClick={() => { onGuardarReflexao(mesAtivo.mes, rascunho); setGuardado(true); }}
-            className="w-full rounded-lg py-2.5 mt-2.5 text-xs font-medium tracking-wide"
-            style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
-          >
-            Guardar reflexão
-          </button>
-          {guardado && <p className="text-center text-xs mt-2" style={{ color: palette.gold }}>Reflexão guardada</p>}
-        </div>
-
-        {mesAtivo.linkEncontro && (
-          <a
-            href={mesAtivo.linkEncontro}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-between rounded-2xl px-5 py-4 mb-6"
-            style={{ backgroundColor: palette.navy }}
-          >
-            <div>
-              <p className="text-[11px] tracking-[0.2em] font-medium" style={{ color: palette.gold }}>ENCONTRO MENSAL</p>
-              <p className="font-serif text-base mt-0.5" style={{ color: palette.creamSoft }}>Entrar no encontro ao vivo de {mesAtivo.mes}</p>
-            </div>
-            <ChevronRight size={18} style={{ color: palette.gold }} />
-          </a>
-        )}
-
-        <div className="rounded-2xl px-5 py-4 mb-6" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
-          <p className="text-[11px] tracking-[0.2em] font-medium mb-1.5" style={{ color: palette.gold }}>BENEFÍCIO DE MEMBRO</p>
-          <p className="text-sm leading-relaxed" style={{ color: palette.ink }}>
-            Como membro da Comunidade, tens <b>10% de desconto</b> em sessões de Coaching e Mentoria, e em todo o Material Didático.
-          </p>
-          <p className="text-sm mt-2" style={{ color: palette.ink }}>
-            Usa o código <span className="font-serif font-bold" style={{ color: palette.gold }}>COMUNIDADE10</span> no momento do pagamento.
-          </p>
-        </div>
-
-        <div className="rounded-2xl px-5 py-4 mb-6" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
-          <p className="text-[11px] tracking-[0.2em] font-medium mb-1.5" style={{ color: palette.gold }}>DESAFIO 3S — {mesAtivo.desafio.titulo.toUpperCase()}</p>
-          <p className="text-sm leading-relaxed" style={{ color: palette.ink }}>{mesAtivo.desafio.descricao}</p>
-        </div>
-
-        {mesAtivo.materialPrincipalIds && mesAtivo.materialPrincipalIds.length > 0 && (
-          <div className="mb-6">
-            <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>MATERIAL PRINCIPAL DO MÊS — INCLUÍDO</p>
-            <div className="space-y-2">
-              {mesAtivo.materialPrincipalIds.map((id) => {
-                const m = materiais.find((mm) => mm.id === id);
-                if (!m) return null;
-                return (
-                  <MaterialCard key={id} material={m} desbloqueado={true} onDesbloquear={() => {}} desbloqueadoFisico={Boolean(materiaisDesbloqueados[id + "-fisico"])} onDesbloquearFisico={() => onDesbloquearMaterial(id + "-fisico")} />
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>CONTEÚDO EXCLUSIVO</p>
-        <div className="space-y-2 mb-6">
-          {comunidade.exclusivo.map((c) => (
-            <div key={c.id} className="flex items-center gap-3 rounded-xl px-4 py-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
-              <Play size={16} style={{ color: palette.gold }} />
-              <p className="text-sm" style={{ color: palette.ink }}>{c.titulo}</p>
-            </div>
-          ))}
-        </div>
-
-        <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>ESPAÇO DE PARTILHA</p>
-        <div className="space-y-2">
-          {comunidade.partilhas.map((p) => (
-            <div key={p.id} className="rounded-xl px-4 py-3" style={{ backgroundColor: palette.card }}>
-              <p className="text-sm leading-relaxed" style={{ color: palette.ink }}>"{p.texto}"</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-
-/* ---------------------------------------------------------
-   Workshops
 --------------------------------------------------------- */
 function WorkshopsScreen({ onBack, inscricoes, onToggleInscricao }) {
   return (
@@ -4114,10 +3258,7 @@ function PodcastScreen({ onBack, souDona }) {
 /* ---------------------------------------------------------
    Formação
 --------------------------------------------------------- */
-function mesDoCurso(cursoId) {
-  const m = comunidadeMeses.find((mm) => mm.formacaoId === cursoId);
-  return m ? m.mes : null;
-}
+function mesDoCurso() { return null; }
 
 function FormacaoScreen({ onBack, onOpenCurso, cursosConcluidos, escolaFixa }) {
   const [escolaId, setEscolaId] = useState(escolaFixa || escolas[0].id);
@@ -6021,14 +5162,14 @@ function MaterialCard({ material, desbloqueado, onDesbloquear, desbloqueadoFisic
                 className="w-full rounded-lg px-3 py-2 text-sm outline-none"
                 style={{ backgroundColor: palette.creamSoft, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
               />
-              <input
+              {false && <input
                 type="text"
                 value={codigoDesconto}
                 onChange={(e) => setCodigoDesconto(e.target.value)}
                 placeholder="Código de desconto (opcional)"
                 className="w-full rounded-lg px-3 py-2 text-sm outline-none"
                 style={{ backgroundColor: palette.creamSoft, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
-              />
+              />}
               {descontoValido && (
                 <p className="text-xs text-center" style={{ color: palette.gold }}>
                   Código aplicado — 10% de desconto
@@ -6370,14 +5511,14 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
                 className="w-full rounded-xl px-4 py-2.5 text-sm outline-none"
                 style={{ backgroundColor: palette.creamSoft, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
               />
-              <input
+              {false && <input
                 type="text"
                 value={codigoDesconto}
                 onChange={(e) => setCodigoDesconto(e.target.value)}
                 placeholder="Código de desconto (opcional)"
                 className="w-full rounded-xl px-4 py-2.5 text-sm outline-none"
                 style={{ backgroundColor: palette.creamSoft, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
-              />
+              />}
               {descontoValido && (
                 <p className="text-xs text-center" style={{ color: palette.gold }}>
                   Código aplicado: 10% de desconto
@@ -6971,90 +6112,6 @@ function DisponibilidadeScreen({ onBack, disponibilidade, onAdicionarData, onRem
 /* ---------------------------------------------------------
    Painel da Mentora
 --------------------------------------------------------- */
-function ConteudoDoMes({ mes }) {
-  const [aberto, setAberto] = useState(false);
-  const formacao = mes.formacaoId ? cursos.find((c) => c.id === mes.formacaoId) : null;
-  const materiaisDoMes = (mes.materialPrincipalIds || [])
-    .map((id) => materiais.find((m) => m.id === id))
-    .filter(Boolean);
-
-  return (
-    <div className="rounded-2xl overflow-hidden" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
-      <button
-        onClick={() => setAberto((a) => !a)}
-        className="w-full flex items-center justify-between px-4 py-3.5 text-left"
-      >
-        <div>
-          <p className="text-[10px] tracking-[0.2em] font-medium" style={{ color: palette.gold }}>{mes.mes.toUpperCase()}</p>
-          <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{mes.tema}</p>
-        </div>
-        <ChevronRight
-          size={18}
-          style={{ color: palette.navySoft, transform: aberto ? "rotate(90deg)" : "none", transition: "transform 0.15s" }}
-        />
-      </button>
-
-      {aberto && (
-        <div className="px-4 pb-4 space-y-4">
-          {mes.livro && (
-            <div>
-              <p className="text-[10px] tracking-[0.2em] font-medium mb-1" style={{ color: palette.navySoft }}>LIVRO</p>
-              <p className="text-sm" style={{ color: palette.ink }}>{mes.livro}</p>
-            </div>
-          )}
-
-          {formacao && (
-            <div>
-              <p className="text-[10px] tracking-[0.2em] font-medium mb-1.5" style={{ color: palette.navySoft }}>CURSO — {formacao.titulo.toUpperCase()}</p>
-              {formacao.aulas && formacao.aulas.length > 0 ? (
-                <div className="space-y-1.5">
-                  {formacao.aulas.map((aula, i) => (
-                    <p key={i} className="text-xs leading-relaxed" style={{ color: palette.ink }}>
-                      <strong style={{ color: palette.navy }}>{i + 1}. {aula.titulo}</strong> — {aula.descricao}
-                    </p>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-xs" style={{ color: palette.ink }}>{formacao.promessa}</p>
-              )}
-            </div>
-          )}
-
-          <div>
-            <p className="text-[10px] tracking-[0.2em] font-medium mb-1" style={{ color: palette.navySoft }}>PERGUNTA DO MÊS</p>
-            <p className="text-sm" style={{ color: palette.ink }}>{mes.perguntaPrincipal}</p>
-          </div>
-
-          <div>
-            <p className="text-[10px] tracking-[0.2em] font-medium mb-1.5" style={{ color: palette.navySoft }}>PERGUNTAS DE REFLEXÃO</p>
-            <div className="space-y-1">
-              {mes.perguntasReflexao.map((p, i) => (
-                <p key={i} className="text-xs leading-relaxed" style={{ color: palette.ink }}>· {p}</p>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <p className="text-[10px] tracking-[0.2em] font-medium mb-1" style={{ color: palette.navySoft }}>DESAFIO 3S — {mes.desafio.titulo.toUpperCase()}</p>
-            <p className="text-xs leading-relaxed" style={{ color: palette.ink }}>{mes.desafio.descricao}</p>
-          </div>
-
-          {materiaisDoMes.length > 0 && (
-            <div>
-              <p className="text-[10px] tracking-[0.2em] font-medium mb-1.5" style={{ color: palette.navySoft }}>MATERIAL PRINCIPAL</p>
-              <div className="space-y-1">
-                {materiaisDoMes.map((m) => (
-                  <p key={m.id} className="text-xs" style={{ color: palette.ink }}>{m.titulo} · {m.formato} · {m.preco}</p>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
-
 function DashboardMentoraScreen({ onBack, onAbrirCliente }) {
   const [carregando, setCarregando] = useState(true);
   const [clientes, setClientes] = useState([]);
@@ -7174,14 +6231,10 @@ function DashboardMentoraScreen({ onBack, onAbrirCliente }) {
     <div className="pb-28">
       <SectionHeader eyebrow="VISÃO DA ESCOLA" title="Dashboard" onBack={onBack} />
 
-      <div className="px-6 grid grid-cols-3 gap-3 mb-8">
+      <div className="px-6 grid grid-cols-2 gap-3 mb-8">
         <div className="rounded-2xl px-3 py-4 text-center" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
           <p className="font-serif text-2xl" style={{ color: palette.navy }}>{clientes.length}</p>
           <p className="text-[10px] tracking-wide mt-1" style={{ color: palette.navySoft }}>SUBSCRITORES</p>
-        </div>
-        <div className="rounded-2xl px-3 py-4 text-center" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
-          <p className="font-serif text-2xl" style={{ color: palette.navy }}>{totalInscritosComunidade}</p>
-          <p className="text-[10px] tracking-wide mt-1" style={{ color: palette.navySoft }}>NA COMUNIDADE</p>
         </div>
         <div className="rounded-2xl px-3 py-4 text-center" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
           <p className="font-serif text-2xl" style={{ color: palette.navy }}>{valorTotal.toFixed(2)}€</p>
@@ -7325,40 +6378,7 @@ function DashboardMentoraScreen({ onBack, onAbrirCliente }) {
 
       <div className="px-6">
         <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>FICHA DE CLIENTES</p>
-        <button
-          onClick={() => setFiltroComunidade((f) => !f)}
-          className="w-full flex items-center justify-between rounded-xl px-4 py-3 mb-3"
-          style={filtroComunidade ? { backgroundColor: palette.navy } : { backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}
-        >
-          <div className="flex items-center gap-2">
-            <Users size={15} style={{ color: filtroComunidade ? palette.gold : palette.navySoft }} />
-            <p className="text-sm font-medium" style={{ color: filtroComunidade ? palette.creamSoft : palette.ink }}>
-              Membros da Comunidade
-            </p>
-          </div>
-          <span className="text-xs font-serif" style={{ color: filtroComunidade ? palette.gold : palette.navySoft }}>
-            {membrosComunidade.length}
-          </span>
-        </button>
-        {filtroComunidade && (
-          <div className="flex gap-2 overflow-x-auto mb-3" style={{ scrollbarWidth: "none" }}>
-            {["todos", ...Array.from(new Set(entradasGratis.map((e) => e.mes))).sort().reverse()].map((mes) => (
-              <button
-                key={mes}
-                onClick={() => setMesFiltro(mes)}
-                className="shrink-0 rounded-full px-3.5 py-1.5 text-xs font-medium tracking-wide"
-                style={
-                  mesFiltro === mes
-                    ? { backgroundColor: palette.navy, color: palette.creamSoft }
-                    : { backgroundColor: palette.card, color: palette.navySoft, border: `1px solid ${palette.goldSoft}55` }
-                }
-              >
-                {mes === "todos" ? "Todos os meses" : mes}
-              </button>
-            ))}
-          </div>
-        )}
-        {filtroComunidade ? (
+        {false ? (
           <>
             {membrosComunidade.length === 0 && (
               <p className="text-sm" style={{ color: palette.navySoft }}>Ainda ninguém tem a Comunidade ativa.</p>
@@ -7410,7 +6430,7 @@ function DashboardMentoraScreen({ onBack, onAbrirCliente }) {
                     </div>
                     <p className="text-xs mt-1" style={{ color: palette.navySoft }}>
                       {c.nome ? c.email + " · " : ""}
-                      {c.telefone || "sem telemóvel"} · {idsComunidadeTodos.has(c.user_id) ? "na Comunidade" : "sem Comunidade"} · {pagamentosDaPessoa.length} pagamento(s)
+                      {c.telefone || "sem telemóvel"} · {pagamentosDaPessoa.length} pagamento(s)
                     </p>
                     <p className="text-[10px] mt-1.5 tracking-wide" style={{ color: palette.gold }}>VER FICHA COMPLETA →</p>
                   </button>
@@ -7883,15 +6903,6 @@ function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFor
         </div>
       )}
 
-      <div className="px-6 mb-8">
-        <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>CONTEÚDO POR MÊS</p>
-        <div className="space-y-2">
-          {comunidadeMeses.map((m) => (
-            <ConteudoDoMes key={m.mes} mes={m} />
-          ))}
-        </div>
-      </div>
-
       <div className="px-6 grid grid-cols-3 gap-3 mb-8">
         <div className="rounded-2xl px-3 py-4 text-center" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
           <p className="font-serif text-2xl" style={{ color: palette.navy }}>{totalInscricoes}</p>
@@ -7958,41 +6969,6 @@ function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFor
         )}
       </div>
 
-      <div className="px-6 mt-8">
-        <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>COMUNIDADE 3S</p>
-        <div
-          className="flex items-center gap-3 rounded-xl px-4 py-3 mb-3"
-          style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}
-        >
-          <Users size={16} style={{ color: comunidadeEmDia(progresso) ? palette.gold : palette.navySoft }} />
-          <p className="text-sm flex-1" style={{ color: palette.ink }}>Acesso à Comunidade</p>
-          <span className="text-xs font-medium" style={{ color: comunidadeEmDia(progresso) ? palette.gold : palette.navySoft }}>
-            {comunidadeEmDia(progresso) ? "Em dia" : "Por pagar"}
-          </span>
-        </div>
-
-        <p className="text-xs tracking-wide font-medium mb-2" style={{ color: palette.navySoft }}>REFLEXÕES GUARDADAS POR MÊS</p>
-        <div className="space-y-2">
-          {comunidadeMeses.map((m) => {
-            const texto = progresso.reflexoesComunidade[m.mes];
-            return (
-              <div key={m.mes} className="rounded-xl px-4 py-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
-                <div className="flex items-center justify-between">
-                  <p className="text-xs font-medium" style={{ color: palette.navy }}>{m.mes}</p>
-                  {texto ? (
-                    <CheckCircle2 size={14} style={{ color: palette.gold }} />
-                  ) : (
-                    <span className="text-[10px]" style={{ color: palette.navySoft }}>sem reflexão</span>
-                  )}
-                </div>
-                {texto && (
-                  <p className="text-sm mt-1 leading-relaxed" style={{ color: palette.ink }}>"{texto}"</p>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </div>
     </div>
   );
 }
@@ -8235,18 +7211,7 @@ function todosMateriaisDigitais() {
   materiais.forEach((m) => { if (!m.apenasMentor && !livrosAutora.includes(m.id)) ids[m.id] = true; });
   return ids;
 }
-function materiaisIncluidosComunidade() {
-  return todosMateriaisDigitais();
-}
-function materiaisDoMesComunidade() {
-  const mes = comunidadeMeses.find((m) => m.mes === MESES_PT[new Date().getMonth()]);
-  const curso = mes && mes.formacaoId ? cursos.find((c) => c.id === mes.formacaoId) : null;
-  const ids = {};
-  if (!curso) return ids;
-  (curso.materiaisIds || []).forEach((id) => { ids[id] = true; });
-  (curso.aulas || []).forEach((a) => (a.materiaisIds || []).forEach((id) => { ids[id] = true; }));
-  return ids;
-}
+function materiaisIncluidosComunidade() { return {}; }
 
 /* ---------- Códigos de oferta e ciclos de sessões ---------- */
 const PRECO_SESSAO = 30;
@@ -8266,7 +7231,6 @@ function ResgatarCodigo({ onAtivado, titulo }) {
     let msg = data.mensagem;
     if (data.ok) {
       const partes = [];
-      if (data.mes_comunidade) partes.push("1 mês de Comunidade oferecido");
       if (Number(data.desconto_ciclo) > 0) partes.push(`${Number(data.desconto_ciclo)}% de desconto no ciclo de 4 sessões`);
       if (partes.length) msg += " Tens: " + partes.join(" e ") + ".";
       if (onAtivado) onAtivado(data);
@@ -8406,11 +7370,6 @@ function CarrinhoScreen({ onBack, onPagamentoConfirmado }) {
 
   const incluidosMes = materiaisIncluidosComunidade();
   const itensIncluidos = carrinho.itens.filter((i) => (i.tipo === "material" || i.tipo === "material_fisico") && incluidosMes[i.materialId]);
-  const temComunidadeNoCarrinho = carrinho.itens.some((i) => i.tipo === "comunidade");
-  const trocarPelaComunidade = () => {
-    itensIncluidos.forEach((i) => carrinho.remover(i.chave));
-    carrinho.adicionar({ chave: "comunidade", tipo: "comunidade", titulo: "Comunidade 3S — mensalidade", valor: 4.99 });
-  };
   const descontoValido = codigoDesconto.trim().toUpperCase() === "COMUNIDADE10";
   const descontoCiclo = Number(carrinho.descontoCiclo || 0);
   const valorItem = (i) => {
@@ -8510,28 +7469,17 @@ function CarrinhoScreen({ onBack, onPagamentoConfirmado }) {
               </div>
             ))}
 
-            {false && itensIncluidos.length > 0 && !temComunidadeNoCarrinho && (
-              <div className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.navy }}>
-                <p className="font-serif text-lg" style={{ color: palette.creamSoft }}>Fica tudo por 4,99€</p>
-                <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.goldSoft }}>
-                  {itensIncluidos.length === 1 ? "Este material é gratuito" : "Estes materiais são gratuitos"} para membros da Comunidade. Aderindo por 4,99€/mês, ficas com todos os materiais didáticos da escola, as aulas gravadas e 1 encontro online por mês.
-                </p>
-                <button onClick={trocarPelaComunidade} className="w-full rounded-full py-2.5 mt-3 text-sm font-medium" style={{ backgroundColor: palette.gold, color: palette.navy }}>
-                  Trocar pela Comunidade · 4,99€
-                </button>
-              </div>
-            )}
 
             <ResgatarCodigo onAtivado={carrinho.aoAtivarCodigo} />
 
-            <input
+            {false && <input
               type="text"
               value={codigoDesconto}
               onChange={(e) => setCodigoDesconto(e.target.value)}
               placeholder="Código de desconto (opcional)"
               className="w-full rounded-xl px-4 py-2.5 text-sm outline-none"
               style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
-            />
+            />}
             {descontoValido && <p className="text-xs" style={{ color: palette.gold }}>Desconto de 10% aplicado aos materiais.</p>}
 
             <div className="flex items-center justify-between px-1 pt-1">
@@ -8915,7 +7863,6 @@ function CatalogoCursosScreen({ onBack, temAcesso, onAbrirCurso, onAreaAluno }) 
 function CursoVendaScreen({ curso, onBack }) {
   const escolaNome = curso.escolaId === "lideranca" ? "COACHING DE LIDERANÇA 3S" : curso.escolaId === "ser" ? "COACHING DE VIDA 3S" : "COMUNIDADE 3S";
   const inclui = incluiCurso(curso);
-  const ehComunidade = curso.escolaId === "comunidade";
   return (
     <div className="pb-28">
       <SectionHeader eyebrow={escolaNome} title={curso.titulo} onBack={onBack} />
@@ -8939,17 +7886,15 @@ function CursoVendaScreen({ curso, onBack }) {
         </div>
 
         <div className="rounded-2xl px-5 py-5" style={{ backgroundColor: palette.navy }}>
-          <p className="text-[11px] tracking-[0.2em] font-medium mb-2" style={{ color: palette.gold }}>{ehComunidade ? "INCLUÍDO NA COMUNIDADE" : "O CURSO INCLUI"}</p>
+          <p className="text-[11px] tracking-[0.2em] font-medium mb-2" style={{ color: palette.gold }}>O CURSO INCLUI</p>
           <div className="space-y-1.5">
             {inclui.map((t) => <p key={t} className="text-sm" style={{ color: palette.creamSoft }}>✓ {t}</p>)}
           </div>
-          <p className="font-serif text-3xl mt-4" style={{ color: palette.gold }}>{ehComunidade ? "4,99€ / mês" : precoTexto(PRECO_CURSO)}</p>
+          <p className="font-serif text-3xl mt-4" style={{ color: palette.gold }}>{precoTexto(PRECO_CURSO)}</p>
         </div>
 
         {curso.emBreve ? (
           <div className="w-full rounded-full py-3 text-center font-medium text-sm" style={{ border: `1px dashed ${palette.gold}`, color: palette.navy }}>Em breve: está a ser preparado</div>
-        ) : ehComunidade ? (
-          <BotaoCarrinho rotulo="Aderir à Comunidade" item={{ chave: "comunidade", tipo: "comunidade", titulo: "Comunidade 3S — mensalidade", valor: 4.99 }} />
         ) : (
           <BotaoCarrinho rotulo="Comprar o curso" item={{ chave: `curso-${curso.id}`, tipo: "curso", cursoId: curso.id, titulo: `Curso — ${curso.titulo}`, valor: PRECO_CURSO }} />
         )}
@@ -8990,7 +7935,6 @@ function LivrosScreen({ onBack, materiaisDesbloqueados }) {
 
 /* ---------- Montra pública (antes de entrar na app) ---------- */
 function MontraPublica({ onCriarConta, onEntrar, onEscolher }) {
-  const comunidadeItem = { chave: "comunidade", tipo: "comunidade", titulo: "Comunidade 3S — mensalidade", valor: 4.99 };
   const cursoGratis = cursos.find((c) => c.gratuito);
   const livros = LIVROS_AUTORA_IDS.map((id) => materiais.find((m) => m.id === id)).filter(Boolean);
   const titulo = (eyebrow, texto) => (
@@ -10211,18 +9155,6 @@ export default function App() {
       .catch(() => {});
   }, [progresso.disponibilidade, progresso.papel, carregado, session]);
 
-  // Sempre que a Comunidade fica desbloqueada, cria/atualiza o perfil público (para o chat)
-  useEffect(() => {
-    if (!carregado || !session || !comunidadeEmDia(progresso)) return;
-    supabase
-      .from("perfis_comunidade")
-      .upsert(
-        { user_id: session.user.id, email: session.user.email, atualizado_em: new Date().toISOString() },
-        { onConflict: "user_id" }
-      )
-      .then(() => {})
-      .catch(() => {});
-  }, [progresso.comunidadePagaAte, carregado, session]);
 
   // (registo de entrada gratuita agora acontece no envio do formulário FichaEntradaGratisScreen)
 
@@ -10336,17 +9268,14 @@ export default function App() {
     progresso.papel === "dona" ||
     Boolean(c.gratuito) ||
     formadorAcessoCursos.includes(c.id) ||
-    Boolean(progresso.cursosComprados && progresso.cursosComprados[c.id]) ||
-    (c.escolaId === "comunidade" && (comunidadeEmDia(progresso) || COMUNIDADE_MES_GRATIS));
+    Boolean(progresso.cursosComprados && progresso.cursosComprados[c.id]);
 
   const materiaisAcesso = comunidadeEmDia(progresso)
     ? { ...progresso.materiaisDesbloqueados, ...materiaisIncluidosComunidade() }
     : progresso.materiaisDesbloqueados;
 
   let content;
-  if (conversaAberta) {
-    content = <ChatPrivadoScreen pessoa={conversaAberta} onBack={() => setConversaAberta(null)} />;
-  } else if (certificadoAberto) {
+  if (certificadoAberto) {
     content = (
       <CertificadoScreen
         curso={certificadoAberto}
@@ -10462,34 +9391,8 @@ export default function App() {
         onVerCertificado={setCertificadoAberto}
       />
     );
-  } else if (secao === "comunidade") {
-    const precisaFicha = COMUNIDADE_MES_GRATIS && !comunidadeEmDia(progresso) && progresso.papel !== "dona" && !progresso.fichaGratisPreenchida;
-    content = precisaFicha ? (
-      <FichaEntradaGratisScreen
-        onBack={() => setSecao(null)}
-        onConcluido={() => setProgresso((p) => ({ ...p, fichaGratisPreenchida: true }))}
-      />
-    ) : (comunidadeEmDia(progresso) || progresso.papel === "dona" || COMUNIDADE_MES_GRATIS) ? (
-      <ComunidadeScreen
-        onBack={() => setSecao(null)}
-        onOpenCurso={setCursoAberto}
-        reflexoes={progresso.reflexoesComunidade}
-        onGuardarReflexao={guardarReflexao}
-        onAbrirChat={() => setSecao("chat-comunidade")}
-        onAbrirMensagens={() => setSecao("mensagens")}
-        materiaisDesbloqueados={materiaisAcesso}
-        onDesbloquearMaterial={desbloquearMaterial}
-        mensalidadeAte={progresso.comunidadePagaAte}
-      />
-    ) : (
-      <ComunidadeBloqueada onBack={() => setSecao(null)} onDesbloquear={sincronizarCompras} terminouEm={progresso.comunidadePagaAte} />
-    );
   } else if (secao === "notificacoes") {
     content = <NotificacoesScreen onBack={() => setSecao(null)} />;
-  } else if (secao === "chat-comunidade") {
-    content = <ChatComunidadeScreen onBack={() => setSecao("comunidade")} />;
-  } else if (secao === "mensagens") {
-    content = <MensagensListaScreen onBack={() => setSecao("comunidade")} onAbrirConversa={setConversaAberta} />;
   } else if (secao === "workshops") {
     content = <WorkshopsScreen onBack={() => setSecao("lideranca-3s")} inscricoes={progresso.inscricoesWorkshops} onToggleInscricao={toggleInscricao} />;
   } else if (secao === "podcast") {
