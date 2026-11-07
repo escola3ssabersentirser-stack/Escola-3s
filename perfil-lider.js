@@ -126,10 +126,34 @@ export function calcularPerfilGeral(respostasPers, respostasCom, respostasArq) {
 // encaixe por personalidade (0 a 3) e por arquétipo (0 a 3); melhorar = o que cada personalidade tem de trabalhar para liderar esta equipa
 export const TIPOS_EQUIPA = [
   {
-    id: "nova", lid: { O: 3, C: 2, F: 2, D: 0 }, nome: "Equipa nova ou em formação",
+    id: "senior", nome: "Equipa sénior",
+    frase: "Pessoas experientes, que dominam o trabalho e têm opinião forte.",
+    precisa: "Autonomia, respeito pela experiência, decisões partilhadas e desafios à altura.",
+    lid: { D: 3, C: 2, F: 2, O: 0 }, pers: { RP: 2, RT: 3, AP: 2, AT: 1 }, arq: { ME: 2, ES: 3, PO: 2, VI: 2, GU: 1, CA: 1 },
+    melhorar: {
+      AT: "Não impor: perguntar a opinião antes de decidir e deixar o \"como\" com a equipa.",
+      AP: "Trazer conteúdo e argumentos sólidos; entusiasmo sem substância não convence quem sabe.",
+      RP: "Ganhar autoridade: tomar posição e não ceder só para evitar desconforto.",
+      RT: "Reconhecer a experiência das pessoas e não querer controlar todos os detalhes.",
+    },
+  },
+  {
+    id: "junior", nome: "Equipa júnior",
+    frase: "Pessoas no início de carreira, com vontade mas pouca experiência.",
+    precisa: "Instruções claras, exemplo, acompanhamento próximo, feedback frequente e paciência.",
+    lid: { O: 3, C: 3, F: 2, D: 0 }, pers: { AT: 2, AP: 3, RP: 3, RT: 2 }, arq: { ME: 3, GU: 3, VI: 2, PO: 1, ES: 1, CA: 1 },
+    melhorar: {
+      AT: "Explicar o porquê e ter paciência com o ritmo de aprendizagem.",
+      AP: "Dar estrutura e regras claras, não só motivação.",
+      RP: "Corrigir cedo e com clareza; proteger demasiado impede o crescimento.",
+      RT: "Simplificar as explicações e celebrar os pequenos progressos.",
+    },
+  },
+  {
+    id: "nova", nome: "Equipa nova ou em formação",
     frase: "Pessoas que ainda se estão a conhecer, com papéis pouco claros.",
     precisa: "Direção clara, papéis definidos, acolhimento e regras de funcionamento.",
-    pers: { AT: 3, AP: 2, RP: 2, RT: 2 }, arq: { GU: 3, ME: 3, ES: 2, PO: 2, VI: 1, CA: 1 },
+    lid: { O: 3, C: 2, F: 2, D: 0 }, pers: { AT: 3, AP: 2, RP: 2, RT: 2 }, arq: { GU: 3, ME: 3, ES: 2, PO: 2, VI: 1, CA: 1 },
     melhorar: {
       AT: "Dar tempo para as pessoas se conhecerem; não exigir resultados antes de haver confiança.",
       AP: "Transformar o entusiasmo em regras e papéis claros, por escrito.",
@@ -138,10 +162,10 @@ export const TIPOS_EQUIPA = [
     },
   },
   {
-    id: "conflito", lid: { F: 3, C: 2, O: 1, D: 0 }, nome: "Equipa em conflito",
+    id: "conflito", nome: "Equipa conflituosa",
     frase: "Tensões, grupos, desconfiança ou conversas que ninguém tem.",
     precisa: "Mediação, escuta de todas as partes, acordos de convivência e firmeza com comportamentos.",
-    pers: { RP: 3, AP: 2, RT: 1, AT: 1 }, arq: { PO: 3, ME: 2, GU: 2, ES: 1, VI: 1, CA: 0 },
+    lid: { F: 3, C: 2, O: 1, D: 0 }, pers: { RP: 3, AP: 2, RT: 1, AT: 1 }, arq: { PO: 3, ME: 2, GU: 2, ES: 1, VI: 1, CA: 0 },
     melhorar: {
       AT: "Abrandar, ouvir todas as partes até ao fim e separar as pessoas do problema.",
       AP: "Não tentar resolver com boa disposição; ter a conversa difícil, com factos.",
@@ -150,22 +174,34 @@ export const TIPOS_EQUIPA = [
     },
   },
   {
-    id: "estavel", lid: { D: 3, C: 2, F: 2, O: 0 }, nome: "Equipa estável e experiente",
-    frase: "Pessoas competentes, que conhecem o trabalho e funcionam bem.",
-    precisa: "Autonomia, reconhecimento, novos desafios e espaço para crescer.",
-    pers: { RP: 3, AP: 2, RT: 2, AT: 1 }, arq: { ME: 3, VI: 2, PO: 2, ES: 2, GU: 1, CA: 1 },
+    id: "processos", nome: "Equipa com dificuldade em manter processos",
+    frase: "Começa bem, mas as rotinas, os registos e os procedimentos perdem-se com o tempo.",
+    precisa: "Processos simples e visíveis, rotinas de verificação, responsáveis claros e consistência do líder.",
+    lid: { O: 3, C: 2, F: 1, D: 0 }, pers: { RT: 3, AT: 2, RP: 2, AP: 1 }, arq: { GU: 3, ES: 3, ME: 1, PO: 1, VI: 0, CA: 0 },
     melhorar: {
-      AT: "Sair da frente: delegar de verdade e evitar a microgestão.",
-      AP: "Garantir consistência e seguimento, não só novidades.",
-      RP: "Trazer desafio e ambição para a equipa não se acomodar.",
-      RT: "Reconhecer mais vezes o trabalho feito e dar autonomia no \"como\".",
+      AT: "Ser o primeiro a cumprir o processo e verificar com regularidade, não só quando corre mal.",
+      AP: "Resistir a mudar tudo a toda a hora; repetir a mesma rotina até ficar hábito.",
+      RP: "Cobrar o cumprimento com firmeza e consequências claras, sem esperar que melhore sozinho.",
+      RT: "Simplificar: menos regras, mais claras, e explicar o porquê de cada uma.",
     },
   },
   {
-    id: "alto", lid: { D: 3, C: 2, O: 1, F: 1 }, nome: "Equipa de alto desempenho",
+    id: "desmotivada", nome: "Equipa desmotivada ou desgastada",
+    frase: "Cansaço, pouca energia, faltas ou sensação de que \"nada muda\".",
+    precisa: "Escuta, reconhecimento, pequenas vitórias, sentido para o trabalho e cuidado com a carga.",
+    lid: { F: 3, C: 3, O: 1, D: 0 }, pers: { AP: 3, RP: 3, AT: 1, RT: 1 }, arq: { ME: 3, VI: 2, PO: 2, CA: 2, GU: 1, ES: 1 },
+    melhorar: {
+      AT: "Reduzir a pressão e perguntar como as pessoas estão antes de pedir mais.",
+      AP: "Ir além da energia: resolver as causas concretas do desgaste.",
+      RP: "Trazer rumo e objetivos curtos, além do apoio.",
+      RT: "Mostrar mais reconhecimento e o lado humano, não só indicadores.",
+    },
+  },
+  {
+    id: "alto", nome: "Equipa de alto desempenho",
     frase: "Equipa ambiciosa, rápida e com resultados acima da média.",
     precisa: "Visão inspiradora, objetivos exigentes, liberdade e alguém que remova obstáculos.",
-    pers: { AP: 3, AT: 2, RT: 2, RP: 1 }, arq: { VI: 3, CA: 2, ES: 2, ME: 2, PO: 1, GU: 0 },
+    lid: { D: 3, C: 2, O: 1, F: 1 }, pers: { AP: 3, AT: 2, RT: 2, RP: 1 }, arq: { VI: 3, CA: 2, ES: 2, ME: 2, PO: 1, GU: 0 },
     melhorar: {
       AT: "Não competir com a equipa; o teu papel é abrir caminho, não fazer por eles.",
       AP: "Dar dados e prioridades claras; equipas fortes desconfiam de discursos vagos.",
@@ -174,10 +210,10 @@ export const TIPOS_EQUIPA = [
     },
   },
   {
-    id: "crise", lid: { O: 3, F: 2, C: 1, D: 0 }, nome: "Equipa em crise ou mudança",
+    id: "crise", nome: "Equipa em crise ou mudança",
     frase: "Reestruturação, perdas, mudança de rumo ou muita incerteza.",
     precisa: "Calma, decisão rápida, comunicação frequente e honesta, e um plano de curto prazo.",
-    pers: { AT: 3, RT: 2, AP: 2, RP: 1 }, arq: { ES: 3, CA: 3, VI: 2, GU: 2, ME: 1, PO: 1 },
+    lid: { O: 3, F: 2, C: 1, D: 0 }, pers: { AT: 3, RT: 2, AP: 2, RP: 1 }, arq: { ES: 3, CA: 3, VI: 2, GU: 2, ME: 1, PO: 1 },
     melhorar: {
       AT: "Comunicar o porquê das decisões e cuidar do medo das pessoas.",
       AP: "Ser realista: dizer o que se sabe e o que não se sabe, sem promessas.",
@@ -186,10 +222,10 @@ export const TIPOS_EQUIPA = [
     },
   },
   {
-    id: "inovacao", lid: { D: 3, C: 2, F: 2, O: 0 }, nome: "Equipa criativa ou de inovação",
+    id: "inovacao", nome: "Equipa criativa ou de inovação",
     frase: "Projetos novos, ideias, testes e muita incerteza criativa.",
     precisa: "Liberdade, tolerância ao erro, experimentação e uma visão que dê sentido.",
-    pers: { AP: 3, AT: 2, RP: 2, RT: 1 }, arq: { CA: 3, VI: 3, ES: 2, PO: 1, ME: 1, GU: 0 },
+    lid: { D: 3, C: 2, F: 2, O: 0 }, pers: { AP: 3, AT: 2, RP: 2, RT: 1 }, arq: { CA: 3, VI: 3, ES: 2, PO: 1, ME: 1, GU: 0 },
     melhorar: {
       AT: "Tolerar o erro e as voltas do processo criativo; nem tudo tem de dar resultado já.",
       AP: "Escolher as ideias certas e levá-las até ao fim.",
@@ -197,13 +233,37 @@ export const TIPOS_EQUIPA = [
       RT: "Largar o controlo e o detalhe na fase de ideias; o rigor vem depois.",
     },
   },
+  {
+    id: "diversa", nome: "Equipa diversa ou multigeracional",
+    frase: "Idades, culturas, experiências ou formas de trabalhar muito diferentes.",
+    precisa: "Regras justas para todos, comunicação adaptada a cada pessoa e valorização das diferenças.",
+    lid: { C: 3, F: 3, D: 1, O: 1 }, pers: { RP: 3, AP: 2, RT: 2, AT: 1 }, arq: { PO: 3, ME: 3, VI: 2, GU: 1, ES: 1, CA: 1 },
+    melhorar: {
+      AT: "Adaptar o ritmo e a forma de comunicar a cada pessoa, em vez de usar um estilo único.",
+      AP: "Garantir que todos têm voz, não só quem fala mais.",
+      RP: "Ser firme quando as diferenças viram falta de respeito.",
+      RT: "Ser flexível: a mesma regra pode precisar de ser explicada de formas diferentes.",
+    },
+  },
+  {
+    id: "remota", nome: "Equipa remota ou híbrida",
+    frase: "Pessoas em locais ou horários diferentes, que se veem pouco.",
+    precisa: "Objetivos claros, rituais de contacto, comunicação escrita organizada e confiança.",
+    lid: { D: 3, C: 2, O: 1, F: 2 }, pers: { RT: 3, AT: 2, RP: 2, AP: 1 }, arq: { ES: 2, GU: 2, ME: 2, PO: 2, VI: 1, CA: 1 },
+    melhorar: {
+      AT: "Medir por resultados, não por presença, e evitar controlar à distância.",
+      AP: "Pôr as decisões por escrito; a energia não passa tão bem pelo ecrã.",
+      RP: "Criar momentos fixos de contacto individual para ninguém ficar esquecido.",
+      RT: "Investir na relação: reservar tempo de conversa que não seja só trabalho.",
+    },
+  },
 ];
 
 export function encaixeEquipas(g) {
   return TIPOS_EQUIPA.map((t) => {
     const pontos = (g.lideranca ? t.lid[g.lideranca] || 0 : 1.5) + (t.pers[g.personalidade] || 0) + (t.arq[g.arquetipo] || 0) + (g.arquetipo2 ? (t.arq[g.arquetipo2] || 0) / 2 : 0) + (g.comunicacao === "AS" ? 1 : 0);
-    const nivel = pontos >= 8 ? "Encaixe natural" : pontos >= 5.5 ? "Bom encaixe" : "Exige mais de ti";
-    const extra = g.comunicacao !== "AS" && (t.id === "conflito" || t.id === "crise") ? " Treina também a comunicação assertiva: nesta equipa faz toda a diferença." : "";
+    const nivel = pontos >= 8.5 ? "Encaixe natural" : pontos >= 5.5 ? "Bom encaixe" : "Exige mais de ti";
+    const extra = g.comunicacao !== "AS" && ["conflito", "crise", "diversa", "senior"].includes(t.id) ? " Treina também a comunicação assertiva: nesta equipa faz toda a diferença." : "";
     return { id: t.id, nome: t.nome, frase: t.frase, precisa: t.precisa, pontos, nivel, melhorar: t.melhorar[g.personalidade] + extra };
   }).sort((a, b) => b.pontos - a.pontos);
 }

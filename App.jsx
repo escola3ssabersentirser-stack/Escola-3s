@@ -4,7 +4,7 @@ import { supabase } from "./supabase.js";
 import { AULAS_LIDERANCA_3S, AVALIACAO_3S, PLANO_3S, PILARES_3S } from "./curso-lideranca-3s.js";
 import { AULAS_ATLETA_3S, AVALIACAO_ATLETA_3S, PLANO_ATLETA_3S } from "./curso-desporto-3s.js";
 import { PERGUNTAS_PROPOSITO, VALORES, CRENCAS, AREAS_VIDA, FERIDAS, PERGUNTAS_FERIDAS, PLANO_VIDA } from "./perfil-vida.js";
-import { PERGUNTAS_PERSONALIDADE, PERSONALIDADES, PERGUNTAS_COMUNICACAO, COMUNICACOES, PERGUNTAS_ARQUETIPO, ARQUETIPOS, calcularPerfilGeral, encaixeEquipas, COMPETENCIAS_LIDER, ESCALA_COMPETENCIAS } from "./perfil-lider.js";
+import { PERGUNTAS_PERSONALIDADE, PERSONALIDADES, PERGUNTAS_COMUNICACAO, COMUNICACOES, PERGUNTAS_ARQUETIPO, ARQUETIPOS, calcularPerfilGeral, encaixeEquipas, TIPOS_EQUIPA, COMPETENCIAS_LIDER, ESCALA_COMPETENCIAS } from "./perfil-lider.js";
 import {
   Home,
   Compass,
@@ -2695,6 +2695,35 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
       );
     }
   }
+  if (vista === "equipas") {
+    const meu = resultados.perfilGeral ? encaixeEquipas({ ...resultados.perfilGeral, lideranca: resultados.perfilGeral.lideranca || (resultados.perfil && resultados.perfil.perfil) }) : null;
+    const LIDS = Object.entries(PERFIS_LIDER);
+    return (
+      <div className="pb-28">
+        {cabecalho("GUIA", "Tipos de equipa", voltarLab, "Laboratório")}
+        <p className="px-6 -mt-2 mb-4 text-sm leading-relaxed" style={{ color: palette.navySoft }}>Cada equipa precisa de uma liderança diferente. Vê o que cada uma precisa{meu ? " e como o teu perfil se encaixa" : ""}.</p>
+        {!meu && <div className="px-6 mb-4"><button onClick={() => { setVista("geral"); setPasso(0); setRespostas([]); }} className="w-full rounded-full py-3 text-sm font-medium" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Fazer o Perfil Geral de Líder para ver o teu encaixe</button></div>}
+        <div className="px-6 space-y-3">
+          {TIPOS_EQUIPA.map((t) => {
+            const m = meu && meu.find((x) => x.id === t.id);
+            const melhor = LIDS.filter(([k]) => (t.lid[k] || 0) === 3).map(([, v]) => v.nome).join(" ou ");
+            return (
+              <div key={t.id} className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66` }}>
+                <div className="flex items-start justify-between gap-2">
+                  <p className="font-serif text-lg leading-tight" style={{ color: palette.navy }}>{t.nome}</p>
+                  {m && <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full shrink-0" style={{ border: `1px solid ${palette.gold}`, color: m.nivel === "Exige mais de ti" ? palette.navySoft : palette.gold }}>{m.nivel}</span>}
+                </div>
+                <p className="text-[13px] mt-1" style={{ color: palette.ink }}>{t.frase}</p>
+                <p className="text-[12.5px] mt-2" style={{ color: palette.navy }}><b>O que precisa:</b> {t.precisa}</p>
+                {melhor && <p className="text-[12.5px] mt-1" style={{ color: palette.navy }}><b>Estilo que funciona melhor:</b> {melhor}</p>}
+                {m && <p className="text-[12.5px] mt-1.5" style={{ color: palette.ink }}><b style={{ color: palette.navy }}>Para liderares esta equipa:</b> {m.melhorar}</p>}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
   if (vista === "relatorio" && resultados.perfilGeral) {
     const r = montarRelatorio(resultados.perfilGeral);
     const bloco = (eyebrow, titulo, frase, extra) => (
@@ -2819,6 +2848,7 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
             <p className="text-[12px] mt-1 leading-snug" style={{ color: palette.goldSoft }}>Tipo de liderança, arquétipo, personalidade, comunicação, pontos fortes e a desenvolver. Recebe-o no teu correio eletrónico.</p>
           </button>
         )}
+        {temPerfilGeral && cartao("Tipos de equipa", "Equipas seniores, juniores, conflituosas, com dificuldade em manter processos e outras: o que cada uma precisa e como lideras melhor cada uma.", resultados.perfilGeral ? "Com o teu encaixe em cada equipa" : "11 tipos de equipa", () => setVista("equipas"))}
         {cartao("Treinos de competências", TX.treinosDesc, Object.keys(resultados.treinos || {}).length ? `${Object.keys(resultados.treinos).length} de ${TREINOS_LIDERANCA.length} feitos` : "7 treinos · frase e plano no fim", () => setVista("treinos"))}
         {cartao(TX.perfilTitulo, TX.perfilDesc, perfilGuardado ? `O teu perfil: ${perfilGuardado.nome}` : null, () => { setVista("perfil"); setPasso(0); setRespostas([]); setGuardadoMsg(""); })}
         {cartao("Competências 3S", TX.compDesc, compGuardadas ? compGuardadas.map((p) => `${p.pilar} ${p.pct}%`).join(" · ") : null, () => { setVista("competencias"); setPasso(0); setRespostas([]); setGuardadoMsg(""); })}
