@@ -3,6 +3,7 @@ import { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "./supabase.js";
 import { AULAS_LIDERANCA_3S, AVALIACAO_3S, PLANO_3S, PILARES_3S } from "./curso-lideranca-3s.js";
 import { AULAS_ATLETA_3S, AVALIACAO_ATLETA_3S, PLANO_ATLETA_3S } from "./curso-desporto-3s.js";
+import { OPCOES_TREINO, OPCOES_PROPOSITO } from "./opcoes-treinos.js";
 import { PERGUNTAS_PROPOSITO, VALORES, CRENCAS, AREAS_VIDA, FERIDAS, PERGUNTAS_FERIDAS, PLANO_VIDA, ATIVIDADES, TIPOS_VOCACIONAIS, sugerirProfissoes } from "./perfil-vida.js";
 import { PERGUNTAS_PERSONALIDADE, PERSONALIDADES, PERGUNTAS_COMUNICACAO, COMUNICACOES, PERGUNTAS_ARQUETIPO, ARQUETIPOS, calcularPerfilGeral, encaixeEquipas, TIPOS_EQUIPA, COMPETENCIAS_LIDER, ESCALA_COMPETENCIAS } from "./perfil-lider.js";
 import {
@@ -1559,6 +1560,23 @@ const TREINOS_LIDERANCA = [
   },
 ];
 
+function EscolherOuEscrever({ rotulo, opcoes, valor, onMudar }) {
+  const [escrever, setEscrever] = useState(Boolean(valor) && !opcoes.includes(valor));
+  return (
+    <div>
+      <p className="text-xs font-medium mb-1.5" style={{ color: palette.navySoft }}>{rotulo}</p>
+      <div className="flex flex-wrap gap-1.5">
+        {opcoes.map((o) => {
+          const on = !escrever && valor === o;
+          return <button key={o} type="button" onClick={() => { setEscrever(false); onMudar(o); }} className="rounded-full px-3 py-1.5 text-[12.5px] text-left" style={on ? { backgroundColor: palette.navy, color: palette.creamSoft } : { border: `1px solid ${palette.goldSoft}`, color: palette.navy, backgroundColor: "#fff" }}>{o}</button>;
+        })}
+        <button type="button" onClick={() => { setEscrever(true); onMudar(""); }} className="rounded-full px-3 py-1.5 text-[12.5px]" style={escrever ? { backgroundColor: palette.gold, color: palette.navy } : { border: `1px dashed ${palette.goldSoft}`, color: palette.navySoft }}>Outra…</button>
+      </div>
+      {escrever && <input autoFocus value={valor} onChange={(e) => onMudar(e.target.value)} placeholder="Escreve a tua" className="w-full mt-2 rounded-xl px-3.5 py-2.5 text-sm" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66`, color: palette.ink }} />}
+    </div>
+  );
+}
+
 function TreinoScreen({ treino, onVoltar, resultados, onGuardar, onMarcar }) {
   const [escolhas, setEscolhas] = useState({});
   const [valores, setValores] = useState(() => ((resultados.treinos || {})[treino.id] || {}).valores || {});
@@ -1628,10 +1646,7 @@ function TreinoScreen({ treino, onVoltar, resultados, onGuardar, onMarcar }) {
           {rotulo(`3. ${treino.construtor.titulo.toUpperCase()}`)}
           <div className="space-y-3">
             {treino.construtor.campos.map(([k, label, ph]) => (
-              <div key={k}>
-                <p className="text-xs font-medium mb-1" style={{ color: palette.navySoft }}>{label}</p>
-                <input value={valores[k] || ""} onChange={(e) => setValores((v) => ({ ...v, [k]: e.target.value }))} placeholder={`Ex.: ${ph}`} className="w-full rounded-xl px-3.5 py-2.5 text-sm" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66`, color: palette.ink }} />
-              </div>
+              <EscolherOuEscrever key={k} rotulo={label} opcoes={(OPCOES_TREINO[treino.id] || {})[k] || [ph]} valor={valores[k] || ""} onMudar={(v) => setValores((x) => ({ ...x, [k]: v }))} />
             ))}
             <div className="rounded-2xl px-5 py-4" style={{ background: `linear-gradient(150deg, ${palette.navy} 0%, #24436E 100%)` }}>
               <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>A TUA FRASE</p>
@@ -2134,7 +2149,7 @@ function PerfilVidaScreen({ guardado, onGuardar, onBack, onMarcar }) {
   const inp = "w-full rounded-xl px-3 py-2.5 text-sm outline-none";
   const inpS = { backgroundColor: "#fff", border: `1px solid ${palette.goldSoft}`, color: palette.ink };
   const podeAvancar = [
-    () => d.proposito.filter((x) => x && x.trim()).length >= 2 && (d.atividades || []).length >= 3,
+    () => (d.atividades || []).length >= 3 && Boolean(d.frase.talento && d.frase.impacto),
     () => d.valores.length >= 3,
     () => d.valores.every((v) => d.viver[v]),
     () => CRENCAS.every((_, i) => d.crencas[i]),
@@ -2225,12 +2240,8 @@ function PerfilVidaScreen({ guardado, onGuardar, onBack, onMarcar }) {
       <SectionHeader eyebrow="LIFE COACHING 3S" title="Perfil de Vida" onBack={onBack} backLabel="Laboratório" />
       <div className="px-6">
         {passo === 0 && (<>
-          {topo("O teu propósito", "Responde com calma. Não há respostas certas.")}
+          {topo("O teu propósito", "Escolhe o que mais se parece contigo. Não há respostas certas.")}
           <div className="space-y-3">
-            {PERGUNTAS_PROPOSITO.map((q, i) => (
-              <div key={i}><p className="text-sm font-medium mb-1.5" style={{ color: palette.navy }}>{q}</p>
-                <textarea rows={2} value={d.proposito[i] || ""} onChange={(e) => { const a = [...d.proposito]; a[i] = e.target.value; set("proposito", a); }} className={inp} style={inpS} placeholder="Escreve aqui…" /></div>
-            ))}
             <div className="rounded-2xl px-4 py-4" style={caixa}>
               <p className="text-sm font-medium" style={{ color: palette.navy }}>Que atividades te dão mais energia?</p>
               <p className="text-[12px] mb-2.5" style={{ color: palette.navySoft }}>Escolhe entre 3 e 6. Vamos ligá-las a profissões.</p>
@@ -2242,13 +2253,21 @@ function PerfilVidaScreen({ guardado, onGuardar, onBack, onMarcar }) {
             </div>
             <div className="rounded-2xl px-4 py-4" style={caixa}>
               <p className="text-sm font-medium mb-2" style={{ color: palette.navy }}>Agora, a tua frase de propósito:</p>
-              <p className="text-[12px] mb-1" style={{ color: palette.navySoft }}>Quero usar…</p>
-              <input value={d.frase.talento} onChange={(e) => set("frase", { ...d.frase, talento: e.target.value })} className={inp} style={inpS} placeholder="o meu talento (ex.: a minha capacidade de ouvir)" />
-              <p className="text-[12px] mb-1 mt-2" style={{ color: palette.navySoft }}>para…</p>
-              <input value={d.frase.impacto} onChange={(e) => set("frase", { ...d.frase, impacto: e.target.value })} className={inp} style={inpS} placeholder="o impacto (ex.: ajudar a encontrar caminho)" />
-              <p className="text-[12px] mb-1 mt-2" style={{ color: palette.navySoft }}>na vida de… (opcional)</p>
-              <input value={d.frase.quem} onChange={(e) => set("frase", { ...d.frase, quem: e.target.value })} className={inp} style={inpS} placeholder="quem (ex.: mulheres em recomeço)" />
+              <div className="space-y-3">
+                <EscolherOuEscrever rotulo="Quero usar…" opcoes={OPCOES_PROPOSITO.talento} valor={d.frase.talento} onMudar={(v) => set("frase", { ...d.frase, talento: v })} />
+                <EscolherOuEscrever rotulo="para…" opcoes={OPCOES_PROPOSITO.impacto} valor={d.frase.impacto} onMudar={(v) => set("frase", { ...d.frase, impacto: v })} />
+                <EscolherOuEscrever rotulo="na vida de… (opcional)" opcoes={OPCOES_PROPOSITO.quem} valor={d.frase.quem} onMudar={(v) => set("frase", { ...d.frase, quem: v })} />
+              </div>
             </div>
+            <details className="rounded-2xl px-4 py-3" style={caixa}>
+              <summary className="text-sm font-medium cursor-pointer" style={{ color: palette.navy }}>Queres aprofundar? Perguntas para escrever (opcional)</summary>
+              <div className="space-y-3 mt-3">
+                {PERGUNTAS_PROPOSITO.map((q, i) => (
+                  <div key={i}><p className="text-sm font-medium mb-1.5" style={{ color: palette.navy }}>{q}</p>
+                    <textarea rows={2} value={d.proposito[i] || ""} onChange={(e) => { const a = [...d.proposito]; a[i] = e.target.value; set("proposito", a); }} className={inp} style={inpS} placeholder="Escreve aqui…" /></div>
+                ))}
+              </div>
+            </details>
           </div>
         </>)}
         {passo === 1 && (<>
