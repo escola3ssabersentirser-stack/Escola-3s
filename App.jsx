@@ -2685,8 +2685,13 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
     const comp = resultados.competencias && resultados.competencias.pilares;
     const compOrd = comp ? [...comp].sort((a, b) => b.pct - a.pct) : null;
     const cl = g.competenciasLider ? COMPETENCIAS_LIDER.map((c) => ({ ...c, v: g.competenciasLider[c.id] || 0 })).sort((a, b) => b.v - a.v) : null;
-    const fortes = [lid && lid.forca, cl && `Competências mais fortes: ${cl.slice(0, 3).map((c) => c.nome.toLowerCase()).join(", ")}.`, ...pers.fortes.slice(0, 2), arq.forte, com.fortes[0], compOrd && `Pilar mais forte: ${compOrd[0].pilar} (${compOrd[0].pct}%).`].filter(Boolean);
-    const desenvolver = [cl && `${cl[cl.length - 1].nome}: ${cl[cl.length - 1].dica}`, cl && `${cl[cl.length - 2].nome}: ${cl[cl.length - 2].dica}`, lid && lid.crescer, ...pers.desenvolver.slice(0, 2), arq.desenvolver, com.desenvolver[0], compOrd && `Pilar a desenvolver: ${compOrd[compOrd.length - 1].pilar} (${compOrd[compOrd.length - 1].pct}%).`].filter(Boolean);
+    const assertivo = g.comunicacao === "AS";
+    const fortes = [lid && lid.forca, cl && cl.filter((c) => c.v >= 4).length > 0 && `Competências mais fortes: ${cl.filter((c) => c.v >= 4).slice(0, 3).map((c) => c.nome.toLowerCase()).join(", ")}.`, ...pers.fortes.slice(0, 2), arq.forte, assertivo ? "Comunicação assertiva: dizes o que pensas e sentes, com respeito por ti e pelos outros." : com.fortes[0], compOrd && `Pilar mais forte: ${compOrd[0].pilar} (${compOrd[0].pct}%).`].filter(Boolean);
+    // Coerência: quem tem comunicação assertiva não recebe pontos a desenvolver sobre comunicação
+    const ligadasComunicacao = ["comunicacao", "escuta", "conflitos"];
+    const fracas = cl ? [...cl].reverse().filter((c) => c.v <= 3 && !(assertivo && ligadasComunicacao.includes(c.id))).slice(0, 2) : [];
+    const persDev = pers.desenvolver.filter((t) => !(assertivo && /tom|ouvir|comunica/i.test(t)));
+    const desenvolver = [...fracas.map((c) => `${c.nome}: ${c.dica}`), lid && !(assertivo && /ouvi/i.test(lid.crescer) && cl && (cl.find((c) => c.id === "escuta") || {}).v >= 4) && lid.crescer, ...persDev.slice(0, 2), arq.desenvolver, !assertivo && com.desenvolver[0], compOrd && compOrd[compOrd.length - 1].pct < 70 && `Pilar a desenvolver: ${compOrd[compOrd.length - 1].pilar} (${compOrd[compOrd.length - 1].pct}%).`].filter(Boolean);
     return {
       lideranca: lid ? { nome: lid.nome, frase: lid.frase, quando: lid.quando, risco: lid.risco, contagem: resultados.perfil.contagem } : null,
       arquetipo: { nome: arq.nome, frase: arq.frase, secundario: arq2 ? arq2.nome : null },
@@ -2816,7 +2821,7 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
             <div className="mt-3">{Object.entries(r.comunicacao.contagem).map(([k, v]) => <BarraPct key={k} rotulo={COMUNICACOES[k].nome} pct={Math.round((v / totCom) * 100)} destaque={COMUNICACOES[k].nome === r.comunicacao.nome} />)}</div>
           ))}
           {r.competenciasLider && bloco("COMPETÊNCIAS DE LIDERANÇA", "As tuas 10 competências", "Autoavaliação de 1 a 5. A mais forte no topo.", (
-            <div className="mt-3">{r.competenciasLider.map((c, i) => <BarraPct key={c.id} rotulo={`${c.nome} · ${c.v}/5`} pct={c.v * 20} destaque={i < 3} />)}</div>
+            <div className="mt-3">{r.competenciasLider.map((c, i) => <BarraPct key={c.id} rotulo={`${c.nome} · ${c.v}/5`} pct={c.v * 20} destaque={i < 3 && c.v >= 4} />)}</div>
           ))}
           {r.competencias
             ? bloco("COMPETÊNCIAS 3S", "Saber · Sentir · Ser", null, <div className="mt-3">{r.competencias.map((c) => <BarraPct key={c.pilar} rotulo={c.pilar} pct={c.pct} />)}</div>)
