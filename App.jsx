@@ -2,6 +2,7 @@
 import { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "./supabase.js";
 import { AULAS_LIDERANCA_3S, AVALIACAO_3S, PLANO_3S, PILARES_3S } from "./curso-lideranca-3s.js";
+import { AULAS_ATLETA_3S, AVALIACAO_ATLETA_3S, PLANO_ATLETA_3S } from "./curso-desporto-3s.js";
 import {
   Home,
   Compass,
@@ -266,6 +267,21 @@ const TODOS_CURSOS = [
     materiaisIds: [39, 40],
   },
   {
+    id: 40,
+    escolaId: "desporto",
+    titulo: "Atleta 3S",
+    interativo: true,
+    promessa: "O curso de Sports Coaching 3S para quem treina, seja qual for o nível ou a modalidade: trilhos, corrida, bicicleta ou ginásio. Método, corpo e mente, e hábitos que ficam. Sais com o teu perfil 3S de atleta e um plano de 30 dias.",
+    pergunta: "Que atleta sou eu quando ninguém está a ver?",
+    tipo: "video",
+    duracao: "6 aulas · cerca de 2 h",
+    concluido: false,
+    aulas: AULAS_ATLETA_3S,
+    avaliacaoFrases: AVALIACAO_ATLETA_3S,
+    avaliacaoPlanos: PLANO_ATLETA_3S,
+    materiaisIds: [140, 145],
+  },
+  {
     id: 30,
     escolaId: "ser",
     emBreve: true,
@@ -285,7 +301,7 @@ const TODOS_CURSOS = [
 ];
 
 // Cada escola mostra só o seu curso principal (+ Crenças grátis). Os outros ficam guardados, escondidos.
-const CURSOS_VISIVEIS = [1, 7, 30];
+const CURSOS_VISIVEIS = [1, 30, 40]; // um curso por escola
 const cursos = TODOS_CURSOS.filter((c) => CURSOS_VISIVEIS.includes(c.id)); // Comunidade do mês retirada
 
 const materiais = [
@@ -408,6 +424,7 @@ const materiais = [
   { id: 146, titulo: "Desporto 3S — Calendário de provas", formato: "Ficha", preco: "1,99€", url: "/desporto-calendario-provas.pdf" },
   { id: 147, titulo: "Desporto 3S — Avaliação semanal", formato: "Ficha", preco: "1,99€", url: "/desporto-avaliacao-semanal.pdf" },
   { id: 130, titulo: "Liderança 3S — o livro", formato: "Livro", preco: "12,99€", url: "", emBreve: true, desc: "Liderar com Saber, Sentir e Ser: histórias e exercícios para quem lidera pessoas." },
+  { id: 132, titulo: "Atleta 3S — o livro", formato: "Livro", preco: "12,99€", url: "", emBreve: true, desc: "Treinar com Saber, Sentir e Ser: método, corpo, mente e hábitos para quem treina." },
   { id: 131, titulo: "Filosofia 3S — o livro", formato: "Livro", preco: "12,99€", url: "", emBreve: true, desc: "Saber, Sentir, Ser: um livro sobre as pessoas e o ser humano." },
   { id: 32, titulo: "Caderno do Aluno — Crenças que Limitam", formato: "Caderno", preco: "4,99€", url: "/caderno-aluno-crencas-limitantes.pdf" },
   { id: 33, titulo: "Livro do Aluno — Autossabotagem", formato: "Livro", preco: "6,99€", url: "/livro-autossabotagem.pdf" },
@@ -1103,8 +1120,9 @@ function AreasGrid({ onOpen, lista }) {
 const ESCOLAS_3S = {
   lideranca: {
     secao: "lideranca-3s",
-    nome: "Coaching de Liderança 3S",
-    curto: "Liderança",
+    nome: "Leadership Coaching 3S",
+    curto: "Leadership Coaching",
+    mini: "Leadership",
     frase: "Liderar começa na forma como comunicas.",
     para: "Para quem lidera equipas, negócios ou projetos",
     icon: Compass,
@@ -1117,8 +1135,9 @@ const ESCOLAS_3S = {
   },
   desenvolvimento: {
     secao: "desenvolvimento-3s",
-    nome: "Coaching de Vida 3S",
-    curto: "Vida",
+    nome: "Life Coaching 3S",
+    curto: "Life Coaching",
+    mini: "Life",
     frase: "Saber, Sentir, Ser: a mudança começa em ti.",
     para: "Para quem quer crescer por dentro e viver com sentido",
     icon: Sprout,
@@ -1126,13 +1145,14 @@ const ESCOLAS_3S = {
     texto: palette.navy,
     suave: palette.navy,
     acento: palette.navy,
-    cursos: [30, 7],
+    cursos: [30],
     livro: 131,
   },
   desporto: {
     secao: "desporto-3s",
-    nome: "Coaching Desportivo 3S",
-    curto: "Desporto",
+    nome: "Sports Coaching 3S",
+    curto: "Sports Coaching",
+    mini: "Sports",
     frase: "Corpo, mente e hábitos: treinar com cabeça, coração e propósito.",
     para: "Para quem treina: trilhos, corrida, bicicleta e pilates",
     icon: Footprints,
@@ -1141,8 +1161,8 @@ const ESCOLAS_3S = {
     texto: palette.navy,
     suave: palette.gold,
     acento: palette.gold,
-    cursos: [],
-    livro: null,
+    cursos: [40],
+    livro: 132,
     por: "com coach desportivo certificado",
     app: { nome: "Movimento 3S", url: "/movimento/", desc: "A aplicação de desporto da Escola 3S: encontros para treinar em grupo, registo dos treinos e plano com o coach." },
   },
@@ -2498,12 +2518,12 @@ function EscolaScreen({ escola, onBack, onOpen, temAcesso, onAbrirCurso, desbloq
   const tiles = [];
   if (curso) {
     const acesso = temAcesso(curso);
-    tiles.push({ chave: "curso", Ico: GraduationCap, rot: "Curso", titulo: curso.titulo, info: curso.emBreve ? "Em breve" : curso.gratuito ? "Gratuito" : acesso ? "Entrar" : precoTexto(PRECO_CURSO), acao: () => onAbrirCurso(curso), destaque: true });
+    tiles.push({ chave: "curso", Ico: GraduationCap, rot: "Curso", titulo: curso.titulo, info: curso.emBreve ? "Em breve" : curso.gratuito ? "Gratuito" : acesso ? "Entrar" : curso.interativo ? "Aula 1 grátis" : precoTexto(PRECO_CURSO), acao: () => onAbrirCurso(curso), destaque: true });
   }
   if (e.app) tiles.push({ chave: "app", Ico: Footprints, rot: "Aplicação", titulo: e.app.nome, info: "Treinos e tempos", href: e.app.url, destaque: true });
   if (lab) tiles.push({ chave: "lab", Ico: Layers, rot: "Gratuito", titulo: "Laboratório", info: "Testes e treinos", acao: () => onOpen(lab.secao) });
   if (livro) tiles.push({ chave: "livro", Ico: BookOpen, rot: "Livro", titulo: "O livro", info: livro.emBreve ? "Em breve" : livroAberto ? "Ler" : livro.preco, acao: () => (livroAberto ? window.open(livro.url, "_blank") : onOpen("livros")) });
-  tiles.push({ chave: "marcar", Ico: Calendar, rot: "Sessão", titulo: "Marcar sessão", info: "20 min gratuitos", acao: () => onOpen("marcar:" + escola) });
+  tiles.push({ chave: "marcar", Ico: Calendar, rot: "Sessão", titulo: coach && coach.nome ? `Sessão com ${coach.nome.split(" ")[0]}` : "Marcar sessão", info: "1.ª sessão grátis", acao: () => onOpen("marcar:" + escola) });
   if (tiles.length % 2 === 1) tiles.push({ chave: "coach", Ico: User, rot: "Coach", titulo: coach === undefined ? "…" : coach ? coach.nome : "Em breve", info: "Responsável pela área", acao: () => onOpen("marcar:" + escola) });
 
   return (
@@ -2658,7 +2678,7 @@ function InicioScreen({ onOpen, email, papel, naoLidas, onVerAgenda, onVerNotifi
       <div className="px-6 mb-6">
         <div className="grid grid-cols-4 gap-2">
           {[
-            ...Object.values(ESCOLAS_3S).map((e) => ({ key: e.secao, titulo: e.curto, sub: "3S", icon: e.icon, fundo: e.fundo, borda: e.borda, texto: e.texto, acento: e.acento })),
+            ...Object.values(ESCOLAS_3S).map((e) => ({ key: e.secao, titulo: e.mini, sub: "Coaching 3S", icon: e.icon, fundo: e.fundo, borda: e.borda, texto: e.texto, acento: e.acento })),
             { key: "marcar", titulo: "Sessões", sub: "coaching", icon: PenLine, fundo: palette.card, borda: palette.goldSoft, texto: palette.navy, acento: palette.gold },
             ...areasEscolaComuns.map((a) => ({ key: a.key, titulo: a.titulo, sub: "", icon: a.icon, fundo: palette.card, borda: palette.goldSoft, texto: palette.navy, acento: palette.gold })),
           ].map((c) => {
@@ -3274,8 +3294,13 @@ function PilarEtiqueta({ pilar }) {
   );
 }
 
-function CursoInterativoScreen({ curso, estado, onGuardar, concluidoEm, onConcluirCurso, onCertificado, onBack, onAbrirLab, materiaisDesbloqueados, onDesbloquearMaterial, acessoTotal, formadorAutorizado }) {
+function CursoInterativoScreen({ curso, estado, onGuardar, concluidoEm, onConcluirCurso, onCertificado, onBack, onAbrirLab, materiaisDesbloqueados, onDesbloquearMaterial, acessoTotal, formadorAutorizado, semAcesso }) {
   const [aulaAberta, setAulaAberta] = useState(null);
+  const [mostrarCompra, setMostrarCompra] = useState(false);
+  const AULAS_GRATIS = 1;
+  const bloqueada = (i) => semAcesso && i >= AULAS_GRATIS;
+  const abrirAula = (i) => { if (bloqueada(i)) { setMostrarCompra(true); setTimeout(() => { const el = document.getElementById("compra-curso"); if (el) el.scrollIntoView({ behavior: "smooth", block: "center" }); }, 50); } else setAulaAberta(i); };
+  const escolaCurso = Object.values(ESCOLAS_3S).find((e) => (e.cursos || []).includes(curso.id));
   const aulas = curso.aulas || [];
   const est = estado || {};
   const estAulas = est.aulas || {};
@@ -3300,7 +3325,7 @@ function CursoInterativoScreen({ curso, estado, onGuardar, concluidoEm, onConclu
         onGuardar={(dados) => guardarAula(aulaAberta, dados)}
         onGuardarCurso={onGuardar}
         onBack={() => setAulaAberta(null)}
-        onSeguinte={() => setAulaAberta(aulaAberta + 1 < aulas.length ? aulaAberta + 1 : null)}
+        onSeguinte={() => { const prox = aulaAberta + 1; if (prox < aulas.length && !bloqueada(prox)) setAulaAberta(prox); else { setAulaAberta(null); if (semAcesso) setMostrarCompra(true); } }}
         onAbrirLab={onAbrirLab}
         materiaisDesbloqueados={materiaisDesbloqueados}
         onDesbloquearMaterial={onDesbloquearMaterial}
@@ -3314,7 +3339,7 @@ function CursoInterativoScreen({ curso, estado, onGuardar, concluidoEm, onConclu
 
   return (
     <div className="pb-28">
-      <SectionHeader eyebrow="COACHING DE LIDERANÇA 3S" title={curso.titulo} onBack={onBack} />
+      <SectionHeader eyebrow={escolaCurso ? escolaCurso.nome.toUpperCase() : "ESCOLA 3S"} title={curso.titulo} onBack={onBack} />
       <div className="px-6 space-y-5">
         <div className="rounded-2xl px-5 py-5" style={{ backgroundColor: palette.navy }}>
           <p className="font-serif text-lg leading-snug" style={{ color: palette.creamSoft }}>“{curso.pergunta}”</p>
@@ -3336,11 +3361,28 @@ function CursoInterativoScreen({ curso, estado, onGuardar, concluidoEm, onConclu
             </div>
           </div>
           {proxima >= 0 && (
-            <button onClick={() => setAulaAberta(proxima)} className="mt-4 w-full rounded-full py-3 text-sm font-medium" style={{ backgroundColor: palette.gold, color: palette.navy }}>
-              {feitas === 0 ? "Começar a aula 1" : `Continuar: aula ${proxima + 1}`}
+            <button onClick={() => abrirAula(proxima)} className="mt-4 w-full rounded-full py-3 text-sm font-medium" style={{ backgroundColor: palette.gold, color: palette.navy }}>
+              {feitas === 0 ? (semAcesso ? "Começar a aula 1 — grátis" : "Começar a aula 1") : bloqueada(proxima) ? "Desbloquear o curso completo" : `Continuar: aula ${proxima + 1}`}
             </button>
           )}
         </div>
+
+        {semAcesso && (
+          <div id="compra-curso" className="rounded-2xl px-5 py-5" style={{ backgroundColor: palette.card, border: `${mostrarCompra ? 2 : 1.5}px solid ${palette.gold}`, boxShadow: mostrarCompra ? "0 12px 30px -14px rgba(198,162,83,0.8)" : "none" }}>
+            <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>{feitas > 0 ? "GOSTASTE DA AULA 1?" : "A AULA 1 É GRÁTIS"}</p>
+            <p className="font-serif text-xl leading-snug mt-1" style={{ color: palette.navy }}>Desbloqueia o curso completo</p>
+            <div className="mt-3 space-y-1.5">
+              {[`${aulas.length} aulas com texto, ciência, exercícios e questionários`, "Avaliação 3S e plano de 30 dias à tua medida", "Certificado de conclusão", "Acesso para sempre, ao teu ritmo"].map((t) => (
+                <p key={t} className="text-[13px] flex gap-2" style={{ color: palette.ink }}><span style={{ color: palette.gold }}>✓</span>{t}</p>
+              ))}
+            </div>
+            <div className="flex items-end justify-between mt-4 mb-3">
+              <span className="font-serif text-3xl" style={{ color: palette.navy }}>{precoTexto(PRECO_CURSO)}</span>
+              <span className="text-[11px]" style={{ color: palette.navySoft }}>MB WAY · Multibanco · Payshop</span>
+            </div>
+            <BotaoCarrinho rotulo="Comprar o curso" item={{ chave: `curso-${curso.id}`, tipo: "curso", cursoId: curso.id, titulo: `Curso — ${curso.titulo}`, valor: PRECO_CURSO }} />
+          </div>
+        )}
 
         {todas && (
           <div className="rounded-2xl px-5 py-5 text-center" style={{ backgroundColor: palette.card, border: `1.5px solid ${palette.gold}` }}>
@@ -3357,12 +3399,12 @@ function CursoInterativoScreen({ curso, estado, onGuardar, concluidoEm, onConclu
             {aulas.map((a, i) => {
               const ok = estAulas[i] && estAulas[i].concluida;
               return (
-                <button key={i} onClick={() => setAulaAberta(i)} className="w-full flex items-center gap-3 rounded-2xl px-4 py-3.5 text-left transition active:scale-[0.98]" style={{ backgroundColor: palette.card, border: `1px solid ${ok ? palette.gold : palette.goldSoft + "55"}` }}>
+                <button key={i} onClick={() => abrirAula(i)} className="w-full flex items-center gap-3 rounded-2xl px-4 py-3.5 text-left transition active:scale-[0.98]" style={{ backgroundColor: palette.card, border: `1px solid ${ok ? palette.gold : palette.goldSoft + "55"}` }}>
                   <span className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-sm font-semibold" style={ok ? { backgroundColor: palette.gold, color: palette.navy } : { border: `1.5px solid ${palette.navy}`, color: palette.navy }}>
-                    {ok ? "✓" : i + 1}
+                    {ok ? "✓" : bloqueada(i) ? <Lock size={13} /> : i + 1}
                   </span>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-0.5"><PilarEtiqueta pilar={a.pilar} /><span className="text-[11px]" style={{ color: palette.navySoft }}>{a.duracao}</span></div>
+                    <div className="flex items-center gap-2 mb-0.5"><PilarEtiqueta pilar={a.pilar} /><span className="text-[11px]" style={{ color: palette.navySoft }}>{a.duracao}</span>{semAcesso && i < AULAS_GRATIS && <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ backgroundColor: palette.gold, color: palette.navy }}>GRÁTIS</span>}</div>
                     <p className="font-serif text-[15px] leading-snug" style={{ color: palette.navy }}>{a.titulo}</p>
                   </div>
                   <ChevronRight size={16} style={{ color: palette.navySoft, flexShrink: 0 }} />
@@ -3418,7 +3460,8 @@ function AulaInterativaScreen({ curso, indice, aula, dados, estadoCurso, onGuard
   const quizCompleto = aula.quiz.every((_, qi) => quiz[qi] !== undefined);
   const certas = aula.quiz.filter((q, qi) => quiz[qi] === q.certa).length;
   const avaliacao = estadoCurso.avaliacao || {};
-  const avaliacaoCompleta = AVALIACAO_3S.every((_, k) => avaliacao[k]);
+  const frasesAval = curso.avaliacaoFrases || AVALIACAO_3S;
+  const avaliacaoCompleta = frasesAval.every((_, k) => avaliacao[k]);
   const podeAvancar = nomePasso === "Questionário" ? quizCompleto : nomePasso === "Avaliação 3S" ? avaliacaoCompleta : true;
 
   const avancar = () => {
@@ -3527,7 +3570,7 @@ function AulaInterativaScreen({ curso, indice, aula, dados, estadoCurso, onGuard
         )}
 
         {nomePasso === "Avaliação 3S" && (
-          <Avaliacao3S avaliacao={avaliacao} estadoCurso={estadoCurso} onGuardarCurso={onGuardarCurso} />
+          <Avaliacao3S avaliacao={avaliacao} estadoCurso={estadoCurso} onGuardarCurso={onGuardarCurso} frases={frasesAval} planos={curso.avaliacaoPlanos || PLANO_3S} tituloPlano={curso.titulo} />
         )}
 
         {nomePasso === "Questionário" && (
@@ -3585,7 +3628,7 @@ function AulaInterativaScreen({ curso, indice, aula, dados, estadoCurso, onGuard
             {onAbrirLab && (
               <button onClick={() => { onGuardar({ respostas, quiz }); onAbrirLab(); }} className="w-full rounded-2xl px-4 py-3.5 text-left flex items-center gap-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66` }}>
                 <Compass size={18} style={{ color: palette.navy }} />
-                <span className="flex-1 text-sm" style={{ color: palette.navy }}>Treinar mais no Laboratório de Liderança</span>
+                <span className="flex-1 text-sm" style={{ color: palette.navy }}>Treinar mais no Laboratório</span>
                 <ChevronRight size={16} style={{ color: palette.navySoft }} />
               </button>
             )}
@@ -3608,28 +3651,29 @@ function AulaInterativaScreen({ curso, indice, aula, dados, estadoCurso, onGuard
   );
 }
 
-function Avaliacao3S({ avaliacao, estadoCurso, onGuardarCurso }) {
-  const completa = AVALIACAO_3S.every((_, k) => avaliacao[k]);
+function Avaliacao3S({ avaliacao, estadoCurso, onGuardarCurso, frases = AVALIACAO_3S, planos = PLANO_3S, tituloPlano = "Liderança 3S" }) {
+  const AVALIACAO_3S_ = frases;
+  const completa = AVALIACAO_3S_.every((_, k) => avaliacao[k]);
   const medias = {};
   ["Saber", "Sentir", "Ser"].forEach((p) => {
-    const ks = AVALIACAO_3S.map((a, k) => (a.pilar === p ? k : null)).filter((k) => k !== null);
+    const ks = AVALIACAO_3S_.map((a, k) => (a.pilar === p ? k : null)).filter((k) => k !== null);
     medias[p] = ks.reduce((s, k) => s + (avaliacao[k] || 0), 0) / ks.length;
   });
   const foco = ["Saber", "Sentir", "Ser"].reduce((a, b) => (medias[b] < medias[a] ? b : a), "Saber");
-  const plano = PLANO_3S[foco];
+  const plano = planos[foco];
   const feitos = (estadoCurso.planoFeito || {});
   const definir = (k, v) => onGuardarCurso((e) => ({ ...(e || {}), avaliacao: { ...((e && e.avaliacao) || {}), [k]: v } }));
 
   const partilhar = () => {
-    const texto = `O meu plano Liderança 3S — ${plano.titulo}\n\n${plano.semanas.join("\n")}\n\n${plano.seEntao}`;
-    if (navigator.share) navigator.share({ title: "O meu plano Liderança 3S", text: texto }).catch(() => {});
+    const texto = `O meu plano ${tituloPlano} — ${plano.titulo}\n\n${plano.semanas.join("\n")}\n\n${plano.seEntao}`;
+    if (navigator.share) navigator.share({ title: `O meu plano ${tituloPlano}`, text: texto }).catch(() => {});
     else if (navigator.clipboard) navigator.clipboard.writeText(texto).catch(() => {});
   };
 
   return (
     <>
       <p className="text-[15px] leading-relaxed" style={{ color: palette.ink }}>Responde com honestidade: 1 = nada verdade, 5 = totalmente verdade.</p>
-      {AVALIACAO_3S.map((a, k) => (
+      {AVALIACAO_3S_.map((a, k) => (
         <div key={k} className="rounded-2xl px-4 py-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66` }}>
           <div className="mb-2"><PilarEtiqueta pilar={a.pilar} /></div>
           <p className="text-sm leading-snug mb-2.5" style={{ color: palette.navy }}>{a.frase}</p>
@@ -5516,7 +5560,7 @@ function MaterialCard({ material, desbloqueado, onDesbloquear, desbloqueadoFisic
 /* ---------------------------------------------------------
    Marcar Sessão
 --------------------------------------------------------- */
-function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo = 0, onUsouCredito, area }) {
+function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo = 0, onUsouCredito, area, descontoAluno = false }) {
   const [passo, setPasso] = useState(1); // 1: serviço, 2: profissional, 3: horário
   const [servicoEscolhido, setServicoEscolhido] = useState(null);
   const [mentoras, setMentoras] = useState([]);
@@ -5536,7 +5580,7 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
   const TEXTO_CONSENTIMENTO = "Aceito fornecer os meus dados pessoais (nome, correio eletrónico e telemóvel) à Escola 3S, para fins de marcação e contacto sobre esta sessão.";
 
   const CODIGO_DESCONTO_COMUNIDADE = "COMUNIDADE10";
-  const descontoValido = codigoDesconto.trim().toUpperCase() === CODIGO_DESCONTO_COMUNIDADE;
+  const descontoValido = descontoAluno || codigoDesconto.trim().toUpperCase() === CODIGO_DESCONTO_COMUNIDADE;
   const precoComDesconto = (precoTexto) => {
     const valor = parseFloat(precoTexto.replace("€", "").replace(",", "."));
     if (isNaN(valor)) return precoTexto;
@@ -5623,7 +5667,7 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
           user_id: userId,
           mentor_user_id: mentoraEscolhida.user_id,
           tipo: servicoEscolhido.tipo,
-          titulo: usaCiclo ? `${servicoEscolhido.titulo} (ciclo de 4 sessões)` : descontoValido ? `${servicoEscolhido.titulo} (código de desconto aplicado — 10%)` : servicoEscolhido.titulo,
+          titulo: usaCiclo ? `${servicoEscolhido.titulo} (ciclo de 4 sessões)` : descontoValido ? `${servicoEscolhido.titulo} (desconto de aluno 3S — 10%)` : servicoEscolhido.titulo,
           horario: horario.chave,
           estado: usaCiclo || eGratis ? "confirmada" : "pendente_pagamento",
           pago_com_ciclo: usaCiclo,
@@ -5745,7 +5789,7 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
                   <span className="inline-block text-[10px] tracking-[0.15em] font-medium px-2.5 py-1 rounded-full mb-2" style={{ backgroundColor: `${palette.gold}1F`, color: palette.gold }}>
                     {s.tipo.toUpperCase()}
                   </span>
-                  <p className="font-serif text-lg shrink-0" style={{ color: palette.gold }}>{s.preco}</p>
+                  <p className="font-serif text-lg shrink-0 text-right" style={{ color: palette.gold }}>{descontoAluno && !s.gratis ? <><span className="text-xs line-through mr-1" style={{ color: palette.navySoft }}>{s.preco}</span>{precoComDesconto(s.preco)}</> : s.preco}</p>
                 </div>
                 <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{s.titulo}</p>
                 <p className="text-sm mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{s.descricao}</p>
@@ -5841,7 +5885,7 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
               />}
               {descontoValido && (
                 <p className="text-xs text-center" style={{ color: palette.gold }}>
-                  Código aplicado: 10% de desconto
+                  {descontoAluno ? "Desconto de aluno 3S: 10% nesta sessão" : "Código aplicado: 10% de desconto"}
                 </p>
               )}
               <label className="flex items-start gap-2.5 px-1">
@@ -7527,7 +7571,7 @@ const MESES_PT = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "J
 function todosMateriaisDigitais() {
   const ids = {};
   // Os livros da autora (romances, Liderança 3S e Filosofia 3S) vendem-se à parte: não entram na Comunidade.
-  const livrosAutora = [...LIVROS_AUTORA_IDS, 130, 131];
+  const livrosAutora = [...LIVROS_AUTORA_IDS, 130, 131, 132];
   materiais.forEach((m) => { if (!m.apenasMentor && !livrosAutora.includes(m.id)) ids[m.id] = true; });
   return ids;
 }
@@ -8182,7 +8226,7 @@ function CatalogoCursosScreen({ onBack, temAcesso, onAbrirCurso, onAreaAluno }) 
 }
 
 function CursoVendaScreen({ curso, onBack }) {
-  const escolaNome = curso.escolaId === "lideranca" ? "COACHING DE LIDERANÇA 3S" : curso.escolaId === "ser" ? "COACHING DE VIDA 3S" : "COMUNIDADE 3S";
+  const escolaNome = curso.escolaId === "lideranca" ? "LEADERSHIP COACHING 3S" : curso.escolaId === "ser" ? "LIFE COACHING 3S" : curso.escolaId === "desporto" ? "SPORTS COACHING 3S" : "ESCOLA 3S";
   const inclui = incluiCurso(curso);
   return (
     <div className="pb-28">
@@ -8225,7 +8269,7 @@ function CursoVendaScreen({ curso, onBack }) {
   );
 }
 
-const LIVROS_3S_IDS = [130, 131]; // só os livros Liderança 3S e Filosofia 3S estão à venda
+const LIVROS_3S_IDS = [130, 131, 132]; // só os livros Liderança 3S e Filosofia 3S estão à venda
 
 function LivrosScreen({ onBack, materiaisDesbloqueados }) {
   const livros = LIVROS_3S_IDS.map((id) => materiais.find((m) => m.id === id)).filter(Boolean);
@@ -8255,186 +8299,187 @@ function LivrosScreen({ onBack, materiaisDesbloqueados }) {
 }
 
 /* ---------- Montra pública (antes de entrar na app) ---------- */
-function MontraPublica({ onCriarConta, onEntrar, onEscolher }) {
-  const cursoGratis = cursos.find((c) => c.gratuito);
-  const livros = LIVROS_AUTORA_IDS.map((id) => materiais.find((m) => m.id === id)).filter(Boolean);
-  const titulo = (eyebrow, texto) => (
-    <div className="mb-3">
-      <p className="text-[11px] tracking-[0.25em] font-medium" style={{ color: palette.gold }}>{eyebrow}</p>
-      <p className="font-serif text-2xl leading-tight mt-1" style={{ color: palette.navy }}>{texto}</p>
+function MontraPublica({ onCriarConta, onEntrar, onEscolher, onDestino }) {
+  const irPara = (id) => { const el = document.getElementById(id); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); };
+  const coachNome = { lideranca: "Conceição Alves", desenvolvimento: "Conceição Alves", desporto: "Valter Canhita" };
+  const marcar = (area) => onDestino(area ? `marcar:${area}` : "marcar");
+  const sec = (eyebrow, texto, sub) => (
+    <div className="mb-4">
+      <p className="text-[11px] tracking-[0.25em] font-semibold" style={{ color: palette.gold }}>{eyebrow}</p>
+      <p className="font-serif text-[26px] leading-tight mt-1" style={{ color: palette.navy }}>{texto}</p>
+      {sub && <p className="text-sm mt-1.5 leading-relaxed" style={{ color: palette.navySoft }}>{sub}</p>}
     </div>
-  );
-  const botao = (texto, onClick, claro) => (
-    <button
-      onClick={onClick}
-      className="w-full rounded-full py-3.5 font-medium text-sm tracking-wide transition active:scale-[0.98]"
-      style={claro ? { backgroundColor: palette.gold, color: palette.navy } : { backgroundColor: palette.navy, color: palette.creamSoft }}
-    >
-      {texto}
-    </button>
   );
   return (
     <div className="min-h-screen w-full flex justify-center" style={{ backgroundColor: palette.cream, fontFamily: "Inter, sans-serif" }}>
-      <div className="w-full max-w-md pb-16" style={{ backgroundColor: palette.creamSoft }}>
-        {/* Topo */}
-        <div className="px-6 pt-6 flex items-center justify-between">
-          <Brand />
-          <button onClick={onEntrar} className="text-xs font-medium rounded-full px-4 py-2" style={{ border: `1px solid ${palette.navy}`, color: palette.navy }}>Entrar</button>
-        </div>
-
-        <div className="pt-6"><BannerEncontro /></div>
-
-        {/* Escola 3S: duas escolas */}
-        <div className="px-6 pt-2 pb-5 text-center">
-          <p className="text-[11px] tracking-[0.3em] font-medium" style={{ color: palette.gold }}>ESCOLA 3S · SABER · SENTIR · SER</p>
-          <h1 className="font-serif text-4xl leading-tight mt-3" style={{ color: palette.navy }}>Três escolas de coaching, um só método.</h1>
-          <p className="text-sm mt-3 leading-relaxed" style={{ color: palette.navySoft }}>Liderar pessoas, crescer por dentro e treinar o corpo pedem o mesmo: saber, sentir e ser.</p>
-        </div>
-        <EscolasDuplas publico />
-
-        {/* Herói Liderança 3S */}
-        <DivisorArea id="metodo-3s" texto="LIDERANÇA 3S" />
-        <div className="px-6 pt-2 pb-8 text-center">
-          <p className="text-[11px] tracking-[0.3em] font-medium" style={{ color: palette.gold }}>LIDERANÇA E COMUNICAÇÃO</p>
-          <h2 className="font-serif text-3xl leading-tight mt-3" style={{ color: palette.navy }}>Liderar começa na forma como comunicas.</h2>
-          <p className="text-sm mt-4 leading-relaxed" style={{ color: palette.navySoft }}>
-            Para quem lidera equipas, negócios, famílias ou a própria vida. Cursos em vídeo, testes interativos, livros e sessões de coaching, com a Conceição Alves.
-          </p>
-          <div className="mt-6 space-y-2.5">
-            {botao("Começar gratuitamente", onCriarConta)}
-            <button onClick={onEntrar} className="text-xs underline underline-offset-2" style={{ color: palette.navySoft }}>Já tenho conta</button>
+      <div className="w-full max-w-md pb-32" style={{ backgroundColor: palette.creamSoft }}>
+        {/* HERÓI */}
+        <div className="relative overflow-hidden px-6 pt-6 pb-9" style={{ background: `linear-gradient(160deg, ${palette.navy} 0%, #24436E 100%)` }}>
+          <div className="absolute -right-16 -top-16 w-64 h-64 rounded-full" style={{ border: `1px solid ${palette.gold}33` }} />
+          <div className="absolute -right-6 top-24 w-40 h-40 rounded-full" style={{ border: `1px solid ${palette.gold}22` }} />
+          <div className="relative flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <img src="/marca-3s.png" alt="" className="w-9 h-auto" />
+              <p className="font-serif text-xl" style={{ color: palette.creamSoft }}>Escola <span style={{ color: palette.gold }}>3S</span></p>
+            </div>
+            <button onClick={onEntrar} className="text-xs font-medium rounded-full px-4 py-2" style={{ border: `1px solid ${palette.goldSoft}88`, color: palette.creamSoft }}>Entrar</button>
+          </div>
+          <p className="relative text-[11px] tracking-[0.3em] font-semibold mt-9" style={{ color: palette.gold }}>SABER · SENTIR · SER</p>
+          <h1 className="relative font-serif text-[40px] leading-[1.05] mt-3" style={{ color: palette.creamSoft }}>Uma filosofia.<br />Três escolas.<br /><span style={{ color: palette.gold }}>A tua evolução.</span></h1>
+          <p className="relative text-[15px] mt-4 leading-relaxed" style={{ color: palette.creamSoft, opacity: 0.85 }}>Coaching para liderar melhor, viver com mais sentido e treinar com propósito. Começa sem pagar nada.</p>
+          <div className="relative mt-6 space-y-2.5">
+            <button onClick={() => marcar(null)} className="w-full rounded-full py-4 text-[15px] font-semibold transition active:scale-[0.98]" style={{ backgroundColor: palette.gold, color: palette.navy, boxShadow: "0 10px 26px -10px rgba(198,162,83,0.9)" }}>Marcar a minha sessão gratuita</button>
+            <button onClick={() => irPara("gratis")} className="w-full rounded-full py-3.5 text-sm font-medium" style={{ border: `1px solid ${palette.goldSoft}88`, color: palette.creamSoft }}>Ver tudo o que é gratuito</button>
+          </div>
+          <div className="relative flex flex-wrap gap-x-4 gap-y-1.5 mt-5">
+            {["20 min de sessão grátis", "Aula 1 grátis", "Sem cartão de crédito"].map((t) => (
+              <span key={t} className="text-[12px] flex items-center gap-1.5" style={{ color: palette.goldSoft }}><CheckCircle2 size={13} />{t}</span>
+            ))}
           </div>
         </div>
 
-        {/* Método 3S */}
-        <div className="px-6 mb-10">
-          {titulo("O MÉTODO 3S", "Saber, Sentir, Ser")}
-          <div className="space-y-3">
+        {/* AS TRÊS ESCOLAS */}
+        <div className="px-6 pt-9" id="escolas">
+          {sec("TRÊS ESCOLAS", "Escolhe o teu caminho", "Cada escola tem um curso, um livro e um coach dedicado para sessões de coaching e mentoria.")}
+          <div className="space-y-4">
+            {Object.entries(ESCOLAS_3S).map(([chave, e]) => {
+              const curso = (e.cursos || []).map((id) => TODOS_CURSOS.find((c) => c.id === id)).filter(Boolean)[0];
+              const livro = materiais.find((m) => m.id === e.livro);
+              const Icon = e.icon;
+              return (
+                <div key={chave} id={e.secao} className="rounded-3xl overflow-hidden" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66`, boxShadow: "0 14px 30px -22px rgba(27,51,85,0.6)", scrollMarginTop: 16 }}>
+                  <div className="relative overflow-hidden px-5 py-4" style={{ background: e.fundo, borderBottom: e.borda ? `1.5px solid ${e.borda}` : "none" }}>
+                    <Icon size={90} strokeWidth={1} className="absolute -right-3 -bottom-5" style={{ color: e.texto, opacity: 0.1 }} />
+                    <p className="font-serif text-[26px] leading-tight relative" style={{ color: e.texto }}>{e.curto} <span style={{ color: e.acento, fontWeight: 600 }}>3S</span></p>
+                    <p className="text-[13px] mt-1 relative" style={{ color: e.texto, opacity: 0.85 }}>{e.frase}</p>
+                  </div>
+                  <div className="px-5 py-4 space-y-3">
+                    <div className="flex items-center gap-3">
+                      <span className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: `${palette.gold}22` }}><User size={16} style={{ color: palette.gold }} /></span>
+                      <div className="min-w-0"><p className="text-sm font-medium" style={{ color: palette.navy }}>{coachNome[chave]}</p><p className="text-[11px]" style={{ color: palette.navySoft }}>Coaching e mentoria · 1.ª sessão de 20 min grátis</p></div>
+                    </div>
+                    {curso && (
+                      <div className="flex items-center gap-3">
+                        <span className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: `${palette.gold}22` }}><GraduationCap size={16} style={{ color: palette.gold }} /></span>
+                        <div className="min-w-0"><p className="text-sm font-medium" style={{ color: palette.navy }}>Curso {curso.titulo}</p><p className="text-[11px]" style={{ color: palette.navySoft }}>{curso.emBreve ? "Em breve" : curso.interativo ? `Aula 1 grátis · curso completo ${precoTexto(PRECO_CURSO)}` : precoTexto(PRECO_CURSO)}</p></div>
+                      </div>
+                    )}
+                    {livro && (
+                      <div className="flex items-center gap-3">
+                        <span className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: `${palette.gold}22` }}><BookOpen size={16} style={{ color: palette.gold }} /></span>
+                        <div className="min-w-0"><p className="text-sm font-medium" style={{ color: palette.navy }}>{livro.titulo}</p><p className="text-[11px]" style={{ color: palette.navySoft }}>{livro.emBreve ? `Em breve · ${livro.preco}` : livro.preco}</p></div>
+                      </div>
+                    )}
+                    {e.app && (
+                      <a href={e.app.url} className="flex items-center gap-3">
+                        <span className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: `${palette.gold}22` }}><Footprints size={16} style={{ color: palette.gold }} /></span>
+                        <div className="min-w-0 flex-1"><p className="text-sm font-medium" style={{ color: palette.navy }}>Aplicação {e.app.nome}</p><p className="text-[11px]" style={{ color: palette.navySoft }}>Treinos, tempos e plano · gratuita</p></div>
+                        <ChevronRight size={16} style={{ color: palette.navySoft }} />
+                      </a>
+                    )}
+                    <div className="grid grid-cols-2 gap-2 pt-1">
+                      <button onClick={() => marcar(chave)} className="rounded-full py-3 text-[13px] font-semibold" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Sessão grátis</button>
+                      {curso && !curso.emBreve ? (
+                        <button onClick={() => onDestino(`curso:${curso.id}`)} className="rounded-full py-3 text-[13px] font-semibold" style={{ border: `1.5px solid ${palette.navy}`, color: palette.navy }}>Aula 1 grátis</button>
+                      ) : (
+                        <button onClick={() => onDestino(e.secao)} className="rounded-full py-3 text-[13px] font-semibold" style={{ border: `1.5px solid ${palette.navy}`, color: palette.navy }}>Testes grátis</button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* GRÁTIS */}
+        <div className="px-6 pt-10" id="gratis" style={{ scrollMarginTop: 16 }}>
+          {sec("COMEÇA SEM PAGAR", "O que tens gratuitamente, já hoje")}
+          <div className="grid grid-cols-2 gap-3">
             {[
-              ["Saber", "Saber o que dizer.", "Ouvir, perguntar, dar retorno e conduzir conversas difíceis."],
-              ["Sentir", "Sentir quem está à tua frente.", "Perceber as emoções do outro, e as tuas, antes de reagir."],
-              ["Ser", "Ser alguém que os outros querem seguir.", "Coerência e exemplo. As pessoas seguem quem tu és, não o cargo."],
-            ].map(([n, f, d]) => (
-              <div key={n} className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
-                <p className="text-[11px] tracking-[0.25em] font-medium" style={{ color: palette.gold }}>{n.toUpperCase()}</p>
-                <p className="font-serif text-lg leading-snug mt-1" style={{ color: palette.navy }}>{f}</p>
-                <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{d}</p>
+              [Calendar, "Sessão de 20 min", "Com o coach da tua escola, por videochamada."],
+              [GraduationCap, "Aula 1 de cada curso", "Texto, exercício, questionário e desafio."],
+              [Layers, "Laboratórios", "Testes de perfil, treinos e planos automáticos."],
+              [Footprints, "Movimento 3S", "Registo de treinos, tempos e provas."],
+            ].map(([Ico, t, d]) => (
+              <div key={t} className="rounded-2xl p-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
+                <Ico size={18} style={{ color: palette.gold }} />
+                <p className="font-serif text-[17px] leading-tight mt-2" style={{ color: palette.navy }}>{t}</p>
+                <p className="text-[12px] mt-1 leading-snug" style={{ color: palette.navySoft }}>{d}</p>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Curso grátis */}
-        {cursoGratis && (
-          <div className="px-6 mb-10">
-            <div className="rounded-3xl px-5 py-6" style={{ backgroundColor: palette.navy }}>
-              <p className="text-[11px] tracking-[0.25em] font-medium" style={{ color: palette.gold }}>OFERTA · CURSO GRATUITO</p>
-              <p className="font-serif text-2xl leading-tight mt-2" style={{ color: palette.creamSoft }}>{cursoGratis.titulo}</p>
-              <p className="text-sm mt-2 leading-relaxed" style={{ color: palette.goldSoft }}>{cursoGratis.promessa}</p>
-              <div className="mt-3 space-y-1">
-                {(cursoGratis.aulas || []).map((a, i) => (
-                  <p key={i} className="text-xs" style={{ color: palette.creamSoft }}>▸ Aula {i + 1} — {a.titulo}</p>
-                ))}
-              </div>
-              <div className="mt-5">{botao("Quero o curso gratuito", onCriarConta, true)}</div>
+        {/* FIDELIZAÇÃO */}
+        <div className="px-6 pt-10">
+          <div className="rounded-3xl px-5 py-6" style={{ background: `linear-gradient(150deg, #E4C98C 0%, ${palette.gold} 100%)` }}>
+            <p className="text-[11px] tracking-[0.25em] font-semibold" style={{ color: palette.navy }}>VANTAGENS DE ALUNO 3S</p>
+            <p className="font-serif text-[26px] leading-tight mt-1" style={{ color: palette.navy }}>Quanto mais caminhas connosco, mais ganhas</p>
+            <div className="mt-4 space-y-2.5">
+              {[
+                ["10% em todas as sessões", "Quem compra um curso tem desconto automático nas sessões de coaching e mentoria."],
+                ["Ciclos de 4 sessões", "Acompanhamento contínuo com o mesmo coach, marcado ao teu ritmo."],
+                ["Plano e certificado", "Cada curso termina com o teu perfil 3S, um plano de 30 dias e certificado."],
+              ].map(([t, d]) => (
+                <div key={t} className="flex gap-2.5">
+                  <CheckCircle2 size={18} className="shrink-0 mt-0.5" style={{ color: palette.navy }} />
+                  <div><p className="text-sm font-semibold" style={{ color: palette.navy }}>{t}</p><p className="text-[12.5px] leading-snug" style={{ color: palette.navy, opacity: 0.85 }}>{d}</p></div>
+                </div>
+              ))}
             </div>
           </div>
-        )}
+        </div>
 
-        {/* As duas escolas: curso + livro */}
-        {Object.values(ESCOLAS_3S).map((e) => {
-          const lista = e.cursos.map((id) => cursos.find((c) => c.id === id)).filter((c) => c && !c.gratuito);
-          const livro = materiais.find((m) => m.id === e.livro);
-          const Icon = e.icon;
-          return (
-            <div key={e.secao} id={e.secao} className="px-6 mb-10" style={{ scrollMarginTop: 16 }}>
-              <div className="relative overflow-hidden rounded-3xl px-5 py-5 mb-3" style={{ background: e.fundo, border: e.borda ? `1.5px solid ${e.borda}` : "none" }}>
-                <Icon size={110} strokeWidth={1} className="absolute -right-4 -bottom-5" style={{ color: e.texto, opacity: 0.08 }} />
-                <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: e.suave }}>COACHING</p>
-                <p className="font-serif text-3xl leading-tight" style={{ color: e.texto }}>{e.curto} <span style={{ color: e.acento, fontWeight: 600 }}>3S</span></p>
-                <p className="text-xs mt-1" style={{ color: e.texto, opacity: 0.85 }}>{e.frase}</p>
+        {/* MÉTODO */}
+        <div className="px-6 pt-10">
+          {sec("UMA FILOSOFIA", "O método 3S", "A mesma base nas três escolas: conhecer, sentir e agir de acordo com quem és.")}
+          <div className="grid grid-cols-3 gap-2">
+            {[["Saber", "cabeça", "Método e conhecimento"], ["Sentir", "coração", "Emoções e relação"], ["Ser", "identidade", "Valores e hábitos"]].map(([n, s2, d]) => (
+              <div key={n} className="rounded-2xl px-3 py-4 text-center" style={{ backgroundColor: palette.navy }}>
+                <p className="font-serif text-xl" style={{ color: palette.gold }}>{n}</p>
+                <p className="text-[10px] tracking-[0.15em]" style={{ color: palette.goldSoft }}>{s2.toUpperCase()}</p>
+                <p className="text-[11px] mt-2 leading-snug" style={{ color: palette.creamSoft }}>{d}</p>
               </div>
-              <div className="space-y-3">
-                {e.app && (
-                  <a href={e.app.url} className="block rounded-2xl px-4 py-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
-                    <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>APLICAÇÃO</p>
-                    <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{e.app.nome}</p>
-                    <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{e.app.desc}</p>
-                    <span className="inline-flex items-center gap-1 mt-3 text-xs font-medium rounded-full px-4 py-2" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Abrir <ChevronRight size={14} /></span>
-                  </a>
-                )}
-                {lista.map((c) => (
-                  <div key={c.id} className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
-                    <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>CURSO</p>
-                    <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{c.titulo}</p>
-                    {c.promessa && <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{c.promessa}</p>}
-                    <div className="flex items-center justify-between mt-3 gap-3">
-                      <span className="font-serif text-xl" style={{ color: palette.gold }}>{c.emBreve ? "Em breve" : precoTexto(PRECO_CURSO)}</span>
-                      {!c.emBreve && (
-                        <button
-                          onClick={() => onEscolher({ chave: `curso-${c.id}`, tipo: "curso", cursoId: c.id, titulo: `Curso — ${c.titulo}`, valor: PRECO_CURSO })}
-                          className="rounded-full px-4 py-2 text-xs font-medium"
-                          style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
-                        >
-                          Comprar
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ))}
-                {livro && (
-                  <div className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
-                    <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>LIVRO</p>
-                    <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{livro.titulo}</p>
-                    {livro.desc && <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{livro.desc}</p>}
-                    <div className="flex items-center justify-between mt-3 gap-3">
-                      <span className="font-serif text-xl" style={{ color: palette.gold }}>{livro.emBreve ? "Em breve" : livro.preco}</span>
-                      {!livro.emBreve && (
-                        <button
-                          onClick={() => onEscolher({ chave: `material-${livro.id}`, tipo: "material", materialId: livro.id, titulo: livro.titulo, valor: precoNumero(livro.preco) })}
-                          className="rounded-full px-4 py-2 text-xs font-medium"
-                          style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
-                        >
-                          Comprar
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          );
-        })}
+            ))}
+          </div>
+        </div>
 
-        {/* Como comprar */}
-        <div className="px-6 mb-10">
-          {titulo("COMO FUNCIONA", "Comprar é simples")}
+        {/* COMO FUNCIONA */}
+        <div className="px-6 pt-10">
+          {sec("COMO FUNCIONA", "Em três passos")}
           <div className="space-y-3">
             {[
               ["1", "Cria a tua conta gratuita", "Só precisas de correio eletrónico e palavra-passe."],
-              ["2", "Escolhe o que queres", "O que escolheste fica guardado no teu carrinho."],
-              ["3", "Paga como preferires", "MB WAY, referência Multibanco ou Payshop."],
-              ["4", "Acesso automático", "Assim que o pagamento é confirmado, o conteúdo abre."],
+              ["2", "Escolhe a escola e marca a sessão", "Vês os dias e horas livres do coach e escolhes."],
+              ["3", "Continua ao teu ritmo", "Cursos, livros e sessões pagas por MB WAY, Multibanco ou Payshop."],
             ].map(([n, t, d]) => (
               <div key={n} className="flex gap-3">
                 <span className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 font-serif" style={{ backgroundColor: palette.navy, color: palette.gold }}>{n}</span>
-                <div>
-                  <p className="text-sm font-medium" style={{ color: palette.navy }}>{t}</p>
-                  <p className="text-xs" style={{ color: palette.navySoft }}>{d}</p>
-                </div>
+                <div><p className="text-sm font-medium" style={{ color: palette.navy }}>{t}</p><p className="text-xs" style={{ color: palette.navySoft }}>{d}</p></div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Fecho */}
-        <div className="px-6">
-          <div className="rounded-3xl px-5 py-6 text-center" style={{ backgroundColor: palette.navy }}>
-            <p className="font-serif text-2xl leading-tight" style={{ color: palette.creamSoft }}>Começa hoje a liderar melhor, ao teu ritmo.</p>
-            <p className="text-xs mt-2" style={{ color: palette.goldSoft }}>O primeiro curso é por nossa conta.</p>
-            <div className="mt-4">{botao("Criar conta gratuita", onCriarConta, true)}</div>
+        {/* FECHO */}
+        <div className="px-6 pt-10">
+          <div className="rounded-3xl px-5 py-7 text-center" style={{ background: `linear-gradient(160deg, ${palette.navy} 0%, #24436E 100%)` }}>
+            <p className="font-serif text-[26px] leading-tight" style={{ color: palette.creamSoft }}>O primeiro passo é uma conversa.</p>
+            <p className="text-sm mt-2" style={{ color: palette.goldSoft }}>20 minutos, gratuitos, para perceberes se é para ti.</p>
+            <button onClick={() => marcar(null)} className="mt-5 w-full rounded-full py-3.5 text-sm font-semibold" style={{ backgroundColor: palette.gold, color: palette.navy }}>Marcar sessão gratuita</button>
+            <button onClick={onEntrar} className="mt-3 text-xs underline underline-offset-2" style={{ color: palette.goldSoft }}>Já tenho conta</button>
           </div>
-          <p className="text-[11px] text-center mt-6" style={{ color: palette.navySoft }}>Escola 3S · Coaching de Liderança, Vida e Desporto · Saber · Sentir · Ser</p>
+          <p className="text-[11px] text-center mt-6" style={{ color: palette.navySoft }}>Escola 3S · Leadership, Life e Sports Coaching · Saber · Sentir · Ser</p>
+        </div>
+      </div>
+
+      {/* Barra fixa */}
+      <div className="fixed bottom-0 inset-x-0 flex justify-center z-40 pointer-events-none">
+        <div className="w-full max-w-md px-4 pb-[calc(12px+env(safe-area-inset-bottom))] pt-3 pointer-events-auto" style={{ background: `linear-gradient(to top, ${palette.creamSoft} 65%, ${palette.creamSoft}00)` }}>
+          <button onClick={() => marcar(null)} className="w-full rounded-full py-3.5 text-[15px] font-semibold flex items-center justify-center gap-2" style={{ backgroundColor: palette.navy, color: palette.creamSoft, boxShadow: "0 10px 24px -12px rgba(27,51,85,0.8)" }}>
+            <Calendar size={17} style={{ color: palette.gold }} /> Marcar sessão gratuita
+          </button>
         </div>
       </div>
     </div>
@@ -9287,6 +9332,14 @@ export default function App() {
         window.localStorage.removeItem("escola3s:abrirCarrinho");
         setSecao("carrinho");
       }
+      const destino = window.localStorage.getItem("escola3s:abrirDestino");
+      if (destino) {
+        window.localStorage.removeItem("escola3s:abrirDestino");
+        if (destino.startsWith("curso:")) {
+          const c = TODOS_CURSOS.find((x) => String(x.id) === destino.split(":")[1]);
+          if (c) setCursoAberto(c);
+        } else setSecao(destino);
+      }
     } catch (e) {}
     sincronizarCompras();
     const aoVoltar = () => { if (document.visibilityState === "visible") sincronizarCompras(); };
@@ -9560,6 +9613,7 @@ export default function App() {
             <AguardaEmailScreen email={emailRecuperacao} recuperacao />
           ) : ecraPublico === "montra" ? (
             <MontraPublica
+              onDestino={(d) => { try { window.localStorage.setItem("escola3s:abrirDestino", d); } catch (e) {} setEcraPublico("criar"); }}
               onCriarConta={() => setEcraPublico("criar")}
               onEntrar={() => setEcraPublico("entrar")}
               onEscolher={(item) => {
@@ -9624,7 +9678,7 @@ export default function App() {
     );
   } else if (secao === "carrinho") {
     content = <CarrinhoScreen onBack={() => setSecao("produtos")} onPagamentoConfirmado={sincronizarCompras} />;
-  } else if (cursoAberto && !temAcessoCurso(cursoAberto)) {
+  } else if (cursoAberto && !cursoAberto.interativo && !temAcessoCurso(cursoAberto)) {
     content = <CursoVendaScreen curso={cursoAberto} onBack={() => setCursoAberto(null)} />;
   } else if (cursoAberto && cursoAberto.gratuito && progresso.papel !== "dona" && fichaCliente && !(fichaCliente.nome && fichaCliente.telefone)) {
     content = <FichaCursoScreen curso={cursoAberto} session={session} onBack={() => setCursoAberto(null)} onGuardada={setFichaCliente} />;
@@ -9638,7 +9692,8 @@ export default function App() {
         onConcluirCurso={() => setProgresso((p) => (p.cursosConcluidos[cursoAberto.id] ? p : { ...p, cursosConcluidos: { ...p.cursosConcluidos, [cursoAberto.id]: new Date().toISOString() } }))}
         onCertificado={() => setCertificadoAberto(cursoAberto)}
         onBack={() => setCursoAberto(null)}
-        onAbrirLab={cursoAberto.escolaId === "lideranca" ? () => { setCursoAberto(null); setSecao("lab-lideranca"); } : null}
+        onAbrirLab={cursoAberto.escolaId === "lideranca" || cursoAberto.escolaId === "desporto" ? () => { const lab = cursoAberto.escolaId === "desporto" ? "lab-desporto" : "lab-lideranca"; setCursoAberto(null); setSecao(lab); } : null}
+        semAcesso={!temAcessoCurso(cursoAberto)}
         materiaisDesbloqueados={materiaisAcesso}
         onDesbloquearMaterial={desbloquearMaterial}
         acessoTotal={progresso.papel === "dona"}
@@ -9771,6 +9826,7 @@ export default function App() {
         descontoCiclo={descontoCiclo}
         onUsouCredito={sincronizarCompras}
         area={(secao || "").startsWith("marcar:") ? secao.split(":")[1] : null}
+        descontoAluno={Object.keys(progresso.cursosComprados || {}).length > 0}
       />
     );
   } else if (secao === "agenda-mentora") {
