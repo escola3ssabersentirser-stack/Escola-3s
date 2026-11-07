@@ -3,6 +3,8 @@ import { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "./supabase.js";
 import { AULAS_LIDERANCA_3S, AVALIACAO_3S, PLANO_3S, PILARES_3S } from "./curso-lideranca-3s.js";
 import { AULAS_ATLETA_3S, AVALIACAO_ATLETA_3S, PLANO_ATLETA_3S } from "./curso-desporto-3s.js";
+import { PERGUNTAS_PROPOSITO, VALORES, CRENCAS, AREAS_VIDA, FERIDAS, PERGUNTAS_FERIDAS, PLANO_VIDA } from "./perfil-vida.js";
+import { PERGUNTAS_PERSONALIDADE, PERSONALIDADES, PERGUNTAS_COMUNICACAO, COMUNICACOES, PERGUNTAS_ARQUETIPO, ARQUETIPOS, calcularPerfilGeral } from "./perfil-lider.js";
 import {
   Home,
   Compass,
@@ -2074,6 +2076,201 @@ function LaboratorioLiderancaScreen(props) {
   return <LaboratorioScreen cfg={LAB_LIDERANCA} {...props} />;
 }
 
+function EnviarPerfilEmail({ titulo, seccoes }) {
+  const [outro, setOutro] = useState("");
+  const [estado, setEstado] = useState(""); // "" | a_enviar | ok | erro
+  const [msg, setMsg] = useState("");
+  const enviar = async () => {
+    setEstado("a_enviar"); setMsg("");
+    try {
+      const { data: s } = await supabase.auth.getSession();
+      const token = s?.session?.access_token;
+      if (!token) throw new Error("Entra na tua conta para receberes o perfil.");
+      const resp = await fetch("https://hspekqrhttxeckghtryi.supabase.co/functions/v1/enviar-perfil", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ titulo, seccoes, outro: outro.trim() || null }),
+      });
+      const d = await resp.json().catch(() => ({}));
+      if (!resp.ok || d.erro) throw new Error(d.erro || "Não foi possível enviar agora.");
+      setEstado("ok"); setMsg(`Enviado para ${d.para || "o teu correio eletrónico"}. Vê também a pasta de spam.`);
+    } catch (e) { setEstado("erro"); setMsg(e.message || "Não foi possível enviar agora."); }
+  };
+  return (
+    <div className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.card, border: `1.5px solid ${palette.gold}` }}>
+      <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>GUARDAR O TEU PERFIL</p>
+      <p className="font-serif text-lg leading-tight mt-1" style={{ color: palette.navy }}>Recebe o relatório no teu correio eletrónico</p>
+      <input value={outro} onChange={(e) => setOutro(e.target.value)} type="email" placeholder="Enviar também para (opcional)" className="w-full mt-3 rounded-xl px-3 py-2.5 text-sm outline-none" style={{ backgroundColor: "#fff", border: `1px solid ${palette.goldSoft}`, color: palette.ink }} />
+      <button onClick={enviar} disabled={estado === "a_enviar"} className="w-full mt-3 rounded-full py-3 text-sm font-medium" style={{ backgroundColor: palette.navy, color: palette.creamSoft, opacity: estado === "a_enviar" ? 0.6 : 1 }}>{estado === "a_enviar" ? "A enviar…" : "Enviar o meu perfil por correio eletrónico"}</button>
+      {msg && <p className="text-[12px] mt-2 text-center" style={{ color: estado === "erro" ? "#9B3B2E" : palette.navySoft }}>{msg}</p>}
+    </div>
+  );
+}
+
+function Escala({ valor, onEscolher, max = 5 }) {
+  return (
+    <div className="flex gap-1">
+      {Array.from({ length: max }, (_, i) => i + 1).map((v) => (
+        <button key={v} onClick={() => onEscolher(v)} className="flex-1 rounded-lg py-1.5 text-xs font-medium" style={valor === v ? { backgroundColor: palette.navy, color: palette.creamSoft } : { border: `1px solid ${palette.goldSoft}`, color: palette.navy, backgroundColor: "#fff" }}>{v}</button>
+      ))}
+    </div>
+  );
+}
+
+function PerfilVidaScreen({ guardado, onGuardar, onBack, onMarcar }) {
+  const [passo, setPasso] = useState(guardado ? 99 : 0);
+  const [d, setD] = useState(() => guardado || { proposito: [], frase: { talento: "", impacto: "", quem: "" }, valores: [], viver: {}, crencas: {}, areas: {}, feridas: {} });
+  const set = (k, v) => setD((x) => ({ ...x, [k]: v }));
+  const PASSOS = ["Propósito", "Valores", "Viver os valores", "Crenças", "Dores", "Feridas emocionais", "Experiências difíceis"];
+  const topo = (titulo, sub) => (
+    <div className="mb-4">
+      <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>PERFIL DE VIDA · {passo + 1} DE {PASSOS.length}</p>
+      <p className="font-serif text-2xl leading-tight mt-1" style={{ color: palette.navy }}>{titulo}</p>
+      {sub && <p className="text-[13px] mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{sub}</p>}
+      <div className="h-1.5 rounded-full mt-3 overflow-hidden" style={{ backgroundColor: `${palette.navy}14` }}><div className="h-full" style={{ width: `${(passo / PASSOS.length) * 100}%`, backgroundColor: palette.gold }} /></div>
+    </div>
+  );
+  const caixa = { backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66` };
+  const inp = "w-full rounded-xl px-3 py-2.5 text-sm outline-none";
+  const inpS = { backgroundColor: "#fff", border: `1px solid ${palette.goldSoft}`, color: palette.ink };
+  const podeAvancar = [
+    () => d.proposito.filter((x) => x && x.trim()).length >= 2,
+    () => d.valores.length >= 3,
+    () => d.valores.every((v) => d.viver[v]),
+    () => CRENCAS.every((_, i) => d.crencas[i]),
+    () => AREAS_VIDA.every((a) => d.areas[a]),
+    () => PERGUNTAS_FERIDAS.every((_, i) => d.feridas[i]),
+    () => true,
+  ];
+  const pode = () => (podeAvancar[passo] ? podeAvancar[passo]() : true);
+  const avancar = () => { if (passo + 1 >= PASSOS.length) { const final = { ...d, data: new Date().toISOString() }; onGuardar(final); setPasso(99); } else setPasso(passo + 1); window.scrollTo(0, 0); };
+  const navegacao = (
+    <div className="flex gap-3 pt-4">
+      {passo > 0 && <button onClick={() => setPasso(passo - 1)} className="rounded-full px-5 py-3 text-sm font-medium" style={{ border: `1px solid ${palette.navy}`, color: palette.navy }}>Anterior</button>}
+      <button disabled={!pode()} onClick={avancar} className="flex-1 rounded-full py-3 text-sm font-medium" style={{ backgroundColor: palette.navy, color: palette.creamSoft, opacity: pode() ? 1 : 0.5 }}>{passo + 1 >= PASSOS.length ? "Ver o meu Perfil de Vida" : "Seguinte"}</button>
+    </div>
+  );
+
+  if (passo === 99) {
+    // ---- Relatório
+    const frase = d.frase.talento || d.frase.impacto ? `Quero usar ${d.frase.talento || "o que tenho de melhor"} para ${d.frase.impacto || "fazer a diferença"}${d.frase.quem ? ` na vida de ${d.frase.quem}` : ""}.` : null;
+    const valoresOrd = [...d.valores].sort((a, b) => (d.viver[a] || 0) - (d.viver[b] || 0));
+    const crencasTop = CRENCAS.map((c, i) => ({ c, v: d.crencas[i] || 0 })).filter((x) => x.v >= 3).sort((a, b) => b.v - a.v).slice(0, 3);
+    const areasOrd = Object.entries(d.areas).sort((a, b) => a[1] - b[1]);
+    const dores = areasOrd.filter(([, v]) => v <= 5).slice(0, 3);
+    const fortes = areasOrd.filter(([, v]) => v >= 8).slice(-3).reverse();
+    const fer = Object.keys(FERIDAS).map((k) => ({ k, v: PERGUNTAS_FERIDAS.reduce((s, [f], i) => s + (f === k ? d.feridas[i] || 0 : 0), 0) })).sort((a, b) => b.v - a.v);
+    const ferPrincipal = fer[0].v >= 6 ? FERIDAS[fer[0].k] : null;
+    const plano = [
+      PLANO_VIDA.proposito,
+      valoresOrd[0] && PLANO_VIDA.valores(valoresOrd[0]),
+      crencasTop[0] && PLANO_VIDA.crenca(crencasTop[0].c),
+      dores[0] && PLANO_VIDA.dor(dores[0][0]),
+      ferPrincipal && PLANO_VIDA.ferida(ferPrincipal),
+    ].filter(Boolean).slice(0, 4).map((t, i) => `Semana ${i + 1}: ${t}`);
+    const bloco = (eyebrow, titulo, conteudo) => (
+      <div className="rounded-2xl px-4 py-4" style={caixa}>
+        <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>{eyebrow}</p>
+        {titulo && <p className="font-serif text-xl leading-tight mt-1" style={{ color: palette.navy }}>{titulo}</p>}
+        <div className="mt-2">{conteudo}</div>
+      </div>
+    );
+    const p_ = (t) => <p className="text-[13px] leading-relaxed" style={{ color: palette.ink }}>{t}</p>;
+    const li = (arr) => <div className="space-y-1.5">{arr.map((t, i) => <p key={i} className="text-[13px] leading-snug flex gap-2" style={{ color: palette.ink }}><span style={{ color: palette.gold }}>•</span>{t}</p>)}</div>;
+    return (
+      <div className="pb-28">
+        <SectionHeader eyebrow="O TEU RELATÓRIO" title="Perfil de Vida" onBack={onBack} backLabel="Laboratório" />
+        <div className="px-6 space-y-3">
+          <div className="rounded-2xl px-5 py-5" style={{ background: "linear-gradient(150deg, #E4C98C 0%, #C6A253 100%)" }}>
+            <p className="text-[10px] tracking-[0.25em] font-semibold" style={{ color: palette.navy }}>O TEU PROPÓSITO</p>
+            <p className="font-serif text-xl leading-snug mt-2" style={{ color: palette.navy }}>{frase || "Ainda por escrever: volta ao questionário e completa a tua frase."}</p>
+          </div>
+          {bloco("VALORES A SEGUIR", "Os teus valores", li(valoresOrd.map((v) => `${v} — vives este valor ${d.viver[v]} em 5${d.viver[v] <= 3 ? " · dar-lhe mais espaço" : ""}`)))}
+          {bloco("CRENÇAS", crencasTop.length ? "Crenças que te limitam" : "Sem crenças limitantes fortes", crencasTop.length ? <div className="space-y-2.5">{crencasTop.map(({ c }) => <div key={c[0]}><p className="text-[13px] line-through" style={{ color: palette.navySoft }}>{c[0]}</p><p className="text-[13px] font-medium" style={{ color: palette.navy }}>→ {c[1]}</p></div>)}</div> : p_("Nenhuma das crenças avaliadas parece pesar muito em ti neste momento."))}
+          {bloco("DORES", dores.length ? "Áreas que pedem atenção" : "Sem áreas em sofrimento", <>{dores.length ? li(dores.map(([a, v]) => `${a}: ${v} em 10`)) : p_("Nenhuma área ficou abaixo de 6.")}{fortes.length > 0 && <p className="text-[12px] mt-2" style={{ color: palette.navySoft }}>Onde estás bem: {fortes.map(([a]) => a).join(", ")}.</p>}</>)}
+          {bloco("FERIDAS EMOCIONAIS", ferPrincipal ? `Ferida de ${ferPrincipal.nome.toLowerCase()}` : "Nenhuma ferida se destaca", ferPrincipal ? <>{p_(ferPrincipal.frase)}<p className="text-[12px] mt-1.5" style={{ color: palette.navySoft }}><b>Como pode aparecer:</b> {ferPrincipal.sinais}</p><p className="text-[12px] mt-1.5" style={{ color: palette.navySoft }}><b>Caminho de cuidado:</b> {ferPrincipal.cuidado}</p></> : p_("As tuas respostas não mostram nenhuma ferida com muito peso neste momento."))}
+          {bloco("PLANO DE 4 SEMANAS", "Os teus próximos passos", li(plano))}
+          <div className="rounded-2xl px-4 py-3" style={{ backgroundColor: "#F6EDD8" }}>
+            <p className="text-[12px] leading-relaxed" style={{ color: palette.navy }}>Este perfil é uma ferramenta de autoconhecimento e não é um diagnóstico. Se algum destes temas te pesa muito, falar com um/a psicólogo/a pode ajudar. Em Portugal, a linha SNS 24 (808 24 24 24) tem aconselhamento psicológico. Em emergência, liga 112.</p>
+          </div>
+          <EnviarPerfilEmail titulo="Perfil de Vida" seccoes={[
+            frase && { titulo: "O teu propósito", texto: frase },
+            { titulo: "Valores a seguir", itens: valoresOrd.map((v) => `${v}: vives este valor ${d.viver[v]} em 5`) },
+            crencasTop.length && { titulo: "Crenças que te limitam (e a alternativa)", itens: crencasTop.map(({ c }) => `${c[0]} → ${c[1]}`) },
+            dores.length && { titulo: "Áreas que pedem atenção", itens: dores.map(([a, v]) => `${a}: ${v} em 10`) },
+            ferPrincipal && { titulo: `Ferida emocional: ${ferPrincipal.nome}`, texto: `${ferPrincipal.frase} Caminho de cuidado: ${ferPrincipal.cuidado}` },
+            { titulo: "Plano de 4 semanas", itens: plano },
+          ].filter(Boolean)} />
+          <button onClick={onMarcar} className="w-full rounded-full py-3.5 text-sm font-medium" style={{ backgroundColor: palette.gold, color: palette.navy }}>Marcar sessão de Life Coaching</button>
+          <button onClick={() => setPasso(0)} className="w-full text-xs underline pt-1" style={{ color: palette.navySoft }}>Rever as minhas respostas</button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="pb-28">
+      <SectionHeader eyebrow="LIFE COACHING 3S" title="Perfil de Vida" onBack={onBack} backLabel="Laboratório" />
+      <div className="px-6">
+        {passo === 0 && (<>
+          {topo("O teu propósito", "Responde com calma. Não há respostas certas.")}
+          <div className="space-y-3">
+            {PERGUNTAS_PROPOSITO.map((q, i) => (
+              <div key={i}><p className="text-sm font-medium mb-1.5" style={{ color: palette.navy }}>{q}</p>
+                <textarea rows={2} value={d.proposito[i] || ""} onChange={(e) => { const a = [...d.proposito]; a[i] = e.target.value; set("proposito", a); }} className={inp} style={inpS} placeholder="Escreve aqui…" /></div>
+            ))}
+            <div className="rounded-2xl px-4 py-4" style={caixa}>
+              <p className="text-sm font-medium mb-2" style={{ color: palette.navy }}>Agora, a tua frase de propósito:</p>
+              <p className="text-[12px] mb-1" style={{ color: palette.navySoft }}>Quero usar…</p>
+              <input value={d.frase.talento} onChange={(e) => set("frase", { ...d.frase, talento: e.target.value })} className={inp} style={inpS} placeholder="o meu talento (ex.: a minha capacidade de ouvir)" />
+              <p className="text-[12px] mb-1 mt-2" style={{ color: palette.navySoft }}>para…</p>
+              <input value={d.frase.impacto} onChange={(e) => set("frase", { ...d.frase, impacto: e.target.value })} className={inp} style={inpS} placeholder="o impacto (ex.: ajudar a encontrar caminho)" />
+              <p className="text-[12px] mb-1 mt-2" style={{ color: palette.navySoft }}>na vida de… (opcional)</p>
+              <input value={d.frase.quem} onChange={(e) => set("frase", { ...d.frase, quem: e.target.value })} className={inp} style={inpS} placeholder="quem (ex.: mulheres em recomeço)" />
+            </div>
+          </div>
+        </>)}
+        {passo === 1 && (<>
+          {topo("Os teus valores", "Escolhe entre 3 e 5 valores que queres que guiem a tua vida.")}
+          <div className="flex flex-wrap gap-2">
+            {VALORES.map((v) => { const on = d.valores.includes(v); return (
+              <button key={v} onClick={() => set("valores", on ? d.valores.filter((x) => x !== v) : d.valores.length < 5 ? [...d.valores, v] : d.valores)} className="rounded-full px-3.5 py-2 text-[13px]" style={on ? { backgroundColor: palette.navy, color: palette.creamSoft } : { border: `1px solid ${palette.goldSoft}`, color: palette.navy, backgroundColor: "#fff" }}>{v}</button>
+            ); })}
+          </div>
+          <p className="text-[12px] mt-3" style={{ color: palette.navySoft }}>{d.valores.length} de 5 escolhidos</p>
+        </>)}
+        {passo === 2 && (<>
+          {topo("Quanto vives hoje cada valor?", "1 = quase nada, 5 = totalmente.")}
+          <div className="space-y-2.5">{d.valores.map((v) => <div key={v} className="rounded-2xl px-4 py-3" style={caixa}><p className="text-sm font-medium mb-2" style={{ color: palette.navy }}>{v}</p><Escala valor={d.viver[v]} onEscolher={(n) => set("viver", { ...d.viver, [v]: n })} /></div>)}</div>
+        </>)}
+        {passo === 3 && (<>
+          {topo("As tuas crenças", "Até que ponto sentes que cada frase é verdade para ti? 1 = nada, 5 = muito.")}
+          <div className="space-y-2.5">{CRENCAS.map((c, i) => <div key={i} className="rounded-2xl px-4 py-3" style={caixa}><p className="text-sm mb-2" style={{ color: palette.navy }}>“{c[0]}”</p><Escala valor={d.crencas[i]} onEscolher={(n) => set("crencas", { ...d.crencas, [i]: n })} /></div>)}</div>
+        </>)}
+        {passo === 4 && (<>
+          {topo("Onde te dói", "Avalia a tua satisfação em cada área da vida. 1 = muito insatisfeito/a, 10 = plenamente satisfeito/a.")}
+          <div className="space-y-2.5">{AREAS_VIDA.map((a) => <div key={a} className="rounded-2xl px-4 py-3" style={caixa}><div className="flex justify-between mb-2"><p className="text-sm font-medium" style={{ color: palette.navy }}>{a}</p><span className="text-sm font-serif" style={{ color: palette.gold }}>{d.areas[a] || "–"}</span></div><Escala max={10} valor={d.areas[a]} onEscolher={(n) => set("areas", { ...d.areas, [a]: n })} /></div>)}</div>
+        </>)}
+        {passo === 5 && (<>
+          {topo("Feridas emocionais", "Como te reconheces em cada frase? 1 = nada, 5 = muito. Responde pelo que sentes, não pelo que achas que devias sentir.")}
+          <div className="space-y-2.5">{PERGUNTAS_FERIDAS.map(([, f], i) => <div key={i} className="rounded-2xl px-4 py-3" style={caixa}><p className="text-sm mb-2" style={{ color: palette.navy }}>{f}</p><Escala valor={d.feridas[i]} onEscolher={(n) => set("feridas", { ...d.feridas, [i]: n })} /></div>)}</div>
+        </>)}
+        {passo === 6 && (<>
+          {topo("Experiências difíceis", null)}
+          <div className="rounded-2xl px-4 py-4 space-y-3" style={caixa}>
+            <p className="text-[14px] leading-relaxed" style={{ color: palette.ink }}>Algumas experiências marcam-nos de forma profunda: perdas, situações de medo, violência ou abandono. Quando isso acontece, é normal que ainda hoje influenciem o que sentimos, as nossas reações e as nossas relações.</p>
+            <p className="text-[14px] leading-relaxed" style={{ color: palette.ink }}>Esta aplicação não avalia traumas, porque é um tema que merece acompanhamento especializado e um espaço seguro. O coaching pode ajudar-te a avançar no presente, mas não substitui a psicoterapia.</p>
+            <p className="text-sm font-medium" style={{ color: palette.navy }}>Procura apoio de um/a psicólogo/a se:</p>
+            <div className="space-y-1">{["memórias difíceis voltam muitas vezes ou de forma intensa;", "evitas pessoas, lugares ou situações por causa do que viveste;", "sentes ansiedade, tristeza ou irritação que não passam;", "tens dificuldade em dormir, concentrar-te ou sentir prazer."].map((t) => <p key={t} className="text-[13px] flex gap-2" style={{ color: palette.ink }}><span style={{ color: palette.gold }}>•</span>{t}</p>)}</div>
+            <p className="text-[13px] leading-relaxed" style={{ color: palette.navy }}>Em Portugal, a linha SNS 24 (808 24 24 24) tem aconselhamento psicológico. Em emergência, liga 112.</p>
+          </div>
+        </>)}
+        {navegacao}
+      </div>
+    </div>
+  );
+}
+
 function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, inicial }) {
   const { perfis: PERFIS_LIDER, perguntasPerfil: PERGUNTAS_PERFIL, competencias: COMPETENCIAS_3S, dicasPilar: DICAS_PILAR, modelos: MODELOS_LIDERANCA, reflexao: PERGUNTAS_REFLEXAO, quizzes: QUIZZES_LIDERANCA, planoPerfil: PLANO_PERFIL, planoPilar: PLANO_PILAR, treinos: TREINOS_LIDERANCA, grupos: GRUPOS_TREINO, t: TX } = cfg;
   const [vista, setVista] = useState(inicial ? "treino" : null); // null | perfil | competencias | modelos | perguntas | quizzes | quiz | treinos | treino
@@ -2426,6 +2623,135 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
     );
   }
 
+  // ---- Perfil de Vida (só no Life Coaching)
+  const temPerfilVida = cfg === LAB_VIDA;
+  if (vista === "vida") return <PerfilVidaScreen guardado={resultados.perfilVida} onGuardar={(v) => onGuardar("perfilVida", v)} onBack={voltarLab} onMarcar={onMarcar} />;
+  // ---- Perfil Geral de Líder (só no Laboratório de Liderança)
+  const temPerfilGeral = cfg === LAB_LIDERANCA;
+  const PERGUNTAS_GERAL = [
+    ...PERGUNTAS_PERSONALIDADE.map(([q, ops]) => ({ parte: "Personalidade", q, ops: ops.map(([, v, t]) => [v, t]) })),
+    ...PERGUNTAS_COMUNICACAO.map(([q, ops]) => ({ parte: "Comunicação", q, ops })),
+    ...PERGUNTAS_ARQUETIPO.map(([q, ops]) => ({ parte: "Arquétipo", q, ops })),
+  ];
+  const montarRelatorio = (g) => {
+    if (!g) return null;
+    const pers = PERSONALIDADES[g.personalidade];
+    const com = COMUNICACOES[g.comunicacao];
+    const arq = ARQUETIPOS[g.arquetipo];
+    const arq2 = g.arquetipo2 ? ARQUETIPOS[g.arquetipo2] : null;
+    const lid = resultados.perfil && PERFIS_LIDER[resultados.perfil.perfil];
+    const comp = resultados.competencias && resultados.competencias.pilares;
+    const compOrd = comp ? [...comp].sort((a, b) => b.pct - a.pct) : null;
+    const fortes = [lid && lid.forca, ...pers.fortes.slice(0, 2), arq.forte, com.fortes[0], compOrd && `Pilar mais forte: ${compOrd[0].pilar} (${compOrd[0].pct}%).`].filter(Boolean);
+    const desenvolver = [lid && lid.crescer, ...pers.desenvolver.slice(0, 2), arq.desenvolver, com.desenvolver[0], compOrd && `Pilar a desenvolver: ${compOrd[compOrd.length - 1].pilar} (${compOrd[compOrd.length - 1].pct}%).`].filter(Boolean);
+    return {
+      lideranca: lid ? { nome: lid.nome, frase: lid.frase, quando: lid.quando, risco: lid.risco } : null,
+      arquetipo: { nome: arq.nome, frase: arq.frase, secundario: arq2 ? arq2.nome : null },
+      personalidade: { nome: pers.nome, frase: pers.frase, comunicarComigo: pers.comunicarComigo, eixos: g.eixos },
+      comunicacao: { nome: com.nome, frase: com.frase, contagem: g.comunicacaoContagem },
+      competencias: comp || null,
+      fortes, desenvolver,
+      plano: desenvolver.slice(0, 4).map((d, i) => `Semana ${i + 1}: ${d}`),
+    };
+  };
+  if (vista === "geral") {
+    if (passo < PERGUNTAS_GERAL.length) {
+      const item = PERGUNTAS_GERAL[passo];
+      const ops = [...item.ops.slice(passo % item.ops.length), ...item.ops.slice(0, passo % item.ops.length)];
+      return (
+        <div className="pb-28">
+          {cabecalho(`${item.parte.toUpperCase()} · ${passo + 1} DE ${PERGUNTAS_GERAL.length}`, "Perfil Geral de Líder", voltarLab, "Laboratório")}
+          <div className="px-6">
+            <div className="h-1.5 rounded-full mb-5 overflow-hidden" style={{ backgroundColor: `${palette.navy}14` }}>
+              <div className="h-full" style={{ width: `${(passo / PERGUNTAS_GERAL.length) * 100}%`, backgroundColor: palette.gold }} />
+            </div>
+            <p className="font-serif text-xl leading-snug mb-4" style={{ color: palette.navy }}>{item.q}</p>
+            <div className="space-y-2.5">
+              {ops.map(([v, t]) => (
+                <button key={t} onClick={() => {
+                  const novas = [...respostas, v];
+                  if (passo + 1 === PERGUNTAS_GERAL.length) {
+                    const nP = PERGUNTAS_PERSONALIDADE.length, nC = PERGUNTAS_COMUNICACAO.length;
+                    onGuardar("perfilGeral", calcularPerfilGeral(novas.slice(0, nP), novas.slice(nP, nP + nC), novas.slice(nP + nC)));
+                    setVista("relatorio"); setPasso(0); setRespostas([]);
+                  } else { setRespostas(novas); setPasso(passo + 1); }
+                }} className="w-full text-left rounded-2xl px-4 py-3.5 text-sm transition active:scale-[0.99]" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66`, color: palette.ink }}>{t}</button>
+              ))}
+            </div>
+            {passo > 0 && <button onClick={() => { setPasso(passo - 1); setRespostas(respostas.slice(0, -1)); }} className="mt-4 text-xs underline" style={{ color: palette.navySoft }}>Voltar à pergunta anterior</button>}
+          </div>
+        </div>
+      );
+    }
+  }
+  if (vista === "relatorio" && resultados.perfilGeral) {
+    const r = montarRelatorio(resultados.perfilGeral);
+    const bloco = (eyebrow, titulo, frase, extra) => (
+      <div className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66` }}>
+        <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>{eyebrow}</p>
+        <p className="font-serif text-xl leading-tight mt-1" style={{ color: palette.navy }}>{titulo}</p>
+        {frase && <p className="text-[13px] mt-1 leading-relaxed" style={{ color: palette.ink }}>{frase}</p>}
+        {extra}
+      </div>
+    );
+    const lista = (itens, cor) => (
+      <div className="space-y-1.5 mt-2">{itens.map((t, i) => <p key={i} className="text-[13px] leading-snug flex gap-2" style={{ color: palette.ink }}><span style={{ color: cor }}>{cor === palette.gold ? "★" : "→"}</span>{t}</p>)}</div>
+    );
+    const e = r.personalidade.eixos;
+    const totCom = Object.values(r.comunicacao.contagem).reduce((a, b) => a + b, 0) || 1;
+    return (
+      <div className="pb-28">
+        {cabecalho("O TEU RELATÓRIO", "Perfil Geral de Líder", voltarLab, "Laboratório")}
+        <div className="px-6 space-y-3">
+          <div className="rounded-2xl px-5 py-5" style={{ background: `linear-gradient(160deg, ${palette.navy} 0%, #24436E 100%)` }}>
+            <p className="text-[10px] tracking-[0.25em] font-semibold" style={{ color: palette.gold }}>EM RESUMO</p>
+            <div className="grid grid-cols-2 gap-2 mt-3">
+              {[["Liderança", r.lideranca ? r.lideranca.nome : "Por fazer"], ["Arquétipo", r.arquetipo.nome], ["Personalidade", r.personalidade.nome], ["Comunicação", r.comunicacao.nome]].map(([k, v]) => (
+                <div key={k} className="rounded-xl px-3 py-2.5" style={{ backgroundColor: "rgba(255,255,255,0.07)", border: `1px solid ${palette.gold}44` }}>
+                  <p className="text-[10px]" style={{ color: palette.goldSoft }}>{k}</p>
+                  <p className="font-serif text-base leading-tight" style={{ color: palette.creamSoft }}>{v}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          {r.lideranca
+            ? bloco("TIPO DE LIDERANÇA", r.lideranca.nome, r.lideranca.frase, <p className="text-[12px] mt-2" style={{ color: palette.navySoft }}>Funciona melhor em: {r.lideranca.quando}</p>)
+            : bloco("TIPO DE LIDERANÇA", "Ainda por descobrir", "Faz o teste de perfil de liderança (2 minutos) para completares o relatório.", <button onClick={() => { setVista("perfil"); setPasso(0); setRespostas([]); }} className="mt-3 rounded-full px-4 py-2 text-xs font-medium" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Fazer agora</button>)}
+          {bloco("ARQUÉTIPO DE LÍDER", r.arquetipo.nome, r.arquetipo.frase, r.arquetipo.secundario && <p className="text-[12px] mt-2" style={{ color: palette.navySoft }}>Arquétipo secundário: {r.arquetipo.secundario}</p>)}
+          {bloco("TIPO DE PERSONALIDADE", r.personalidade.nome, r.personalidade.frase, (
+            <div className="mt-3">
+              <BarraPct rotulo={`Ação ${e.acao} · Reflexão ${e.reflexao}`} pct={Math.round((e.acao / Math.max(e.acao + e.reflexao, 1)) * 100)} />
+              <BarraPct rotulo={`Tarefas ${e.tarefas} · Pessoas ${e.pessoas}`} pct={Math.round((e.tarefas / Math.max(e.tarefas + e.pessoas, 1)) * 100)} />
+              <p className="text-[12px]" style={{ color: palette.navySoft }}><b>Como comunicar contigo:</b> {r.personalidade.comunicarComigo}</p>
+            </div>
+          ))}
+          {bloco("TIPO DE COMUNICAÇÃO", r.comunicacao.nome, r.comunicacao.frase, (
+            <div className="mt-3">{Object.entries(r.comunicacao.contagem).map(([k, v]) => <BarraPct key={k} rotulo={COMUNICACOES[k].nome} pct={Math.round((v / totCom) * 100)} destaque={COMUNICACOES[k].nome === r.comunicacao.nome} />)}</div>
+          ))}
+          {r.competencias
+            ? bloco("COMPETÊNCIAS 3S", "Saber · Sentir · Ser", null, <div className="mt-3">{r.competencias.map((c) => <BarraPct key={c.pilar} rotulo={c.pilar} pct={c.pct} />)}</div>)
+            : bloco("COMPETÊNCIAS 3S", "Ainda por medir", "Faz o teste de competências 3S para veres os teus três pilares.", <button onClick={() => { setVista("competencias"); setPasso(0); setRespostas([]); }} className="mt-3 rounded-full px-4 py-2 text-xs font-medium" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Fazer agora</button>)}
+          {bloco("ONDE ÉS FORTE", "Os teus pontos fortes", null, lista(r.fortes, palette.gold))}
+          {bloco("PONTOS A DESENVOLVER", "Onde podes crescer", null, lista(r.desenvolver, palette.navy))}
+          {bloco("PLANO DE 4 SEMANAS", "Os teus próximos passos", null, lista(r.plano, palette.navy))}
+          <EnviarPerfilEmail titulo="Perfil Geral de Líder" seccoes={[
+            { titulo: "Em resumo", itens: [`Liderança: ${r.lideranca ? r.lideranca.nome : "por fazer"}`, `Arquétipo: ${r.arquetipo.nome}${r.arquetipo.secundario ? " (secundário: " + r.arquetipo.secundario + ")" : ""}`, `Personalidade: ${r.personalidade.nome}`, `Comunicação: ${r.comunicacao.nome}`] },
+            r.lideranca && { titulo: `Tipo de liderança: ${r.lideranca.nome}`, texto: `${r.lideranca.frase} Funciona melhor em: ${r.lideranca.quando}` },
+            { titulo: `Arquétipo: ${r.arquetipo.nome}`, texto: r.arquetipo.frase },
+            { titulo: `Personalidade: ${r.personalidade.nome}`, texto: `${r.personalidade.frase} Como comunicar contigo: ${r.personalidade.comunicarComigo}` },
+            { titulo: `Comunicação: ${r.comunicacao.nome}`, texto: r.comunicacao.frase },
+            r.competencias && { titulo: "Competências 3S", itens: r.competencias.map((c) => `${c.pilar}: ${c.pct}%`) },
+            { titulo: "Onde és forte", itens: r.fortes },
+            { titulo: "Pontos a desenvolver", itens: r.desenvolver },
+            { titulo: "Plano de 4 semanas", itens: r.plano },
+          ].filter(Boolean)} />
+          <button onClick={onMarcar} className="w-full rounded-full py-3.5 text-sm font-medium" style={{ backgroundColor: palette.gold, color: palette.navy }}>Marcar sessão para trabalhar o meu perfil</button>
+          <button onClick={() => { setVista("geral"); setPasso(0); setRespostas([]); }} className="w-full text-xs underline pt-1" style={{ color: palette.navySoft }}>Repetir o questionário</button>
+        </div>
+      </div>
+    );
+  }
+
   // ---- Entrada do laboratório
   const perfilGuardado = resultados.perfil && PERFIS_LIDER[resultados.perfil.perfil];
   const compGuardadas = resultados.competencias && resultados.competencias.pilares;
@@ -2439,6 +2765,20 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
         </div>
       )}
       <div className="px-6 space-y-3">
+        {temPerfilVida && (
+          <button onClick={() => setVista("vida")} className="w-full text-left rounded-2xl px-4 py-4" style={{ background: "linear-gradient(150deg, #E4C98C 0%, #C6A253 100%)" }}>
+            <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: palette.navy }}>{resultados.perfilVida ? "O TEU RELATÓRIO" : "NOVO · 10 MINUTOS"}</p>
+            <p className="font-serif text-xl mt-1" style={{ color: palette.navy }}>Perfil de Vida</p>
+            <p className="text-[12px] mt-1 leading-snug" style={{ color: palette.navy, opacity: 0.85 }}>Propósito, valores, crenças, dores e feridas emocionais. Recebe-o no teu correio eletrónico.</p>
+          </button>
+        )}
+        {temPerfilGeral && (
+          <button onClick={() => { if (resultados.perfilGeral) setVista("relatorio"); else { setVista("geral"); setPasso(0); setRespostas([]); } }} className="w-full text-left rounded-2xl px-4 py-4" style={{ background: `linear-gradient(160deg, ${palette.navy} 0%, #24436E 100%)` }}>
+            <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>{resultados.perfilGeral ? "O TEU RELATÓRIO" : "NOVO · 5 MINUTOS"}</p>
+            <p className="font-serif text-xl mt-1" style={{ color: palette.creamSoft }}>Perfil Geral de Líder</p>
+            <p className="text-[12px] mt-1 leading-snug" style={{ color: palette.goldSoft }}>Tipo de liderança, arquétipo, personalidade, comunicação, pontos fortes e a desenvolver. Recebe-o no teu correio eletrónico.</p>
+          </button>
+        )}
         {cartao("Treinos de competências", TX.treinosDesc, Object.keys(resultados.treinos || {}).length ? `${Object.keys(resultados.treinos).length} de ${TREINOS_LIDERANCA.length} feitos` : "7 treinos · frase e plano no fim", () => setVista("treinos"))}
         {cartao(TX.perfilTitulo, TX.perfilDesc, perfilGuardado ? `O teu perfil: ${perfilGuardado.nome}` : null, () => { setVista("perfil"); setPasso(0); setRespostas([]); setGuardadoMsg(""); })}
         {cartao("Competências 3S", TX.compDesc, compGuardadas ? compGuardadas.map((p) => `${p.pilar} ${p.pct}%`).join(" · ") : null, () => { setVista("competencias"); setPasso(0); setRespostas([]); setGuardadoMsg(""); })}
