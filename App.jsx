@@ -4,7 +4,7 @@ import { supabase } from "./supabase.js";
 import { AULAS_LIDERANCA_3S, AVALIACAO_3S, PLANO_3S, PILARES_3S } from "./curso-lideranca-3s.js";
 import { AULAS_ATLETA_3S, AVALIACAO_ATLETA_3S, PLANO_ATLETA_3S } from "./curso-desporto-3s.js";
 import { PERGUNTAS_PROPOSITO, VALORES, CRENCAS, AREAS_VIDA, FERIDAS, PERGUNTAS_FERIDAS, PLANO_VIDA } from "./perfil-vida.js";
-import { PERGUNTAS_PERSONALIDADE, PERSONALIDADES, PERGUNTAS_COMUNICACAO, COMUNICACOES, PERGUNTAS_ARQUETIPO, ARQUETIPOS, calcularPerfilGeral } from "./perfil-lider.js";
+import { PERGUNTAS_PERSONALIDADE, PERSONALIDADES, PERGUNTAS_COMUNICACAO, COMUNICACOES, PERGUNTAS_ARQUETIPO, ARQUETIPOS, calcularPerfilGeral, encaixeEquipas } from "./perfil-lider.js";
 import {
   Home,
   Compass,
@@ -2651,6 +2651,7 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
       comunicacao: { nome: com.nome, frase: com.frase, contagem: g.comunicacaoContagem },
       competencias: comp || null,
       fortes, desenvolver,
+      equipas: encaixeEquipas(g),
       plano: desenvolver.slice(0, 4).map((d, i) => `Semana ${i + 1}: ${d}`),
     };
   };
@@ -2673,7 +2674,7 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
                   if (passo + 1 === PERGUNTAS_GERAL.length) {
                     const nP = PERGUNTAS_PERSONALIDADE.length, nC = PERGUNTAS_COMUNICACAO.length;
                     onGuardar("perfilGeral", calcularPerfilGeral(novas.slice(0, nP), novas.slice(nP, nP + nC), novas.slice(nP + nC)));
-                    setVista("relatorio"); setPasso(0); setRespostas([]);
+                    setVista("relatorio"); setPasso(0); setRespostas([]); window.scrollTo(0, 0);
                   } else { setRespostas(novas); setPasso(passo + 1); }
                 }} className="w-full text-left rounded-2xl px-4 py-3.5 text-sm transition active:scale-[0.99]" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66`, color: palette.ink }}>{t}</button>
               ))}
@@ -2706,8 +2707,8 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
           <div className="rounded-2xl px-5 py-5" style={{ background: `linear-gradient(160deg, ${palette.navy} 0%, #24436E 100%)` }}>
             <p className="text-[10px] tracking-[0.25em] font-semibold" style={{ color: palette.gold }}>EM RESUMO</p>
             <div className="grid grid-cols-2 gap-2 mt-3">
-              {[["Liderança", r.lideranca ? r.lideranca.nome : "Por fazer"], ["Arquétipo", r.arquetipo.nome], ["Personalidade", r.personalidade.nome], ["Comunicação", r.comunicacao.nome]].map(([k, v]) => (
-                <div key={k} className="rounded-xl px-3 py-2.5" style={{ backgroundColor: "rgba(255,255,255,0.07)", border: `1px solid ${palette.gold}44` }}>
+              {[["Liderança", r.lideranca ? r.lideranca.nome : "Por fazer"], ["Arquétipo", r.arquetipo.nome], ["Personalidade", r.personalidade.nome], ["Comunicação", r.comunicacao.nome], ["Equipa ideal", r.equipas[0].nome]].map(([k, v]) => (
+                <div key={k} className={`rounded-xl px-3 py-2.5 ${k === "Equipa ideal" ? "col-span-2" : ""}`} style={{ backgroundColor: "rgba(255,255,255,0.07)", border: `1px solid ${palette.gold}44` }}>
                   <p className="text-[10px]" style={{ color: palette.goldSoft }}>{k}</p>
                   <p className="font-serif text-base leading-tight" style={{ color: palette.creamSoft }}>{v}</p>
                 </div>
@@ -2732,6 +2733,23 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
             ? bloco("COMPETÊNCIAS 3S", "Saber · Sentir · Ser", null, <div className="mt-3">{r.competencias.map((c) => <BarraPct key={c.pilar} rotulo={c.pilar} pct={c.pct} />)}</div>)
             : bloco("COMPETÊNCIAS 3S", "Ainda por medir", "Faz o teste de competências 3S para veres os teus três pilares.", <button onClick={() => { setVista("competencias"); setPasso(0); setRespostas([]); }} className="mt-3 rounded-full px-4 py-2 text-xs font-medium" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Fazer agora</button>)}
           {bloco("ONDE ÉS FORTE", "Os teus pontos fortes", null, lista(r.fortes, palette.gold))}
+          {bloco("TIPOS DE EQUIPA", `A tua equipa ideal: ${r.equipas[0].nome}`, "Como o teu perfil se encaixa em cada tipo de equipa e o que tens de melhorar para a liderar.", (
+            <div className="space-y-2.5 mt-3">
+              {r.equipas.map((q, i) => {
+                const cor = q.nivel === "Encaixe natural" ? palette.gold : q.nivel === "Bom encaixe" ? palette.navy : palette.navySoft;
+                return (
+                  <div key={q.id} className="rounded-xl px-3 py-3" style={{ backgroundColor: i === 0 ? "#F6EDD8" : "#fff", border: `1px solid ${palette.goldSoft}66` }}>
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="text-sm font-semibold leading-snug" style={{ color: palette.navy }}>{q.nome}</p>
+                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full shrink-0" style={{ border: `1px solid ${cor}`, color: cor }}>{q.nivel}</span>
+                    </div>
+                    <p className="text-[12px] mt-1" style={{ color: palette.navySoft }}>{q.frase} Precisa de: {q.precisa}</p>
+                    <p className="text-[12.5px] mt-1.5 leading-snug" style={{ color: palette.ink }}><b style={{ color: palette.navy }}>Para liderares esta equipa:</b> {q.melhorar}</p>
+                  </div>
+                );
+              })}
+            </div>
+          ))}
           {bloco("PONTOS A DESENVOLVER", "Onde podes crescer", null, lista(r.desenvolver, palette.navy))}
           {bloco("PLANO DE 4 SEMANAS", "Os teus próximos passos", null, lista(r.plano, palette.navy))}
           <EnviarPerfilEmail titulo="Perfil Geral de Líder" seccoes={[
@@ -2742,6 +2760,7 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
             { titulo: `Comunicação: ${r.comunicacao.nome}`, texto: r.comunicacao.frase },
             r.competencias && { titulo: "Competências 3S", itens: r.competencias.map((c) => `${c.pilar}: ${c.pct}%`) },
             { titulo: "Onde és forte", itens: r.fortes },
+            { titulo: `Tipos de equipa · a tua equipa ideal: ${r.equipas[0].nome}`, itens: r.equipas.map((q) => `${q.nome} (${q.nivel}): ${q.melhorar}`) },
             { titulo: "Pontos a desenvolver", itens: r.desenvolver },
             { titulo: "Plano de 4 semanas", itens: r.plano },
           ].filter(Boolean)} />

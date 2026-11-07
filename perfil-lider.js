@@ -121,3 +121,89 @@ export function calcularPerfilGeral(respostasPers, respostasCom, respostasArq) {
     data: new Date().toISOString(),
   };
 }
+
+// ---------- Tipos de equipa ----------
+// encaixe por personalidade (0 a 3) e por arquétipo (0 a 3); melhorar = o que cada personalidade tem de trabalhar para liderar esta equipa
+export const TIPOS_EQUIPA = [
+  {
+    id: "nova", nome: "Equipa nova ou em formação",
+    frase: "Pessoas que ainda se estão a conhecer, com papéis pouco claros.",
+    precisa: "Direção clara, papéis definidos, acolhimento e regras de funcionamento.",
+    pers: { AT: 3, AP: 2, RP: 2, RT: 2 }, arq: { GU: 3, ME: 3, ES: 2, PO: 2, VI: 1, CA: 1 },
+    melhorar: {
+      AT: "Dar tempo para as pessoas se conhecerem; não exigir resultados antes de haver confiança.",
+      AP: "Transformar o entusiasmo em regras e papéis claros, por escrito.",
+      RP: "Assumir a direção desde o primeiro dia: decidir e dizer o que se espera de cada pessoa.",
+      RT: "Investir na relação e no acolhimento, não só nos processos.",
+    },
+  },
+  {
+    id: "conflito", nome: "Equipa em conflito",
+    frase: "Tensões, grupos, desconfiança ou conversas que ninguém tem.",
+    precisa: "Mediação, escuta de todas as partes, acordos de convivência e firmeza com comportamentos.",
+    pers: { RP: 3, AP: 2, RT: 1, AT: 1 }, arq: { PO: 3, ME: 2, GU: 2, ES: 1, VI: 1, CA: 0 },
+    melhorar: {
+      AT: "Abrandar, ouvir todas as partes até ao fim e separar as pessoas do problema.",
+      AP: "Não tentar resolver com boa disposição; ter a conversa difícil, com factos.",
+      RP: "Não adiar o conflito; marcar a conversa e definir limites claros.",
+      RT: "Reconhecer as emoções em jogo; o conflito raramente se resolve só com lógica.",
+    },
+  },
+  {
+    id: "estavel", nome: "Equipa estável e experiente",
+    frase: "Pessoas competentes, que conhecem o trabalho e funcionam bem.",
+    precisa: "Autonomia, reconhecimento, novos desafios e espaço para crescer.",
+    pers: { RP: 3, AP: 2, RT: 2, AT: 1 }, arq: { ME: 3, VI: 2, PO: 2, ES: 2, GU: 1, CA: 1 },
+    melhorar: {
+      AT: "Sair da frente: delegar de verdade e evitar a microgestão.",
+      AP: "Garantir consistência e seguimento, não só novidades.",
+      RP: "Trazer desafio e ambição para a equipa não se acomodar.",
+      RT: "Reconhecer mais vezes o trabalho feito e dar autonomia no \"como\".",
+    },
+  },
+  {
+    id: "alto", nome: "Equipa de alto desempenho",
+    frase: "Equipa ambiciosa, rápida e com resultados acima da média.",
+    precisa: "Visão inspiradora, objetivos exigentes, liberdade e alguém que remova obstáculos.",
+    pers: { AP: 3, AT: 2, RT: 2, RP: 1 }, arq: { VI: 3, CA: 2, ES: 2, ME: 2, PO: 1, GU: 0 },
+    melhorar: {
+      AT: "Não competir com a equipa; o teu papel é abrir caminho, não fazer por eles.",
+      AP: "Dar dados e prioridades claras; equipas fortes desconfiam de discursos vagos.",
+      RP: "Ser mais exigente e confortável com a pressão e o ritmo alto.",
+      RT: "Decidir mais depressa e aceitar algum risco.",
+    },
+  },
+  {
+    id: "crise", nome: "Equipa em crise ou mudança",
+    frase: "Reestruturação, perdas, mudança de rumo ou muita incerteza.",
+    precisa: "Calma, decisão rápida, comunicação frequente e honesta, e um plano de curto prazo.",
+    pers: { AT: 3, RT: 2, AP: 2, RP: 1 }, arq: { ES: 3, CA: 3, VI: 2, GU: 2, ME: 1, PO: 1 },
+    melhorar: {
+      AT: "Comunicar o porquê das decisões e cuidar do medo das pessoas.",
+      AP: "Ser realista: dizer o que se sabe e o que não se sabe, sem promessas.",
+      RP: "Decidir mesmo sem consenso; em crise a equipa precisa de rumo.",
+      RT: "Agir antes de ter toda a informação e comunicar com mais frequência.",
+    },
+  },
+  {
+    id: "inovacao", nome: "Equipa criativa ou de inovação",
+    frase: "Projetos novos, ideias, testes e muita incerteza criativa.",
+    precisa: "Liberdade, tolerância ao erro, experimentação e uma visão que dê sentido.",
+    pers: { AP: 3, AT: 2, RP: 2, RT: 1 }, arq: { CA: 3, VI: 3, ES: 2, PO: 1, ME: 1, GU: 0 },
+    melhorar: {
+      AT: "Tolerar o erro e as voltas do processo criativo; nem tudo tem de dar resultado já.",
+      AP: "Escolher as ideias certas e levá-las até ao fim.",
+      RP: "Arriscar mais e incentivar ideias que fogem ao habitual.",
+      RT: "Largar o controlo e o detalhe na fase de ideias; o rigor vem depois.",
+    },
+  },
+];
+
+export function encaixeEquipas(g) {
+  return TIPOS_EQUIPA.map((t) => {
+    const pontos = (t.pers[g.personalidade] || 0) + (t.arq[g.arquetipo] || 0) + (g.arquetipo2 ? (t.arq[g.arquetipo2] || 0) / 2 : 0) + (g.comunicacao === "AS" ? 1 : 0);
+    const nivel = pontos >= 6 ? "Encaixe natural" : pontos >= 4 ? "Bom encaixe" : "Exige mais de ti";
+    const extra = g.comunicacao !== "AS" && (t.id === "conflito" || t.id === "crise") ? " Treina também a comunicação assertiva: nesta equipa faz toda a diferença." : "";
+    return { id: t.id, nome: t.nome, frase: t.frase, precisa: t.precisa, pontos, nivel, melhorar: t.melhorar[g.personalidade] + extra };
+  }).sort((a, b) => b.pontos - a.pontos);
+}
