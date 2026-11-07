@@ -3,7 +3,7 @@ import { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "./supabase.js";
 import { AULAS_LIDERANCA_3S, AVALIACAO_3S, PLANO_3S, PILARES_3S } from "./curso-lideranca-3s.js";
 import { AULAS_ATLETA_3S, AVALIACAO_ATLETA_3S, PLANO_ATLETA_3S } from "./curso-desporto-3s.js";
-import { PERGUNTAS_PROPOSITO, VALORES, CRENCAS, AREAS_VIDA, FERIDAS, PERGUNTAS_FERIDAS, PLANO_VIDA } from "./perfil-vida.js";
+import { PERGUNTAS_PROPOSITO, VALORES, CRENCAS, AREAS_VIDA, FERIDAS, PERGUNTAS_FERIDAS, PLANO_VIDA, ATIVIDADES, TIPOS_VOCACIONAIS, sugerirProfissoes } from "./perfil-vida.js";
 import { PERGUNTAS_PERSONALIDADE, PERSONALIDADES, PERGUNTAS_COMUNICACAO, COMUNICACOES, PERGUNTAS_ARQUETIPO, ARQUETIPOS, calcularPerfilGeral, encaixeEquipas, TIPOS_EQUIPA, COMPETENCIAS_LIDER, ESCALA_COMPETENCIAS } from "./perfil-lider.js";
 import {
   Home,
@@ -2134,7 +2134,7 @@ function PerfilVidaScreen({ guardado, onGuardar, onBack, onMarcar }) {
   const inp = "w-full rounded-xl px-3 py-2.5 text-sm outline-none";
   const inpS = { backgroundColor: "#fff", border: `1px solid ${palette.goldSoft}`, color: palette.ink };
   const podeAvancar = [
-    () => d.proposito.filter((x) => x && x.trim()).length >= 2,
+    () => d.proposito.filter((x) => x && x.trim()).length >= 2 && (d.atividades || []).length >= 3,
     () => d.valores.length >= 3,
     () => d.valores.every((v) => d.viver[v]),
     () => CRENCAS.every((_, i) => d.crencas[i]),
@@ -2154,6 +2154,7 @@ function PerfilVidaScreen({ guardado, onGuardar, onBack, onMarcar }) {
   if (passo === 99) {
     // ---- Relatório
     const frase = d.frase.talento || d.frase.impacto ? `Quero usar ${d.frase.talento || "o que tenho de melhor"} para ${d.frase.impacto || "fazer a diferença"}${d.frase.quem ? ` na vida de ${d.frase.quem}` : ""}.` : null;
+    const voc = sugerirProfissoes(d.atividades || [], [...(d.proposito || []), d.frase.talento, d.frase.impacto, d.frase.quem]);
     const valoresOrd = [...d.valores].sort((a, b) => (d.viver[a] || 0) - (d.viver[b] || 0));
     const crencasTop = CRENCAS.map((c, i) => ({ c, v: d.crencas[i] || 0 })).filter((x) => x.v >= 3).sort((a, b) => b.v - a.v).slice(0, 3);
     const areasOrd = Object.entries(d.areas).sort((a, b) => a[1] - b[1]);
@@ -2185,6 +2186,16 @@ function PerfilVidaScreen({ guardado, onGuardar, onBack, onMarcar }) {
             <p className="text-[10px] tracking-[0.25em] font-semibold" style={{ color: palette.navy }}>O TEU PROPÓSITO</p>
             <p className="font-serif text-xl leading-snug mt-2" style={{ color: palette.navy }}>{frase || "Ainda por escrever: volta ao questionário e completa a tua frase."}</p>
           </div>
+          {voc && bloco("PROPÓSITO E PROFISSÃO", `Perfil ${TIPOS_VOCACIONAIS[voc.t1].nome}${voc.t2 ? " e " + TIPOS_VOCACIONAIS[voc.t2].nome : ""}`, (
+            <>
+              {p_(`${TIPOS_VOCACIONAIS[voc.t1].frase}${voc.t2 ? " " + TIPOS_VOCACIONAIS[voc.t2].frase : ""}`)}
+              {voc.combinacao && <><p className="text-[12px] font-semibold mt-3 mb-1" style={{ color: palette.navy }}>Profissões que juntam os dois lados</p>{li(voc.combinacao)}</>}
+              <p className="text-[12px] font-semibold mt-3 mb-1" style={{ color: palette.navy }}>Profissões ligadas ao perfil {TIPOS_VOCACIONAIS[voc.t1].nome}</p>
+              {li(TIPOS_VOCACIONAIS[voc.t1].profissoes)}
+              {voc.t2 && <><p className="text-[12px] font-semibold mt-3 mb-1" style={{ color: palette.navy }}>Profissões ligadas ao perfil {TIPOS_VOCACIONAIS[voc.t2].nome}</p>{li(TIPOS_VOCACIONAIS[voc.t2].profissoes.slice(0, 4))}</>}
+              <p className="text-[11px] mt-3" style={{ color: palette.navySoft }}>Com base no modelo de interesses vocacionais de John Holland. São pistas para explorar, não uma decisão: o propósito pode viver-se em muitas profissões.</p>
+            </>
+          ))}
           {bloco("VALORES A SEGUIR", "Os teus valores", li(valoresOrd.map((v) => `${v} — vives este valor ${d.viver[v]} em 5${d.viver[v] <= 3 ? " · dar-lhe mais espaço" : ""}`)))}
           {bloco("CRENÇAS", crencasTop.length ? "Crenças que te limitam" : "Sem crenças limitantes fortes", crencasTop.length ? <div className="space-y-2.5">{crencasTop.map(({ c }) => <div key={c[0]}><p className="text-[13px] line-through" style={{ color: palette.navySoft }}>{c[0]}</p><p className="text-[13px] font-medium" style={{ color: palette.navy }}>→ {c[1]}</p></div>)}</div> : p_("Nenhuma das crenças avaliadas parece pesar muito em ti neste momento."))}
           {bloco("DORES", dores.length ? "Áreas que pedem atenção" : "Sem áreas em sofrimento", <>{dores.length ? li(dores.map(([a, v]) => `${a}: ${v} em 10`)) : p_("Nenhuma área ficou abaixo de 6.")}{fortes.length > 0 && <p className="text-[12px] mt-2" style={{ color: palette.navySoft }}>Onde estás bem: {fortes.map(([a]) => a).join(", ")}.</p>}</>)}
@@ -2195,6 +2206,7 @@ function PerfilVidaScreen({ guardado, onGuardar, onBack, onMarcar }) {
           </div>
           <EnviarPerfilEmail titulo="Perfil de Vida" seccoes={[
             frase && { titulo: "O teu propósito", texto: frase },
+            voc && { titulo: `Propósito e profissão: perfil ${TIPOS_VOCACIONAIS[voc.t1].nome}${voc.t2 ? " e " + TIPOS_VOCACIONAIS[voc.t2].nome : ""}`, itens: [...(voc.combinacao || []), ...TIPOS_VOCACIONAIS[voc.t1].profissoes, ...(voc.t2 ? TIPOS_VOCACIONAIS[voc.t2].profissoes.slice(0, 4) : [])].filter((x, i, a) => a.indexOf(x) === i) },
             { titulo: "Valores a seguir", itens: valoresOrd.map((v) => `${v}: vives este valor ${d.viver[v]} em 5`) },
             crencasTop.length && { titulo: "Crenças que te limitam (e a alternativa)", itens: crencasTop.map(({ c }) => `${c[0]} → ${c[1]}`) },
             dores.length && { titulo: "Áreas que pedem atenção", itens: dores.map(([a, v]) => `${a}: ${v} em 10`) },
@@ -2219,6 +2231,15 @@ function PerfilVidaScreen({ guardado, onGuardar, onBack, onMarcar }) {
               <div key={i}><p className="text-sm font-medium mb-1.5" style={{ color: palette.navy }}>{q}</p>
                 <textarea rows={2} value={d.proposito[i] || ""} onChange={(e) => { const a = [...d.proposito]; a[i] = e.target.value; set("proposito", a); }} className={inp} style={inpS} placeholder="Escreve aqui…" /></div>
             ))}
+            <div className="rounded-2xl px-4 py-4" style={caixa}>
+              <p className="text-sm font-medium" style={{ color: palette.navy }}>Que atividades te dão mais energia?</p>
+              <p className="text-[12px] mb-2.5" style={{ color: palette.navySoft }}>Escolhe entre 3 e 6. Vamos ligá-las a profissões.</p>
+              <div className="flex flex-wrap gap-2">
+                {ATIVIDADES.map(([, t], i) => { const esc = d.atividades || []; const on = esc.includes(i); return (
+                  <button key={i} onClick={() => set("atividades", on ? esc.filter((x) => x !== i) : esc.length < 6 ? [...esc, i] : esc)} className="rounded-full px-3 py-1.5 text-[12.5px] text-left" style={on ? { backgroundColor: palette.navy, color: palette.creamSoft } : { border: `1px solid ${palette.goldSoft}`, color: palette.navy, backgroundColor: "#fff" }}>{t}</button>
+                ); })}
+              </div>
+            </div>
             <div className="rounded-2xl px-4 py-4" style={caixa}>
               <p className="text-sm font-medium mb-2" style={{ color: palette.navy }}>Agora, a tua frase de propósito:</p>
               <p className="text-[12px] mb-1" style={{ color: palette.navySoft }}>Quero usar…</p>

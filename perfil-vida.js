@@ -85,3 +85,67 @@ export const PLANO_VIDA = {
   dor: (a) => `Define um pequeno passo para melhorar a área "${a}" e cumpre-o esta semana.`,
   ferida: (f) => `Pratica o cuidado da ferida de ${f.nome.toLowerCase()}: ${f.cuidado}`,
 };
+
+// ---------- Propósito e profissões (modelo de interesses de John Holland, RIASEC) ----------
+export const ATIVIDADES = [
+  ["R", "Trabalhar com as mãos ou com ferramentas"], ["R", "Fazer atividade física ou estar ao ar livre"], ["R", "Reparar, construir ou montar coisas"],
+  ["I", "Investigar e perceber porque é que as coisas acontecem"], ["I", "Resolver problemas complexos ou analisar dados"], ["I", "Estudar ciência, saúde ou tecnologia"],
+  ["A", "Escrever, desenhar, fotografar ou criar"], ["A", "Inventar ideias novas e originais"], ["A", "Música, teatro, moda ou decoração"],
+  ["S", "Ajudar pessoas a resolver os seus problemas"], ["S", "Ensinar, explicar ou formar"], ["S", "Cuidar de quem precisa"],
+  ["E", "Liderar pessoas e projetos"], ["E", "Convencer, negociar ou vender"], ["E", "Criar o meu próprio negócio"],
+  ["C", "Organizar, planear e pôr ordem nas coisas"], ["C", "Trabalhar com números, registos ou documentos"], ["C", "Seguir processos e garantir que tudo está certo"],
+];
+
+export const TIPOS_VOCACIONAIS = {
+  R: { nome: "Prático/a", frase: "Gostas de fazer, construir e ver resultados concretos.", profissoes: ["Técnico/a de manutenção ou eletricista", "Engenheiro/a civil ou mecânico/a", "Chef de cozinha", "Treinador/a desportivo/a", "Agricultor/a ou paisagista", "Fisioterapeuta"] },
+  I: { nome: "Investigador/a", frase: "Gostas de perceber, analisar e descobrir.", profissoes: ["Investigador/a científico/a", "Analista de dados", "Médico/a ou farmacêutico/a", "Engenheiro/a informático/a", "Nutricionista", "Psicólogo/a"] },
+  A: { nome: "Criativo/a", frase: "Gostas de criar, expressar e imaginar.", profissoes: ["Designer", "Escritor/a ou jornalista", "Fotógrafo/a ou realizador/a", "Arquiteto/a", "Criador/a de conteúdos", "Músico/a ou ator/atriz"] },
+  S: { nome: "Social", frase: "Gostas de ajudar, ensinar e cuidar de pessoas.", profissoes: ["Coach", "Professor/a ou formador/a", "Enfermeiro/a", "Psicólogo/a", "Assistente social", "Terapeuta ocupacional"] },
+  E: { nome: "Empreendedor/a", frase: "Gostas de liderar, influenciar e fazer acontecer.", profissoes: ["Empresário/a", "Gestor/a ou diretor/a", "Gestor/a de projetos", "Consultor/a", "Comercial ou gestor/a de vendas", "Advogado/a"] },
+  C: { nome: "Organizador/a", frase: "Gostas de ordem, rigor e processos bem feitos.", profissoes: ["Contabilista", "Técnico/a de recursos humanos", "Gestor/a de logística", "Auditor/a", "Técnico/a administrativo/a", "Gestor/a de qualidade"] },
+};
+
+// Combinações frequentes dos dois tipos mais fortes
+export const COMBINACOES = {
+  SE: ["Coach de liderança", "Gestor/a de recursos humanos", "Formador/a em empresas"],
+  ES: ["Coach de liderança", "Gestor/a de equipas", "Diretor/a de escola ou instituição"],
+  SA: ["Arte-terapeuta", "Educador/a de infância", "Animador/a sociocultural"],
+  AS: ["Arte-terapeuta", "Professor/a de artes", "Escritor/a de desenvolvimento pessoal"],
+  SI: ["Psicólogo/a", "Médico/a de família", "Investigador/a em educação"],
+  IS: ["Psicólogo/a", "Nutricionista", "Terapeuta da fala"],
+  SR: ["Fisioterapeuta", "Personal trainer", "Educador/a ao ar livre"],
+  RS: ["Fisioterapeuta", "Treinador/a desportivo/a", "Bombeiro/a ou socorrista"],
+  EA: ["Diretor/a criativo/a", "Gestor/a de marketing", "Produtor/a de eventos"],
+  AE: ["Empreendedor/a criativo/a", "Diretor/a de comunicação", "Criador/a de conteúdos"],
+  EC: ["Gestor/a de operações", "Gestor/a financeiro/a", "Gerente de loja"],
+  CE: ["Gerente de loja", "Gestor/a administrativo/a", "Gestor/a de qualidade"],
+  IC: ["Analista de dados", "Auditor/a", "Engenheiro/a de software"],
+  CI: ["Analista financeiro/a", "Técnico/a de laboratório", "Auditor/a"],
+  IA: ["Arquiteto/a", "Designer de produto", "Investigador/a em humanidades"],
+  AI: ["Arquiteto/a", "Designer de experiência (UX)", "Jornalista de investigação"],
+  ER: ["Empresário/a na área do desporto ou da construção", "Gestor/a de obra", "Chef e proprietário/a de restaurante"],
+  RE: ["Empresário/a na área do desporto ou da construção", "Chef e proprietário/a de restaurante", "Gestor/a de obra"],
+  SC: ["Técnico/a de recursos humanos", "Secretário/a clínico/a", "Gestor/a de serviços sociais"],
+  CS: ["Técnico/a de recursos humanos", "Técnico/a de apoio ao cliente", "Gestor/a de serviços sociais"],
+};
+
+// Palavras nas respostas livres que reforçam cada tipo
+const PALAVRAS = {
+  R: ["construir", "reparar", "mãos", "desporto", "correr", "treinar", "natureza", "cozinhar", "terra", "máquina", "físic"],
+  I: ["investigar", "estudar", "perceber", "analisar", "ciência", "dados", "saúde", "tecnologia", "ler", "pesquisar"],
+  A: ["criar", "escrever", "desenhar", "música", "arte", "pintar", "fotografia", "design", "imaginar", "livro"],
+  S: ["ajudar", "ensinar", "cuidar", "ouvir", "pessoas", "crianças", "apoiar", "conselho", "acompanhar", "formar"],
+  E: ["liderar", "negócio", "vender", "empresa", "equipa", "gerir", "decidir", "organizar eventos", "convencer", "empreender"],
+  C: ["organizar", "planear", "números", "contas", "processos", "regras", "arrumar", "documentos", "rigor", "listas"],
+};
+
+export function sugerirProfissoes(escolhas = [], textos = []) {
+  const pontos = { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 };
+  escolhas.forEach((i) => { const a = ATIVIDADES[i]; if (a) pontos[a[0]] += 2; });
+  const txt = textos.join(" ").toLowerCase();
+  Object.entries(PALAVRAS).forEach(([k, ps]) => ps.forEach((p) => { if (txt.includes(p)) pontos[k] += 1; }));
+  const ord = Object.entries(pontos).sort((a, b) => b[1] - a[1]);
+  if (ord[0][1] === 0) return null;
+  const [t1, t2] = [ord[0][0], ord[1][1] > 0 ? ord[1][0] : null];
+  return { t1, t2, combinacao: t2 ? COMBINACOES[t1 + t2] || null : null };
+}
