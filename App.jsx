@@ -1463,7 +1463,7 @@ const TREINOS_LIDERANCA = [
     ],
     construtor: {
       titulo: "Constrói a tua frase CNV",
-      campos: [["obs", "Quando vejo ou ouço…", "o relatório chegar depois do prazo"], ["sent", "sinto…", "preocupação"], ["nec", "porque preciso de…", "poder confiar nos prazos"], ["ped", "Podes…?", "avisar-me na véspera se houver atraso"]],
+      campos: [["obs", "Quando… (o que aconteceu, só factos)", "o relatório chega depois do prazo"], ["sent", "sinto…", "preocupação"], ["nec", "porque preciso de…", "poder confiar nos prazos"], ["ped", "Podes…?", "avisar-me na véspera se houver atraso"]],
       gerar: (v) => `Quando ${v.obs}, sinto ${v.sent}, porque preciso de ${v.nec}. Podes ${v.ped}?`,
     },
     plano: ["Escreve três frases tuas de julgamento e transforma-as em observações.", "Aprende cinco palavras novas para sentimentos e usa uma hoje.", "Usa a frase que construíste numa conversa real.", "Repara num pedido vago que fizeste e torna-o concreto.", "Escreve o que mudou na conversa quando usaste a CNV."],
