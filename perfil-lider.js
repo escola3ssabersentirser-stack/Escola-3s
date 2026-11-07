@@ -126,7 +126,7 @@ export function calcularPerfilGeral(respostasPers, respostasCom, respostasArq) {
 // encaixe por personalidade (0 a 3) e por arquétipo (0 a 3); melhorar = o que cada personalidade tem de trabalhar para liderar esta equipa
 export const TIPOS_EQUIPA = [
   {
-    id: "nova", nome: "Equipa nova ou em formação",
+    id: "nova", lid: { O: 3, C: 2, F: 2, D: 0 }, nome: "Equipa nova ou em formação",
     frase: "Pessoas que ainda se estão a conhecer, com papéis pouco claros.",
     precisa: "Direção clara, papéis definidos, acolhimento e regras de funcionamento.",
     pers: { AT: 3, AP: 2, RP: 2, RT: 2 }, arq: { GU: 3, ME: 3, ES: 2, PO: 2, VI: 1, CA: 1 },
@@ -138,7 +138,7 @@ export const TIPOS_EQUIPA = [
     },
   },
   {
-    id: "conflito", nome: "Equipa em conflito",
+    id: "conflito", lid: { F: 3, C: 2, O: 1, D: 0 }, nome: "Equipa em conflito",
     frase: "Tensões, grupos, desconfiança ou conversas que ninguém tem.",
     precisa: "Mediação, escuta de todas as partes, acordos de convivência e firmeza com comportamentos.",
     pers: { RP: 3, AP: 2, RT: 1, AT: 1 }, arq: { PO: 3, ME: 2, GU: 2, ES: 1, VI: 1, CA: 0 },
@@ -150,7 +150,7 @@ export const TIPOS_EQUIPA = [
     },
   },
   {
-    id: "estavel", nome: "Equipa estável e experiente",
+    id: "estavel", lid: { D: 3, C: 2, F: 2, O: 0 }, nome: "Equipa estável e experiente",
     frase: "Pessoas competentes, que conhecem o trabalho e funcionam bem.",
     precisa: "Autonomia, reconhecimento, novos desafios e espaço para crescer.",
     pers: { RP: 3, AP: 2, RT: 2, AT: 1 }, arq: { ME: 3, VI: 2, PO: 2, ES: 2, GU: 1, CA: 1 },
@@ -162,7 +162,7 @@ export const TIPOS_EQUIPA = [
     },
   },
   {
-    id: "alto", nome: "Equipa de alto desempenho",
+    id: "alto", lid: { D: 3, C: 2, O: 1, F: 1 }, nome: "Equipa de alto desempenho",
     frase: "Equipa ambiciosa, rápida e com resultados acima da média.",
     precisa: "Visão inspiradora, objetivos exigentes, liberdade e alguém que remova obstáculos.",
     pers: { AP: 3, AT: 2, RT: 2, RP: 1 }, arq: { VI: 3, CA: 2, ES: 2, ME: 2, PO: 1, GU: 0 },
@@ -174,7 +174,7 @@ export const TIPOS_EQUIPA = [
     },
   },
   {
-    id: "crise", nome: "Equipa em crise ou mudança",
+    id: "crise", lid: { O: 3, F: 2, C: 1, D: 0 }, nome: "Equipa em crise ou mudança",
     frase: "Reestruturação, perdas, mudança de rumo ou muita incerteza.",
     precisa: "Calma, decisão rápida, comunicação frequente e honesta, e um plano de curto prazo.",
     pers: { AT: 3, RT: 2, AP: 2, RP: 1 }, arq: { ES: 3, CA: 3, VI: 2, GU: 2, ME: 1, PO: 1 },
@@ -186,7 +186,7 @@ export const TIPOS_EQUIPA = [
     },
   },
   {
-    id: "inovacao", nome: "Equipa criativa ou de inovação",
+    id: "inovacao", lid: { D: 3, C: 2, F: 2, O: 0 }, nome: "Equipa criativa ou de inovação",
     frase: "Projetos novos, ideias, testes e muita incerteza criativa.",
     precisa: "Liberdade, tolerância ao erro, experimentação e uma visão que dê sentido.",
     pers: { AP: 3, AT: 2, RP: 2, RT: 1 }, arq: { CA: 3, VI: 3, ES: 2, PO: 1, ME: 1, GU: 0 },
@@ -201,9 +201,24 @@ export const TIPOS_EQUIPA = [
 
 export function encaixeEquipas(g) {
   return TIPOS_EQUIPA.map((t) => {
-    const pontos = (t.pers[g.personalidade] || 0) + (t.arq[g.arquetipo] || 0) + (g.arquetipo2 ? (t.arq[g.arquetipo2] || 0) / 2 : 0) + (g.comunicacao === "AS" ? 1 : 0);
-    const nivel = pontos >= 6 ? "Encaixe natural" : pontos >= 4 ? "Bom encaixe" : "Exige mais de ti";
+    const pontos = (g.lideranca ? t.lid[g.lideranca] || 0 : 1.5) + (t.pers[g.personalidade] || 0) + (t.arq[g.arquetipo] || 0) + (g.arquetipo2 ? (t.arq[g.arquetipo2] || 0) / 2 : 0) + (g.comunicacao === "AS" ? 1 : 0);
+    const nivel = pontos >= 8 ? "Encaixe natural" : pontos >= 5.5 ? "Bom encaixe" : "Exige mais de ti";
     const extra = g.comunicacao !== "AS" && (t.id === "conflito" || t.id === "crise") ? " Treina também a comunicação assertiva: nesta equipa faz toda a diferença." : "";
     return { id: t.id, nome: t.nome, frase: t.frase, precisa: t.precisa, pontos, nivel, melhorar: t.melhorar[g.personalidade] + extra };
   }).sort((a, b) => b.pontos - a.pontos);
 }
+
+// ---------- Competências de liderança (autoavaliação 1 a 5) ----------
+export const COMPETENCIAS_LIDER = [
+  { id: "comunicacao", nome: "Comunicação", frase: "Explico com clareza o que espero e confirmo que fui entendido/a.", dica: "No fim de cada pedido, pergunta: \"O que ficou combinado?\" e ouve a resposta." },
+  { id: "escuta", nome: "Escuta ativa", frase: "Ouço até ao fim, sem interromper, antes de responder.", dica: "Antes de responderes, resume o que ouviste: \"Se percebi bem, …\"" },
+  { id: "decisao", nome: "Tomada de decisão", frase: "Decido a tempo, mesmo sem ter toda a informação.", dica: "Define um prazo para cada decisão e decide com 70% da informação." },
+  { id: "conflitos", nome: "Gestão de conflitos", frase: "Enfrento os conflitos cedo, com calma e respeito.", dica: "Usa o modelo factos, impacto, pedido nas conversas difíceis." },
+  { id: "prioridades", nome: "Definição de prioridades", frase: "Sei o que é mais importante e protejo o tempo da equipa para isso.", dica: "Todas as semanas, escolhe as 3 prioridades da equipa e partilha-as." },
+  { id: "pessoas", nome: "Desenvolvimento de pessoas", frase: "Dou feedback regular e ajudo cada pessoa a crescer.", dica: "Marca 15 minutos por mês com cada pessoa só para falar do seu desenvolvimento." },
+  { id: "emocional", nome: "Inteligência emocional", frase: "Reconheço as minhas emoções e controlo as minhas reações sob pressão.", dica: "Pratica parar, nomear a emoção e só depois escolher a resposta." },
+  { id: "critico", nome: "Pensamento crítico", frase: "Questiono pressupostos e analiso os problemas antes de agir.", dica: "Antes de decidir, pergunta: \"O que me pode estar a escapar?\"" },
+  { id: "relacional", nome: "Inteligência relacional", frase: "Crio relações de confiança e percebo o que cada pessoa precisa de mim.", dica: "Esta semana, pergunta a cada pessoa da equipa: \"O que posso fazer para te ajudar a dar o teu melhor?\"" },
+  { id: "adaptacao", nome: "Capacidade de adaptação", frase: "Ajusto-me depressa a mudanças e ajudo a equipa a adaptar-se.", dica: "Perante uma mudança, explica o porquê e o primeiro passo, não o plano todo." },
+];
+export const ESCALA_COMPETENCIAS = [[1, "Raramente"], [2, "Às vezes"], [3, "Muitas vezes"], [4, "Quase sempre"], [5, "Sempre"]];

@@ -4,7 +4,7 @@ import { supabase } from "./supabase.js";
 import { AULAS_LIDERANCA_3S, AVALIACAO_3S, PLANO_3S, PILARES_3S } from "./curso-lideranca-3s.js";
 import { AULAS_ATLETA_3S, AVALIACAO_ATLETA_3S, PLANO_ATLETA_3S } from "./curso-desporto-3s.js";
 import { PERGUNTAS_PROPOSITO, VALORES, CRENCAS, AREAS_VIDA, FERIDAS, PERGUNTAS_FERIDAS, PLANO_VIDA } from "./perfil-vida.js";
-import { PERGUNTAS_PERSONALIDADE, PERSONALIDADES, PERGUNTAS_COMUNICACAO, COMUNICACOES, PERGUNTAS_ARQUETIPO, ARQUETIPOS, calcularPerfilGeral, encaixeEquipas } from "./perfil-lider.js";
+import { PERGUNTAS_PERSONALIDADE, PERSONALIDADES, PERGUNTAS_COMUNICACAO, COMUNICACOES, PERGUNTAS_ARQUETIPO, ARQUETIPOS, calcularPerfilGeral, encaixeEquipas, COMPETENCIAS_LIDER, ESCALA_COMPETENCIAS } from "./perfil-lider.js";
 import {
   Home,
   Compass,
@@ -2629,9 +2629,11 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
   // ---- Perfil Geral de Líder (só no Laboratório de Liderança)
   const temPerfilGeral = cfg === LAB_LIDERANCA;
   const PERGUNTAS_GERAL = [
+    ...PERGUNTAS_PERFIL.map(([q, ops]) => ({ parte: "Tipo de liderança", q, ops })),
     ...PERGUNTAS_PERSONALIDADE.map(([q, ops]) => ({ parte: "Personalidade", q, ops: ops.map(([, v, t]) => [v, t]) })),
     ...PERGUNTAS_COMUNICACAO.map(([q, ops]) => ({ parte: "Comunicação", q, ops })),
     ...PERGUNTAS_ARQUETIPO.map(([q, ops]) => ({ parte: "Arquétipo", q, ops })),
+    ...COMPETENCIAS_LIDER.map((c) => ({ parte: `Competências · ${c.nome}`, q: c.frase, ops: ESCALA_COMPETENCIAS, fixa: true })),
   ];
   const montarRelatorio = (g) => {
     if (!g) return null;
@@ -2642,23 +2644,25 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
     const lid = resultados.perfil && PERFIS_LIDER[resultados.perfil.perfil];
     const comp = resultados.competencias && resultados.competencias.pilares;
     const compOrd = comp ? [...comp].sort((a, b) => b.pct - a.pct) : null;
-    const fortes = [lid && lid.forca, ...pers.fortes.slice(0, 2), arq.forte, com.fortes[0], compOrd && `Pilar mais forte: ${compOrd[0].pilar} (${compOrd[0].pct}%).`].filter(Boolean);
-    const desenvolver = [lid && lid.crescer, ...pers.desenvolver.slice(0, 2), arq.desenvolver, com.desenvolver[0], compOrd && `Pilar a desenvolver: ${compOrd[compOrd.length - 1].pilar} (${compOrd[compOrd.length - 1].pct}%).`].filter(Boolean);
+    const cl = g.competenciasLider ? COMPETENCIAS_LIDER.map((c) => ({ ...c, v: g.competenciasLider[c.id] || 0 })).sort((a, b) => b.v - a.v) : null;
+    const fortes = [lid && lid.forca, cl && `Competências mais fortes: ${cl.slice(0, 3).map((c) => c.nome.toLowerCase()).join(", ")}.`, ...pers.fortes.slice(0, 2), arq.forte, com.fortes[0], compOrd && `Pilar mais forte: ${compOrd[0].pilar} (${compOrd[0].pct}%).`].filter(Boolean);
+    const desenvolver = [cl && `${cl[cl.length - 1].nome}: ${cl[cl.length - 1].dica}`, cl && `${cl[cl.length - 2].nome}: ${cl[cl.length - 2].dica}`, lid && lid.crescer, ...pers.desenvolver.slice(0, 2), arq.desenvolver, com.desenvolver[0], compOrd && `Pilar a desenvolver: ${compOrd[compOrd.length - 1].pilar} (${compOrd[compOrd.length - 1].pct}%).`].filter(Boolean);
     return {
-      lideranca: lid ? { nome: lid.nome, frase: lid.frase, quando: lid.quando, risco: lid.risco } : null,
+      lideranca: lid ? { nome: lid.nome, frase: lid.frase, quando: lid.quando, risco: lid.risco, contagem: resultados.perfil.contagem } : null,
       arquetipo: { nome: arq.nome, frase: arq.frase, secundario: arq2 ? arq2.nome : null },
       personalidade: { nome: pers.nome, frase: pers.frase, comunicarComigo: pers.comunicarComigo, eixos: g.eixos },
       comunicacao: { nome: com.nome, frase: com.frase, contagem: g.comunicacaoContagem },
       competencias: comp || null,
       fortes, desenvolver,
-      equipas: encaixeEquipas(g),
+      competenciasLider: cl,
+      equipas: encaixeEquipas({ ...g, lideranca: g.lideranca || (resultados.perfil && resultados.perfil.perfil) }),
       plano: desenvolver.slice(0, 4).map((d, i) => `Semana ${i + 1}: ${d}`),
     };
   };
   if (vista === "geral") {
     if (passo < PERGUNTAS_GERAL.length) {
       const item = PERGUNTAS_GERAL[passo];
-      const ops = [...item.ops.slice(passo % item.ops.length), ...item.ops.slice(0, passo % item.ops.length)];
+      const ops = item.fixa ? item.ops : [...item.ops.slice(passo % item.ops.length), ...item.ops.slice(0, passo % item.ops.length)];
       return (
         <div className="pb-28">
           {cabecalho(`${item.parte.toUpperCase()} · ${passo + 1} DE ${PERGUNTAS_GERAL.length}`, "Perfil Geral de Líder", voltarLab, "Laboratório")}
@@ -2672,9 +2676,15 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
                 <button key={t} onClick={() => {
                   const novas = [...respostas, v];
                   if (passo + 1 === PERGUNTAS_GERAL.length) {
-                    const nP = PERGUNTAS_PERSONALIDADE.length, nC = PERGUNTAS_COMUNICACAO.length;
-                    onGuardar("perfilGeral", calcularPerfilGeral(novas.slice(0, nP), novas.slice(nP, nP + nC), novas.slice(nP + nC)));
-                    setVista("relatorio"); setPasso(0); setRespostas([]); window.scrollTo(0, 0);
+                    const nL = PERGUNTAS_PERFIL.length, nP = PERGUNTAS_PERSONALIDADE.length, nC = PERGUNTAS_COMUNICACAO.length, nA = PERGUNTAS_ARQUETIPO.length;
+                    const resL = novas.slice(0, nL), resto = novas.slice(nL);
+                    const contagemL = Object.fromEntries(Object.keys(PERFIS_LIDER).map((k) => [k, 0]));
+                    resL.forEach((x) => { if (contagemL[x] !== undefined) contagemL[x] += 1; });
+                    const ordL = Object.keys(contagemL).sort((a, b) => contagemL[b] - contagemL[a]);
+                    onGuardar("perfil", { perfil: ordL[0], contagem: contagemL, data: new Date().toISOString() });
+                    const resComp = resto.slice(nP + nC + nA);
+                    onGuardar("perfilGeral", { ...calcularPerfilGeral(resto.slice(0, nP), resto.slice(nP, nP + nC), resto.slice(nP + nC, nP + nC + nA)), lideranca: ordL[0], competenciasLider: Object.fromEntries(COMPETENCIAS_LIDER.map((c, i) => [c.id, resComp[i] || 0])) });
+                    setVista("relatorio"); setPasso(0); setRespostas([]); setTimeout(() => window.scrollTo(0, 0), 30);
                   } else { setRespostas(novas); setPasso(passo + 1); }
                 }} className="w-full text-left rounded-2xl px-4 py-3.5 text-sm transition active:scale-[0.99]" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66`, color: palette.ink }}>{t}</button>
               ))}
@@ -2716,7 +2726,14 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
             </div>
           </div>
           {r.lideranca
-            ? bloco("TIPO DE LIDERANÇA", r.lideranca.nome, r.lideranca.frase, <p className="text-[12px] mt-2" style={{ color: palette.navySoft }}>Funciona melhor em: {r.lideranca.quando}</p>)
+            ? bloco("TIPO DE LIDERANÇA", r.lideranca.nome, r.lideranca.frase, (
+              <div className="mt-2">
+                <p className="text-[12px]" style={{ color: palette.navySoft }}><b>Funciona melhor em:</b> {r.lideranca.quando}</p>
+                <p className="text-[12px] mt-1" style={{ color: palette.navySoft }}><b>Cuidado com:</b> {r.lideranca.risco}</p>
+                {r.lideranca.contagem && <div className="mt-3">{Object.entries(r.lideranca.contagem).sort((a, b) => b[1] - a[1]).map(([k, v]) => <BarraPct key={k} rotulo={PERFIS_LIDER[k].nome} pct={Math.round((v / Math.max(Object.values(r.lideranca.contagem).reduce((a, b) => a + b, 0), 1)) * 100)} destaque={PERFIS_LIDER[k].nome === r.lideranca.nome} />)}</div>}
+                <p className="text-[11px] mt-1" style={{ color: palette.navySoft }}>Os bons líderes usam os quatro estilos conforme a pessoa e a situação. O teu estilo principal é aquele a que recorres com mais naturalidade.</p>
+              </div>
+            ))
             : bloco("TIPO DE LIDERANÇA", "Ainda por descobrir", "Faz o teste de perfil de liderança (2 minutos) para completares o relatório.", <button onClick={() => { setVista("perfil"); setPasso(0); setRespostas([]); }} className="mt-3 rounded-full px-4 py-2 text-xs font-medium" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Fazer agora</button>)}
           {bloco("ARQUÉTIPO DE LÍDER", r.arquetipo.nome, r.arquetipo.frase, r.arquetipo.secundario && <p className="text-[12px] mt-2" style={{ color: palette.navySoft }}>Arquétipo secundário: {r.arquetipo.secundario}</p>)}
           {bloco("TIPO DE PERSONALIDADE", r.personalidade.nome, r.personalidade.frase, (
@@ -2728,6 +2745,9 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
           ))}
           {bloco("TIPO DE COMUNICAÇÃO", r.comunicacao.nome, r.comunicacao.frase, (
             <div className="mt-3">{Object.entries(r.comunicacao.contagem).map(([k, v]) => <BarraPct key={k} rotulo={COMUNICACOES[k].nome} pct={Math.round((v / totCom) * 100)} destaque={COMUNICACOES[k].nome === r.comunicacao.nome} />)}</div>
+          ))}
+          {r.competenciasLider && bloco("COMPETÊNCIAS DE LIDERANÇA", "As tuas 10 competências", "Autoavaliação de 1 a 5. A mais forte no topo.", (
+            <div className="mt-3">{r.competenciasLider.map((c, i) => <BarraPct key={c.id} rotulo={`${c.nome} · ${c.v}/5`} pct={c.v * 20} destaque={i < 3} />)}</div>
           ))}
           {r.competencias
             ? bloco("COMPETÊNCIAS 3S", "Saber · Sentir · Ser", null, <div className="mt-3">{r.competencias.map((c) => <BarraPct key={c.pilar} rotulo={c.pilar} pct={c.pct} />)}</div>)
@@ -2754,10 +2774,11 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
           {bloco("PLANO DE 4 SEMANAS", "Os teus próximos passos", null, lista(r.plano, palette.navy))}
           <EnviarPerfilEmail titulo="Perfil Geral de Líder" seccoes={[
             { titulo: "Em resumo", itens: [`Liderança: ${r.lideranca ? r.lideranca.nome : "por fazer"}`, `Arquétipo: ${r.arquetipo.nome}${r.arquetipo.secundario ? " (secundário: " + r.arquetipo.secundario + ")" : ""}`, `Personalidade: ${r.personalidade.nome}`, `Comunicação: ${r.comunicacao.nome}`] },
-            r.lideranca && { titulo: `Tipo de liderança: ${r.lideranca.nome}`, texto: `${r.lideranca.frase} Funciona melhor em: ${r.lideranca.quando}` },
+            r.lideranca && { titulo: `Tipo de liderança: ${r.lideranca.nome}`, texto: `${r.lideranca.frase} Funciona melhor em: ${r.lideranca.quando} Cuidado com: ${r.lideranca.risco}`, itens: r.lideranca.contagem ? Object.entries(r.lideranca.contagem).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${PERFIS_LIDER[k].nome}: ${v}`) : undefined },
             { titulo: `Arquétipo: ${r.arquetipo.nome}`, texto: r.arquetipo.frase },
             { titulo: `Personalidade: ${r.personalidade.nome}`, texto: `${r.personalidade.frase} Como comunicar contigo: ${r.personalidade.comunicarComigo}` },
             { titulo: `Comunicação: ${r.comunicacao.nome}`, texto: r.comunicacao.frase },
+            r.competenciasLider && { titulo: "Competências de liderança (1 a 5)", itens: r.competenciasLider.map((c) => `${c.nome}: ${c.v}/5`) },
             r.competencias && { titulo: "Competências 3S", itens: r.competencias.map((c) => `${c.pilar}: ${c.pct}%`) },
             { titulo: "Onde és forte", itens: r.fortes },
             { titulo: `Tipos de equipa · a tua equipa ideal: ${r.equipas[0].nome}`, itens: r.equipas.map((q) => `${q.nome} (${q.nivel}): ${q.melhorar}`) },
@@ -2793,7 +2814,7 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
         )}
         {temPerfilGeral && (
           <button onClick={() => { if (resultados.perfilGeral) setVista("relatorio"); else { setVista("geral"); setPasso(0); setRespostas([]); } }} className="w-full text-left rounded-2xl px-4 py-4" style={{ background: `linear-gradient(160deg, ${palette.navy} 0%, #24436E 100%)` }}>
-            <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>{resultados.perfilGeral ? "O TEU RELATÓRIO" : "NOVO · 5 MINUTOS"}</p>
+            <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>{resultados.perfilGeral ? "O TEU RELATÓRIO" : "NOVO · 8 MINUTOS"}</p>
             <p className="font-serif text-xl mt-1" style={{ color: palette.creamSoft }}>Perfil Geral de Líder</p>
             <p className="text-[12px] mt-1 leading-snug" style={{ color: palette.goldSoft }}>Tipo de liderança, arquétipo, personalidade, comunicação, pontos fortes e a desenvolver. Recebe-o no teu correio eletrónico.</p>
           </button>
