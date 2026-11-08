@@ -7584,7 +7584,180 @@ function CoachPorAreaPainel() {
   );
 }
 
-function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFormadores, onVerArquivo }) {
+/* ---------------------------------------------------------
+   Resultados dos testes — base de dados para a dona
+--------------------------------------------------------- */
+function ResultadosTestesScreen({ onBack }) {
+  const [linhas, setLinhas] = useState(null);
+  const [tab, setTab] = useState("resumo");
+  const [aberto, setAberto] = useState(null);
+  const [pesquisa, setPesquisa] = useState("");
+
+  useEffect(() => {
+    (async () => {
+      const [rP, rC] = await Promise.all([
+        supabase.from("user_progress").select("user_id, data"),
+        supabase.from("clientes").select("user_id, nome, email, telefone"),
+      ]);
+      const cli = Object.fromEntries((rC.data || []).map((c) => [c.user_id, c]));
+      const out = [];
+      (rP.data || []).forEach((row) => {
+        const d = row.data || {};
+        if (d.papel === "dona") return;
+        const L = d.testesLideranca || {}, V = d.testesVida || {}, D = d.testesDesporto || {};
+        const g = L.perfilGeral, pv = V.perfilVida;
+        if (!g && !pv && !L.perfil && !L.competencias && !D.perfil && !V.perfil) return;
+        const c = cli[row.user_id] || {};
+        const lidKey = (g && g.lideranca) || (L.perfil && L.perfil.perfil);
+        const comp = g && g.competenciasLider ? COMPETENCIAS_LIDER.map((x) => ({ ...x, v: g.competenciasLider[x.id] || 0 })) : null;
+        const datas = [g && g.data, pv && pv.data, L.perfil && L.perfil.data, D.perfil && D.perfil.data].filter(Boolean).sort();
+        let voc = null, crencasTop = [], dores = [], ferida = null;
+        if (pv) {
+          voc = sugerirProfissoes(pv.atividades || [], [...(pv.proposito || []), (pv.frase || {}).talento, (pv.frase || {}).impacto]);
+          crencasTop = CRENCAS.map((cr, i) => ({ cr: cr[0], v: (pv.crencas || {})[i] || 0 })).filter((x) => x.v >= 4).map((x) => x.cr);
+          dores = Object.entries(pv.areas || {}).filter(([, v]) => v <= 5).map(([a]) => a);
+          const fer = Object.keys(FERIDAS).map((k) => ({ k, v: PERGUNTAS_FERIDAS.reduce((sm, [f], i) => sm + (f === k ? (pv.feridas || {})[i] || 0 : 0), 0) })).sort((a, b) => b.v - a.v);
+          ferida = fer[0] && fer[0].v >= 6 ? FERIDAS[fer[0].k].nome : null;
+        }
+        out.push({
+          id: row.user_id,
+          nome: c.nome || "(sem nome)", email: c.email || "", telefone: c.telefone || "",
+          ultima: datas[datas.length - 1] || null,
+          lideranca: lidKey && PERFIS_LIDER[lidKey] ? PERFIS_LIDER[lidKey].nome : null,
+          arquetipo: g && ARQUETIPOS[g.arquetipo] ? ARQUETIPOS[g.arquetipo].nome : null,
+          personalidade: g && PERSONALIDADES[g.personalidade] ? PERSONALIDADES[g.personalidade].nome : null,
+          comunicacao: g && COMUNICACOES[g.comunicacao] ? COMUNICACOES[g.comunicacao].nome : null,
+          equipa: g ? encaixeEquipas({ ...g, lideranca: lidKey })[0].nome : null,
+          comp, compFracas: comp ? comp.filter((x) => x.v > 0 && x.v <= 2).map((x) => x.nome) : [],
+          pilares: L.competencias && L.competencias.pilares ? L.competencias.pilares : null,
+          proposito: pv && pv.frase && pv.frase.talento ? `Usar ${pv.frase.talento} para ${pv.frase.impacto || "…"}` : null,
+          vocacao: voc ? TIPOS_VOCACIONAIS[voc.t1].nome + (voc.t2 ? " / " + TIPOS_VOCACIONAIS[voc.t2].nome : "") : null,
+          valores: pv ? pv.valores || [] : [],
+          crencas: crencasTop, dores, ferida,
+          atleta: D.perfil && LAB_DESPORTO.perfis[D.perfil.perfil] ? LAB_DESPORTO.perfis[D.perfil.perfil].nome : null,
+        });
+      });
+      out.sort((a, b) => String(b.ultima || "").localeCompare(String(a.ultima || "")));
+      setLinhas(out);
+    })();
+  }, []);
+
+  const contar = (arr) => { const m = {}; arr.forEach((x) => { if (x) m[x] = (m[x] || 0) + 1; }); return Object.entries(m).sort((a, b) => b[1] - a[1]); };
+  const caixa = { backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66` };
+  if (!linhas) return (<div className="pb-28"><SectionHeader eyebrow="PAINEL" title="Resultados dos testes" onBack={onBack} /><p className="px-6 text-sm" style={{ color: palette.navySoft }}>A carregar…</p></div>);
+
+  const lider = linhas.filter((l) => l.comunicacao || l.lideranca);
+  const vida = linhas.filter((l) => l.valores.length || l.vocacao);
+  const n = (x) => Math.max(x, 1);
+  const mediaComp = COMPETENCIAS_LIDER.map((c) => {
+    const vs = lider.map((l) => l.comp && (l.comp.find((x) => x.id === c.id) || {}).v).filter((v) => v > 0);
+    return { nome: c.nome, media: vs.length ? vs.reduce((a, b) => a + b, 0) / vs.length : null };
+  }).filter((c) => c.media !== null).sort((a, b) => a.media - b.media);
+  const blocoDist = (titulo, pares, total) => (
+    <div className="rounded-2xl px-4 py-4" style={caixa}>
+      <p className="text-[10px] tracking-[0.2em] font-semibold mb-2" style={{ color: palette.gold }}>{titulo}</p>
+      {pares.length ? pares.slice(0, 6).map(([k, v]) => <BarraPct key={k} rotulo={`${k} · ${v}`} pct={Math.round((v / n(total)) * 100)} />) : <p className="text-[12px]" style={{ color: palette.navySoft }}>Ainda sem dados.</p>}
+    </div>
+  );
+  const incidir = [];
+  if (mediaComp[0]) incidir.push(`Competência mais fraca no grupo: ${mediaComp[0].nome} (média ${mediaComp[0].media.toFixed(1)} em 5). Ideal para um workshop ou tema de sessão.`);
+  if (mediaComp[1]) incidir.push(`Segunda mais fraca: ${mediaComp[1].nome} (média ${mediaComp[1].media.toFixed(1)}).`);
+  const naoAssert = lider.filter((l) => l.comunicacao && l.comunicacao !== "Assertiva").length;
+  if (lider.length && naoAssert / n(lider.length) >= 0.4) incidir.push(`${Math.round((naoAssert / n(lider.length)) * 100)}% dos líderes não têm comunicação assertiva: o curso e os treinos de comunicação são prioridade.`);
+  const crTop = contar(vida.flatMap((l) => l.crencas))[0];
+  if (crTop) incidir.push(`Crença limitante mais comum: "${crTop[0]}" (${crTop[1]} pessoas).`);
+  const dorTop = contar(vida.flatMap((l) => l.dores))[0];
+  if (dorTop) incidir.push(`Área de vida com mais dor: ${dorTop[0]} (${dorTop[1]} pessoas).`);
+  const ferTop = contar(vida.map((l) => l.ferida))[0];
+  if (ferTop) incidir.push(`Ferida emocional mais presente: ${ferTop[0]} (${ferTop[1]} pessoas).`);
+
+  const exportar = () => exportarCSV("resultados-testes.csv",
+    ["Nome", "Correio eletrónico", "Telefone", "Último teste", "Liderança", "Arquétipo", "Personalidade", "Comunicação", "Equipa ideal", "Competências fracas", "Propósito", "Perfil vocacional", "Valores", "Crenças fortes", "Áreas com dor", "Ferida emocional", "Perfil de atleta"],
+    linhas.map((l) => [l.nome, l.email, l.telefone, l.ultima ? new Date(l.ultima).toLocaleDateString("pt-PT") : "", l.lideranca || "", l.arquetipo || "", l.personalidade || "", l.comunicacao || "", l.equipa || "", l.compFracas.join("; "), l.proposito || "", l.vocacao || "", l.valores.join("; "), l.crencas.join("; "), l.dores.join("; "), l.ferida || "", l.atleta || ""]));
+
+  const filtradas = linhas.filter((l) => !pesquisa.trim() || `${l.nome} ${l.email} ${l.telefone}`.toLowerCase().includes(pesquisa.trim().toLowerCase()));
+  return (
+    <div className="pb-28">
+      <SectionHeader eyebrow="PAINEL" title="Resultados dos testes" onBack={onBack} />
+      <div className="px-6">
+        <div className="grid grid-cols-3 gap-2 mb-4">
+          {[["Pessoas", linhas.length], ["Liderança", lider.length], ["Vida", vida.length]].map(([k, v]) => (
+            <div key={k} className="rounded-2xl px-3 py-3 text-center" style={{ backgroundColor: palette.navy }}>
+              <p className="font-serif text-2xl" style={{ color: palette.gold }}>{v}</p><p className="text-[11px]" style={{ color: palette.creamSoft }}>{k}</p>
+            </div>
+          ))}
+        </div>
+        <div className="flex gap-2 mb-4">
+          {[["resumo", "Onde incidir"], ["pessoas", "Pessoas"]].map(([k, t]) => (
+            <button key={k} onClick={() => setTab(k)} className="flex-1 rounded-full py-2.5 text-sm font-medium" style={tab === k ? { backgroundColor: palette.navy, color: palette.creamSoft } : { border: `1px solid ${palette.navy}`, color: palette.navy }}>{t}</button>
+          ))}
+        </div>
+        {tab === "resumo" && (
+          <div className="space-y-3">
+            <div className="rounded-2xl px-4 py-4" style={{ background: `linear-gradient(150deg, #E4C98C 0%, ${palette.gold} 100%)` }}>
+              <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: palette.navy }}>ONDE DEVES INCIDIR</p>
+              {incidir.length ? <div className="space-y-1.5 mt-2">{incidir.map((t, i) => <p key={i} className="text-[13px] leading-snug flex gap-2" style={{ color: palette.navy }}><span>→</span>{t}</p>)}</div> : <p className="text-[13px] mt-2" style={{ color: palette.navy }}>Ainda há poucos resultados. À medida que mais pessoas fizerem os testes, aparecem aqui as prioridades.</p>}
+            </div>
+            {mediaComp.length > 0 && (
+              <div className="rounded-2xl px-4 py-4" style={caixa}>
+                <p className="text-[10px] tracking-[0.2em] font-semibold mb-2" style={{ color: palette.gold }}>COMPETÊNCIAS DE LIDERANÇA · MÉDIA DO GRUPO</p>
+                {mediaComp.map((c) => <BarraPct key={c.nome} rotulo={`${c.nome} · ${c.media.toFixed(1)}`} pct={Math.round(c.media * 20)} />)}
+              </div>
+            )}
+            {blocoDist("TIPO DE LIDERANÇA", contar(lider.map((l) => l.lideranca)), lider.length)}
+            {blocoDist("COMUNICAÇÃO", contar(lider.map((l) => l.comunicacao)), lider.length)}
+            {blocoDist("PERSONALIDADE", contar(lider.map((l) => l.personalidade)), lider.length)}
+            {blocoDist("ARQUÉTIPO", contar(lider.map((l) => l.arquetipo)), lider.length)}
+            {blocoDist("EQUIPA IDEAL", contar(lider.map((l) => l.equipa)), lider.length)}
+            {blocoDist("VALORES MAIS ESCOLHIDOS", contar(vida.flatMap((l) => l.valores)), vida.length)}
+            {blocoDist("CRENÇAS LIMITANTES", contar(vida.flatMap((l) => l.crencas)), vida.length)}
+            {blocoDist("ÁREAS DE VIDA COM DOR", contar(vida.flatMap((l) => l.dores)), vida.length)}
+            {blocoDist("FERIDAS EMOCIONAIS", contar(vida.map((l) => l.ferida)), vida.length)}
+            {blocoDist("PERFIL VOCACIONAL", contar(vida.map((l) => l.vocacao)), vida.length)}
+          </div>
+        )}
+        {tab === "pessoas" && (
+          <div className="space-y-2.5">
+            <div className="flex gap-2">
+              <input value={pesquisa} onChange={(e) => setPesquisa(e.target.value)} placeholder="Procurar por nome, correio ou telefone" className="flex-1 rounded-xl px-3 py-2.5 text-sm outline-none" style={{ backgroundColor: "#fff", border: `1px solid ${palette.goldSoft}`, color: palette.ink }} />
+              <button onClick={exportar} className="rounded-xl px-3 text-xs font-medium" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Exportar</button>
+            </div>
+            {filtradas.length === 0 && <p className="text-sm" style={{ color: palette.navySoft }}>Ainda ninguém fez os testes.</p>}
+            {filtradas.map((l) => (
+              <div key={l.id} className="rounded-2xl px-4 py-3" style={caixa}>
+                <button onClick={() => setAberto(aberto === l.id ? null : l.id)} className="w-full text-left">
+                  <div className="flex justify-between gap-2">
+                    <p className="text-sm font-semibold" style={{ color: palette.navy }}>{l.nome}</p>
+                    <span className="text-[11px] shrink-0" style={{ color: palette.navySoft }}>{l.ultima ? new Date(l.ultima).toLocaleDateString("pt-PT") : ""}</span>
+                  </div>
+                  <p className="text-[12px] mt-0.5" style={{ color: palette.navySoft }}>{[l.lideranca, l.comunicacao && `Comunicação ${l.comunicacao.toLowerCase()}`, l.vocacao].filter(Boolean).join(" · ") || "Testes parciais"}</p>
+                </button>
+                {aberto === l.id && (
+                  <div className="mt-2 pt-2 space-y-1 text-[12.5px]" style={{ borderTop: `1px solid ${palette.goldSoft}55`, color: palette.ink }}>
+                    {l.email && <p><b>Correio:</b> <a href={`mailto:${l.email}`} style={{ color: palette.navy }}>{l.email}</a></p>}
+                    {l.telefone && <p><b>Telefone:</b> <a href={`tel:${l.telefone}`} style={{ color: palette.navy }}>{l.telefone}</a></p>}
+                    {l.arquetipo && <p><b>Arquétipo:</b> {l.arquetipo} · <b>Personalidade:</b> {l.personalidade}</p>}
+                    {l.equipa && <p><b>Equipa ideal:</b> {l.equipa}</p>}
+                    {l.compFracas.length > 0 && <p><b>Competências a desenvolver:</b> {l.compFracas.join(", ")}</p>}
+                    {l.pilares && <p><b>Pilares 3S:</b> {l.pilares.map((p) => `${p.pilar} ${p.pct}%`).join(" · ")}</p>}
+                    {l.proposito && <p><b>Propósito:</b> {l.proposito}</p>}
+                    {l.valores.length > 0 && <p><b>Valores:</b> {l.valores.join(", ")}</p>}
+                    {l.crencas.length > 0 && <p><b>Crenças fortes:</b> {l.crencas.join(" ")}</p>}
+                    {l.dores.length > 0 && <p><b>Áreas com dor:</b> {l.dores.join(", ")}</p>}
+                    {l.ferida && <p><b>Ferida emocional:</b> {l.ferida}</p>}
+                    {l.atleta && <p><b>Perfil de atleta:</b> {l.atleta}</p>}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFormadores, onVerArquivo, onVerTestes }) {
   const totalInscricoes = Object.values(progresso.inscricoesWorkshops || {}).filter(Boolean).length;
   const totalMateriais = Object.values(progresso.materiaisDesbloqueados || {}).filter(Boolean).length;
   const totalConcluidos = Object.values(progresso.cursosConcluidos || {}).filter(Boolean).length;
@@ -7647,6 +7820,18 @@ function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFor
               <p className="text-xs mt-0.5" style={{ color: palette.navySoft }}>Autorizações RGPD, fichas, inscrições, pagamentos e documentos</p>
             </div>
             <ChevronRight size={18} style={{ color: palette.navySoft }} />
+          </button>
+        </div>
+      )}
+
+      {progresso.papel === "dona" && (
+        <div className="px-6 mb-6">
+          <button onClick={onVerTestes} className="w-full flex items-center justify-between rounded-2xl px-5 py-4" style={{ background: `linear-gradient(150deg, #E4C98C 0%, ${palette.gold} 100%)` }}>
+            <div className="text-left">
+              <p className="font-serif text-lg" style={{ color: palette.navy }}>Resultados dos testes</p>
+              <p className="text-xs mt-0.5" style={{ color: palette.navy, opacity: 0.8 }}>Quem fez os testes, os perfis e onde incidir</p>
+            </div>
+            <ChevronRight size={18} style={{ color: palette.navy }} />
           </button>
         </div>
       )}
@@ -10307,8 +10492,11 @@ export default function App() {
         onVerDashboard={() => setSecao("dashboard-mentora")}
         onVerAcessoFormadores={() => setSecao("acesso-formadores")}
         onVerArquivo={() => setSecao("arquivo")}
+        onVerTestes={() => setSecao("resultados-testes")}
       />
     );
+  } else if (secao === "resultados-testes" && progresso.papel === "dona") {
+    content = <ResultadosTestesScreen onBack={() => setSecao("painel-mentora")} />;
   } else if (secao === "acesso-formadores") {
     content = <AcessoFormadoresScreen onBack={() => setSecao("painel-mentora")} />;
   } else if (secao === "arquivo") {
