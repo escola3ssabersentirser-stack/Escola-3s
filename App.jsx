@@ -8548,14 +8548,14 @@ EVENTOS_PUBLICOS.outubro = {
   descricao: "Um encontro ao vivo, à distância, para refletir, partilhar e crescer em conjunto com a Escola 3S.",
 };
 EVENTOS_PUBLICOS.novembro = {
-  nome: "Encontro à distância — Menos pressão, mais clareza (27 nov, 21h)",
-  titulo: "Menos pressão, mais clareza",
+  nome: "Encontro à distância — O que somos, afinal? (27 nov, 21h)",
+  titulo: "O que somos, afinal?",
   subtitulo: "Encontro gratuito à distância",
   data: "Sexta-feira, 27 de novembro · 21h00",
   inicio: "2026-11-27T21:00:00+00:00",
-  chamada: "Menos pressão, mais clareza",
+  chamada: "O que somos, afinal?",
   quandoCurto: "Sexta, 27 nov · 21h",
-  descricao: "Como gerir a ansiedade e a pressão do dia a dia e comunicar com calma quando tudo aperta, no trabalho e na vida. Uma hora com ferramentas práticas do método 3S para saíres com mais clareza e menos peso.",
+  descricao: "Para lá dos papéis que desempenhamos, do que fazemos e do que os outros esperam de nós, quem somos realmente? Um encontro de reflexão e partilha sobre identidade, emoções e liberdade interior, com o método 3S: Saber, Sentir e Ser.",
 };
 EVENTOS_PUBLICOS.dezembro = {
   nome: "Encontro à distância da Escola 3S — 18 de dezembro (21h)",
