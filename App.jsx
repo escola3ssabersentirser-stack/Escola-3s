@@ -304,7 +304,19 @@ const TODOS_CURSOS = [
 ];
 
 // Cada escola mostra só o seu curso principal (+ Crenças grátis). Os outros ficam guardados, escondidos.
-const CURSOS_VISIVEIS = [1, 30, 40]; // um curso por escola
+const CURSOS_VISIVEIS = [1, 30, 40];
+// Palestras do YouTube (verificadas) para aprofundar algumas aulas · chave "curso-aula"
+const APROFUNDAR = {
+  "1-3": { id: "rrkrvAUbU9Y", titulo: "O enigma da motivação", autor: "Dan Pink" },
+  "1-4": { id: "lmyZMtPVodo", titulo: "Porque é que os bons líderes nos fazem sentir seguros", autor: "Simon Sinek" },
+  "30-2": { id: "_X0mgOOSpLU", titulo: "O poder de acreditar que podes melhorar", autor: "Carol Dweck" },
+  "30-4": { id: "RcGyVTAoXEU", titulo: "Como fazer do stress um aliado", autor: "Kelly McGonigal" },
+  "30-5": { id: "8KkKuTCFvzI", titulo: "O que faz uma vida boa", autor: "Robert Waldinger" },
+  "30-6": { id: "iCvmsMzlF7o", titulo: "O poder da vulnerabilidade", autor: "Brené Brown" },
+  "40-3": { id: "_X0mgOOSpLU", titulo: "O poder de acreditar que podes melhorar", autor: "Carol Dweck" },
+  "40-5": { id: "RcGyVTAoXEU", titulo: "Como fazer do stress um aliado", autor: "Kelly McGonigal" },
+  "40-6": { id: "H14bBuluwB8", titulo: "Garra: o poder da paixão e da perseverança", autor: "Angela Lee Duckworth" },
+}; // um curso por escola
 const cursos = TODOS_CURSOS.filter((c) => CURSOS_VISIVEIS.includes(c.id)); // Comunidade do mês retirada
 
 const materiais = [
@@ -3910,6 +3922,11 @@ function AulaInterativaScreen({ curso, indice, aula, dados, estadoCurso, onGuard
       <div className="px-6 pt-5 space-y-4">
         {nomePasso === "Aprender" && (
           <>
+            {[1, 30, 40].includes(curso.id) && (
+              <div className="rounded-2xl overflow-hidden" style={{ backgroundColor: palette.navy }}>
+                <video key={`${curso.id}-${indice}`} src={`/videos/aula-${curso.id}-${indice + 1}.mp4`} poster={`/videos/aula-${curso.id}-${indice + 1}.jpg`} controls playsInline preload="metadata" className="w-full block" style={{ aspectRatio: "16 / 9" }} />
+              </div>
+            )}
             {aula.videoUrl && (
               <div className="rounded-2xl overflow-hidden aspect-video" style={{ backgroundColor: palette.navy }}>
                 <iframe src={aula.videoUrl} title={aula.titulo} className="w-full h-full" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen />
@@ -3935,6 +3952,15 @@ function AulaInterativaScreen({ curso, indice, aula, dados, estadoCurso, onGuard
               <p className="text-[11px] tracking-[0.2em] font-semibold mb-1" style={{ color: palette.gold }}>IDEIA-CHAVE</p>
               <p className="font-serif text-lg leading-snug" style={{ color: palette.creamSoft }}>{aula.ideia}</p>
             </div>
+            {APROFUNDAR[`${curso.id}-${indice + 1}`] && (() => { const v = APROFUNDAR[`${curso.id}-${indice + 1}`]; return (
+              <a href={`https://www.youtube.com/watch?v=${v.id}`} target="_blank" rel="noopener noreferrer" className="flex gap-3 items-center rounded-2xl p-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}88` }}>
+                <img src={`https://i.ytimg.com/vi/${v.id}/mqdefault.jpg`} alt="" loading="lazy" className="w-28 rounded-lg flex-none" style={{ aspectRatio: "16 / 9", objectFit: "cover" }} />
+                <div className="min-w-0">
+                  <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>PARA APROFUNDAR</p>
+                  <p className="text-sm font-semibold leading-snug mt-0.5" style={{ color: palette.navy }}>{v.titulo}</p>
+                  <p className="text-[13px] leading-snug mt-0.5" style={{ color: palette.navySoft }}>{v.autor} · palestra TED no YouTube, em inglês com legendas</p>
+                </div>
+              </a>); })()}
             {aula.materiaisIds && aula.materiaisIds.length > 0 && (
               <div>
                 <p className="text-[11px] tracking-[0.2em] font-medium mb-2" style={{ color: palette.gold }}>MATERIAL DESTA AULA</p>
