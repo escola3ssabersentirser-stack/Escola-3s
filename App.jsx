@@ -41,6 +41,7 @@ import {
   ShoppingBag,
   Gift,
   Lock,
+  Sparkles,
 } from "lucide-react";
 
 /* ---------------------------------------------------------
@@ -927,6 +928,7 @@ const areas = [
   { key: "escola-lideranca", titulo: "Liderança 3S", desc: "Comunicação e liderança de pessoas", icon: BookOpen },
   { key: "escola-ser", titulo: "Vida 3S", desc: "Autoconhecimento, emoções e crenças", icon: BookOpen },
   { key: "workshops", titulo: "Cursos", desc: "Liderança 3S e Vida 3S", icon: GraduationCap },
+  { key: "meditacoes", titulo: "Meditações e ferramentas", desc: "Meditações guiadas com música e voz, e as ferramentas 3S", icon: Sparkles },
   { key: "podcast", titulo: "Podcast", desc: "Episódios para ouvir", icon: Headphones },
   { key: "marcar", titulo: "Coaching e Mentoria", desc: "Sessões individuais e acompanhamento", icon: PenLine },
 ];
@@ -3076,6 +3078,7 @@ function EscolaHubScreen({ onBack, onOpen, eyebrow, nome, frase, por, lista }) {
 }
 
 const areasEscolaComuns = [
+  { key: "meditacoes", titulo: "Meditação", icon: Sparkles },
   { key: "podcast", titulo: "Podcast", icon: Headphones },
   { key: "produtos", titulo: "Produtos", icon: ShoppingBag },
 ];
@@ -4017,38 +4020,73 @@ function vozPortuguesa() {
   try {
     const vs = window.speechSynthesis?.getVoices?.() || [];
     const norm = (l) => String(l || "").replace("_", "-").toLowerCase();
-    return vs.find((v) => norm(v.lang) === "pt-pt") || vs.find((v) => norm(v.lang).startsWith("pt")) || null;
+    const pt = vs.filter((v) => norm(v.lang) === "pt-pt");
+    const boa = (v) => /premium|enhanced|melhorad|natural|neural|joana|catarina|raquel|google/i.test(v.name);
+    return pt.find(boa) || pt[0] || vs.find((v) => norm(v.lang).startsWith("pt")) || null;
   } catch { return null; }
 }
-function falar(texto) {
+function falar(texto, aoAcabar) {
   try {
     const sy = window.speechSynthesis; if (!sy) return false;
     sy.cancel();
     const u = new SpeechSynthesisUtterance(texto);
     const v = vozPortuguesa(); if (v) u.voice = v;
-    u.lang = v?.lang || "pt-PT"; u.rate = 0.85; u.pitch = 1;
+    u.lang = v?.lang || "pt-PT"; u.rate = 0.78; u.pitch = 0.95; u.volume = 1;
+    if (aoAcabar) { u.onend = aoAcabar; u.onerror = aoAcabar; }
     sy.speak(u); return true;
   } catch { return false; }
 }
 function calarVoz() { try { window.speechSynthesis?.cancel(); } catch {} }
+const frasesDe = (t) => (String(t).match(/[^.!?…]+[.!?…»]*\s*/g) || [t]).map((x) => x.trim()).filter(Boolean);
+
+// Meditação seguida: música de fundo + voz calma, avança sozinha do princípio ao fim
 function PraticaGuiada({ pratica, cor, onConcluir }) {
   const [k, setK] = useState(-1);
   const [resta, setResta] = useState(0);
   const [pausa, setPausa] = useState(false);
-  const [som, setSom] = useState(true);
+  const [musica, setMusica] = useState(true);
   const [voz, setVoz] = useState(true);
+  const [aFalar, setAFalar] = useState(false);
+  const audio = useRef(null);
+  const timers = useRef([]);
   const total = pratica.passos.reduce((t, p) => t + p.seg, 0);
   const fim = k >= pratica.passos.length;
-  useEffect(() => { try { window.speechSynthesis?.getVoices(); } catch {} return () => calarVoz(); }, []);
+  const limpar = () => { timers.current.forEach(clearTimeout); timers.current = []; };
+  const volumeAlvo = (v) => {
+    const a = audio.current; if (!a) return;
+    const passo = () => { const d = v - a.volume; if (Math.abs(d) < 0.02) { a.volume = v; return; } a.volume = Math.max(0, Math.min(1, a.volume + Math.sign(d) * 0.02)); timers.current.push(setTimeout(passo, 60)); };
+    passo();
+  };
+  const narrar = (texto) => {
+    limpar(); calarVoz();
+    if (!voz) return;
+    const frases = frasesDe(texto); let i = 0;
+    const seguinte = () => {
+      if (i >= frases.length) { setAFalar(false); volumeAlvo(0.32); return; }
+      setAFalar(true); volumeAlvo(0.16);
+      const fr = frases[i++];
+      falar(fr, () => timers.current.push(setTimeout(seguinte, 1300)));
+    };
+    seguinte();
+  };
   useEffect(() => {
-    if (!voz || k < 0) return;
-    if (fim) { falar("Prática concluída. Repara em como te sentes agora."); return; }
-    if (k === 0) return; // o primeiro passo é dito logo no toque em «Começar» (exigência do iPhone)
-    const t = setTimeout(() => falar(pratica.passos[k].texto), som ? 900 : 100);
-    return () => clearTimeout(t);
-  }, [k, voz]);
+    try { window.speechSynthesis?.getVoices(); } catch {}
+    return () => { limpar(); calarVoz(); try { audio.current?.pause(); } catch {} };
+  }, []);
+  // cada passo novo é dito com calma (o primeiro é dito no toque em «Começar», por exigência do iPhone)
   useEffect(() => {
-    try { const sy = window.speechSynthesis; if (!sy) return; if (pausa) sy.pause(); else sy.resume(); } catch {}
+    if (k <= 0) return;
+    if (fim) {
+      narrar("Muito bem. Volta devagar, ao teu ritmo. Repara em como te sentes agora.");
+      timers.current.push(setTimeout(() => volumeAlvo(0), 9000));
+      timers.current.push(setTimeout(() => { try { audio.current?.pause(); } catch {} }, 13000));
+      return;
+    }
+    narrar(pratica.passos[k].texto);
+  }, [k]);
+  useEffect(() => {
+    try { const sy = window.speechSynthesis; if (sy) { if (pausa) sy.pause(); else sy.resume(); } } catch {}
+    try { if (audio.current && musica && k >= 0 && !fim) { if (pausa) audio.current.pause(); else audio.current.play(); } } catch {}
   }, [pausa]);
   useEffect(() => {
     if (k < 0 || fim || pausa) return;
@@ -4057,55 +4095,72 @@ function PraticaGuiada({ pratica, cor, onConcluir }) {
   }, [k, fim, pausa]);
   useEffect(() => {
     if (k < 0 || fim || resta > 0) return;
-    if (som) somSuave();
     const n = k + 1; setK(n);
     if (n < pratica.passos.length) setResta(pratica.passos[n].seg); else onConcluir && onConcluir();
   }, [resta]);
-  const comecar = () => { if (som) somSuave(); if (voz) falar(pratica.passos[0].texto); setK(0); setResta(pratica.passos[0].seg); setPausa(false); };
+  const comecar = () => {
+    if (musica) {
+      try {
+        if (!audio.current) { audio.current = new Audio("/audio/ambiente-3s.mp3"); audio.current.loop = true; }
+        audio.current.volume = 0; audio.current.currentTime = 0; audio.current.play().catch(() => {});
+        volumeAlvo(0.32);
+      } catch {}
+    }
+    setK(0); setResta(pratica.passos[0].seg + 4); setPausa(false);
+    narrar(pratica.passos[0].texto);
+  };
+  const parar = () => { limpar(); calarVoz(); try { audio.current?.pause(); } catch {} setK(-1); setPausa(false); };
   const saltar = () => setResta(0);
   const min = Math.max(1, Math.round(total / 60));
   const passo = !fim && k >= 0 ? pratica.passos[k] : null;
-  const pct = passo ? 1 - resta / passo.seg : 0;
+  const decorrido = k < 0 ? 0 : fim ? total : pratica.passos.slice(0, k).reduce((t, p) => t + p.seg, 0) + Math.max(0, (passo?.seg || 0) - resta);
+  const mmss = (x) => `${Math.floor(Math.max(0, x) / 60)}:${String(Math.max(0, x) % 60).padStart(2, "0")}`;
   return (
-    <div className="rounded-2xl overflow-hidden" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>
-      <div className="px-5 pt-5 pb-4">
-        <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>{pratica.tipo.toUpperCase()} · {min} MIN</p>
+    <div className="rounded-2xl overflow-hidden" style={{ background: `radial-gradient(120% 90% at 50% 0%, #24436E 0%, ${palette.navy} 70%)`, color: palette.creamSoft }}>
+      <style>{`@keyframes respira3s{0%,100%{transform:scale(.72);opacity:.55}50%{transform:scale(1);opacity:1}}`}</style>
+      <div className="px-5 pt-5 pb-3">
+        <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>{pratica.tipo.toUpperCase()} GUIADA · {min} MIN</p>
         <p className="font-serif text-2xl leading-tight mt-1">{pratica.titulo}</p>
       </div>
       {k < 0 && (
         <div className="px-5 pb-5 space-y-3">
           {pratica.introducao && <p className="text-[15px] leading-relaxed">{pratica.introducao}</p>}
-          <p className="text-sm leading-relaxed" style={{ opacity: 0.9 }}>Encontra um sítio tranquilo e, se puderes, usa auriculares. Uma voz guia-te passo a passo e podes fechar os olhos. Podes pausar ou parar quando quiseres.</p>
-          <button onClick={comecar} className="w-full rounded-full py-3 font-semibold text-sm flex items-center justify-center gap-2" style={{ backgroundColor: palette.gold, color: palette.navy }}><Play size={16} fill={palette.navy} /> Começar a prática</button>
+          <p className="text-sm leading-relaxed" style={{ opacity: 0.9 }}>Uma meditação seguida, com música suave e uma voz que te guia do princípio ao fim. Põe auriculares, carrega em começar e fecha os olhos: não precisas de tocar em mais nada.</p>
+          <button onClick={comecar} className="w-full rounded-full py-3.5 font-semibold text-sm flex items-center justify-center gap-2" style={{ backgroundColor: palette.gold, color: palette.navy }}><Play size={16} fill={palette.navy} /> Começar a meditação</button>
           <div className="flex flex-wrap gap-x-5 gap-y-2">
-            <label className="flex items-center gap-2 text-[13px]" style={{ opacity: 0.85 }}><input type="checkbox" checked={voz} onChange={(e) => { setVoz(e.target.checked); if (!e.target.checked) calarVoz(); }} /> Guia por voz</label>
-            <label className="flex items-center gap-2 text-[13px]" style={{ opacity: 0.85 }}><input type="checkbox" checked={som} onChange={(e) => setSom(e.target.checked)} /> Sinal sonoro entre passos</label>
+            <label className="flex items-center gap-2 text-[13px]" style={{ opacity: 0.85 }}><input type="checkbox" checked={voz} onChange={(e) => setVoz(e.target.checked)} /> Voz</label>
+            <label className="flex items-center gap-2 text-[13px]" style={{ opacity: 0.85 }}><input type="checkbox" checked={musica} onChange={(e) => setMusica(e.target.checked)} /> Música de fundo</label>
           </div>
         </div>
       )}
       {passo && (
         <div className="px-5 pb-5">
-          <div className="flex gap-1 mb-4">{pratica.passos.map((_, j) => <div key={j} className="h-1 flex-1 rounded-full" style={{ backgroundColor: j < k ? palette.gold : j === k ? palette.gold + "99" : "rgba(255,255,255,.18)" }} />)}</div>
-          <div key={k} style={{ minHeight: 120, animation: "apEntra .6s ease-out both" }}>
-            <p className="text-[13px] mb-2" style={{ color: palette.gold }}>Passo {k + 1} de {pratica.passos.length}</p>
-            <p className="text-lg leading-relaxed">{passo.texto}</p>
-            {voz && <button onClick={() => falar(passo.texto)} className="mt-2 text-[13px] underline" style={{ color: palette.goldSoft }}>Ouvir de novo</button>}
-          </div>
-          <div className="flex items-center gap-3 mt-4">
-            <div className="relative w-14 h-14 flex-none">
-              <svg viewBox="0 0 36 36" className="w-14 h-14 -rotate-90"><circle cx="18" cy="18" r="16" fill="none" stroke="rgba(255,255,255,.15)" strokeWidth="2.5" /><circle cx="18" cy="18" r="16" fill="none" stroke={palette.gold} strokeWidth="2.5" strokeDasharray={`${pct * 100.5} 100.5`} strokeLinecap="round" /></svg>
-              <span className="absolute inset-0 flex items-center justify-center text-sm font-semibold">{resta}</span>
+          <div className="flex justify-center py-4">
+            <div className="relative w-36 h-36 flex items-center justify-center">
+              <div className="absolute inset-0 rounded-full" style={{ background: `radial-gradient(circle, ${palette.gold}55 0%, ${palette.gold}11 60%, transparent 72%)`, animation: pausa ? "none" : "respira3s 10s ease-in-out infinite" }} />
+              <div className="absolute inset-6 rounded-full" style={{ border: `1px solid ${palette.gold}66` }} />
+              <span className="relative text-[13px] tracking-[0.15em]" style={{ color: palette.goldSoft }}>{pausa ? "EM PAUSA" : aFalar ? "ESCUTA" : "RESPIRA"}</span>
             </div>
-            <button onClick={() => setPausa((x) => !x)} className="flex-1 rounded-full py-2.5 text-sm font-medium" style={{ border: `1px solid ${palette.gold}`, color: palette.creamSoft }}>{pausa ? "Continuar" : "Pausar"}</button>
-            <button onClick={saltar} className="flex-1 rounded-full py-2.5 text-sm font-medium" style={{ backgroundColor: "rgba(255,255,255,.1)", color: palette.creamSoft }}>Passo seguinte</button>
           </div>
+          <div key={k} style={{ minHeight: 96, animation: "apEntra .9s ease-out both" }}>
+            <p className="text-[17px] leading-relaxed text-center font-serif" style={{ fontSize: 19 }}>{passo.texto}</p>
+          </div>
+          <div className="mt-4">
+            <div className="h-1 rounded-full overflow-hidden" style={{ backgroundColor: "rgba(255,255,255,.15)" }}><div className="h-full" style={{ width: `${(decorrido / total) * 100}%`, backgroundColor: palette.gold, transition: "width 1s linear" }} /></div>
+            <div className="flex justify-between text-[11px] mt-1" style={{ color: palette.goldSoft }}><span>{mmss(decorrido)}</span><span>{mmss(total)}</span></div>
+          </div>
+          <div className="flex items-center gap-3 mt-3">
+            <button onClick={() => setPausa((x) => !x)} className="flex-1 rounded-full py-2.5 text-sm font-medium" style={{ border: `1px solid ${palette.gold}`, color: palette.creamSoft }}>{pausa ? "Continuar" : "Pausar"}</button>
+            <button onClick={parar} className="rounded-full px-5 py-2.5 text-sm font-medium" style={{ backgroundColor: "rgba(255,255,255,.1)", color: palette.creamSoft }}>Parar</button>
+          </div>
+          <button onClick={saltar} className="w-full text-[12px] mt-2 underline" style={{ color: palette.goldSoft, opacity: 0.8 }}>Avançar para a parte seguinte</button>
         </div>
       )}
       {fim && (
         <div className="px-5 pb-5 space-y-3">
-          <p className="text-lg leading-relaxed">Prática concluída. Repara em como te sentes agora, comparado com o início.</p>
+          <p className="text-lg leading-relaxed font-serif">Meditação concluída. Repara em como te sentes agora, comparado com o início.</p>
           <p className="text-sm" style={{ opacity: 0.85 }}>Podes repeti-la sempre que precisares, durante a semana.</p>
-          <button onClick={comecar} className="w-full rounded-full py-3 text-sm font-medium" style={{ border: `1px solid ${palette.gold}`, color: palette.creamSoft }}>Repetir a prática</button>
+          <button onClick={comecar} className="w-full rounded-full py-3 text-sm font-medium" style={{ border: `1px solid ${palette.gold}`, color: palette.creamSoft }}>Ouvir outra vez</button>
         </div>
       )}
     </div>
@@ -9203,6 +9258,87 @@ function LivrosScreen({ onBack, materiaisDesbloqueados }) {
   );
 }
 
+/* ---------- Meditações guiadas e ferramentas 3S (sempre à mão) ---------- */
+const FERRAMENTAS_LIVRO = [
+  ["Os quatro degraus do compromisso", "Envolver a equipa nas decisões, passo a passo", 1],
+  ["O mapa de apoio", "Ajustar o estilo de liderança a cada pessoa e tarefa", 2],
+  ["O mapa líder-equipa", "Cruzar o seu estilo com o tipo e a fase da equipa", 3],
+  ["A mensagem em três camadas", "Preparar comunicações claras, presenciais ou escritas", 4],
+  ["A ficha de decisão", "Decidir com método, opções e critérios", 5],
+  ["O mapa da transição", "Preparar e conduzir uma mudança", 6],
+  ["O termómetro da segurança", "Medir a segurança psicológica da equipa", 7],
+  ["A conversa de dez minutos", "Praticar a escuta individual todas as semanas", 8],
+  ["A preparação do feedback", "Preparar conversas difíceis e mediar conflitos", 9],
+  ["O check-up da motivação", "Avaliar os quatro motores da motivação", 10],
+  ["A conta da confiança", "Registar os gestos que constroem ou destroem confiança", 11],
+  ["O espelho", "Pedir feedback sobre a sua liderança", 12],
+  ["O mapa das feridas", "Reconhecer reações que nascem de feridas antigas", 13],
+  ["O registo ABC", "Identificar e transformar crenças limitadoras", 14],
+  ["O mapa da energia", "Cuidar da energia física, emocional, mental e de sentido", 15],
+  ["O plano das primeiras 48 horas", "Preparar a resposta a uma crise", 16],
+  ["O teste da coerência", "Alinhar o que pede com o que faz", 17],
+];
+const capituloNoLeitor = (c) => (c <= 6 ? c + 3 : c <= 11 ? c + 4 : c + 5);
+function MeditacoesScreen({ onBack }) {
+  const [aberta, setAberta] = useState(null);
+  const [vista, setVista] = useState("meditacoes");
+  const grupos = [[1, "Liderança 3S"], [30, "Vida 3S"], [40, "Atleta 3S"]];
+  if (aberta) {
+    const p = PRATICAS_3S[aberta];
+    return (
+      <div className="pb-28">
+        <SectionHeader eyebrow="MEDITAÇÃO GUIADA" title={p.pratica.titulo} onBack={() => setAberta(null)} />
+        <div className="px-6"><PraticaGuiada pratica={p.pratica} /></div>
+        {p.exemplo && (
+          <div className="px-6 pt-5">
+            <p className="text-[11px] tracking-[0.2em] font-semibold mb-2" style={{ color: palette.gold }}>UM EXEMPLO DA VIDA REAL</p>
+            <p className="font-serif text-lg" style={{ color: palette.navy }}>{p.exemplo.titulo}</p>
+            <p className="text-sm leading-relaxed mt-1" style={{ color: palette.ink }}>{p.exemplo.texto}</p>
+          </div>
+        )}
+      </div>
+    );
+  }
+  return (
+    <div className="pb-28">
+      <SectionHeader eyebrow="PARA CADA DIA" title="Meditações e ferramentas" onBack={onBack} />
+      <div className="px-6 flex gap-2 mb-5">
+        {[["meditacoes", "Meditações"], ["ferramentas", "Ferramentas 3S"]].map(([id, t]) => (
+          <button key={id} onClick={() => setVista(id)} className="flex-1 rounded-full py-2.5 text-sm font-medium" style={vista === id ? { backgroundColor: palette.navy, color: palette.creamSoft } : { border: `1px solid ${palette.goldSoft}`, color: palette.navy }}>{t}</button>
+        ))}
+      </div>
+      {vista === "meditacoes" ? (
+        <div className="px-6 space-y-6">
+          <p className="text-sm leading-relaxed" style={{ color: palette.navySoft }}>Meditações e exercícios guiados, com música suave e voz. Escolhe uma, põe auriculares e deixa-te guiar do princípio ao fim. São gratuitas.</p>
+          {grupos.map(([cid, nome]) => (
+            <div key={cid}>
+              <p className="text-[11px] tracking-[0.2em] font-semibold mb-2" style={{ color: palette.gold }}>{nome.toUpperCase()}</p>
+              <div className="space-y-2">
+                {[1, 2, 3, 4, 5, 6].map((n) => { const ch = `${cid}-${n}`; const p = PRATICAS_3S[ch]; if (!p) return null; const min = Math.max(1, Math.round(p.pratica.passos.reduce((t, x) => t + x.seg, 0) / 60)); return (
+                  <button key={ch} onClick={() => { setAberta(ch); window.scrollTo(0, 0); }} className="w-full text-left rounded-xl px-4 py-3 flex items-center gap-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
+                    <span className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: palette.navy }}><Play size={14} color={palette.gold} fill={palette.gold} /></span>
+                    <div className="flex-1 min-w-0"><p className="text-sm font-semibold" style={{ color: palette.navy }}>{p.pratica.titulo}</p><p className="text-[13px]" style={{ color: palette.navySoft }}>{p.pratica.tipo} · {min} min</p></div>
+                  </button>); })}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="px-6 space-y-2">
+          <p className="text-sm leading-relaxed mb-3" style={{ color: palette.navySoft }}>As 17 ferramentas práticas do livro «Liderar com Saber, Sentir e Ser». Toca numa ferramenta para abrir o capítulo onde ela está explicada.</p>
+          {FERRAMENTAS_LIVRO.map(([t, d, c]) => (
+            <button key={t} onClick={() => window.dispatchEvent(new CustomEvent("escola3s:abrir", { detail: `leitor-130:${capituloNoLeitor(c)}` }))} className="w-full text-left rounded-xl px-4 py-3 flex items-center gap-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
+              <span className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-[13px] font-semibold" style={{ border: `1.5px solid ${palette.gold}`, color: palette.gold }}>{c}</span>
+              <div className="flex-1 min-w-0"><p className="text-sm font-semibold" style={{ color: palette.navy }}>{t}</p><p className="text-[13px]" style={{ color: palette.navySoft }}>{d}</p></div>
+              <ChevronRight size={16} style={{ color: palette.navySoft }} />
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ---------- Leitor de livros (só dentro da app) ---------- */
 const b64ParaBytes = (b) => Uint8Array.from(atob(b), (c) => c.charCodeAt(0));
 async function abrirCapituloLivro(livroId, cap, chave) {
@@ -10842,6 +10978,8 @@ export default function App() {
     content = <EscolaScreen escola="desenvolvimento" onBack={() => setSecao(null)} onOpen={setSecao} temAcesso={temAcessoCurso} onAbrirCurso={setCursoAberto} desbloqueados={materiaisAcesso} acessoTotal={progresso.papel === "dona"} />;
   } else if (secao === "produtos") {
     content = <ProdutosScreen onBack={() => setSecao(null)} onOpen={setSecao} />;
+  } else if (secao === "meditacoes") {
+    content = <MeditacoesScreen onBack={() => setSecao(null)} />;
   } else if (secao && secao.startsWith("leitor-")) {
     content = <LeitorLivroScreen key={secao} livroId={Number(secao.slice(7).split(":")[0])} capInicial={secao.includes(":") ? Number(secao.split(":")[1]) : null} onBack={() => setSecao(antesDoLeitor.current || null)} />;
   } else if (secao === "livros") {
@@ -10969,7 +11107,7 @@ export default function App() {
           <CarrinhoContext.Provider value={carrinho}>
             {content}
             {(progresso.papel === "dona" || progresso.papel === "mentora") && <PopupMarcacoesDoDia papel={progresso.papel} />}
-            {secao !== "carrinho" && (!cursoAberto || leitorAberto) && (
+            {secao !== "carrinho" && secao !== "meditacoes" && (!cursoAberto || leitorAberto) && (
               <button
                 onClick={carrinho.abrir}
                 className="fixed z-40 flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium shadow-lg"
