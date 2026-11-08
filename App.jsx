@@ -3,6 +3,7 @@ import { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "./supabase.js";
 import { AULAS_LIDERANCA_3S, AVALIACAO_3S, PLANO_3S, PILARES_3S } from "./curso-lideranca-3s.js";
 import { AULAS_VIDA_3S, AVALIACAO_VIDA_3S, PLANO_VIDA_3S } from "./curso-vida-3s.js";
+import { PRATICAS_3S } from "./praticas-3s.js";
 import { AULAS_ATLETA_3S, AVALIACAO_ATLETA_3S, PLANO_ATLETA_3S } from "./curso-desporto-3s.js";
 import { OPCOES_TREINO, OPCOES_PROPOSITO } from "./opcoes-treinos.js";
 import { PERGUNTAS_PROPOSITO, VALORES, CRENCAS, AREAS_VIDA, FERIDAS, PERGUNTAS_FERIDAS, PLANO_VIDA, ATIVIDADES, TIPOS_VOCACIONAIS, sugerirProfissoes } from "./perfil-vida.js";
@@ -3966,8 +3967,85 @@ function ApresentacaoAula({ curso, aula, numero }) {
   );
 }
 
+// Prática guiada com tempo: um passo de cada vez, com sinal sonoro suave na mudança
+function somSuave() {
+  try {
+    const Ctx = window.AudioContext || window.webkitAudioContext; if (!Ctx) return;
+    const ctx = somSuave.ctx || (somSuave.ctx = new Ctx());
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = "sine"; o.frequency.value = 528; o.connect(g); g.connect(ctx.destination);
+    const t = ctx.currentTime; g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.18, t + 0.05); g.gain.exponentialRampToValueAtTime(0.0001, t + 1.6);
+    o.start(t); o.stop(t + 1.7);
+  } catch { /* sem som, sem problema */ }
+}
+function PraticaGuiada({ pratica, cor, onConcluir }) {
+  const [k, setK] = useState(-1);
+  const [resta, setResta] = useState(0);
+  const [pausa, setPausa] = useState(false);
+  const [som, setSom] = useState(true);
+  const total = pratica.passos.reduce((t, p) => t + p.seg, 0);
+  const fim = k >= pratica.passos.length;
+  useEffect(() => {
+    if (k < 0 || fim || pausa) return;
+    const t = setInterval(() => setResta((r) => r - 1), 1000);
+    return () => clearInterval(t);
+  }, [k, fim, pausa]);
+  useEffect(() => {
+    if (k < 0 || fim || resta > 0) return;
+    if (som) somSuave();
+    const n = k + 1; setK(n);
+    if (n < pratica.passos.length) setResta(pratica.passos[n].seg); else onConcluir && onConcluir();
+  }, [resta]);
+  const comecar = () => { if (som) somSuave(); setK(0); setResta(pratica.passos[0].seg); setPausa(false); };
+  const saltar = () => setResta(0);
+  const min = Math.max(1, Math.round(total / 60));
+  const passo = !fim && k >= 0 ? pratica.passos[k] : null;
+  const pct = passo ? 1 - resta / passo.seg : 0;
+  return (
+    <div className="rounded-2xl overflow-hidden" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>
+      <div className="px-5 pt-5 pb-4">
+        <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>{pratica.tipo.toUpperCase()} · {min} MIN</p>
+        <p className="font-serif text-2xl leading-tight mt-1">{pratica.titulo}</p>
+      </div>
+      {k < 0 && (
+        <div className="px-5 pb-5 space-y-3">
+          {pratica.introducao && <p className="text-[15px] leading-relaxed">{pratica.introducao}</p>}
+          <p className="text-sm leading-relaxed" style={{ opacity: 0.9 }}>Encontra um sítio tranquilo. A app guia-te passo a passo e dá um sinal suave quando muda. Podes pausar ou parar quando quiseres.</p>
+          <button onClick={comecar} className="w-full rounded-full py-3 font-semibold text-sm flex items-center justify-center gap-2" style={{ backgroundColor: palette.gold, color: palette.navy }}><Play size={16} fill={palette.navy} /> Começar a prática</button>
+          <label className="flex items-center gap-2 text-[13px]" style={{ opacity: 0.85 }}><input type="checkbox" checked={som} onChange={(e) => setSom(e.target.checked)} /> Sinal sonoro entre passos</label>
+        </div>
+      )}
+      {passo && (
+        <div className="px-5 pb-5">
+          <div className="flex gap-1 mb-4">{pratica.passos.map((_, j) => <div key={j} className="h-1 flex-1 rounded-full" style={{ backgroundColor: j < k ? palette.gold : j === k ? palette.gold + "99" : "rgba(255,255,255,.18)" }} />)}</div>
+          <div key={k} style={{ minHeight: 120, animation: "apEntra .6s ease-out both" }}>
+            <p className="text-[13px] mb-2" style={{ color: palette.gold }}>Passo {k + 1} de {pratica.passos.length}</p>
+            <p className="text-lg leading-relaxed">{passo.texto}</p>
+          </div>
+          <div className="flex items-center gap-3 mt-4">
+            <div className="relative w-14 h-14 flex-none">
+              <svg viewBox="0 0 36 36" className="w-14 h-14 -rotate-90"><circle cx="18" cy="18" r="16" fill="none" stroke="rgba(255,255,255,.15)" strokeWidth="2.5" /><circle cx="18" cy="18" r="16" fill="none" stroke={palette.gold} strokeWidth="2.5" strokeDasharray={`${pct * 100.5} 100.5`} strokeLinecap="round" /></svg>
+              <span className="absolute inset-0 flex items-center justify-center text-sm font-semibold">{resta}</span>
+            </div>
+            <button onClick={() => setPausa((x) => !x)} className="flex-1 rounded-full py-2.5 text-sm font-medium" style={{ border: `1px solid ${palette.gold}`, color: palette.creamSoft }}>{pausa ? "Continuar" : "Pausar"}</button>
+            <button onClick={saltar} className="flex-1 rounded-full py-2.5 text-sm font-medium" style={{ backgroundColor: "rgba(255,255,255,.1)", color: palette.creamSoft }}>Passo seguinte</button>
+          </div>
+        </div>
+      )}
+      {fim && (
+        <div className="px-5 pb-5 space-y-3">
+          <p className="text-lg leading-relaxed">Prática concluída. Repara em como te sentes agora, comparado com o início.</p>
+          <p className="text-sm" style={{ opacity: 0.85 }}>Podes repeti-la sempre que precisares, durante a semana.</p>
+          <button onClick={comecar} className="w-full rounded-full py-3 text-sm font-medium" style={{ border: `1px solid ${palette.gold}`, color: palette.creamSoft }}>Repetir a prática</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function AulaInterativaScreen({ curso, indice, aula, dados, estadoCurso, onGuardar, onGuardarCurso, onBack, onSeguinte, onAbrirLab, materiaisDesbloqueados, onDesbloquearMaterial, acessoTotal, formadorAutorizado }) {
-  const passos = ["Aprender", "Exercício", ...(aula.avaliacao ? ["Avaliação 3S"] : []), "Questionário", "Desafio"];
+  const praticaAula = PRATICAS_3S[`${curso.id}-${indice + 1}`];
+  const passos = ["Aprender", ...(praticaAula ? ["Praticar"] : []), "Exercício", ...(aula.avaliacao ? ["Avaliação 3S"] : []), "Questionário", "Desafio"];
   const [passo, setPasso] = useState(0);
   const [respostas, setRespostas] = useState(dados.respostas || []);
   const [quiz, setQuiz] = useState(dados.quiz || {});
@@ -4083,6 +4161,18 @@ function AulaInterativaScreen({ curso, indice, aula, dados, estadoCurso, onGuard
           </>
         )}
 
+        {nomePasso === "Praticar" && praticaAula && (
+          <>
+            <style>{`@keyframes apEntra{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}`}</style>
+            <div className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}88` }}>
+              <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>EXEMPLO DA VIDA REAL</p>
+              <p className="font-serif text-lg leading-snug mt-1" style={{ color: palette.navy }}>{praticaAula.exemplo.titulo}</p>
+              <p className="text-[15px] leading-relaxed mt-1.5" style={{ color: palette.ink }}>{praticaAula.exemplo.texto}</p>
+            </div>
+            <PraticaGuiada key={`${curso.id}-${indice}`} pratica={praticaAula.pratica} onConcluir={() => onGuardar({ pratica: new Date().toISOString() })} />
+            <p className="text-xs leading-relaxed" style={{ color: palette.navySoft }}>Estas práticas são de autoconhecimento e bem-estar e não substituem acompanhamento psicológico ou médico. Se algum passo te causar desconforto, para e respira ao teu ritmo.</p>
+          </>
+        )}
         {nomePasso === "Exercício" && (
           <>
             <p className="text-[15px] leading-relaxed" style={{ color: palette.ink }}>{aula.exercicio.intro}</p>
