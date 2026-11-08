@@ -309,12 +309,18 @@ const TODOS_CURSOS = [
 const CURSOS_VISIVEIS = [1, 30, 40];
 // Capítulo do livro «Liderar com Saber, Sentir e Ser» ligado a cada aula · [n.º no índice do leitor, nome]
 const LIVRO_AULAS = {
-  "1-1": [2, "Introdução — Liderar a partir de dentro"],
-  "1-2": [5, "Capítulo 2 — Liderança Situacional: uma pessoa, um estilo"],
-  "1-3": [4, "Capítulo 1 — Controlo ou Compromisso"],
-  "1-4": [11, "Capítulo 7 — Segurança Psicológica: o direito de errar"],
-  "1-5": [22, "Capítulo 17 — Coerência e legado"],
-  "1-6": [17, "Capítulo 12 — Que líder sou eu?"],
+  "1-1": [2, "Introdução — Liderar a partir de dentro", 130],
+  "1-2": [5, "Capítulo 2 — Liderança Situacional: uma pessoa, um estilo", 130],
+  "1-3": [4, "Capítulo 1 — Controlo ou Compromisso", 130],
+  "1-4": [11, "Capítulo 7 — Segurança Psicológica: o direito de errar", 130],
+  "1-5": [22, "Capítulo 17 — Coerência e legado", 130],
+  "1-6": [17, "Capítulo 12 — Que líder sou eu?", 130],
+  "30-1": [4, "Capítulo 2 — O método 3S: Saber, Sentir, Ser", 131],
+  "30-2": [7, "Capítulo 5 — Crenças limitantes: as frases que te governam em silêncio", 131],
+  "30-3": [6, "Capítulo 4 — Valores: a bússola que já trazes contigo", 131],
+  "30-4": [10, "Capítulo 8 — As emoções como mensageiras", 131],
+  "30-5": [13, "Capítulo 11 — Relações: limites, comunicação e pedidos claros", 131],
+  "30-6": [14, "Capítulo 12 — Identidade: quem escolhes ser a partir de hoje", 131],
 };
 // Palestras do YouTube (verificadas) para aprofundar algumas aulas · chave "curso-aula"
 const APROFUNDAR = {
@@ -449,9 +455,9 @@ const materiais = [
   { id: 145, titulo: "Desporto 3S — Diário do atleta 3S", formato: "Ficha", preco: "1,99€", url: "/desporto-diario-atleta-3s.pdf" },
   { id: 146, titulo: "Desporto 3S — Calendário de provas", formato: "Ficha", preco: "1,99€", url: "/desporto-calendario-provas.pdf" },
   { id: 147, titulo: "Desporto 3S — Avaliação semanal", formato: "Ficha", preco: "1,99€", url: "/desporto-avaliacao-semanal.pdf" },
-  { id: 130, titulo: "Liderar com Saber, Sentir e Ser", formato: "Livro", preco: "7,99€", url: "", capa: "/livros/capa-130.jpg", leitor: true, tambemFisico: true, precoFisico: "12,99€", desc: "Competências, histórias e exercícios para quem lidera. 17 capítulos, ferramentas práticas e um plano de 90 dias." },
+  { id: 130, pitch: "Gostou do início? O livro completo tem 17 capítulos, histórias reais, ferramentas e um plano de 90 dias.", titulo: "Liderar com Saber, Sentir e Ser", formato: "Livro", preco: "7,99€", url: "", capa: "/livros/capa-130.jpg", leitor: true, tambemFisico: true, precoFisico: "12,99€", desc: "Competências, histórias e exercícios para quem lidera. 17 capítulos, ferramentas práticas e um plano de 90 dias." },
   { id: 132, titulo: "Atleta 3S — o livro", formato: "Livro", preco: "12,99€", url: "", emBreve: true, desc: "Treinar com Saber, Sentir e Ser: método, corpo, mente e hábitos para quem treina." },
-  { id: 131, titulo: "Filosofia 3S — o livro", formato: "Livro", preco: "12,99€", url: "", emBreve: true, desc: "Saber, Sentir, Ser: um livro sobre as pessoas e o ser humano." },
+  { id: 131, titulo: "Life Coaching 3S", formato: "Livro", preco: "7,99€", url: "", capa: "/livros/capa-131.jpg", leitor: true, tambemFisico: true, precoFisico: "12,99€", desc: "Saber, Sentir, Ser: um método para viveres a vida que escolhes. 15 capítulos, histórias, sessões comentadas e exercícios.", pitch: "Gostou do início? O livro completo tem 15 capítulos, sessões de coaching comentadas, exercícios e um diário 3S de 30 dias." },
   { id: 32, titulo: "Caderno do Aluno — Crenças que Limitam", formato: "Caderno", preco: "4,99€", url: "/caderno-aluno-crencas-limitantes.pdf" },
   { id: 33, titulo: "Livro do Aluno — Autossabotagem", formato: "Livro", preco: "6,99€", url: "/livro-autossabotagem.pdf" },
   { id: 34, titulo: "Caderno de Trabalho — Autossabotagem", formato: "Caderno", preco: "4,99€", url: "/caderno-autossabotagem.pdf" },
@@ -924,7 +930,7 @@ function SectionHeader({ eyebrow, title, onBack, backLabel }) {
 const areas = [
   { key: "alunos", titulo: "Alunos", desc: "Cursos das escolas 3S", icon: GraduationCap, full: true },
   { key: "aluno", titulo: "Área do Aluno", desc: "Progresso, certificados e materiais", icon: GraduationCap },
-  { key: "livros", titulo: "Livros", desc: "Liderança 3S e Filosofia 3S", icon: BookOpen },
+  { key: "livros", titulo: "Livros", desc: "Liderar com Saber, Sentir e Ser · Life Coaching 3S", icon: BookOpen },
   { key: "escola-lideranca", titulo: "Liderança 3S", desc: "Comunicação e liderança de pessoas", icon: BookOpen },
   { key: "escola-ser", titulo: "Vida 3S", desc: "Autoconhecimento, emoções e crenças", icon: BookOpen },
   { key: "workshops", titulo: "Cursos", desc: "Liderança 3S e Vida 3S", icon: GraduationCap },
@@ -937,7 +943,7 @@ const areasInicio = [
   { key: "formacao-hub", titulo: "Formação", desc: "Cursos, material didático e temas de liderança e comunicação", icon: GraduationCap, full: true },
   { key: "podcast", titulo: "Podcast", desc: "Episódios para ouvir", icon: Headphones },
   { key: "marcar", titulo: "Marcar sessão", desc: "Coaching e mentoria", icon: PenLine },
-  { key: "livros", titulo: "Livros", desc: "Liderança 3S e Filosofia 3S", icon: BookOpen },
+  { key: "livros", titulo: "Livros", desc: "Liderar com Saber, Sentir e Ser · Life Coaching 3S", icon: BookOpen },
 ];
 
 /* ---------------------------------------------------------
@@ -3046,7 +3052,7 @@ const areasLideranca = [
 const areasDesenvolvimento = [
   { key: "escola-ser", titulo: "Cursos de desenvolvimento", desc: "Autoconhecimento, emoções e crenças limitantes", icon: GraduationCap, full: true },
   { key: "marcar", titulo: "Sessão de coaching", desc: "Individual", icon: PenLine },
-  { key: "livros", titulo: "Livros", desc: "Liderança 3S e Filosofia 3S", icon: BookOpen },
+  { key: "livros", titulo: "Livros", desc: "Liderar com Saber, Sentir e Ser · Life Coaching 3S", icon: BookOpen },
 ];
 
 function EscolaHubScreen({ onBack, onOpen, eyebrow, nome, frase, por, lista }) {
@@ -3083,7 +3089,7 @@ const areasEscolaComuns = [
 ];
 
 const produtosLista = [
-  { key: "livros", titulo: "Livros", desc: "Liderança 3S e Filosofia 3S", icon: BookOpen, full: true },
+  { key: "livros", titulo: "Livros", desc: "Liderar com Saber, Sentir e Ser · Life Coaching 3S", icon: BookOpen, full: true },
   { key: "carrinho", titulo: "O meu carrinho", desc: "Rever e pagar", icon: ShoppingBag },
   { key: "codigo", titulo: "Código de oferta", desc: "Tenho um código", icon: Gift },
 ];
@@ -4093,13 +4099,13 @@ function AulaInterativaScreen({ curso, indice, aula, dados, estadoCurso, onGuard
               <p className="text-[11px] tracking-[0.2em] font-semibold mb-1" style={{ color: palette.gold }}>IDEIA-CHAVE</p>
               <p className="font-serif text-lg leading-snug" style={{ color: palette.creamSoft }}>{aula.ideia}</p>
             </div>
-            {LIVRO_AULAS[`${curso.id}-${indice + 1}`] && (() => { const [cap, nomeCap] = LIVRO_AULAS[`${curso.id}-${indice + 1}`]; const lv = materiais.find((m) => m.id === 130); return (
-              <button onClick={() => window.dispatchEvent(new CustomEvent("escola3s:abrir", { detail: `leitor-130:${cap}` }))} className="w-full text-left flex gap-3 items-center rounded-2xl p-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}88` }}>
+            {LIVRO_AULAS[`${curso.id}-${indice + 1}`] && (() => { const [cap, nomeCap, lid] = LIVRO_AULAS[`${curso.id}-${indice + 1}`]; const lv = materiais.find((m) => m.id === lid); return (
+              <button onClick={() => window.dispatchEvent(new CustomEvent("escola3s:abrir", { detail: `leitor-${lid}:${cap}` }))} className="w-full text-left flex gap-3 items-center rounded-2xl p-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}88` }}>
                 {lv?.capa && <img src={lv.capa} alt="" className="w-16 rounded-md shadow-md flex-none" style={{ aspectRatio: "2 / 3", objectFit: "cover" }} />}
                 <div className="min-w-0 flex-1">
                   <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>NO LIVRO</p>
                   <p className="text-sm font-semibold leading-snug mt-0.5" style={{ color: palette.navy }}>{nomeCap}</p>
-                  <p className="text-[13px] leading-snug mt-0.5" style={{ color: palette.navySoft }}>Liderar com Saber, Sentir e Ser · histórias, ferramentas e exercícios para aprofundar esta aula</p>
+                  <p className="text-[13px] leading-snug mt-0.5" style={{ color: palette.navySoft }}>{lv?.titulo} · histórias e exercícios para aprofundar esta aula</p>
                 </div>
                 <ChevronRight size={16} style={{ color: palette.navySoft }} />
               </button>); })()}
@@ -9207,7 +9213,7 @@ function LeitorLivroScreen({ livroId, capInicial, onBack }) {
   const blocoComprar = (
     <div className="rounded-2xl p-5 space-y-3" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>
       <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>CONTINUAR A LER</p>
-      <p className="font-serif text-xl leading-snug">Gostou do início? O livro completo tem 17 capítulos, histórias reais, ferramentas e um plano de 90 dias.</p>
+      <p className="font-serif text-xl leading-snug">{livro?.pitch || "Gostou do início? Continue a ler o livro completo."}</p>
       <p className="text-sm" style={{ opacity: 0.85 }}>Depois da compra, o livro fica guardado na tua área reservada e podes lê-lo sempre que quiseres, dentro da app.</p>
       <BotaoCarrinho item={{ chave: `material-${livroId}`, tipo: "material", materialId: livroId, titulo: livro?.titulo || "Livro", valor: precoNumero(livro?.preco || "7,99€") }} rotulo="Comprar para ler na app" />
       {livro?.precoFisico && (
