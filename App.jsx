@@ -2,6 +2,7 @@
 import { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "./supabase.js";
 import { AULAS_LIDERANCA_3S, AVALIACAO_3S, PLANO_3S, PILARES_3S } from "./curso-lideranca-3s.js";
+import { AULAS_VIDA_3S, AVALIACAO_VIDA_3S, PLANO_VIDA_3S } from "./curso-vida-3s.js";
 import { AULAS_ATLETA_3S, AVALIACAO_ATLETA_3S, PLANO_ATLETA_3S } from "./curso-desporto-3s.js";
 import { OPCOES_TREINO, OPCOES_PROPOSITO } from "./opcoes-treinos.js";
 import { PERGUNTAS_PROPOSITO, VALORES, CRENCAS, AREAS_VIDA, FERIDAS, PERGUNTAS_FERIDAS, PLANO_VIDA, ATIVIDADES, TIPOS_VOCACIONAIS, sugerirProfissoes } from "./perfil-vida.js";
@@ -287,19 +288,18 @@ const TODOS_CURSOS = [
   {
     id: 30,
     escolaId: "ser",
-    emBreve: true,
     titulo: "Vida 3S",
-    promessa: "Saber, Sentir, Ser: a filosofia da Escola 3S aplicada à tua vida. Para qualquer pessoa que queira conhecer-se, sentir com verdade e viver por inteiro.",
+    interativo: true,
+    promessa: "O curso de Life Coaching 3S para quem quer viver com mais intenção e menos pressão: conhecer os teus pensamentos e valores, cuidar das emoções e das relações, e criar hábitos coerentes com quem és. Sais com o teu perfil 3S e um plano de 30 dias.",
     pergunta: "Quem sou eu quando deixo de viver em piloto automático?",
     tipo: "video",
-    aulas: [
-      { titulo: "Saber", descricao: "Conhecer-te: o que pensas, o que acreditas e de onde vem." },
-      { titulo: "Sentir", descricao: "Dar lugar às emoções sem deixar que te governem." },
-      { titulo: "Ser", descricao: "Viver de acordo com quem és, nas escolhas de todos os dias." },
-      { titulo: "Integrar", descricao: "Juntar os três: um caminho para a tua vida." },
-    ],
-    materiaisIds: [],
+    duracao: "6 aulas · cerca de 2 h",
+    concluido: false,
+    aulas: AULAS_VIDA_3S,
+    avaliacaoFrases: AVALIACAO_VIDA_3S,
+    avaliacaoPlanos: PLANO_VIDA_3S,
   },
+
 
 ];
 
@@ -3787,9 +3787,9 @@ function CursoInterativoScreen({ curso, estado, onGuardar, concluidoEm, onConclu
                 <p key={t} className="text-[13px] flex gap-2" style={{ color: palette.ink }}><span style={{ color: palette.gold }}>✓</span>{t}</p>
               ))}
             </div>
-            <div className="flex items-end justify-between mt-4 mb-3">
-              <span className="font-serif text-3xl" style={{ color: palette.navy }}>{precoTexto(PRECO_CURSO)}</span>
-              <span className="text-[11px]" style={{ color: palette.navySoft }}>MB WAY · Multibanco · Payshop</span>
+            <div className="flex items-end justify-between gap-3 mt-4 mb-3">
+              <span className="font-serif text-3xl shrink-0" style={{ color: palette.navy }}>{precoTexto(PRECO_CURSO)}</span>
+              <span className="text-[11px] text-right leading-snug" style={{ color: palette.navySoft }}>MB WAY · Multibanco · Payshop</span>
             </div>
             <BotaoCarrinho rotulo="Comprar o curso" item={{ chave: `curso-${curso.id}`, tipo: "curso", cursoId: curso.id, titulo: `Curso — ${curso.titulo}`, valor: PRECO_CURSO }} />
           </div>
