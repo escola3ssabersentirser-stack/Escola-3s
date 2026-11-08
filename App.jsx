@@ -1,5 +1,5 @@
 // VERSAO-05-NOV-CURSO-LIDERANCA-3S
-import { useState, useEffect, createContext, useContext } from "react";
+import { useState, useEffect, useRef, createContext, useContext } from "react";
 import { supabase } from "./supabase.js";
 import { AULAS_LIDERANCA_3S, AVALIACAO_3S, PLANO_3S, PILARES_3S } from "./curso-lideranca-3s.js";
 import { AULAS_VIDA_3S, AVALIACAO_VIDA_3S, PLANO_VIDA_3S } from "./curso-vida-3s.js";
@@ -306,6 +306,15 @@ const TODOS_CURSOS = [
 
 // Cada escola mostra só o seu curso principal (+ Crenças grátis). Os outros ficam guardados, escondidos.
 const CURSOS_VISIVEIS = [1, 30, 40];
+// Capítulo do livro «Liderar com Saber, Sentir e Ser» ligado a cada aula · [n.º no índice do leitor, nome]
+const LIVRO_AULAS = {
+  "1-1": [2, "Introdução — Liderar a partir de dentro"],
+  "1-2": [5, "Capítulo 2 — Liderança Situacional: uma pessoa, um estilo"],
+  "1-3": [4, "Capítulo 1 — Controlo ou Compromisso"],
+  "1-4": [11, "Capítulo 7 — Segurança Psicológica: o direito de errar"],
+  "1-5": [22, "Capítulo 17 — Coerência e legado"],
+  "1-6": [17, "Capítulo 12 — Que líder sou eu?"],
+};
 // Palestras do YouTube (verificadas) para aprofundar algumas aulas · chave "curso-aula"
 const APROFUNDAR = {
   "1-3": { id: "rrkrvAUbU9Y", titulo: "O enigma da motivação", autor: "Dan Pink" },
@@ -439,7 +448,7 @@ const materiais = [
   { id: 145, titulo: "Desporto 3S — Diário do atleta 3S", formato: "Ficha", preco: "1,99€", url: "/desporto-diario-atleta-3s.pdf" },
   { id: 146, titulo: "Desporto 3S — Calendário de provas", formato: "Ficha", preco: "1,99€", url: "/desporto-calendario-provas.pdf" },
   { id: 147, titulo: "Desporto 3S — Avaliação semanal", formato: "Ficha", preco: "1,99€", url: "/desporto-avaliacao-semanal.pdf" },
-  { id: 130, titulo: "Liderança 3S — o livro", formato: "Livro", preco: "12,99€", url: "", emBreve: true, desc: "Liderar com Saber, Sentir e Ser: histórias e exercícios para quem lidera pessoas." },
+  { id: 130, titulo: "Liderar com Saber, Sentir e Ser", formato: "Livro", preco: "7,99€", url: "", capa: "/livros/capa-130.jpg", leitor: true, desc: "Competências, histórias e exercícios para quem lidera. 17 capítulos, ferramentas práticas e um plano de 90 dias." },
   { id: 132, titulo: "Atleta 3S — o livro", formato: "Livro", preco: "12,99€", url: "", emBreve: true, desc: "Treinar com Saber, Sentir e Ser: método, corpo, mente e hábitos para quem treina." },
   { id: 131, titulo: "Filosofia 3S — o livro", formato: "Livro", preco: "12,99€", url: "", emBreve: true, desc: "Saber, Sentir, Ser: um livro sobre as pessoas e o ser humano." },
   { id: 32, titulo: "Caderno do Aluno — Crenças que Limitam", formato: "Caderno", preco: "4,99€", url: "/caderno-aluno-crencas-limitantes.pdf" },
@@ -2956,7 +2965,7 @@ function EscolaScreen({ escola, onBack, onOpen, temAcesso, onAbrirCurso, desbloq
   }
   if (e.app) tiles.push({ chave: "app", Ico: Footprints, rot: "Aplicação", titulo: e.app.nome, info: "Treinos e tempos", href: e.app.url, destaque: true });
   if (lab) tiles.push({ chave: "lab", Ico: Layers, rot: "Gratuito", titulo: "Laboratório", info: "Testes e treinos", acao: () => onOpen(lab.secao) });
-  if (livro) tiles.push({ chave: "livro", Ico: BookOpen, rot: "Livro", titulo: "O livro", info: livro.emBreve ? "Em breve" : livroAberto ? "Ler" : livro.preco, acao: () => (livroAberto ? window.open(livro.url, "_blank") : onOpen("livros")) });
+  if (livro) tiles.push({ chave: "livro", Ico: BookOpen, capa: livro.capa, rot: "Livro", titulo: "O livro", info: livro.emBreve ? "Em breve" : livro.leitor ? (livroAberto ? "Ler" : "Início grátis") : livroAberto ? "Ler" : livro.preco, acao: () => (livro.leitor ? onOpen("leitor-" + livro.id) : livroAberto ? window.open(livro.url, "_blank") : onOpen("livros")) });
   tiles.push({ chave: "marcar", Ico: Calendar, rot: "Sessão", titulo: coach && coach.nome ? `Sessão com ${coach.nome.split(" ")[0]}` : "Marcar sessão", info: "Coaching e mentoria · 30€", acao: () => onOpen("marcar:" + escola) });
   if (tiles.length % 2 === 1) tiles.push({ chave: "coach", Ico: User, rot: "Coach", titulo: coach === undefined ? "…" : coach ? coach.nome : "Em breve", info: "Responsável pela área", acao: () => onOpen("marcar:" + escola) });
 
@@ -2990,9 +2999,10 @@ function EscolaScreen({ escola, onBack, onOpen, temAcesso, onAbrirCurso, desbloq
           const conteudo = (
             <>
               <div className="flex items-center justify-between">
+{t.capa ? <img src={t.capa} alt="" className="w-9 rounded-sm shadow" style={{ aspectRatio: "2 / 3", objectFit: "cover" }} /> : (
                 <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ border: `1.5px solid ${escuro ? e.acento : palette.gold}` }}>
                   <t.Ico size={16} strokeWidth={1.6} style={{ color: escuro ? e.acento : palette.gold }} />
-                </div>
+                </div>)}
                 <span className="text-[9px] tracking-[0.12em] font-semibold" style={{ color: escuro ? e.acento : palette.gold }}>{t.rot.toUpperCase()}</span>
               </div>
               <div>
@@ -3241,10 +3251,34 @@ function AreaAlunoScreen({ onBack, onOpenCurso, cursosConcluidos, materiaisDesbl
   const pct = Math.round((concluidos / total) * 100);
   const concluidosLista = cursos.filter(estaConcluido);
   const guardados = materiais.filter((m) => materiaisDesbloqueados[m.id]);
+  const [biblioteca, setBiblioteca] = useState([]);
+  useEffect(() => {
+    let vivo = true;
+    (async () => {
+      const meus = [];
+      for (const m of materiais.filter((x) => x.leitor)) if (await obterChaveLivro(m.id)) meus.push(m);
+      if (vivo) setBiblioteca(meus);
+    })();
+    return () => { vivo = false; };
+  }, []);
 
   return (
     <div className="pb-28">
       <SectionHeader eyebrow="A TUA JORNADA" title="Área do Aluno" onBack={onBack} />
+      {biblioteca.length > 0 && (
+        <div className="px-6 mb-6">
+          <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>A MINHA BIBLIOTECA</p>
+          <div className="space-y-2">
+            {biblioteca.map((m) => (
+              <button key={m.id} onClick={() => window.dispatchEvent(new CustomEvent("escola3s:abrir", { detail: "leitor-" + m.id }))} className="w-full text-left rounded-xl px-4 py-3 flex gap-3.5 items-center" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
+                {m.capa && <img src={m.capa} alt="" className="w-12 rounded-sm shadow shrink-0" style={{ aspectRatio: "2 / 3", objectFit: "cover" }} />}
+                <div className="flex-1 min-w-0"><p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{m.titulo}</p><p className="text-[13px] mt-0.5" style={{ color: palette.gold }}>Continuar a ler</p></div>
+                <ChevronRight size={16} style={{ color: palette.navySoft }} />
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="px-6">
         <div className="rounded-2xl px-5 py-5" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
@@ -3978,13 +4012,44 @@ function somSuave() {
     o.start(t); o.stop(t + 1.7);
   } catch { /* sem som, sem problema */ }
 }
+// Voz em português (europeu, se existir) para guiar as práticas em áudio
+function vozPortuguesa() {
+  try {
+    const vs = window.speechSynthesis?.getVoices?.() || [];
+    const norm = (l) => String(l || "").replace("_", "-").toLowerCase();
+    return vs.find((v) => norm(v.lang) === "pt-pt") || vs.find((v) => norm(v.lang).startsWith("pt")) || null;
+  } catch { return null; }
+}
+function falar(texto) {
+  try {
+    const sy = window.speechSynthesis; if (!sy) return false;
+    sy.cancel();
+    const u = new SpeechSynthesisUtterance(texto);
+    const v = vozPortuguesa(); if (v) u.voice = v;
+    u.lang = v?.lang || "pt-PT"; u.rate = 0.85; u.pitch = 1;
+    sy.speak(u); return true;
+  } catch { return false; }
+}
+function calarVoz() { try { window.speechSynthesis?.cancel(); } catch {} }
 function PraticaGuiada({ pratica, cor, onConcluir }) {
   const [k, setK] = useState(-1);
   const [resta, setResta] = useState(0);
   const [pausa, setPausa] = useState(false);
   const [som, setSom] = useState(true);
+  const [voz, setVoz] = useState(true);
   const total = pratica.passos.reduce((t, p) => t + p.seg, 0);
   const fim = k >= pratica.passos.length;
+  useEffect(() => { try { window.speechSynthesis?.getVoices(); } catch {} return () => calarVoz(); }, []);
+  useEffect(() => {
+    if (!voz || k < 0) return;
+    if (fim) { falar("Prática concluída. Repara em como te sentes agora."); return; }
+    if (k === 0) return; // o primeiro passo é dito logo no toque em «Começar» (exigência do iPhone)
+    const t = setTimeout(() => falar(pratica.passos[k].texto), som ? 900 : 100);
+    return () => clearTimeout(t);
+  }, [k, voz]);
+  useEffect(() => {
+    try { const sy = window.speechSynthesis; if (!sy) return; if (pausa) sy.pause(); else sy.resume(); } catch {}
+  }, [pausa]);
   useEffect(() => {
     if (k < 0 || fim || pausa) return;
     const t = setInterval(() => setResta((r) => r - 1), 1000);
@@ -3996,7 +4061,7 @@ function PraticaGuiada({ pratica, cor, onConcluir }) {
     const n = k + 1; setK(n);
     if (n < pratica.passos.length) setResta(pratica.passos[n].seg); else onConcluir && onConcluir();
   }, [resta]);
-  const comecar = () => { if (som) somSuave(); setK(0); setResta(pratica.passos[0].seg); setPausa(false); };
+  const comecar = () => { if (som) somSuave(); if (voz) falar(pratica.passos[0].texto); setK(0); setResta(pratica.passos[0].seg); setPausa(false); };
   const saltar = () => setResta(0);
   const min = Math.max(1, Math.round(total / 60));
   const passo = !fim && k >= 0 ? pratica.passos[k] : null;
@@ -4010,9 +4075,12 @@ function PraticaGuiada({ pratica, cor, onConcluir }) {
       {k < 0 && (
         <div className="px-5 pb-5 space-y-3">
           {pratica.introducao && <p className="text-[15px] leading-relaxed">{pratica.introducao}</p>}
-          <p className="text-sm leading-relaxed" style={{ opacity: 0.9 }}>Encontra um sítio tranquilo. A app guia-te passo a passo e dá um sinal suave quando muda. Podes pausar ou parar quando quiseres.</p>
+          <p className="text-sm leading-relaxed" style={{ opacity: 0.9 }}>Encontra um sítio tranquilo e, se puderes, usa auriculares. Uma voz guia-te passo a passo e podes fechar os olhos. Podes pausar ou parar quando quiseres.</p>
           <button onClick={comecar} className="w-full rounded-full py-3 font-semibold text-sm flex items-center justify-center gap-2" style={{ backgroundColor: palette.gold, color: palette.navy }}><Play size={16} fill={palette.navy} /> Começar a prática</button>
-          <label className="flex items-center gap-2 text-[13px]" style={{ opacity: 0.85 }}><input type="checkbox" checked={som} onChange={(e) => setSom(e.target.checked)} /> Sinal sonoro entre passos</label>
+          <div className="flex flex-wrap gap-x-5 gap-y-2">
+            <label className="flex items-center gap-2 text-[13px]" style={{ opacity: 0.85 }}><input type="checkbox" checked={voz} onChange={(e) => { setVoz(e.target.checked); if (!e.target.checked) calarVoz(); }} /> Guia por voz</label>
+            <label className="flex items-center gap-2 text-[13px]" style={{ opacity: 0.85 }}><input type="checkbox" checked={som} onChange={(e) => setSom(e.target.checked)} /> Sinal sonoro entre passos</label>
+          </div>
         </div>
       )}
       {passo && (
@@ -4021,6 +4089,7 @@ function PraticaGuiada({ pratica, cor, onConcluir }) {
           <div key={k} style={{ minHeight: 120, animation: "apEntra .6s ease-out both" }}>
             <p className="text-[13px] mb-2" style={{ color: palette.gold }}>Passo {k + 1} de {pratica.passos.length}</p>
             <p className="text-lg leading-relaxed">{passo.texto}</p>
+            {voz && <button onClick={() => falar(passo.texto)} className="mt-2 text-[13px] underline" style={{ color: palette.goldSoft }}>Ouvir de novo</button>}
           </div>
           <div className="flex items-center gap-3 mt-4">
             <div className="relative w-14 h-14 flex-none">
@@ -4122,6 +4191,16 @@ function AulaInterativaScreen({ curso, indice, aula, dados, estadoCurso, onGuard
               <p className="text-[11px] tracking-[0.2em] font-semibold mb-1" style={{ color: palette.gold }}>IDEIA-CHAVE</p>
               <p className="font-serif text-lg leading-snug" style={{ color: palette.creamSoft }}>{aula.ideia}</p>
             </div>
+            {LIVRO_AULAS[`${curso.id}-${indice + 1}`] && (() => { const [cap, nomeCap] = LIVRO_AULAS[`${curso.id}-${indice + 1}`]; const lv = materiais.find((m) => m.id === 130); return (
+              <button onClick={() => window.dispatchEvent(new CustomEvent("escola3s:abrir", { detail: `leitor-130:${cap}` }))} className="w-full text-left flex gap-3 items-center rounded-2xl p-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}88` }}>
+                {lv?.capa && <img src={lv.capa} alt="" className="w-12 rounded-sm shadow flex-none" style={{ aspectRatio: "2 / 3", objectFit: "cover" }} />}
+                <div className="min-w-0 flex-1">
+                  <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>NO LIVRO</p>
+                  <p className="text-sm font-semibold leading-snug mt-0.5" style={{ color: palette.navy }}>{nomeCap}</p>
+                  <p className="text-[13px] leading-snug mt-0.5" style={{ color: palette.navySoft }}>Liderar com Saber, Sentir e Ser · histórias, ferramentas e exercícios para aprofundar esta aula</p>
+                </div>
+                <ChevronRight size={16} style={{ color: palette.navySoft }} />
+              </button>); })()}
             {APROFUNDAR[`${curso.id}-${indice + 1}`] && (() => { const v = APROFUNDAR[`${curso.id}-${indice + 1}`]; return (
               <a href={`https://www.youtube.com/watch?v=${v.id}`} target="_blank" rel="noopener noreferrer" className="flex gap-3 items-center rounded-2xl p-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}88` }}>
                 <div className="relative w-28 rounded-lg flex-none overflow-hidden flex items-center justify-center" style={{ aspectRatio: "16 / 9", backgroundColor: palette.navy }}>
@@ -5921,7 +6000,23 @@ function MaterialDidaticoScreen({ onBack, desbloqueados, onDesbloquear, acessoTo
   );
 }
 
+function CartaoLivroLeitor({ material }) {
+  const abrir = () => window.dispatchEvent(new CustomEvent("escola3s:abrir", { detail: "leitor-" + material.id }));
+  return (
+    <button onClick={abrir} className="w-full text-left rounded-xl px-4 py-3.5 flex gap-3.5 items-center" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
+      {material.capa && <img src={material.capa} alt="" className="w-14 rounded-sm shadow shrink-0" style={{ aspectRatio: "2 / 3", objectFit: "cover" }} />}
+      <div className="flex-1 min-w-0">
+        <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{material.titulo}</p>
+        {material.desc && <p className="text-[13px] mt-0.5 leading-snug" style={{ color: palette.navySoft }}>{material.desc}</p>}
+        <p className="text-[13px] mt-1.5 font-medium" style={{ color: palette.gold }}>Ler o início grátis · livro completo {material.preco}</p>
+      </div>
+      <ChevronRight size={16} style={{ color: palette.navySoft }} />
+    </button>
+  );
+}
+
 function MaterialCard({ material, desbloqueado, onDesbloquear, desbloqueadoFisico, onDesbloquearFisico }) {
+  if (material.leitor) return <CartaoLivroLeitor material={material} />;
   const [estado, setEstado] = useState("fechado");
   const [codigo, setCodigo] = useState("");
   const [telemovel, setTelemovel] = useState("");
@@ -6062,7 +6157,7 @@ function MaterialCard({ material, desbloqueado, onDesbloquear, desbloqueadoFisic
     return (
       <div className="rounded-xl px-4 py-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
         <div className="flex items-center gap-3">
-          <FileIcon size={16} style={{ color: palette.gold }} />
+          {material.capa ? <img src={material.capa} alt="" className="w-10 rounded-sm shrink-0 shadow" style={{ aspectRatio: "2 / 3", objectFit: "cover" }} /> : <FileIcon size={16} style={{ color: palette.gold }} />}
           <p className="text-sm flex-1" style={{ color: palette.ink }}>{material.titulo}</p>
           {material.fisico ? (
             <span className="flex items-center gap-1.5 text-[13px] font-medium" style={{ color: palette.gold }}>
@@ -6100,7 +6195,7 @@ function MaterialCard({ material, desbloqueado, onDesbloquear, desbloqueadoFisic
   return (
     <div className="rounded-xl px-4 py-3.5" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
       <div className="flex items-center gap-3">
-        <FileIcon size={16} style={{ color: palette.gold }} />
+        {material.capa ? <img src={material.capa} alt="" className="w-10 rounded-sm shrink-0 shadow" style={{ aspectRatio: "2 / 3", objectFit: "cover" }} /> : <FileIcon size={16} style={{ color: palette.gold }} />}
         <div className="flex-1 min-w-0">
           <p className="text-sm" style={{ color: palette.ink }}>{material.titulo}</p>
           <p className="text-[13px] mt-0.5" style={{ color: palette.navySoft }}>{material.formato}</p>
@@ -9089,6 +9184,145 @@ function LivrosScreen({ onBack, materiaisDesbloqueados }) {
   );
 }
 
+/* ---------- Leitor de livros (só dentro da app) ---------- */
+const b64ParaBytes = (b) => Uint8Array.from(atob(b), (c) => c.charCodeAt(0));
+async function abrirCapituloLivro(livroId, cap, chave) {
+  const base = `/livros/${livroId}/${String(cap.n).padStart(2, "0")}`;
+  if (cap.gratis) { const r = await fetch(base + ".json"); if (!r.ok) throw new Error("x"); return r.json(); }
+  if (!chave) throw new Error("bloqueado");
+  const buf = new Uint8Array(await (await fetch(base + ".bin")).arrayBuffer());
+  const k = await crypto.subtle.importKey("raw", b64ParaBytes(chave), "AES-GCM", false, ["decrypt"]);
+  const claro = await crypto.subtle.decrypt({ name: "AES-GCM", iv: buf.slice(0, 12) }, k, buf.slice(12));
+  return JSON.parse(new TextDecoder().decode(claro));
+}
+async function obterChaveLivro(livroId) {
+  try { const { data, error } = await supabase.rpc("chave_livro", { lid: livroId }); if (error) return null; return data || null; } catch { return null; }
+}
+const ESTILO_LEITOR = `
+.leitor{font-family:'Cormorant Garamond',Georgia,serif;color:#1d1d1f;line-height:1.6}
+.leitor p{margin:0 0 .9em}
+.leitor h3{font-family:Inter,system-ui,sans-serif;font-weight:600;font-size:.62em;letter-spacing:.2em;color:#b8893a;margin:2em 0 .8em}
+.leitor h4{font-weight:600;font-size:1.25em;color:#14223f;margin:1.4em 0 .5em;line-height:1.2}
+.leitor blockquote{border-left:3px solid #C6A253;margin:1.2em 0;padding:.2em 0 .2em 1em;font-size:1.12em;color:#14223f;font-style:italic}
+.leitor .gancho{color:#8a6d2c;font-style:italic;margin-top:1.6em}
+.leitor .item{padding-left:.6em}
+.leitor .ref{font-size:.85em}
+.leitor .parte{font-family:Inter,system-ui,sans-serif;font-weight:600;font-size:.62em;letter-spacing:.2em;color:#b8893a;margin:0}
+.leitor .partesub{font-style:italic;font-size:1.15em;color:#14223f}
+.leitor .partebloco{margin-bottom:1.6em}
+.leitor .caixa{background:#fff;border:1px solid #E7D7B5;border-radius:14px;padding:.8em 1em;margin:1em 0;font-family:Inter,system-ui,sans-serif;font-size:.8em;line-height:1.5}
+.leitor .caixa p{margin:.35em 0}.leitor .caixatit{font-weight:600}
+.leitor .tab{overflow-x:auto;margin:1em 0;border-radius:12px;border:1px solid #E7D7B5;background:#fff}
+.leitor table{border-collapse:collapse;width:100%;font-family:Inter,system-ui,sans-serif;font-size:.72em;line-height:1.4}
+.leitor th{background:#14223f;color:#f4efe3;text-align:left;padding:.6em;font-weight:600;vertical-align:bottom}
+.leitor td{border-top:1px solid #EFE4CC;padding:.6em;vertical-align:top}
+`;
+function LeitorLivroScreen({ livroId, capInicial, onBack }) {
+  const livro = materiais.find((m) => m.id === livroId);
+  const [indice, setIndice] = useState(null);
+  const [chave, setChave] = useState(null);
+  const [aVerificar, setAVerificar] = useState(true);
+  const [aberto, setAberto] = useState(null); // índice no array
+  const [cap, setCap] = useState(null);
+  const [erro, setErro] = useState("");
+  const [bloqueado, setBloqueado] = useState(false);
+  const [letra, setLetra] = useState(() => { try { return Number(localStorage.getItem("escola3s:leitor-letra")) || 20; } catch { return 20; } });
+  const topo = useRef(null);
+  const chaveGuardada = `escola3s:leitor-${livroId}`;
+  const verificar = async () => { setAVerificar(true); setChave(await obterChaveLivro(livroId)); setAVerificar(false); };
+  useEffect(() => {
+    fetch(`/livros/${livroId}/indice.json`).then((r) => r.json()).then(setIndice).catch(() => setErro("Não foi possível abrir o livro. Verifica a ligação à internet."));
+    verificar();
+  }, [livroId]);
+  useEffect(() => { try { localStorage.setItem("escola3s:leitor-letra", String(letra)); } catch {} }, [letra]);
+  const jaAbriuInicial = useRef(false);
+  useEffect(() => { if (indice && !aVerificar && capInicial != null && !jaAbriuInicial.current) { jaAbriuInicial.current = true; abrir(capInicial); } }, [indice, aVerificar]);
+  const abrir = async (i) => {
+    const c = indice[i]; setErro(""); setBloqueado(false);
+    if (!c.gratis && !chave) { setAberto(i); setCap(null); setBloqueado(true); return; }
+    setAberto(i); setCap(null);
+    try { setCap(await abrirCapituloLivro(livroId, c, chave)); try { localStorage.setItem(chaveGuardada, String(i)); } catch {} }
+    catch { setErro("Não foi possível abrir este capítulo. Tenta de novo."); }
+    setTimeout(() => topo.current?.scrollIntoView({ block: "start" }), 30);
+  };
+  const ultimo = (() => { try { const v = localStorage.getItem(chaveGuardada); return v === null ? null : Number(v); } catch { return null; } })();
+  const temTudo = Boolean(chave);
+  const blocoComprar = (
+    <div className="rounded-2xl p-5 space-y-3" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>
+      <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>CONTINUAR A LER</p>
+      <p className="font-serif text-xl leading-snug">Gostou do início? O livro completo tem 17 capítulos, histórias reais, ferramentas e um plano de 90 dias.</p>
+      <p className="text-sm" style={{ opacity: 0.85 }}>Depois da compra, o livro fica guardado na tua área reservada e podes lê-lo sempre que quiseres, dentro da app.</p>
+      <BotaoCarrinho item={{ chave: `material-${livroId}`, tipo: "material", materialId: livroId, titulo: livro?.titulo || "Livro", valor: precoNumero(livro?.preco || "7,99€") }} rotulo="Comprar o livro" />
+      <button onClick={verificar} className="w-full text-[13px] underline" style={{ color: palette.goldSoft }}>{aVerificar ? "A verificar…" : "Já comprei: atualizar"}</button>
+    </div>
+  );
+  const naoCopiar = { userSelect: "none", WebkitUserSelect: "none", WebkitTouchCallout: "none" };
+  if (aberto !== null && indice) {
+    const c = indice[aberto];
+    return (
+      <div className="pb-28" ref={topo} onCopy={(e) => e.preventDefault()} onContextMenu={(e) => e.preventDefault()} style={naoCopiar}>
+        <style>{ESTILO_LEITOR}</style>
+        <div className="px-6 pt-6 flex items-center justify-between gap-3">
+          <button onClick={() => { setAberto(null); setCap(null); }} className="flex items-center gap-1.5" style={{ color: palette.navySoft }}><ChevronLeft size={18} /><span className="text-sm">Índice</span></button>
+          <div className="flex items-center gap-1">
+            <button onClick={() => setLetra((v) => Math.max(16, v - 2))} aria-label="Letra mais pequena" className="w-9 h-9 rounded-full text-sm" style={{ border: `1px solid ${palette.goldSoft}`, color: palette.navy }}>A−</button>
+            <button onClick={() => setLetra((v) => Math.min(28, v + 2))} aria-label="Letra maior" className="w-9 h-9 rounded-full text-base font-semibold" style={{ border: `1px solid ${palette.goldSoft}`, color: palette.navy }}>A+</button>
+          </div>
+        </div>
+        <div className="px-6 pt-5">
+          <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>{(livro?.titulo || "").toUpperCase()}</p>
+          <h1 className="font-serif text-[30px] leading-tight mt-2" style={{ color: palette.navy }}>{c.titulo}</h1>
+        </div>
+        <div className="px-6 pt-5">
+          {bloqueado ? blocoComprar : erro ? <p className="text-sm" style={{ color: "#B23A3A" }}>{erro}</p> : !cap ? <p className="text-sm" style={{ color: palette.navySoft }}>A abrir…</p> : (
+            <div className="leitor" style={{ fontSize: letra }} dangerouslySetInnerHTML={{ __html: cap.html }} />
+          )}
+        </div>
+        <div className="px-6 pt-6 flex gap-3">
+          <button onClick={() => abrir(aberto - 1)} disabled={aberto === 0} className="flex-1 rounded-full py-3 text-sm font-medium" style={{ border: `1px solid ${palette.goldSoft}`, color: palette.navy, opacity: aberto === 0 ? 0.4 : 1 }}>‹ Anterior</button>
+          <button onClick={() => abrir(aberto + 1)} disabled={aberto >= indice.length - 1} className="flex-1 rounded-full py-3 text-sm font-semibold" style={{ backgroundColor: palette.navy, color: palette.creamSoft, opacity: aberto >= indice.length - 1 ? 0.4 : 1 }}>Seguinte ›</button>
+        </div>
+        {!bloqueado && cap && !temTudo && indice[aberto + 1] && !indice[aberto + 1].gratis && <div className="px-6 pt-6">{blocoComprar}</div>}
+      </div>
+    );
+  }
+  return (
+    <div className="pb-28">
+      <SectionHeader eyebrow="CONCEIÇÃO ALVES" title="O livro" onBack={onBack} />
+      <div className="px-6 flex gap-4 items-start">
+        {livro?.capa && <img src={livro.capa} alt="" className="w-28 rounded-md shadow-lg shrink-0" style={{ aspectRatio: "2 / 3", objectFit: "cover" }} />}
+        <div className="min-w-0">
+          <p className="font-serif text-2xl leading-tight" style={{ color: palette.navy }}>{livro?.titulo}</p>
+          <p className="text-[13px] mt-1.5 leading-relaxed" style={{ color: palette.navySoft }}>{livro?.desc}</p>
+          <p className="text-[13px] mt-2 font-medium" style={{ color: palette.gold }}>{aVerificar ? "…" : temTudo ? "Na tua biblioteca" : `Início grátis · livro completo ${livro?.preco}`}</p>
+        </div>
+      </div>
+      <div className="px-6 pt-5">
+        <button onClick={() => abrir(ultimo !== null && indice && ultimo < indice.length ? ultimo : 1)} disabled={!indice} className="w-full rounded-full py-3 font-semibold text-sm" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>
+          {ultimo !== null ? "Continuar a ler" : temTudo ? "Começar a ler" : "Ler o início grátis"}
+        </button>
+        <p className="text-xs text-center mt-2" style={{ color: palette.navySoft }}>O livro lê-se só dentro da app, na tua conta.</p>
+      </div>
+      {erro && <p className="px-6 pt-3 text-sm" style={{ color: "#B23A3A" }}>{erro}</p>}
+      <div className="px-6 pt-6">
+        <p className="text-[11px] tracking-[0.2em] font-semibold mb-2" style={{ color: palette.gold }}>ÍNDICE</p>
+        <div className="rounded-2xl overflow-hidden" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66` }}>
+          {(indice || []).map((c, i) => {
+            const livre = c.gratis || temTudo;
+            return (
+              <button key={c.n} onClick={() => abrir(i)} className="w-full flex items-center gap-3 px-4 py-3 text-left" style={{ borderTop: i ? `1px solid ${palette.goldSoft}44` : "none", backgroundColor: c.parte ? `${palette.gold}14` : "transparent" }}>
+                <p className={`flex-1 ${c.parte ? "text-[11px] tracking-[0.2em] font-semibold" : "text-sm"}`} style={{ color: c.parte ? palette.gold : palette.ink }}>{c.parte ? `PARTE · ${c.titulo.toUpperCase()}` : c.titulo}</p>
+                {livre ? (c.gratis && !temTudo ? <span className="text-[11px] font-semibold" style={{ color: palette.gold }}>GRÁTIS</span> : <ChevronRight size={16} style={{ color: palette.navySoft }} />) : <Lock size={14} style={{ color: palette.navySoft }} />}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+      {!temTudo && !aVerificar && <div className="px-6 pt-6">{blocoComprar}</div>}
+    </div>
+  );
+}
+
 /* ---------- Montra pública (antes de entrar na app) ---------- */
 function MontraPublica({ onCriarConta, onEntrar, onEscolher, onDestino }) {
   const irPara = (id) => { const el = document.getElementById(id); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); };
@@ -9157,7 +9391,7 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher, onDestino }) {
                     )}
                     {livro && (
                       <div className="flex items-center gap-3">
-                        <span className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: `${palette.gold}22` }}><BookOpen size={16} style={{ color: palette.gold }} /></span>
+                        {livro.capa ? <img src={livro.capa} alt="" className="w-9 rounded-sm shrink-0 shadow" style={{ aspectRatio: "2 / 3", objectFit: "cover" }} /> : <span className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: `${palette.gold}22` }}><BookOpen size={16} style={{ color: palette.gold }} /></span>}
                         <div className="min-w-0"><p className="text-sm font-medium" style={{ color: palette.navy }}>{livro.titulo}</p><p className="text-xs" style={{ color: palette.navySoft }}>{livro.emBreve ? `Em breve · ${livro.preco}` : livro.preco}</p></div>
                       </div>
                     )}
@@ -10000,6 +10234,14 @@ export default function App() {
   const [modoNovaPassword, setModoNovaPassword] = useState(false);
   const [tab, setTab] = useState("inicio");
   const [secao, setSecao] = useState(null);
+  const antesDoLeitor = useRef(null);
+  const [leitorAberto, setLeitorAberto] = useState(null);
+  useEffect(() => { if (!secao || !secao.startsWith("leitor-")) antesDoLeitor.current = secao; }, [secao]);
+  useEffect(() => {
+    const abrir = (e) => { if (typeof e.detail !== "string") return; if (e.detail.startsWith("leitor-")) { setLeitorAberto(e.detail); window.scrollTo(0, 0); } else setSecao(e.detail); };
+    window.addEventListener("escola3s:abrir", abrir);
+    return () => window.removeEventListener("escola3s:abrir", abrir);
+  }, []);
   const [temaFormacao, setTemaFormacao] = useState(null);
   useEffect(() => { if (secao !== "formacao-hub") setTemaFormacao(null); }, [secao]);
   const [cursoAberto, setCursoAberto] = useState(null);
@@ -10469,6 +10711,8 @@ export default function App() {
     );
   } else if (secao === "carrinho") {
     content = <CarrinhoScreen onBack={() => setSecao("produtos")} onPagamentoConfirmado={sincronizarCompras} />;
+  } else if (leitorAberto) {
+    content = <LeitorLivroScreen key={leitorAberto} livroId={Number(leitorAberto.slice(7).split(":")[0])} capInicial={leitorAberto.includes(":") ? Number(leitorAberto.split(":")[1]) : null} onBack={() => setLeitorAberto(null)} />;
   } else if (cursoAberto && !cursoAberto.interativo && !temAcessoCurso(cursoAberto)) {
     content = <CursoVendaScreen curso={cursoAberto} onBack={() => setCursoAberto(null)} />;
   } else if (cursoAberto && cursoAberto.gratuito && progresso.papel !== "dona" && fichaCliente && !(fichaCliente.nome && fichaCliente.telefone)) {
@@ -10573,6 +10817,8 @@ export default function App() {
     content = <EscolaScreen escola="desenvolvimento" onBack={() => setSecao(null)} onOpen={setSecao} temAcesso={temAcessoCurso} onAbrirCurso={setCursoAberto} desbloqueados={materiaisAcesso} acessoTotal={progresso.papel === "dona"} />;
   } else if (secao === "produtos") {
     content = <ProdutosScreen onBack={() => setSecao(null)} onOpen={setSecao} />;
+  } else if (secao && secao.startsWith("leitor-")) {
+    content = <LeitorLivroScreen key={secao} livroId={Number(secao.slice(7).split(":")[0])} capInicial={secao.includes(":") ? Number(secao.split(":")[1]) : null} onBack={() => setSecao(antesDoLeitor.current || null)} />;
   } else if (secao === "livros") {
     content = <LivrosScreen onBack={() => setSecao("produtos")} materiaisDesbloqueados={materiaisAcesso} />;
   } else if (secao === "aluno") {
@@ -10698,7 +10944,7 @@ export default function App() {
           <CarrinhoContext.Provider value={carrinho}>
             {content}
             {(progresso.papel === "dona" || progresso.papel === "mentora") && <PopupMarcacoesDoDia papel={progresso.papel} />}
-            {secao !== "carrinho" && !cursoAberto && (
+            {secao !== "carrinho" && (!cursoAberto || leitorAberto) && (
               <button
                 onClick={carrinho.abrir}
                 className="fixed z-40 flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium shadow-lg"
