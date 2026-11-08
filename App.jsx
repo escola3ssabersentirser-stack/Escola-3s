@@ -3870,6 +3870,102 @@ function CursoInterativoScreen({ curso, estado, onGuardar, concluidoEm, onConclu
   );
 }
 
+// Apresentação da aula em diapositivos: o aluno avança quando acabar de ler
+const CORES_APRESENTACAO = {
+  1: { fundo: "#1B3355", fundo2: "#24436E", texto: "#F7EEDD", acento: "#C6A253", titulo: "Liderança 3S" },
+  30: { fundo: "#7A5E26", fundo2: "#A8853A", texto: "#FBF5E8", acento: "#F3DDA6", titulo: "Vida 3S" },
+  40: { fundo: "#1E2B3A", fundo2: "#2E4A6E", texto: "#F7EEDD", acento: "#C6A253", titulo: "Atleta 3S" },
+};
+const primeiraFrase = (t = "", max = 180) => {
+  const m = t.match(new RegExp("^(.{20," + max + "}?[.!?])(\\s|$)"));
+  if (m) return m[1];
+  const c = t.slice(0, max); return c.slice(0, c.lastIndexOf(" ")).replace(/[,;:]$/, "") + "…";
+};
+function ApresentacaoAula({ curso, aula, numero }) {
+  const c = CORES_APRESENTACAO[curso.id];
+  const [i, setI] = useState(0);
+  const [video, setVideo] = useState(false);
+  useEffect(() => { setI(0); }, [curso.id, numero]);
+  if (!c) return null;
+  const secoes = (aula.secoes || []).slice(0, 3).map((s) => [s.titulo, primeiraFrase(s.texto)]);
+  const ciencia = primeiraFrase((aula.ciencia || [])[0] || "", 320);
+  const rodape = `${c.titulo.toUpperCase()} · AULA ${numero}`;
+  const olho = { fontSize: 11, letterSpacing: ".28em", color: c.acento, fontWeight: 600 };
+  const serif = { fontFamily: "'Cormorant Garamond', Georgia, serif" };
+  const e = (d) => ({ animation: `apEntra .7s cubic-bezier(.2,.7,.2,1) ${d}s both` });
+  const centro = { display: "flex", flexDirection: "column", justifyContent: "center", minHeight: "100%" };
+  const cenas = [
+    <div style={{ ...centro, alignItems: "center", textAlign: "center" }}>
+      <img src="/marca-3s.png" alt="" style={{ width: 44, ...e(0.05) }} />
+      <p style={{ ...olho, marginTop: 14, ...e(0.2) }}>{rodape}</p>
+      <h2 style={{ ...serif, fontSize: 30, lineHeight: 1.1, marginTop: 10, fontWeight: 600, ...e(0.35) }}>{aula.titulo}</h2>
+      <p style={{ marginTop: 12, fontSize: 11, letterSpacing: ".26em", color: c.acento, ...e(0.6) }}>{aula.pilar === "3S" ? "SABER · SENTIR · SER" : "PILAR " + String(aula.pilar || "").toUpperCase()}</p>
+    </div>,
+    <div style={centro}>
+      <p style={{ ...olho, ...e(0.05) }}>OBJETIVO DA AULA</p>
+      <p style={{ ...serif, fontSize: 26, lineHeight: 1.2, marginTop: 12, fontWeight: 500, ...e(0.2) }}>{aula.objetivo}</p>
+    </div>,
+    <div style={centro}>
+      <p style={{ ...olho, ...e(0.05) }}>O ESSENCIAL</p>
+      <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 14 }}>
+        {secoes.map(([t, f], k) => (
+          <div key={k} style={{ display: "flex", gap: 12, alignItems: "flex-start", ...e(0.2 + k * 0.25) }}>
+            <span style={{ flex: "none", width: 26, height: 26, borderRadius: "50%", border: `1.5px solid ${c.acento}`, display: "flex", alignItems: "center", justifyContent: "center", color: c.acento, fontWeight: 600, fontSize: 13 }}>{k + 1}</span>
+            <div><p style={{ ...serif, fontSize: 20, fontWeight: 600, color: c.acento, lineHeight: 1.15 }}>{t}</p><p style={{ fontSize: 15, lineHeight: 1.45, marginTop: 3, opacity: 0.95 }}>{f}</p></div>
+          </div>
+        ))}
+      </div>
+    </div>,
+    <div style={centro}>
+      <p style={{ ...olho, ...e(0.05) }}>O QUE DIZ A CIÊNCIA</p>
+      <p style={{ fontSize: 17, lineHeight: 1.55, marginTop: 12, ...e(0.2) }}>{ciencia}</p>
+    </div>,
+    <div style={{ ...centro, alignItems: "center", textAlign: "center" }}>
+      <p style={{ ...olho, ...e(0.05) }}>IDEIA-CHAVE</p>
+      <p style={{ ...serif, fontSize: 27, lineHeight: 1.2, marginTop: 14, fontWeight: 600, ...e(0.2) }}>“{aula.ideia}”</p>
+    </div>,
+    <div style={centro}>
+      <p style={{ ...olho, ...e(0.05) }}>DESAFIO DA SEMANA</p>
+      <p style={{ fontSize: 17, lineHeight: 1.55, marginTop: 12, ...e(0.2) }}>{aula.desafio}</p>
+      <p style={{ marginTop: 16, fontSize: 14, color: c.acento, ...e(0.5) }}>Faz o exercício e o questionário desta aula na app.</p>
+    </div>,
+  ];
+  const ultimo = cenas.length - 1;
+  const ir = (d) => setI((x) => Math.min(ultimo, Math.max(0, x + d)));
+  return (
+    <div className="space-y-2">
+      <style>{`@keyframes apEntra{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}`}</style>
+      {video ? (
+        <div className="rounded-2xl overflow-hidden" style={{ backgroundColor: palette.navy }}>
+          <video key={`${curso.id}-${numero}`} src={`/videos/aula-${curso.id}-${numero}.mp4`} poster={`/videos/aula-${curso.id}-${numero}.jpg`} controls playsInline preload="metadata" className="w-full block" style={{ aspectRatio: "16 / 9" }} />
+        </div>
+      ) : (
+        <div onClick={(ev) => { const r = ev.currentTarget.getBoundingClientRect(); ir(ev.clientX - r.left < r.width / 3 ? -1 : 1); }}
+          className="rounded-2xl overflow-hidden relative select-none cursor-pointer" style={{ minHeight: 340, background: `linear-gradient(150deg, ${c.fundo} 0%, ${c.fundo2} 100%)`, color: c.texto, fontFamily: "Inter, system-ui, sans-serif" }}>
+          <div style={{ position: "absolute", width: 360, height: 360, right: -170, top: -170, border: `1px solid ${c.acento}44`, borderRadius: "50%", pointerEvents: "none" }} />
+          <div style={{ position: "absolute", width: 200, height: 200, right: -70, top: 90, border: `1px solid ${c.acento}44`, borderRadius: "50%", pointerEvents: "none" }} />
+          <div key={i} className="relative" style={{ padding: "26px 22px 40px", minHeight: 340, display: "flex", flexDirection: "column" }}><div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>{cenas[i]}</div></div>
+          {i > 0 && <p style={{ position: "absolute", left: 22, bottom: 14, fontSize: 10, letterSpacing: ".2em", color: c.acento + "cc" }}>{rodape}</p>}
+          <p style={{ position: "absolute", right: 18, bottom: 12, fontSize: 12, color: c.acento + "cc" }}>{i + 1} / {cenas.length}</p>
+        </div>
+      )}
+      {!video && (
+        <div className="flex items-center gap-2">
+          <button onClick={() => ir(-1)} disabled={i === 0} className="px-4 py-2.5 rounded-full text-sm font-medium" style={{ border: `1px solid ${palette.goldSoft}`, color: palette.navy, opacity: i === 0 ? 0.4 : 1 }}>‹ Anterior</button>
+          <div className="flex-1 flex justify-center gap-1.5">
+            {cenas.map((_, k) => <button key={k} onClick={() => setI(k)} aria-label={`Diapositivo ${k + 1}`} className="rounded-full" style={{ width: k === i ? 18 : 7, height: 7, backgroundColor: k <= i ? palette.gold : palette.goldSoft + "88" }} />)}
+          </div>
+          <button onClick={() => ir(1)} disabled={i === ultimo} className="px-4 py-2.5 rounded-full text-sm font-semibold" style={{ backgroundColor: palette.navy, color: palette.creamSoft, opacity: i === ultimo ? 0.4 : 1 }}>Seguinte ›</button>
+        </div>
+      )}
+      <p className="text-[13px] text-center" style={{ color: palette.navySoft }}>
+        {video ? "O vídeo avança sozinho. " : "Avança ao teu ritmo: toca em «Seguinte» quando acabares de ler. "}
+        <button onClick={() => setVideo((v) => !v)} className="underline font-medium" style={{ color: palette.navy }}>{video ? "Ver ao meu ritmo" : "Ver em vídeo"}</button>
+      </p>
+    </div>
+  );
+}
+
 function AulaInterativaScreen({ curso, indice, aula, dados, estadoCurso, onGuardar, onGuardarCurso, onBack, onSeguinte, onAbrirLab, materiaisDesbloqueados, onDesbloquearMaterial, acessoTotal, formadorAutorizado }) {
   const passos = ["Aprender", "Exercício", ...(aula.avaliacao ? ["Avaliação 3S"] : []), "Questionário", "Desafio"];
   const [passo, setPasso] = useState(0);
@@ -3922,11 +4018,7 @@ function AulaInterativaScreen({ curso, indice, aula, dados, estadoCurso, onGuard
       <div className="px-6 pt-5 space-y-4">
         {nomePasso === "Aprender" && (
           <>
-            {[1, 30, 40].includes(curso.id) && (
-              <div className="rounded-2xl overflow-hidden" style={{ backgroundColor: palette.navy }}>
-                <video key={`${curso.id}-${indice}`} src={`/videos/aula-${curso.id}-${indice + 1}.mp4`} poster={`/videos/aula-${curso.id}-${indice + 1}.jpg`} controls playsInline preload="metadata" className="w-full block" style={{ aspectRatio: "16 / 9" }} />
-              </div>
-            )}
+            {[1, 30, 40].includes(curso.id) && <ApresentacaoAula curso={curso} aula={aula} numero={indice + 1} />}
             {aula.videoUrl && (
               <div className="rounded-2xl overflow-hidden aspect-video" style={{ backgroundColor: palette.navy }}>
                 <iframe src={aula.videoUrl} title={aula.titulo} className="w-full h-full" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen />
