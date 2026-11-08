@@ -448,7 +448,7 @@ const materiais = [
   { id: 145, titulo: "Desporto 3S — Diário do atleta 3S", formato: "Ficha", preco: "1,99€", url: "/desporto-diario-atleta-3s.pdf" },
   { id: 146, titulo: "Desporto 3S — Calendário de provas", formato: "Ficha", preco: "1,99€", url: "/desporto-calendario-provas.pdf" },
   { id: 147, titulo: "Desporto 3S — Avaliação semanal", formato: "Ficha", preco: "1,99€", url: "/desporto-avaliacao-semanal.pdf" },
-  { id: 130, titulo: "Liderar com Saber, Sentir e Ser", formato: "Livro", preco: "7,99€", url: "", capa: "/livros/capa-130.jpg", leitor: true, desc: "Competências, histórias e exercícios para quem lidera. 17 capítulos, ferramentas práticas e um plano de 90 dias." },
+  { id: 130, titulo: "Liderar com Saber, Sentir e Ser", formato: "Livro", preco: "7,99€", url: "", capa: "/livros/capa-130.jpg", leitor: true, tambemFisico: true, precoFisico: "12,99€", desc: "Competências, histórias e exercícios para quem lidera. 17 capítulos, ferramentas práticas e um plano de 90 dias." },
   { id: 132, titulo: "Atleta 3S — o livro", formato: "Livro", preco: "12,99€", url: "", emBreve: true, desc: "Treinar com Saber, Sentir e Ser: método, corpo, mente e hábitos para quem treina." },
   { id: 131, titulo: "Filosofia 3S — o livro", formato: "Livro", preco: "12,99€", url: "", emBreve: true, desc: "Saber, Sentir, Ser: um livro sobre as pessoas e o ser humano." },
   { id: 32, titulo: "Caderno do Aluno — Crenças que Limitam", formato: "Caderno", preco: "4,99€", url: "/caderno-aluno-crencas-limitantes.pdf" },
@@ -2999,7 +2999,7 @@ function EscolaScreen({ escola, onBack, onOpen, temAcesso, onAbrirCurso, desbloq
           const conteudo = (
             <>
               <div className="flex items-center justify-between">
-{t.capa ? <img src={t.capa} alt="" className="w-9 rounded-sm shadow" style={{ aspectRatio: "2 / 3", objectFit: "cover" }} /> : (
+{t.capa ? <img src={t.capa} alt="" className="w-16 rounded-md shadow-md" style={{ aspectRatio: "2 / 3", objectFit: "cover" }} /> : (
                 <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ border: `1.5px solid ${escuro ? e.acento : palette.gold}` }}>
                   <t.Ico size={16} strokeWidth={1.6} style={{ color: escuro ? e.acento : palette.gold }} />
                 </div>)}
@@ -3271,7 +3271,7 @@ function AreaAlunoScreen({ onBack, onOpenCurso, cursosConcluidos, materiaisDesbl
           <div className="space-y-2">
             {biblioteca.map((m) => (
               <button key={m.id} onClick={() => window.dispatchEvent(new CustomEvent("escola3s:abrir", { detail: "leitor-" + m.id }))} className="w-full text-left rounded-xl px-4 py-3 flex gap-3.5 items-center" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
-                {m.capa && <img src={m.capa} alt="" className="w-12 rounded-sm shadow shrink-0" style={{ aspectRatio: "2 / 3", objectFit: "cover" }} />}
+                {m.capa && <img src={m.capa} alt="" className="w-20 rounded-md shadow-md shrink-0" style={{ aspectRatio: "2 / 3", objectFit: "cover" }} />}
                 <div className="flex-1 min-w-0"><p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{m.titulo}</p><p className="text-[13px] mt-0.5" style={{ color: palette.gold }}>Continuar a ler</p></div>
                 <ChevronRight size={16} style={{ color: palette.navySoft }} />
               </button>
@@ -4193,7 +4193,7 @@ function AulaInterativaScreen({ curso, indice, aula, dados, estadoCurso, onGuard
             </div>
             {LIVRO_AULAS[`${curso.id}-${indice + 1}`] && (() => { const [cap, nomeCap] = LIVRO_AULAS[`${curso.id}-${indice + 1}`]; const lv = materiais.find((m) => m.id === 130); return (
               <button onClick={() => window.dispatchEvent(new CustomEvent("escola3s:abrir", { detail: `leitor-130:${cap}` }))} className="w-full text-left flex gap-3 items-center rounded-2xl p-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}88` }}>
-                {lv?.capa && <img src={lv.capa} alt="" className="w-12 rounded-sm shadow flex-none" style={{ aspectRatio: "2 / 3", objectFit: "cover" }} />}
+                {lv?.capa && <img src={lv.capa} alt="" className="w-16 rounded-md shadow-md flex-none" style={{ aspectRatio: "2 / 3", objectFit: "cover" }} />}
                 <div className="min-w-0 flex-1">
                   <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>NO LIVRO</p>
                   <p className="text-sm font-semibold leading-snug mt-0.5" style={{ color: palette.navy }}>{nomeCap}</p>
@@ -6004,11 +6004,11 @@ function CartaoLivroLeitor({ material }) {
   const abrir = () => window.dispatchEvent(new CustomEvent("escola3s:abrir", { detail: "leitor-" + material.id }));
   return (
     <button onClick={abrir} className="w-full text-left rounded-xl px-4 py-3.5 flex gap-3.5 items-center" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
-      {material.capa && <img src={material.capa} alt="" className="w-14 rounded-sm shadow shrink-0" style={{ aspectRatio: "2 / 3", objectFit: "cover" }} />}
+      {material.capa && <img src={material.capa} alt="" className="w-24 rounded-md shadow-md shrink-0" style={{ aspectRatio: "2 / 3", objectFit: "cover" }} />}
       <div className="flex-1 min-w-0">
         <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{material.titulo}</p>
         {material.desc && <p className="text-[13px] mt-0.5 leading-snug" style={{ color: palette.navySoft }}>{material.desc}</p>}
-        <p className="text-[13px] mt-1.5 font-medium" style={{ color: palette.gold }}>Ler o início grátis · livro completo {material.preco}</p>
+        <p className="text-[13px] mt-1.5 font-medium" style={{ color: palette.gold }}>Ler o início grátis · na app {material.preco}{material.precoFisico ? ` · impresso ${material.precoFisico}` : ""}</p>
       </div>
       <ChevronRight size={16} style={{ color: palette.navySoft }} />
     </button>
@@ -7376,6 +7376,9 @@ function DashboardMentoraScreen({ onBack, onAbrirCliente }) {
                   <p className="text-sm font-medium" style={{ color: palette.ink }}>{p.descricao}</p>
                   <p className="font-serif text-sm" style={{ color: palette.gold }}>{Number(p.valor).toFixed(2)}€</p>
                 </div>
+                {(Array.isArray(p.itens) ? p.itens : []).filter((i) => i && i.envio).map((i, k) => (
+                  <p key={k} className="text-[13px] mt-1 rounded-lg px-2 py-1" style={{ backgroundColor: `${palette.gold}18`, color: palette.navy }}>📦 Enviar para: {i.envio.nome}, {i.envio.morada}, {i.envio.cp} {i.envio.localidade}</p>
+                ))}
                 <div className="flex items-center justify-between mt-1">
                   <p className="text-[13px]" style={{ color: palette.navySoft }}>
                     {cliente ? cliente.email : "correio eletrónico desconhecido"}
@@ -8597,6 +8600,10 @@ function CarrinhoScreen({ onBack, onPagamentoConfirmado }) {
   const [erro, setErro] = useState("");
   const [referencia, setReferencia] = useState(null);
   const [pendentes, setPendentes] = useState([]);
+  const [envio, setEnvio] = useState(() => { try { return JSON.parse(localStorage.getItem("escola3s:morada") || "null") || { nome: "", morada: "", cp: "", localidade: "" }; } catch { return { nome: "", morada: "", cp: "", localidade: "" }; } });
+  const temFisico = carrinho.itens.some((i) => i.tipo === "material_fisico");
+  const envioOk = !temFisico || (envio.nome.trim() && envio.morada.trim() && /^\d{4}-?\d{3}$/.test(envio.cp.trim()) && envio.localidade.trim());
+  const textoEnvio = `${envio.nome.trim()}, ${envio.morada.trim()}, ${envio.cp.trim()} ${envio.localidade.trim()}`;
 
   const carregarPendentes = async () => {
     const { data: s } = await supabase.auth.getSession();
@@ -8629,9 +8636,11 @@ function CarrinhoScreen({ onBack, onPagamentoConfirmado }) {
   const pagar = async () => {
     if (!metodo || carrinho.itens.length === 0) return;
     if (metodo === "mbway" && !telemovel.trim()) return;
+    if (!envioOk) return;
+    if (temFisico) { try { localStorage.setItem("escola3s:morada", JSON.stringify(envio)); } catch {} }
     setErro("");
     setEstado("a_enviar");
-    const itens = carrinho.itens.map((i) => ({ tipo: i.tipo, materialId: i.materialId ?? null, cursoId: i.cursoId ?? null, servicoTipo: i.servicoTipo ?? null, sessoes: i.sessoes ?? null, titulo: i.titulo, valor: Number(valorItem(i).toFixed(2)) }));
+    const itens = carrinho.itens.map((i) => ({ tipo: i.tipo, materialId: i.materialId ?? null, cursoId: i.cursoId ?? null, servicoTipo: i.servicoTipo ?? null, sessoes: i.sessoes ?? null, titulo: i.tipo === "material_fisico" ? `${i.titulo} · enviar para: ${textoEnvio}` : i.titulo, valor: Number(valorItem(i).toFixed(2)), ...(i.tipo === "material_fisico" ? { envio: { ...envio } } : {}) }));
     try {
       if (metodo === "mbway") guardarTelefone(telemovel.trim());
       const r = await criarPagamento(metodo, total, descricao, telemovel.trim(), itens);
@@ -8734,6 +8743,16 @@ function CarrinhoScreen({ onBack, onPagamentoConfirmado }) {
               <p className="font-serif text-2xl" style={{ color: palette.navy }}>{precoTexto(total)}</p>
             </div>
 
+            {temFisico && (
+              <div className="space-y-2 pt-2">
+                <p className="text-[11px] tracking-[0.2em] font-medium" style={{ color: palette.gold }}>MORADA DE ENVIO</p>
+                {[["nome", "Nome de quem recebe"], ["morada", "Morada (rua, número, andar)"], ["cp", "Código postal (0000-000)"], ["localidade", "Localidade"]].map(([k, ph]) => (
+                  <input key={k} value={envio[k]} onChange={(e) => setEnvio((v) => ({ ...v, [k]: e.target.value }))} placeholder={ph} className="w-full rounded-xl px-4 py-2.5 text-sm outline-none" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }} />
+                ))}
+                <p className="text-[13px]" style={{ color: palette.navySoft }}>O livro é enviado por correio para esta morada.</p>
+              </div>
+            )}
+
             <p className="text-[11px] tracking-[0.2em] font-medium pt-2" style={{ color: palette.gold }}>ESCOLHE COMO QUERES PAGAR</p>
             {cartaoMetodo("mbway", "MB WAY", "Aprovas na aplicação MB WAY e o acesso fica logo desbloqueado.")}
             {cartaoMetodo("mb", "Referência Multibanco", "Pagas num terminal Multibanco ou no serviço bancário pela internet.")}
@@ -8758,7 +8777,7 @@ function CarrinhoScreen({ onBack, onPagamentoConfirmado }) {
             ) : (
               <button
                 onClick={pagar}
-                disabled={!metodo || estado === "a_enviar" || (metodo === "mbway" && !telemovel.trim())}
+                disabled={!metodo || estado === "a_enviar" || (metodo === "mbway" && !telemovel.trim()) || !envioOk}
                 className="w-full rounded-full py-3.5 font-medium text-sm tracking-wide disabled:opacity-50"
                 style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
               >
@@ -9252,7 +9271,13 @@ function LeitorLivroScreen({ livroId, capInicial, onBack }) {
       <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>CONTINUAR A LER</p>
       <p className="font-serif text-xl leading-snug">Gostou do início? O livro completo tem 17 capítulos, histórias reais, ferramentas e um plano de 90 dias.</p>
       <p className="text-sm" style={{ opacity: 0.85 }}>Depois da compra, o livro fica guardado na tua área reservada e podes lê-lo sempre que quiseres, dentro da app.</p>
-      <BotaoCarrinho item={{ chave: `material-${livroId}`, tipo: "material", materialId: livroId, titulo: livro?.titulo || "Livro", valor: precoNumero(livro?.preco || "7,99€") }} rotulo="Comprar o livro" />
+      <BotaoCarrinho item={{ chave: `material-${livroId}`, tipo: "material", materialId: livroId, titulo: livro?.titulo || "Livro", valor: precoNumero(livro?.preco || "7,99€") }} rotulo="Comprar para ler na app" />
+      {livro?.precoFisico && (
+        <div className="pt-1">
+          <p className="text-sm mb-2" style={{ opacity: 0.9 }}>Prefere em papel? O livro impresso é enviado para a sua morada e inclui também a leitura na app.</p>
+          <BotaoCarrinho item={{ chave: `fisico-${livroId}`, tipo: "material_fisico", materialId: livroId, titulo: `${livro.titulo} (livro impresso)`, valor: precoNumero(livro.precoFisico) }} rotulo="Comprar impresso" />
+        </div>
+      )}
       <button onClick={verificar} className="w-full text-[13px] underline" style={{ color: palette.goldSoft }}>{aVerificar ? "A verificar…" : "Já comprei: atualizar"}</button>
     </div>
   );
@@ -9290,11 +9315,11 @@ function LeitorLivroScreen({ livroId, capInicial, onBack }) {
     <div className="pb-28">
       <SectionHeader eyebrow="CONCEIÇÃO ALVES" title="O livro" onBack={onBack} />
       <div className="px-6 flex gap-4 items-start">
-        {livro?.capa && <img src={livro.capa} alt="" className="w-28 rounded-md shadow-lg shrink-0" style={{ aspectRatio: "2 / 3", objectFit: "cover" }} />}
+        {livro?.capa && <img src={livro.capa} alt="" className="w-36 rounded-md shadow-lg shrink-0" style={{ aspectRatio: "2 / 3", objectFit: "cover" }} />}
         <div className="min-w-0">
           <p className="font-serif text-2xl leading-tight" style={{ color: palette.navy }}>{livro?.titulo}</p>
           <p className="text-[13px] mt-1.5 leading-relaxed" style={{ color: palette.navySoft }}>{livro?.desc}</p>
-          <p className="text-[13px] mt-2 font-medium" style={{ color: palette.gold }}>{aVerificar ? "…" : temTudo ? "Na tua biblioteca" : `Início grátis · livro completo ${livro?.preco}`}</p>
+          <p className="text-[13px] mt-2 font-medium" style={{ color: palette.gold }}>{aVerificar ? "…" : temTudo ? "Na tua biblioteca" : `Início grátis · na app ${livro?.preco}${livro?.precoFisico ? ` · impresso ${livro.precoFisico}` : ""}`}</p>
         </div>
       </div>
       <div className="px-6 pt-5">
@@ -9391,7 +9416,7 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher, onDestino }) {
                     )}
                     {livro && (
                       <div className="flex items-center gap-3">
-                        {livro.capa ? <img src={livro.capa} alt="" className="w-9 rounded-sm shrink-0 shadow" style={{ aspectRatio: "2 / 3", objectFit: "cover" }} /> : <span className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: `${palette.gold}22` }}><BookOpen size={16} style={{ color: palette.gold }} /></span>}
+                        {livro.capa ? <img src={livro.capa} alt="" className="w-16 rounded-md shrink-0 shadow-md" style={{ aspectRatio: "2 / 3", objectFit: "cover" }} /> : <span className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: `${palette.gold}22` }}><BookOpen size={16} style={{ color: palette.gold }} /></span>}
                         <div className="min-w-0"><p className="text-sm font-medium" style={{ color: palette.navy }}>{livro.titulo}</p><p className="text-xs" style={{ color: palette.navySoft }}>{livro.emBreve ? `Em breve · ${livro.preco}` : livro.preco}</p></div>
                       </div>
                     )}
@@ -10057,8 +10082,8 @@ function ArquivoEscolaScreen({ onBack }) {
             </div>
             <div className="flex items-center justify-between">
               <p className="text-[13px]" style={{ color: palette.navySoft }}>Quem pagou e o quê</p>
-              {botaoExportar(() => exportarCSV("pagamentos.csv", ["Data", "Nome", "Correio eletrónico", "O que pagou", "Método", "Valor (€)", "Estado"],
-                pagamentos.map((p) => { const pe = pessoa(p.user_id); return [arquivoData(p.pago_em || p.criado_em), pe.nome, pe.email, p.descricao, p.tipo, String(p.valor).replace(".", ","), p.estado]; })))}
+              {botaoExportar(() => exportarCSV("pagamentos.csv", ["Data", "Nome", "Correio eletrónico", "O que pagou", "Método", "Valor (€)", "Estado", "Morada de envio"],
+                pagamentos.map((p) => { const pe = pessoa(p.user_id); const env = (Array.isArray(p.itens) ? p.itens : []).filter((i) => i && i.envio).map((i) => `${i.envio.nome}, ${i.envio.morada}, ${i.envio.cp} ${i.envio.localidade}`).join(" | "); return [arquivoData(p.pago_em || p.criado_em), pe.nome, pe.email, p.descricao, p.tipo, String(p.valor).replace(".", ","), p.estado, env]; })))}
             </div>
             {pagamentos.length === 0 && <p className="text-sm" style={{ color: palette.navySoft }}>Ainda não há pagamentos.</p>}
             {pagamentos.filter((p) => { const pe = pessoa(p.user_id); return filtro(`${pe.nome} ${pe.email} ${p.descricao}`); }).map((p) => {
