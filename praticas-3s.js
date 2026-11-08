@@ -1,6 +1,6 @@
 // Prática de cada aula · chave "curso-aula"
 // exemplo: um caso da vida real que ilustra a aula
-// pratica: meditação, respiração ou exercício guiado, passo a passo (texto, seg = duração em segundos)
+// pratica: meditação, respiração ou exercício guiado, em linguagem fluida para ouvir de olhos fechados (texto, seg = duração em segundos)
 
 export const PRATICAS_3S = {
   "1-1": {
@@ -11,35 +11,35 @@ export const PRATICAS_3S = {
     "pratica": {
       "tipo": "Meditação",
       "titulo": "Três perguntas, três pilares",
-      "introducao": "Uma pausa curta para perceberes como estás a liderar hoje, em cada pilar.",
+      "introducao": "Uma pausa breve para olhares para a forma como estás a liderar, com calma e sem julgamento.",
       "passos": [
         {
-          "texto": "Senta-te com os pés no chão e as costas direitas. Fecha os olhos ou baixa o olhar.",
-          "seg": 20
+          "texto": "Encontra uma posição confortável. Pousa os pés no chão, sente o apoio da cadeira… e, quando quiseres, fecha os olhos.",
+          "seg": 28
         },
         {
-          "texto": "Inspira pelo nariz em quatro tempos. Expira devagar pela boca em seis.",
-          "seg": 40
+          "texto": "Deixa o ar entrar devagar pelo nariz… e sair ainda mais devagar, como se soprasses uma vela sem a apagar. Mais uma vez. Sem pressa.",
+          "seg": 32
         },
         {
-          "texto": "Saber. Lembra-te de uma decisão que tomaste esta semana. Tinhas a informação de que precisavas?",
-          "seg": 40
+          "texto": "Traz à memória uma decisão que tomaste esta semana. Não precisas de a julgar. Pergunta-te apenas, com gentileza: sabia o que precisava de saber?",
+          "seg": 30
         },
         {
-          "texto": "Sentir. Como te sentiste nesse momento? E como achas que a outra pessoa se sentiu?",
-          "seg": 40
+          "texto": "Agora, lembra-te de como te sentiste nesse momento. E deixa surgir a pessoa do outro lado. Como terá ela vivido aquela conversa?",
+          "seg": 29
         },
         {
-          "texto": "Ser. Agiste como o líder que queres ser? O que farias igual e o que farias diferente?",
-          "seg": 40
+          "texto": "Por fim, pergunta-te: fui o líder que quero ser? Fica com o que fizeste bem… e com o que farias de outra maneira. As duas coisas cabem em ti.",
+          "seg": 34
         },
         {
-          "texto": "Escolhe um pilar para cuidar amanhã. Só um. Abre os olhos quando estiveres pronto/a.",
-          "seg": 20
+          "texto": "Escolhe um só pilar para cuidar amanhã: saber, sentir ou ser. Só um. Guarda-o contigo, como quem guarda uma pedra pequena no bolso.",
+          "seg": 29
         },
         {
-          "texto": "Escreve numa linha o pilar que escolheste e uma ação pequena para amanhã.",
-          "seg": 20
+          "texto": "Volta devagar. Mexe as mãos, respira fundo… e abre os olhos quando sentires que é o momento.",
+          "seg": 26
         }
       ]
     }
@@ -52,31 +52,31 @@ export const PRATICAS_3S = {
     "pratica": {
       "tipo": "Exercício",
       "titulo": "Ler a pessoa antes da tarefa",
-      "introducao": "Treina o diagnóstico com uma pessoa real da tua equipa, antes de lhe entregares a próxima tarefa.",
+      "introducao": "Uma reflexão tranquila para olhares para uma pessoa da tua equipa antes de lhe confiares uma tarefa.",
       "passos": [
         {
-          "texto": "Pensa numa pessoa e numa tarefa concreta que lhe vais pedir esta semana.",
+          "texto": "Respira fundo e deixa o corpo assentar. Traz à mente uma pessoa da tua equipa… e uma tarefa que lhe vais pedir esta semana.",
           "seg": 30
         },
         {
-          "texto": "Competência: já fez esta tarefa antes? Com que resultado? Dá uma nota de 1 a 5.",
-          "seg": 45
+          "texto": "Pensa na experiência dela. Já fez algo parecido? Como correu? Não há respostas certas, só o que tu observas.",
+          "seg": 29
         },
         {
-          "texto": "Confiança e vontade: costuma avançar sozinha ou espera por ti? Dá uma nota de 1 a 5.",
-          "seg": 45
+          "texto": "Agora pensa na confiança e na vontade dela. Costuma avançar sozinha… ou espera por um sinal teu? Repara no que sabes, e no que estás a supor.",
+          "seg": 33
         },
         {
-          "texto": "Com notas baixas, precisa de direção clara. Com notas altas, precisa de espaço. Onde está esta pessoa?",
-          "seg": 45
+          "texto": "Quem ainda está a aprender precisa de um caminho claro. Quem já domina precisa de espaço. Onde está esta pessoa, hoje, nesta tarefa?",
+          "seg": 29
         },
         {
-          "texto": "Escreve a primeira frase que lhe vais dizer, já ajustada ao que ela precisa.",
-          "seg": 60
+          "texto": "Imagina a primeira frase que lhe vais dizer, ajustada ao que ela precisa. Ouve-a na tua voz, com calma e com confiança.",
+          "seg": 28
         },
         {
-          "texto": "Repete este exercício com outra pessoa. Vais notar que o mesmo estilo não serve para todos.",
-          "seg": 20
+          "texto": "Liderar bem é olhar para cada pessoa como única. Quando quiseres, abre os olhos e, se te ajudar, escreve essa primeira frase.",
+          "seg": 28
         }
       ]
     }
@@ -89,31 +89,31 @@ export const PRATICAS_3S = {
     "pratica": {
       "tipo": "Exercício",
       "titulo": "Soltar o controlo",
-      "introducao": "Uma visualização para preparares a entrega de uma tarefa que costumas controlar.",
+      "introducao": "Uma visualização para largares, com confiança, uma tarefa que costumas segurar sozinho.",
       "passos": [
         {
-          "texto": "Respira fundo três vezes e deixa os ombros descer.",
+          "texto": "Fecha os olhos. Inspira devagar… e, ao expirar, deixa os ombros descer. Mais uma vez. Sente o peso que sai dos ombros.",
+          "seg": 50
+        },
+        {
+          "texto": "Pensa numa tarefa que te custa largar. Repara no que acontece no teu corpo só de imaginar entregá-la. Um aperto, um calor, uma pressa… Apenas observa.",
+          "seg": 32
+        },
+        {
+          "texto": "Pergunta-te, com honestidade: o que de pior poderia acontecer? E, se acontecesse, o que farias? Muitas vezes, o medo é maior do que o risco.",
           "seg": 30
         },
         {
-          "texto": "Pensa numa tarefa que tens dificuldade em largar. Repara no que sentes no corpo quando pensas em entregá-la.",
-          "seg": 40
+          "texto": "Imagina-te agora a falar com a pessoa a quem a entregas. Ouve-te dizer, com serenidade: o resultado é este, o prazo é este… e o caminho é teu.",
+          "seg": 32
         },
         {
-          "texto": "Pergunta-te: qual é o pior cenário realista? E o que poderia fazer se acontecesse?",
-          "seg": 40
+          "texto": "Vê essa pessoa sair da conversa com vontade de fazer bem. Repara no que muda em ti: talvez um pouco mais de leveza, um pouco mais de espaço.",
+          "seg": 31
         },
         {
-          "texto": "Imagina-te a dizer: «O resultado é este, o prazo é este, o como é contigo.»",
-          "seg": 40
-        },
-        {
-          "texto": "Imagina a pessoa a sair da conversa com vontade de fazer bem. Repara no que muda em ti.",
-          "seg": 40
-        },
-        {
-          "texto": "Combina um único ponto de contacto a meio do prazo. Controlo a menos, compromisso a mais.",
-          "seg": 20
+          "texto": "Confiar também se treina. Respira fundo… e abre os olhos, devagar.",
+          "seg": 23
         }
       ]
     }
@@ -126,31 +126,35 @@ export const PRATICAS_3S = {
     "pratica": {
       "tipo": "Respiração",
       "titulo": "Pausa antes de reagir",
-      "introducao": "Uma técnica para usares antes de uma conversa difícil ou quando sentes a tensão a subir.",
+      "introducao": "Uma pausa para antes de uma conversa difícil, ou sempre que sentires a tensão a subir.",
       "passos": [
         {
-          "texto": "Repara onde sentes a emoção no corpo: peito, estômago, maxilar, mãos.",
-          "seg": 25
+          "texto": "Para um momento. Sem mudar nada, repara onde está a emoção no teu corpo: no peito, no estômago, no maxilar, nas mãos…",
+          "seg": 28
         },
         {
-          "texto": "Dá-lhe um nome em silêncio: irritação, receio, cansaço… Nomear acalma.",
-          "seg": 25
-        },
-        {
-          "texto": "Respiração em caixa: inspira 4, segura 4, expira 4, segura 4. Repete.",
-          "seg": 64
-        },
-        {
-          "texto": "Pergunta-te: o que preciso agora para responder em vez de reagir?",
+          "texto": "Dá-lhe um nome, em silêncio. Irritação… receio… cansaço… Quando damos nome ao que sentimos, a emoção começa a acalmar.",
           "seg": 30
         },
         {
-          "texto": "Pensa numa pergunta que abra a conversa, por exemplo: «O que me está a escapar?»",
-          "seg": 30
+          "texto": "Vamos respirar em quadrado. Inspira… dois, três, quatro. Segura… dois, três, quatro. Expira… dois, três, quatro. Descansa… dois, três, quatro. Continua ao teu ritmo.",
+          "seg": 70
         },
         {
-          "texto": "Uma equipa só se sente segura quando o líder consegue estar calmo. Começa por ti.",
-          "seg": 20
+          "texto": "Repara como o corpo começa a abrandar. A emoção continua cá, mas já não é ela que conduz.",
+          "seg": 26
+        },
+        {
+          "texto": "Pergunta-te: o que preciso agora para responder, e não apenas reagir? Deixa a resposta chegar sem pressa.",
+          "seg": 25
+        },
+        {
+          "texto": "Pensa numa pergunta que abra a conversa, em vez de a fechar. Por exemplo: o que é que me está a escapar?",
+          "seg": 28
+        },
+        {
+          "texto": "Uma equipa só se sente segura quando quem a lidera está sereno. E essa serenidade começa aqui, contigo. Abre os olhos quando quiseres.",
+          "seg": 29
         }
       ]
     }
@@ -163,31 +167,31 @@ export const PRATICAS_3S = {
     "pratica": {
       "tipo": "Meditação",
       "titulo": "O líder que quero ser",
-      "introducao": "Uma visualização para alinhares o que dizes com o que fazes.",
+      "introducao": "Uma visualização para encontrares o líder que queres ser e aproximares o que dizes do que fazes.",
       "passos": [
         {
-          "texto": "Fecha os olhos. Inspira em quatro tempos, expira em seis, três vezes.",
-          "seg": 40
-        },
-        {
-          "texto": "Imagina que daqui a um ano alguém da tua equipa fala sobre ti a outra pessoa. O que gostavas que dissesse?",
+          "texto": "Fecha os olhos. Respira devagar, deixando a expiração ser um pouco mais longa do que a inspiração. Três vezes, ao teu ritmo.",
           "seg": 50
         },
         {
-          "texto": "Escolhe as três palavras que mais gostavas de ouvir. Essas são os teus valores de liderança.",
-          "seg": 40
+          "texto": "Imagina que passou um ano. Alguém da tua equipa fala sobre ti a outra pessoa, sem saber que estás a ouvir. O que gostavas que dissesse?",
+          "seg": 31
         },
         {
-          "texto": "Pensa numa situação recente em que agiste longe de uma dessas palavras. Sem julgamento, só repara.",
-          "seg": 40
+          "texto": "Deixa surgir três palavras. Talvez justo… presente… inspirador… Escolhe as tuas. Essas são os teus valores de liderança.",
+          "seg": 50
         },
         {
-          "texto": "Que gesto pequeno, esta semana, te aproxima dessa palavra?",
-          "seg": 40
+          "texto": "Lembra-te, agora, de um momento recente em que estiveste longe de uma dessas palavras. Sem culpa. Apenas repara, com curiosidade.",
+          "seg": 28
         },
         {
-          "texto": "O exemplo é a forma mais forte de liderar. As pessoas seguem o que fazes, não o que dizes.",
-          "seg": 20
+          "texto": "Que gesto pequeno, esta semana, te aproxima dessa palavra? Um gesto simples, que caiba num dia normal.",
+          "seg": 25
+        },
+        {
+          "texto": "As pessoas seguem o que fazemos, muito mais do que o que dizemos. Leva esse gesto contigo… e abre os olhos, devagar.",
+          "seg": 29
         }
       ]
     }
@@ -200,31 +204,31 @@ export const PRATICAS_3S = {
     "pratica": {
       "tipo": "Exercício",
       "titulo": "Carta ao líder daqui a 30 dias",
-      "introducao": "Fecha o curso com uma carta curta a ti mesmo/a, para releres daqui a um mês.",
+      "introducao": "Uma reflexão para fechares o curso e preparares, com calma, os próximos trinta dias.",
       "passos": [
         {
-          "texto": "Respira fundo e lembra-te do que mais te marcou neste curso.",
+          "texto": "Respira fundo. Deixa vir à memória o que mais te tocou neste curso: uma ideia, uma história, uma pergunta.",
+          "seg": 26
+        },
+        {
+          "texto": "Imagina-te daqui a trinta dias. O que gostavas que a tua equipa notasse em ti? Vê essa mudança com clareza, como se já tivesse acontecido.",
           "seg": 30
         },
         {
-          "texto": "Escreve: «Daqui a 30 dias, quero que a minha equipa note que…»",
-          "seg": 70
+          "texto": "Pergunta-te: o que vou fazer, todas as semanas, para lá chegar? Algo pequeno, que consigas mesmo cumprir.",
+          "seg": 25
         },
         {
-          "texto": "Escreve: «Para isso, todas as semanas vou…»",
-          "seg": 70
+          "texto": "E quando falhares, porque vais falhar algumas vezes, o que queres lembrar a ti mesmo? Escolhe uma frase gentil e firme.",
+          "seg": 27
         },
         {
-          "texto": "Escreve: «Quando falhar, vou lembrar-me de que…»",
-          "seg": 60
+          "texto": "Guarda estas três respostas. Quando abrires os olhos, escreve-as numa carta curta a ti mesmo, e marca na agenda o dia de a voltares a ler.",
+          "seg": 30
         },
         {
-          "texto": "Põe um lembrete na agenda para releres esta carta daqui a 30 dias.",
-          "seg": 20
-        },
-        {
-          "texto": "Se quiseres apoio para cumprir o plano, uma sessão de coaching ajuda a manter o rumo.",
-          "seg": 20
+          "texto": "Não precisas de fazer este caminho sozinho. Respira fundo… e abre os olhos quando quiseres.",
+          "seg": 25
         }
       ]
     }
@@ -237,35 +241,35 @@ export const PRATICAS_3S = {
     "pratica": {
       "tipo": "Meditação",
       "titulo": "Sair do piloto automático",
-      "introducao": "Um minuto para cada pilar: o que penso, o que sinto, quem escolho ser.",
+      "introducao": "Uma pausa para saíres do piloto automático e voltares a estar presente na tua vida.",
       "passos": [
         {
-          "texto": "Senta-te confortável. Fecha os olhos ou baixa o olhar. Repara no peso do corpo na cadeira.",
-          "seg": 25
+          "texto": "Senta-te de forma confortável. Fecha os olhos, ou deixa o olhar pousar no chão. Sente o peso do teu corpo, apoiado. Não tens de ir a lado nenhum agora.",
+          "seg": 34
         },
         {
-          "texto": "Respira devagar. Inspira em quatro tempos, expira em seis.",
-          "seg": 40
+          "texto": "Respira devagar. O ar entra… e o ar sai. Deixa cada expiração ser um pouco mais longa, como uma onda que se recolhe.",
+          "seg": 50
         },
         {
-          "texto": "Saber: o que estou a pensar agora? Deixa os pensamentos passar como nuvens.",
-          "seg": 40
+          "texto": "Repara nos teus pensamentos. Não precisas de os seguir. Deixa-os passar, como nuvens num céu largo… e volta à respiração.",
+          "seg": 29
         },
         {
-          "texto": "Sentir: o que estou a sentir? Onde está no corpo? Não precisas de mudar nada.",
-          "seg": 40
+          "texto": "Agora, o que estás a sentir? Talvez cansaço, talvez calma, talvez outra coisa. Onde está, no teu corpo? Não precisas de mudar nada. Só acolher.",
+          "seg": 33
         },
         {
-          "texto": "Ser: quem quero ser no resto do dia? Escolhe uma palavra.",
-          "seg": 35
+          "texto": "Pergunta-te, com carinho: quem quero ser no resto do dia? Deixa surgir uma palavra. Uma só.",
+          "seg": 26
         },
         {
-          "texto": "Leva essa palavra contigo. Abre os olhos devagar.",
-          "seg": 15
+          "texto": "Leva essa palavra contigo, como uma luz pequena. Quando quiseres, abre os olhos, devagar.",
+          "seg": 24
         },
         {
-          "texto": "Repete esta pausa três vezes por dia. Em uma semana, vais notar a diferença.",
-          "seg": 20
+          "texto": "Podes voltar a esta pausa sempre que precisares. Três vezes por dia, um minuto chega para começares a sentir a diferença.",
+          "seg": 27
         }
       ]
     }
@@ -278,31 +282,31 @@ export const PRATICAS_3S = {
     "pratica": {
       "tipo": "Exercício",
       "titulo": "O tribunal dos pensamentos",
-      "introducao": "Põe um pensamento duro sobre ti à prova, como um juiz justo faria.",
+      "introducao": "Uma reflexão para olhares para um pensamento duro sobre ti com mais justiça e mais bondade.",
       "passos": [
         {
-          "texto": "Escolhe um pensamento que te pesa, por exemplo: «Nunca faço nada bem.» Escreve-o.",
-          "seg": 40
+          "texto": "Respira fundo e deixa o corpo assentar. Traz à mente um pensamento que te pesa. Algo como: nunca faço nada bem.",
+          "seg": 28
         },
         {
-          "texto": "Provas a favor: que factos, e só factos, sustentam este pensamento?",
-          "seg": 50
+          "texto": "Olha para ele como um juiz sereno olharia. Que factos, e só factos, o confirmam? Repara que são menos do que parecia.",
+          "seg": 29
         },
         {
-          "texto": "Provas contra: que factos mostram que não é bem assim? Procura pelo menos dois.",
-          "seg": 50
+          "texto": "Agora procura o outro lado. Que factos mostram que não é bem assim? Lembra-te de pelo menos dois. Fica um momento com eles.",
+          "seg": 31
         },
         {
-          "texto": "O que dirias a uma pessoa de quem gostas se ela pensasse isto sobre si?",
-          "seg": 40
+          "texto": "Imagina que uma pessoa de quem gostas muito pensava isto sobre si. O que lhe dirias? Ouve as tuas palavras… e repara na ternura que têm.",
+          "seg": 32
         },
         {
-          "texto": "Escreve um pensamento alternativo, realista e justo. Não precisa de ser positivo, só verdadeiro.",
-          "seg": 50
+          "texto": "Deixa nascer um pensamento novo, realista e justo. Não precisa de ser positivo. Só precisa de ser verdadeiro.",
+          "seg": 27
         },
         {
-          "texto": "Não és os teus pensamentos. És quem os pode observar e escolher.",
-          "seg": 20
+          "texto": "Tu não és os teus pensamentos. És quem os observa… e quem pode escolher em qual acreditar. Abre os olhos quando quiseres.",
+          "seg": 30
         }
       ]
     }
@@ -315,31 +319,31 @@ export const PRATICAS_3S = {
     "pratica": {
       "tipo": "Meditação",
       "titulo": "A festa dos teus 80 anos",
-      "introducao": "Uma visualização clássica para encontrares o que é mesmo importante para ti.",
+      "introducao": "Uma visualização para descobrires o que é mesmo importante para ti.",
       "passos": [
         {
-          "texto": "Fecha os olhos e respira devagar, três vezes.",
-          "seg": 30
+          "texto": "Fecha os olhos e respira devagar. Inspira… e expira. Deixa que o corpo fique mais leve a cada respiração.",
+          "seg": 50
         },
         {
-          "texto": "Imagina a festa dos teus 80 anos. Quem está na sala? Que caras vês?",
-          "seg": 45
+          "texto": "Imagina que estás na festa dos teus oitenta anos. Repara na sala, na luz, no som das vozes. Quem está contigo? Que caras reconheces?",
+          "seg": 31
         },
         {
-          "texto": "Uma pessoa levanta-se para falar sobre ti. O que gostavas que dissesse sobre a forma como viveste?",
-          "seg": 60
+          "texto": "Alguém de quem gostas levanta-se para falar sobre ti. Não sobre o que tiveste, mas sobre a forma como viveste. Escuta com atenção. O que diz?",
+          "seg": 32
         },
         {
-          "texto": "Repara nas palavras que surgem: coragem, cuidado, liberdade, família… São os teus valores.",
-          "seg": 40
+          "texto": "Repara nas palavras que surgem. Coragem… cuidado… liberdade… família… Essas palavras são os teus valores. Fica um momento com elas.",
+          "seg": 33
         },
         {
-          "texto": "Escolhe um desses valores e pensa numa ação pequena para o viveres hoje.",
-          "seg": 40
+          "texto": "Escolhe um desses valores. Que pequeno gesto, hoje, te deixa vivê-lo um pouco mais?",
+          "seg": 24
         },
         {
-          "texto": "Escreve os três valores que surgiram. São a tua bússola nas próximas decisões.",
-          "seg": 20
+          "texto": "Volta devagar a esta sala. Quando abrires os olhos, se quiseres, escreve os valores que encontraste. São a tua bússola.",
+          "seg": 28
         }
       ]
     }
@@ -352,31 +356,31 @@ export const PRATICAS_3S = {
     "pratica": {
       "tipo": "Respiração",
       "titulo": "Acalmar o corpo, clarear a mente",
-      "introducao": "Uma técnica de respiração e de atenção para momentos de ansiedade ou pressão. Se em algum momento te sentires desconfortável, abre os olhos e para.",
+      "introducao": "Uma prática suave para momentos de ansiedade ou pressão. Se em algum momento te sentires desconfortável, abre os olhos e para.",
       "passos": [
         {
-          "texto": "Pousa uma mão no peito e outra na barriga. Repara na respiração, sem a mudar.",
-          "seg": 25
+          "texto": "Pousa uma mão no peito e a outra na barriga. Não mudes nada. Apenas sente a respiração debaixo das tuas mãos.",
+          "seg": 28
         },
         {
-          "texto": "Expira mais tempo do que inspiras: inspira 4, expira 6. A expiração longa acalma o corpo.",
-          "seg": 60
+          "texto": "Agora, deixa a expiração ficar mais longa do que a inspiração. Inspira devagar… e expira como quem suspira, lentamente. A expiração longa diz ao corpo que está em segurança.",
+          "seg": 50
         },
         {
-          "texto": "Olha à tua volta e nomeia cinco coisas que vês, quatro que podes tocar e três que ouves.",
-          "seg": 45
+          "texto": "Abre ligeiramente os olhos, se quiseres, e repara no que te rodeia. Cinco coisas que vês. Quatro que podes tocar. Três sons que ouves. Estás aqui. Estás agora.",
+          "seg": 36
         },
         {
-          "texto": "Dá um nome à emoção: «Isto é ansiedade.» É uma onda: sobe, chega ao topo e desce.",
-          "seg": 30
+          "texto": "Dá um nome ao que sentes: isto é ansiedade. É como uma onda. Sobe, chega ao ponto mais alto… e desce. Tu continuas aqui, enquanto ela passa.",
+          "seg": 34
         },
         {
-          "texto": "Pergunta-te: o que posso fazer agora, de pequeno, que me ajude?",
-          "seg": 30
+          "texto": "Pergunta-te, com gentileza: o que posso fazer agora, de pequeno, que me ajude? Beber água, caminhar um pouco, falar com alguém.",
+          "seg": 27
         },
         {
-          "texto": "Se a ansiedade for frequente ou intensa, fala com um profissional de saúde. Em Portugal, o SNS 24 (808 24 24 24) está disponível a toda a hora.",
-          "seg": 20
+          "texto": "Se a ansiedade for frequente ou muito intensa, não tens de a enfrentar sozinho. Fala com um profissional de saúde. O SNS 24 está disponível a qualquer hora, pelo 808 24 24 24.",
+          "seg": 34
         }
       ]
     }
@@ -389,31 +393,31 @@ export const PRATICAS_3S = {
     "pratica": {
       "tipo": "Exercício",
       "titulo": "Ensaiar um «não» com respeito",
-      "introducao": "Treina em segurança um limite que precisas de pôr.",
+      "introducao": "Uma prática para ensaiares, em segurança, um limite que precisas de pôr.",
       "passos": [
         {
-          "texto": "Pensa num pedido a que tens dificuldade em dizer que não.",
-          "seg": 30
+          "texto": "Respira fundo. Pensa num pedido a que te custa dizer que não. Vê a pessoa à tua frente.",
+          "seg": 27
         },
         {
-          "texto": "Repara no que sentes quando pensas em recusar: culpa, medo, desconforto? Onde está no corpo?",
-          "seg": 35
+          "texto": "Repara no que sentes só de imaginar recusar. Culpa… medo… desconforto… Onde está no teu corpo? Respira para esse lugar.",
+          "seg": 32
         },
         {
-          "texto": "Prepara a frase em três partes: «Compreendo que precisas de… / Desta vez não consigo… / Posso…»",
-          "seg": 60
+          "texto": "Prepara a tua frase, com calma. Primeiro, compreendo que precisas de ajuda. Depois, desta vez, não consigo. E, se quiseres, o que podes oferecer.",
+          "seg": 31
         },
         {
-          "texto": "Diz a frase em voz alta, devagar e com calma. Repete duas vezes.",
-          "seg": 40
+          "texto": "Imagina-te a dizer essa frase devagar, com uma voz serena e firme. Ouve-a. Repete-a mais uma vez, por dentro.",
+          "seg": 27
         },
         {
-          "texto": "Respira fundo. Um «não» dito com respeito protege a relação, não a destrói.",
-          "seg": 30
+          "texto": "Respira fundo. Um não dito com respeito protege a relação. Não a destrói.",
+          "seg": 24
         },
         {
-          "texto": "Dizer «não» a uma coisa é dizer «sim» a outra. Escolhe a que é importante para ti.",
-          "seg": 20
+          "texto": "Dizer não a uma coisa é dizer sim a outra. Pergunta-te a que estás a dizer sim… e abre os olhos quando quiseres.",
+          "seg": 29
         }
       ]
     }
@@ -429,28 +433,28 @@ export const PRATICAS_3S = {
       "introducao": "Uma pausa para te tratares com a mesma bondade com que tratas quem gostas.",
       "passos": [
         {
-          "texto": "Pousa uma mão no peito. Sente o calor da tua própria mão.",
+          "texto": "Pousa uma mão no peito. Sente o calor da tua própria mão. Esse gesto simples já é uma forma de cuidado.",
+          "seg": 28
+        },
+        {
+          "texto": "Respira devagar. Deixa o ar entrar… e sair, um pouco mais devagar. Sem esforço.",
+          "seg": 26
+        },
+        {
+          "texto": "Pensa numa dificuldade que estás a viver. E diz para ti, com suavidade: este é um momento difícil.",
+          "seg": 26
+        },
+        {
+          "texto": "Lembra-te: não estou só. Toda a gente, algures, já sentiu algo assim. Faz parte de ser humano.",
+          "seg": 26
+        },
+        {
+          "texto": "Pergunta-te: o que preciso de ouvir agora? E diz-te isso, com a voz mais gentil que tiveres.",
           "seg": 25
         },
         {
-          "texto": "Respira devagar, inspira 4 e expira 6.",
-          "seg": 40
-        },
-        {
-          "texto": "Pensa numa dificuldade que estás a viver. Diz para ti: «Este é um momento difícil.»",
-          "seg": 35
-        },
-        {
-          "texto": "Lembra-te: «Não estou só. Toda a gente passa por momentos assim.»",
-          "seg": 30
-        },
-        {
-          "texto": "Pergunta-te: «O que preciso de ouvir agora?» Diz-te isso, com gentileza.",
-          "seg": 45
-        },
-        {
-          "texto": "Ser tu, todos os dias, começa por não seres o teu pior crítico.",
-          "seg": 20
+          "texto": "Ser tu, todos os dias, começa por não seres o teu pior crítico. Fica um momento com a mão no peito… e abre os olhos quando quiseres.",
+          "seg": 31
         }
       ]
     }
@@ -463,27 +467,27 @@ export const PRATICAS_3S = {
     "pratica": {
       "tipo": "Meditação",
       "titulo": "Check-in do atleta",
-      "introducao": "Um momento antes ou depois do treino para ligares corpo, mente e quem és como atleta.",
+      "introducao": "Um momento, antes ou depois do treino, para ligares o corpo, a mente e o atleta que és.",
       "passos": [
         {
-          "texto": "Fica de pé ou sentado/a. Fecha os olhos e respira fundo três vezes.",
+          "texto": "De pé ou sentado, fecha os olhos. Respira fundo três vezes e sente os pés bem assentes no chão.",
+          "seg": 26
+        },
+        {
+          "texto": "Pergunta-te: o que vou treinar hoje? Qual é a intenção desta sessão? Deixa a resposta ficar clara.",
+          "seg": 26
+        },
+        {
+          "texto": "Agora percorre o corpo, dos pés à cabeça. Repara na tensão, no cansaço, em alguma dor. Que energia tens hoje, de um a dez?",
           "seg": 30
         },
         {
-          "texto": "Saber: o que vou treinar hoje? Qual é o objetivo desta sessão?",
-          "seg": 35
+          "texto": "Que atleta queres ser neste treino? Escolhe uma palavra. Foco… paciência… garra… Sente-a no corpo.",
+          "seg": 29
         },
         {
-          "texto": "Sentir: percorre o corpo dos pés à cabeça. Há tensão, cansaço ou dor? Dá uma nota à energia, de 1 a 10.",
-          "seg": 50
-        },
-        {
-          "texto": "Ser: que atleta quero ser neste treino? Escolhe uma palavra: foco, paciência, garra…",
-          "seg": 35
-        },
-        {
-          "texto": "Depois do treino, escreve uma linha para cada pilar. É assim que se constrói consistência.",
-          "seg": 20
+          "texto": "Leva essa palavra contigo. Depois do treino, escreve uma linha para cada pilar. É assim que se constrói consistência.",
+          "seg": 27
         }
       ]
     }
@@ -496,31 +500,31 @@ export const PRATICAS_3S = {
     "pratica": {
       "tipo": "Exercício",
       "titulo": "Desenhar a semana de treino",
-      "introducao": "Organiza a semana com a regra do 80/20: a maioria fácil, uma parte exigente.",
+      "introducao": "Uma reflexão para organizares a semana de treino com equilíbrio: a maior parte fácil, uma parte exigente.",
       "passos": [
         {
-          "texto": "Escreve os dias em que podes mesmo treinar esta semana. Sê realista.",
-          "seg": 40
-        },
-        {
-          "texto": "Marca dois treinos a esforço 3 ou 4 (de 1 a 10): consegues falar sem dificuldade.",
-          "seg": 45
-        },
-        {
-          "texto": "Marca um treino mais exigente, a esforço 7 ou 8. Só um.",
-          "seg": 35
-        },
-        {
-          "texto": "Deixa pelo menos um dia de descanso entre os treinos exigentes.",
+          "texto": "Respira fundo. Olha para a tua semana com honestidade. Em que dias podes mesmo treinar? Escolhe com realismo, não com pressa.",
           "seg": 30
         },
         {
-          "texto": "Compara com a semana passada: aumentaste mais de 10%? Se sim, reduz um pouco.",
-          "seg": 40
+          "texto": "Imagina dois treinos tranquilos, a um ritmo em que consegues conversar sem esforço. São estes que constroem a base.",
+          "seg": 26
         },
         {
-          "texto": "Treinar devagar a maior parte do tempo é o que te deixa treinar forte quando conta.",
-          "seg": 20
+          "texto": "Agora escolhe um treino mais exigente. Só um. Sente a diferença entre esforço e excesso.",
+          "seg": 25
+        },
+        {
+          "texto": "Entre os treinos exigentes, deixa pelo menos um dia de descanso. O corpo fica mais forte quando recupera.",
+          "seg": 26
+        },
+        {
+          "texto": "Compara com a semana passada. Se aumentaste muito de uma vez, abranda um pouco. Crescer devagar é crescer para durar.",
+          "seg": 28
+        },
+        {
+          "texto": "Treinar com calma a maior parte do tempo é o que te deixa treinar forte quando conta. Quando abrires os olhos, escreve o teu plano.",
+          "seg": 29
         }
       ]
     }
@@ -533,31 +537,31 @@ export const PRATICAS_3S = {
     "pratica": {
       "tipo": "Meditação",
       "titulo": "Visualizar a meta",
-      "introducao": "Uma visualização para ligares o teu objetivo aos passos de cada dia.",
+      "introducao": "Uma visualização para ligares o teu objetivo ao passo de amanhã.",
       "passos": [
         {
-          "texto": "Fecha os olhos e respira devagar. Inspira 4, expira 6.",
-          "seg": 40
+          "texto": "Fecha os olhos e respira devagar. A cada expiração, deixa o corpo ficar um pouco mais solto.",
+          "seg": 50
         },
         {
-          "texto": "Imagina o dia do teu objetivo: o lugar, o som, a roupa que levas, as pessoas à volta.",
-          "seg": 45
+          "texto": "Imagina o dia do teu objetivo. O lugar… o som… a roupa que levas… as pessoas à tua volta. Vê tudo com pormenor.",
+          "seg": 33
         },
         {
-          "texto": "Vê-te a cumprir esse objetivo. O que sentes no corpo? Fica uns segundos nesse momento.",
-          "seg": 40
+          "texto": "Vê-te a cumprir esse objetivo. O que sentes no corpo? Orgulho, alívio, alegria… Fica uns segundos nesse momento.",
+          "seg": 28
         },
         {
-          "texto": "Agora volta atrás: que treinos te levaram até ali? Vê-te nos dias em que não apetecia e foste na mesma.",
-          "seg": 45
+          "texto": "Agora volta atrás no tempo. Que treinos te levaram até ali? Vê-te nos dias em que não apetecia… e foste na mesma.",
+          "seg": 30
         },
         {
-          "texto": "Escolhe o próximo passo de processo, o de amanhã. Abre os olhos.",
+          "texto": "Escolhe o próximo passo. Só o de amanhã. É ele que te leva até lá.",
           "seg": 25
         },
         {
-          "texto": "O objetivo dá a direção. São os passos de processo que te levam lá.",
-          "seg": 20
+          "texto": "O objetivo dá a direção. São os passos pequenos que fazem o caminho. Abre os olhos, devagar.",
+          "seg": 26
         }
       ]
     }
@@ -570,31 +574,31 @@ export const PRATICAS_3S = {
     "pratica": {
       "tipo": "Meditação",
       "titulo": "Leitura do corpo",
-      "introducao": "Uma meditação de varrimento corporal para aprenderes a ouvir os sinais do corpo.",
+      "introducao": "Uma meditação de leitura do corpo, para aprenderes a ouvir os sinais que ele te dá.",
       "passos": [
         {
-          "texto": "Deita-te ou senta-te confortável. Fecha os olhos. Respira devagar.",
+          "texto": "Deita-te ou senta-te de forma confortável. Fecha os olhos e respira devagar, deixando o corpo pesar.",
+          "seg": 25
+        },
+        {
+          "texto": "Leva a atenção aos pés… às pernas… aos joelhos. Há peso, tensão, alguma dor? Só repara, sem julgar.",
           "seg": 30
         },
         {
-          "texto": "Leva a atenção aos pés e às pernas. Há peso, tensão, dor? Só repara.",
-          "seg": 45
+          "texto": "Sobe até às ancas, às costas e à barriga. Onde está mais tenso? Imagina que a respiração chega até lá e desfaz um pouco esse nó.",
+          "seg": 31
         },
         {
-          "texto": "Sobe até às ancas, costas e barriga. Onde está mais tenso? Respira para lá.",
-          "seg": 45
+          "texto": "Agora os ombros… os braços… o pescoço… o rosto. Deixa a testa alisar e o maxilar soltar-se.",
+          "seg": 29
         },
         {
-          "texto": "Ombros, braços, pescoço e cara. Deixa o maxilar soltar.",
-          "seg": 40
+          "texto": "Que energia tens hoje, de um a dez? E que treino faz sentido para essa energia?",
+          "seg": 25
         },
         {
-          "texto": "Dá uma nota à tua energia hoje, de 1 a 10. Que treino faz sentido com esta nota?",
-          "seg": 35
-        },
-        {
-          "texto": "Dor aguda, que piora ou que muda a forma como te mexes é sinal para parar e procurar um profissional.",
-          "seg": 20
+          "texto": "Ouvir o corpo também é treinar. Uma dor forte, que piora ou que muda a forma como te mexes, é sinal para parar e procurar um profissional. Abre os olhos quando quiseres.",
+          "seg": 34
         }
       ]
     }
@@ -607,31 +611,31 @@ export const PRATICAS_3S = {
     "pratica": {
       "tipo": "Respiração",
       "titulo": "Respiração de prova",
-      "introducao": "Uma rotina curta para antes de uma prova ou de um treino exigente.",
+      "introducao": "Uma rotina curta e calma para antes de uma prova ou de um treino exigente.",
       "passos": [
         {
-          "texto": "Repara no nervosismo. É o corpo a preparar-se. Diz para ti: «Estou pronto/a.»",
-          "seg": 25
+          "texto": "Repara no nervosismo. Não é teu inimigo. É o corpo a preparar-se para dar o melhor. Diz para ti: estou pronto para isto.",
+          "seg": 31
         },
         {
-          "texto": "Dois inspiros curtos pelo nariz e uma expiração longa pela boca. Repete cinco vezes.",
-          "seg": 45
+          "texto": "Faz duas inspirações curtas pelo nariz… e uma expiração longa pela boca. Mais uma vez. E outra. Sente o corpo a acalmar.",
+          "seg": 50
         },
         {
-          "texto": "Diz em silêncio as tuas duas frases para os momentos difíceis.",
-          "seg": 30
+          "texto": "Lembra-te das tuas duas frases para os momentos difíceis. Diz-as por dentro, devagar, com convicção.",
+          "seg": 24
         },
         {
-          "texto": "Visualiza o momento mais duro da prova e vê-te a usar essas frases e a continuar.",
-          "seg": 40
+          "texto": "Visualiza o momento mais duro da prova. Vê-te a usar essas frases… e a continuar, passo a passo.",
+          "seg": 27
         },
         {
-          "texto": "Foca-te só no primeiro quilómetro, no primeiro minuto. O resto vem depois.",
-          "seg": 25
+          "texto": "Agora pensa só no início. No primeiro quilómetro, no primeiro minuto. O resto vem depois, a seu tempo.",
+          "seg": 27
         },
         {
-          "texto": "A mente cansa-se antes do corpo. Treina-a como treinas as pernas.",
-          "seg": 20
+          "texto": "A mente cansa-se antes do corpo. Hoje treinaste também a mente. Abre os olhos e vai.",
+          "seg": 26
         }
       ]
     }
@@ -644,31 +648,31 @@ export const PRATICAS_3S = {
     "pratica": {
       "tipo": "Exercício",
       "titulo": "Mais um voto",
-      "introducao": "Cada treino é um voto na pessoa que queres ser. Este exercício ajuda-te a ver isso.",
+      "introducao": "Uma reflexão para veres cada treino como um voto na pessoa que queres ser.",
       "passos": [
         {
-          "texto": "Respira fundo três vezes e lembra-te de onde começaste neste curso.",
-          "seg": 30
+          "texto": "Respira fundo três vezes. Lembra-te de onde estavas quando começaste este curso. Repara no caminho que já fizeste.",
+          "seg": 27
         },
         {
-          "texto": "Completa a frase: «Sou um/a atleta que…» Escreve três finais diferentes.",
-          "seg": 60
+          "texto": "Completa a frase, por dentro: sou um atleta que… Deixa surgir três finais diferentes.",
+          "seg": 24
         },
         {
-          "texto": "Escolhe o hábito mais pequeno que prova essa frase, por exemplo: «Calço as sapatilhas todas as manhãs.»",
-          "seg": 45
+          "texto": "Escolhe o hábito mais pequeno que prova essa frase. Algo tão simples como calçar as sapatilhas todas as manhãs.",
+          "seg": 26
         },
         {
-          "texto": "Decide quando e onde o vais fazer. Quanto mais concreto, melhor.",
-          "seg": 35
+          "texto": "Decide quando e onde o vais fazer. Vê-te a fazê-lo, com o máximo de pormenor.",
+          "seg": 24
         },
         {
-          "texto": "Diz em voz alta: «Mais um voto.» Repete-o sempre que treinares, mesmo pouco.",
-          "seg": 20
+          "texto": "Diz, por dentro ou em voz alta: mais um voto. Repete-o sempre que treinares, mesmo que seja pouco.",
+          "seg": 26
         },
         {
-          "texto": "Se quiseres um plano feito à tua medida, o coach desportivo pode ajudar numa sessão.",
-          "seg": 20
+          "texto": "Cada gesto conta. Se quiseres um plano feito à tua medida, o coach desportivo pode ajudar-te numa sessão. Abre os olhos quando quiseres.",
+          "seg": 29
         }
       ]
     }
