@@ -288,7 +288,7 @@ const TODOS_CURSOS = [
     id: 30,
     escolaId: "ser",
     emBreve: true,
-    titulo: "Filosofia 3S",
+    titulo: "Vida 3S",
     promessa: "Saber, Sentir, Ser: a filosofia da Escola 3S aplicada à tua vida. Para qualquer pessoa que queira conhecer-se, sentir com verdade e viver por inteiro.",
     pergunta: "Quem sou eu quando deixo de viver em piloto automático?",
     tipo: "video",
@@ -906,7 +906,7 @@ const areas = [
   { key: "livros", titulo: "Livros", desc: "Liderança 3S e Filosofia 3S", icon: BookOpen },
   { key: "escola-lideranca", titulo: "Liderança 3S", desc: "Comunicação e liderança de pessoas", icon: BookOpen },
   { key: "escola-ser", titulo: "Vida 3S", desc: "Autoconhecimento, emoções e crenças", icon: BookOpen },
-  { key: "workshops", titulo: "Encontro do mês", desc: "Encontro gratuito à distância", icon: Calendar },
+  { key: "workshops", titulo: "Cursos", desc: "Liderança 3S e Vida 3S", icon: GraduationCap },
   { key: "podcast", titulo: "Podcast", desc: "Episódios para ouvir", icon: Headphones },
   { key: "marcar", titulo: "Coaching e Mentoria", desc: "Sessões individuais e acompanhamento", icon: PenLine },
 ];
@@ -3018,7 +3018,7 @@ function DivisorArea({ texto, id }) {
 const areasLideranca = [
   { key: "marcar", titulo: "Marcar sessões", desc: "Coaching e mentoria individual com a Conceição", icon: PenLine, full: true },
   { key: "escola-lideranca", titulo: "Cursos de liderança", desc: "Comunicar e liderar pessoas", icon: GraduationCap },
-  { key: "workshops", titulo: "Encontro do mês", desc: "Encontro gratuito à distância", icon: Calendar },
+  { key: "workshops", titulo: "Cursos", desc: "Liderança 3S e Vida 3S", icon: GraduationCap },
 ];
 const areasDesenvolvimento = [
   { key: "escola-ser", titulo: "Cursos de desenvolvimento", desc: "Autoconhecimento, emoções e crenças limitantes", icon: GraduationCap, full: true },
@@ -3339,24 +3339,23 @@ function AreaAlunoScreen({ onBack, onOpenCurso, cursosConcluidos, materiaisDesbl
 /* ---------------------------------------------------------
    Comunidade 3S
 --------------------------------------------------------- */
-function WorkshopsScreen({ onBack }) {
-  const ev = EVENTOS_PUBLICOS[ENCONTRO_DO_MES];
-  const ativo = ev && new Date(ev.inicio).getTime() + 2 * 3600e3 > Date.now();
+function WorkshopsScreen({ onBack, onAbrirCurso }) {
+  const lista = [1, 30].map((id) => TODOS_CURSOS.find((c) => c.id === id)).filter(Boolean);
   return (
     <div className="pb-28">
-      <SectionHeader eyebrow="ESTE MÊS" title="Encontro à distância" onBack={onBack} />
+      <SectionHeader eyebrow="ESCOLA 3S" title="Cursos" onBack={onBack} />
       <div className="px-6 space-y-3">
-        {ativo ? (
-          <div className="rounded-3xl px-5 py-6" style={{ background: `linear-gradient(160deg, ${palette.navy} 0%, #24436E 100%)` }}>
-            <p className="text-[10px] tracking-[0.25em] font-semibold" style={{ color: palette.gold }}>GRATUITO · À DISTÂNCIA</p>
-            <p className="font-serif text-2xl leading-tight mt-2" style={{ color: palette.creamSoft }}>{ev.titulo}</p>
-            <p className="text-sm mt-2 flex items-center gap-1.5" style={{ color: palette.goldSoft }}><Clock size={14} />{ev.data}</p>
-            <p className="text-sm mt-3 leading-relaxed" style={{ color: palette.creamSoft, opacity: 0.85 }}>{ev.descricao}</p>
-            <a href={`/?inscricao=${ENCONTRO_DO_MES}`} className="block text-center mt-5 rounded-full py-3 text-sm font-semibold" style={{ backgroundColor: palette.gold, color: palette.navy }}>Quero participar</a>
-          </div>
-        ) : (
-          <p className="text-sm" style={{ color: palette.navySoft }}>O próximo encontro à distância será anunciado em breve.</p>
-        )}
+        {lista.map((c) => {
+          const e = Object.values(ESCOLAS_3S).find((x) => (x.cursos || []).includes(c.id));
+          return (
+            <button key={c.id} onClick={() => onAbrirCurso(c)} className="w-full text-left rounded-2xl px-5 py-5 transition active:scale-[0.99]" style={{ background: e ? e.fundo : palette.navy, border: e && e.borda ? `1.5px solid ${e.borda}` : "none" }}>
+              <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: e ? e.acento : palette.gold }}>{e ? e.nome.toUpperCase() : "ESCOLA 3S"}</p>
+              <p className="font-serif text-2xl leading-tight mt-1" style={{ color: e ? e.texto : palette.creamSoft }}>{c.titulo}</p>
+              <p className="text-[13px] mt-2 leading-relaxed" style={{ color: e ? e.texto : palette.creamSoft, opacity: 0.85 }}>{c.pergunta}</p>
+              <p className="text-[12px] mt-3 font-medium flex items-center gap-1" style={{ color: e ? e.acento : palette.gold }}>{c.emBreve ? "Em breve" : c.interativo ? `${(c.aulas || []).length} aulas · aula 1 grátis` : "Ver curso"} <ChevronRight size={13} /></p>
+            </button>
+          );
+        })}
       </div>
     </div>
   );
@@ -10397,7 +10396,7 @@ export default function App() {
   } else if (secao === "notificacoes") {
     content = <NotificacoesScreen onBack={() => setSecao(null)} />;
   } else if (secao === "workshops") {
-    content = <WorkshopsScreen onBack={() => setSecao("lideranca-3s")} inscricoes={progresso.inscricoesWorkshops} onToggleInscricao={toggleInscricao} />;
+    content = <WorkshopsScreen onBack={() => setSecao(null)} onAbrirCurso={setCursoAberto} />;
   } else if (secao === "podcast") {
     content = <PodcastScreen onBack={() => setSecao(null)} souDona={progresso.papel === "dona"} />;
   } else if (secao === "formacao") {
