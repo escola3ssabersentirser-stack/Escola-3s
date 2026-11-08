@@ -29,7 +29,7 @@ function html(titulo: string, nome: string, seccoes: Seccao[]) {
     <h1 style="font-family:Georgia,serif;font-weight:normal;font-size:28px;margin:4px 0 6px">${esc(titulo)}</h1>
     <p style="font-size:14px;color:#4A5A75;margin:0 0 18px">${nome ? esc(nome) + ", aqui" : "Aqui"} está o teu relatório. Guarda-o e volta a ele sempre que precisares.</p>
     ${blocos}
-    <a href="https://escola-3s.pt" style="display:inline-block;background:#1B3355;color:#FBF7F0;text-decoration:none;padding:12px 22px;border-radius:999px;font-size:14px;margin-top:8px">Marcar sessão gratuita de 20 min</a>
+    <a href="https://escola-3s.pt" style="display:inline-block;background:#1B3355;color:#FBF7F0;text-decoration:none;padding:12px 22px;border-radius:999px;font-size:14px;margin-top:8px">Marcar sessão de coaching</a>
     <p style="font-size:11px;color:#6B7690;margin-top:24px">Este relatório é um instrumento de autoconhecimento e não substitui avaliação psicológica ou médica. Escola 3S · escola-3s.pt</p>
   </div>`;
 }

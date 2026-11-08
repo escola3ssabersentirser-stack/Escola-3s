@@ -465,11 +465,9 @@ const podcastPorEscola = {
 };
 
 const servicosSessao = [
-  { id: 1, tipo: "Coaching", titulo: "Sessão de Coaching", descricao: "Clareza e ação para os teus objetivos.", duracao: "50 min", preco: "30€" },
-  { id: 2, tipo: "Mentoria", titulo: "Mentoria 3S", descricao: "Orientação próxima para o teu percurso.", duracao: "45 min", preco: "30€" },
-  { id: 3, tipo: "Acompanhamento", titulo: "Acompanhamento Individual", descricao: "Sessões regulares para te apoiarem no caminho.", duracao: "50 min", preco: "30€" },
-  { id: 4, tipo: "Experiência", titulo: "Sessão de experiência", descricao: "20 minutos para nos conhecermos e veres se é para ti. Uma por pessoa.", duracao: "20 min", preco: "Grátis", gratis: true },
-];
+  { id: 1, tipo: "Coaching", titulo: "Sessão de Coaching", descricao: "Uma conversa estruturada para ganhares clareza, definires objetivos e saíres com um plano de ação concreto.", duracao: "50 min", preco: "30€" },
+  { id: 2, tipo: "Mentoria", titulo: "Sessão de Mentoria", descricao: "Orientação de quem já fez o caminho: experiência, perspetiva e conselhos práticos para o teu desafio.", duracao: "50 min", preco: "30€" },
+]
 
 const DIAS_SEMANA = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
 const MESES_ABREV = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
@@ -708,7 +706,7 @@ function LoginScreen({ onPedirConfirmacaoEmail, onPedidoRecuperacao, modoInicial
           ) : (
             <button
               onClick={() => setMostrarCodigo(true)}
-              className="text-xs font-medium underline underline-offset-2"
+              className="text-[13px] font-medium underline underline-offset-2"
               style={{ color: palette.navySoft }}
             >
               Sou coach — tenho um código de acesso
@@ -724,7 +722,7 @@ function LoginScreen({ onPedirConfirmacaoEmail, onPedidoRecuperacao, modoInicial
               onChange={(e) => setAceitouConsentimento(e.target.checked)}
               className="mt-0.5 shrink-0"
             />
-            <span className="text-xs leading-relaxed" style={{ color: palette.navySoft }}>{TEXTO_CONSENTIMENTO_CONTA}</span>
+            <span className="text-[13px] leading-relaxed" style={{ color: palette.navySoft }}>{TEXTO_CONSENTIMENTO_CONTA}</span>
           </label>
         )}
 
@@ -738,7 +736,7 @@ function LoginScreen({ onPedirConfirmacaoEmail, onPedidoRecuperacao, modoInicial
           {!aEnviar && <ArrowRight size={16} />}
         </button>
         {erro && (
-          <p className="text-center text-xs" style={{ color: "#B23A3A" }}>{erro}</p>
+          <p className="text-center text-[13px]" style={{ color: "#B23A3A" }}>{erro}</p>
         )}
         {modo === "entrar" && (
           <button
@@ -761,14 +759,14 @@ function LoginScreen({ onPedirConfirmacaoEmail, onPedidoRecuperacao, modoInicial
                 setAEnviar(false);
               }
             }}
-            className="w-full text-center text-xs font-medium underline underline-offset-2"
+            className="w-full text-center text-[13px] font-medium underline underline-offset-2"
             style={{ color: palette.navySoft }}
           >
             Esqueci a palavra-passe
           </button>
         )}
         {modo === "criar" && (
-          <p className="text-center text-xs pt-2" style={{ color: palette.navySoft }}>
+          <p className="text-center text-[13px] pt-2" style={{ color: palette.navySoft }}>
             Só precisas de confirmar o correio eletrónico uma vez — depois entras sempre com a palavra-passe.
           </p>
         )}
@@ -865,7 +863,7 @@ function NovaPasswordScreen({ onConcluido }) {
         >
           {aGuardar ? "A guardar…" : "Guardar e entrar"}
         </button>
-        {erro && <p className="text-center text-xs" style={{ color: "#B23A3A" }}>{erro}</p>}
+        {erro && <p className="text-center text-[13px]" style={{ color: "#B23A3A" }}>{erro}</p>}
       </div>
     </div>
   );
@@ -949,7 +947,7 @@ function FormacaoHubScreen({ onBack, onAbrir, tema, setTema, temAcesso, onAbrirC
                 <button key={c.id} onClick={() => onAbrirCurso(c)} className="w-full text-left rounded-2xl px-4 py-4 flex items-center gap-3" style={{ backgroundColor: palette.navy }}>
                   <div className="flex-1">
                     <p className="font-serif text-lg leading-snug" style={{ color: palette.creamSoft }}>{c.titulo}</p>
-                    <p className="text-xs mt-1" style={{ color: palette.goldSoft }}>{c.gratuito ? "Gratuito" : temAcesso(c) ? "Já tens acesso" : `${precoTexto(PRECO_CURSO)} · ver curso`}</p>
+                    <p className="text-[13px] mt-1" style={{ color: palette.goldSoft }}>{c.gratuito ? "Gratuito" : temAcesso(c) ? "Já tens acesso" : `${precoTexto(PRECO_CURSO)} · ver curso`}</p>
                   </div>
                   <ChevronRight size={18} style={{ color: palette.gold }} />
                 </button>
@@ -958,7 +956,7 @@ function FormacaoHubScreen({ onBack, onAbrir, tema, setTema, temAcesso, onAbrirC
           </div>
         )}
         {listaCursos.length === 0 && (
-          <p className="mx-6 px-4 mb-6 text-xs rounded-xl py-3" style={{ backgroundColor: `${palette.gold}1F`, color: palette.navy }}>Curso em vídeo deste tema: em breve.</p>
+          <p className="mx-6 px-4 mb-6 text-[13px] rounded-xl py-3" style={{ backgroundColor: `${palette.gold}1F`, color: palette.navy }}>Curso em vídeo deste tema: em breve.</p>
         )}
         {false && listaMateriais.length > 0 && (
           <div className="px-6">
@@ -987,7 +985,7 @@ function FormacaoHubScreen({ onBack, onAbrir, tema, setTema, temAcesso, onAbrirC
         <Icon size={19} strokeWidth={1.6} style={{ color: palette.gold }} />
       </div>
       <p className="font-serif text-lg leading-tight" style={{ color: palette.creamSoft }}>{titulo}</p>
-      <p className="text-xs mt-1 leading-snug" style={{ color: palette.goldSoft }}>{desc}</p>
+      <p className="text-[13px] mt-1 leading-snug" style={{ color: palette.goldSoft }}>{desc}</p>
     </button>
   );
   return (
@@ -1011,7 +1009,7 @@ function FormacaoHubScreen({ onBack, onAbrir, tema, setTema, temAcesso, onAbrirC
               <span className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 font-serif text-sm" style={{ backgroundColor: palette.navy, color: palette.gold }}>{String(i + 1).padStart(2, "0")}</span>
               <div className="flex-1">
                 <p className="font-serif text-base leading-snug" style={{ color: palette.navy }}>{t.titulo}</p>
-                <p className="text-[11px] mt-0.5 leading-snug" style={{ color: palette.navySoft }}>{t.desc}</p>
+                <p className="text-xs mt-0.5 leading-snug" style={{ color: palette.navySoft }}>{t.desc}</p>
               </div>
               <ChevronRight size={16} style={{ color: palette.gold }} />
             </button>
@@ -1158,16 +1156,16 @@ function EscolasDuplas({ publico, onAbrir }) {
                 <Icon size={18} strokeWidth={1.6} style={{ color: e.acento }} />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: e.suave, opacity: 0.85 }}>COACHING</p>
+                <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: e.suave, opacity: 0.85 }}>COACHING</p>
                 <p className="font-serif text-[19px] leading-tight whitespace-nowrap" style={{ color: e.texto }}>{e.curto} <span style={{ color: e.acento, fontWeight: 600 }}>3S</span></p>
-                <p className="text-[11px] leading-snug" style={{ color: e.texto, opacity: 0.85 }}>{e.para}</p>
+                <p className="text-xs leading-snug" style={{ color: e.texto, opacity: 0.85 }}>{e.para}</p>
               </div>
               <ChevronRight size={20} style={{ color: e.acento }} />
             </div>
           </button>
         );
       })}
-      {publico && <p className="text-[11px] text-center" style={{ color: palette.navySoft }}>Uma só conta dá acesso às três escolas.</p>}
+      {publico && <p className="text-xs text-center" style={{ color: palette.navySoft }}>Uma só conta dá acesso às três escolas.</p>}
     </div>
   );
 }
@@ -1387,20 +1385,20 @@ function PlanoCartao({ plano, onAlternar, compacto }) {
     <div className="rounded-2xl px-5 py-4" style={{ backgroundColor: palette.card, border: `1.5px solid ${palette.gold}` }}>
       <div className="flex items-baseline justify-between gap-2">
         <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>O MEU PLANO</p>
-        <p className="text-[11px]" style={{ color: palette.navySoft }}>{feitos} de {plano.passos.length} feitos</p>
+        <p className="text-xs" style={{ color: palette.navySoft }}>{feitos} de {plano.passos.length} feitos</p>
       </div>
       <p className="font-serif text-lg leading-snug mt-1 mb-3" style={{ color: palette.navy }}>{plano.titulo}</p>
       <div className="space-y-2">
         {plano.passos.map((p, i) => (
           <button key={i} onClick={() => onAlternar && onAlternar(i)} className="w-full flex items-start gap-3 text-left">
-            <span className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-[11px] font-semibold mt-0.5" style={p.feito ? { backgroundColor: palette.gold, color: palette.navy } : { border: `1.5px solid ${palette.gold}`, color: palette.gold }}>{p.feito ? "✓" : i + 1}</span>
+            <span className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-xs font-semibold mt-0.5" style={p.feito ? { backgroundColor: palette.gold, color: palette.navy } : { border: `1.5px solid ${palette.gold}`, color: palette.gold }}>{p.feito ? "✓" : i + 1}</span>
             <span className="text-sm leading-snug" style={{ color: palette.ink, textDecoration: p.feito ? "line-through" : "none", opacity: p.feito ? 0.6 : 1 }}>
               {p.etiqueta && <span className="font-semibold" style={{ color: palette.navy }}>{p.etiqueta}: </span>}{p.texto}
             </span>
           </button>
         ))}
       </div>
-      {!compacto && <p className="text-[11px] mt-3" style={{ color: palette.navySoft }}>Toca em cada passo quando o fizeres.</p>}
+      {!compacto && <p className="text-xs mt-3" style={{ color: palette.navySoft }}>Toca em cada passo quando o fizeres.</p>}
     </div>
   );
 }
@@ -1408,7 +1406,7 @@ function PlanoCartao({ plano, onAlternar, compacto }) {
 function BarraPct({ rotulo, pct, destaque }) {
   return (
     <div className="mb-2.5">
-      <div className="flex justify-between text-xs mb-1">
+      <div className="flex justify-between text-[13px] mb-1">
         <span style={{ color: palette.navy, fontWeight: destaque ? 600 : 400 }}>{rotulo}</span>
         <span style={{ color: palette.gold }}>{pct}%</span>
       </div>
@@ -1532,13 +1530,13 @@ function EscolherOuEscrever({ rotulo, opcoes, valor, onMudar }) {
   const [escrever, setEscrever] = useState(Boolean(valor) && !opcoes.includes(valor));
   return (
     <div>
-      <p className="text-xs font-medium mb-1.5" style={{ color: palette.navySoft }}>{rotulo}</p>
+      <p className="text-[13px] font-medium mb-1.5" style={{ color: palette.navySoft }}>{rotulo}</p>
       <div className="flex flex-wrap gap-1.5">
         {opcoes.map((o) => {
           const on = !escrever && valor === o;
-          return <button key={o} type="button" onClick={() => { setEscrever(false); onMudar(o); }} className="rounded-full px-3 py-1.5 text-[12.5px] text-left" style={on ? { backgroundColor: palette.navy, color: palette.creamSoft } : { border: `1px solid ${palette.goldSoft}`, color: palette.navy, backgroundColor: "#fff" }}>{o}</button>;
+          return <button key={o} type="button" onClick={() => { setEscrever(false); onMudar(o); }} className="rounded-full px-3 py-1.5 text-[13.5px] text-left" style={on ? { backgroundColor: palette.navy, color: palette.creamSoft } : { border: `1px solid ${palette.goldSoft}`, color: palette.navy, backgroundColor: "#fff" }}>{o}</button>;
         })}
-        <button type="button" onClick={() => { setEscrever(true); onMudar(""); }} className="rounded-full px-3 py-1.5 text-[12.5px]" style={escrever ? { backgroundColor: palette.gold, color: palette.navy } : { border: `1px dashed ${palette.goldSoft}`, color: palette.navySoft }}>Outra…</button>
+        <button type="button" onClick={() => { setEscrever(true); onMudar(""); }} className="rounded-full px-3 py-1.5 text-[13.5px]" style={escrever ? { backgroundColor: palette.gold, color: palette.navy } : { border: `1px dashed ${palette.goldSoft}`, color: palette.navySoft }}>Outra…</button>
       </div>
       {escrever && <input autoFocus value={valor} onChange={(e) => onMudar(e.target.value)} placeholder="Escreve a tua" className="w-full mt-2 rounded-xl px-3.5 py-2.5 text-sm" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66`, color: palette.ink }} />}
     </div>
@@ -1574,7 +1572,7 @@ function TreinoScreen({ treino, onVoltar, resultados, onGuardar, onMarcar }) {
           <div className="space-y-2">
             {treino.essencial.map((t, i) => (
               <div key={i} className="flex gap-3">
-                <span className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-semibold shrink-0" style={{ backgroundColor: palette.navy, color: palette.gold }}>{i + 1}</span>
+                <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-semibold shrink-0" style={{ backgroundColor: palette.navy, color: palette.gold }}>{i + 1}</span>
                 <p className="text-sm leading-relaxed" style={{ color: palette.ink }}>{t}</p>
               </div>
             ))}
@@ -1602,7 +1600,7 @@ function TreinoScreen({ treino, onVoltar, resultados, onGuardar, onMarcar }) {
                       );
                     })}
                   </div>
-                  {respondida && <p className="text-xs leading-relaxed rounded-xl px-3.5 py-2.5 mt-2" style={{ backgroundColor: `${palette.gold}1F`, color: palette.navy }}><span className="font-semibold">{escolhas[ci] === c.c ? "Certo. " : "Não é bem assim. "}</span>{c.e}</p>}
+                  {respondida && <p className="text-[13px] leading-relaxed rounded-xl px-3.5 py-2.5 mt-2" style={{ backgroundColor: `${palette.gold}1F`, color: palette.navy }}><span className="font-semibold">{escolhas[ci] === c.c ? "Certo. " : "Não é bem assim. "}</span>{c.e}</p>}
                 </div>
               );
             })}
@@ -1617,9 +1615,9 @@ function TreinoScreen({ treino, onVoltar, resultados, onGuardar, onMarcar }) {
               <EscolherOuEscrever key={k} rotulo={label} opcoes={(OPCOES_TREINO[treino.id] || {})[k] || [ph]} valor={valores[k] || ""} onMudar={(v) => setValores((x) => ({ ...x, [k]: v }))} />
             ))}
             <div className="rounded-2xl px-5 py-4" style={{ background: `linear-gradient(150deg, ${palette.navy} 0%, #24436E 100%)` }}>
-              <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>A TUA FRASE</p>
+              <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>A TUA FRASE</p>
               <p className="font-serif text-lg leading-snug mt-1.5" style={{ color: completo ? palette.creamSoft : palette.goldSoft }}>{completo ? frase : "Preenche os campos e a tua frase aparece aqui."}</p>
-              {completo && <button onClick={copiar} className="mt-3 text-xs font-medium rounded-full px-3 py-1.5" style={{ backgroundColor: palette.gold, color: palette.navy }}>Copiar</button>}
+              {completo && <button onClick={copiar} className="mt-3 text-[13px] font-medium rounded-full px-3 py-1.5" style={{ backgroundColor: palette.gold, color: palette.navy }}>Copiar</button>}
             </div>
           </div>
         </div>
@@ -1629,7 +1627,7 @@ function TreinoScreen({ treino, onVoltar, resultados, onGuardar, onMarcar }) {
           <PlanoCartao plano={plano} compacto />
           <div className="mt-3 space-y-2.5">
             <button onClick={guardar} className="w-full rounded-full py-3.5 font-medium text-sm" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Guardar frase e plano</button>
-            {msg && <p className="text-xs text-center" style={{ color: palette.navySoft }}>{msg}</p>}
+            {msg && <p className="text-[13px] text-center" style={{ color: palette.navySoft }}>{msg}</p>}
             <button onClick={onMarcar} className="w-full rounded-full py-3 text-sm font-medium" style={{ border: `1px solid ${palette.navy}`, color: palette.navy }}>Treinar isto numa sessão</button>
           </div>
         </div>
@@ -2081,11 +2079,11 @@ function EnviarPerfilEmail({ titulo, seccoes }) {
   };
   return (
     <div className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.card, border: `1.5px solid ${palette.gold}` }}>
-      <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>GUARDAR O TEU PERFIL</p>
+      <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>GUARDAR O TEU PERFIL</p>
       <p className="font-serif text-lg leading-tight mt-1" style={{ color: palette.navy }}>Recebe o relatório no teu correio eletrónico</p>
       <input value={outro} onChange={(e) => setOutro(e.target.value)} type="email" placeholder="Enviar também para (opcional)" className="w-full mt-3 rounded-xl px-3 py-2.5 text-sm outline-none" style={{ backgroundColor: "#fff", border: `1px solid ${palette.goldSoft}`, color: palette.ink }} />
       <button onClick={enviar} disabled={estado === "a_enviar"} className="w-full mt-3 rounded-full py-3 text-sm font-medium" style={{ backgroundColor: palette.navy, color: palette.creamSoft, opacity: estado === "a_enviar" ? 0.6 : 1 }}>{estado === "a_enviar" ? "A enviar…" : "Enviar o meu perfil por correio eletrónico"}</button>
-      {msg && <p className="text-[12px] mt-2 text-center" style={{ color: estado === "erro" ? "#9B3B2E" : palette.navySoft }}>{msg}</p>}
+      {msg && <p className="text-[13px] mt-2 text-center" style={{ color: estado === "erro" ? "#9B3B2E" : palette.navySoft }}>{msg}</p>}
     </div>
   );
 }
@@ -2094,7 +2092,7 @@ function Escala({ valor, onEscolher, max = 5 }) {
   return (
     <div className="flex gap-1">
       {Array.from({ length: max }, (_, i) => i + 1).map((v) => (
-        <button key={v} onClick={() => onEscolher(v)} className="flex-1 rounded-lg py-1.5 text-xs font-medium" style={valor === v ? { backgroundColor: palette.navy, color: palette.creamSoft } : { border: `1px solid ${palette.goldSoft}`, color: palette.navy, backgroundColor: "#fff" }}>{v}</button>
+        <button key={v} onClick={() => onEscolher(v)} className="flex-1 rounded-lg py-1.5 text-[13px] font-medium" style={valor === v ? { backgroundColor: palette.navy, color: palette.creamSoft } : { border: `1px solid ${palette.goldSoft}`, color: palette.navy, backgroundColor: "#fff" }}>{v}</button>
       ))}
     </div>
   );
@@ -2107,9 +2105,9 @@ function PerfilVidaScreen({ guardado, onGuardar, onBack, onMarcar }) {
   const PASSOS = ["Propósito", "Valores", "Viver os valores", "Crenças", "Dores", "Feridas emocionais", "Experiências difíceis"];
   const topo = (titulo, sub) => (
     <div className="mb-4">
-      <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>PERFIL DE VIDA · {passo + 1} DE {PASSOS.length}</p>
+      <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>PERFIL DE VIDA · {passo + 1} DE {PASSOS.length}</p>
       <p className="font-serif text-2xl leading-tight mt-1" style={{ color: palette.navy }}>{titulo}</p>
-      {sub && <p className="text-[13px] mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{sub}</p>}
+      {sub && <p className="text-sm mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{sub}</p>}
       <div className="h-1.5 rounded-full mt-3 overflow-hidden" style={{ backgroundColor: `${palette.navy}14` }}><div className="h-full" style={{ width: `${(passo / PASSOS.length) * 100}%`, backgroundColor: palette.gold }} /></div>
     </div>
   );
@@ -2154,38 +2152,38 @@ function PerfilVidaScreen({ guardado, onGuardar, onBack, onMarcar }) {
     ].filter(Boolean).slice(0, 4).map((t, i) => `Semana ${i + 1}: ${t}`);
     const bloco = (eyebrow, titulo, conteudo) => (
       <div className="rounded-2xl px-4 py-4" style={caixa}>
-        <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>{eyebrow}</p>
+        <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>{eyebrow}</p>
         {titulo && <p className="font-serif text-xl leading-tight mt-1" style={{ color: palette.navy }}>{titulo}</p>}
         <div className="mt-2">{conteudo}</div>
       </div>
     );
-    const p_ = (t) => <p className="text-[13px] leading-relaxed" style={{ color: palette.ink }}>{t}</p>;
-    const li = (arr) => <div className="space-y-1.5">{arr.map((t, i) => <p key={i} className="text-[13px] leading-snug flex gap-2" style={{ color: palette.ink }}><span style={{ color: palette.gold }}>•</span>{t}</p>)}</div>;
+    const p_ = (t) => <p className="text-sm leading-relaxed" style={{ color: palette.ink }}>{t}</p>;
+    const li = (arr) => <div className="space-y-1.5">{arr.map((t, i) => <p key={i} className="text-sm leading-snug flex gap-2" style={{ color: palette.ink }}><span style={{ color: palette.gold }}>•</span>{t}</p>)}</div>;
     return (
       <div className="pb-28">
         <SectionHeader eyebrow="O TEU RELATÓRIO" title="Perfil de Vida" onBack={onBack} backLabel="Laboratório" />
         <div className="px-6 space-y-3">
           <div className="rounded-2xl px-5 py-5" style={{ background: "linear-gradient(150deg, #E4C98C 0%, #C6A253 100%)" }}>
-            <p className="text-[10px] tracking-[0.25em] font-semibold" style={{ color: palette.navy }}>O TEU PROPÓSITO</p>
+            <p className="text-[11px] tracking-[0.25em] font-semibold" style={{ color: palette.navy }}>O TEU PROPÓSITO</p>
             <p className="font-serif text-xl leading-snug mt-2" style={{ color: palette.navy }}>{frase || "Ainda por escrever: volta ao questionário e completa a tua frase."}</p>
           </div>
           {voc && bloco("PROPÓSITO E PROFISSÃO", `Perfil ${TIPOS_VOCACIONAIS[voc.t1].nome}${voc.t2 ? " e " + TIPOS_VOCACIONAIS[voc.t2].nome : ""}`, (
             <>
               {p_(`${TIPOS_VOCACIONAIS[voc.t1].frase}${voc.t2 ? " " + TIPOS_VOCACIONAIS[voc.t2].frase : ""}`)}
-              {voc.combinacao && <><p className="text-[12px] font-semibold mt-3 mb-1" style={{ color: palette.navy }}>Profissões que juntam os dois lados</p>{li(voc.combinacao)}</>}
-              <p className="text-[12px] font-semibold mt-3 mb-1" style={{ color: palette.navy }}>Profissões ligadas ao perfil {TIPOS_VOCACIONAIS[voc.t1].nome}</p>
+              {voc.combinacao && <><p className="text-[13px] font-semibold mt-3 mb-1" style={{ color: palette.navy }}>Profissões que juntam os dois lados</p>{li(voc.combinacao)}</>}
+              <p className="text-[13px] font-semibold mt-3 mb-1" style={{ color: palette.navy }}>Profissões ligadas ao perfil {TIPOS_VOCACIONAIS[voc.t1].nome}</p>
               {li(TIPOS_VOCACIONAIS[voc.t1].profissoes)}
-              {voc.t2 && <><p className="text-[12px] font-semibold mt-3 mb-1" style={{ color: palette.navy }}>Profissões ligadas ao perfil {TIPOS_VOCACIONAIS[voc.t2].nome}</p>{li(TIPOS_VOCACIONAIS[voc.t2].profissoes.slice(0, 4))}</>}
-              <p className="text-[11px] mt-3" style={{ color: palette.navySoft }}>Com base no modelo de interesses vocacionais de John Holland. São pistas para explorar, não uma decisão: o propósito pode viver-se em muitas profissões.</p>
+              {voc.t2 && <><p className="text-[13px] font-semibold mt-3 mb-1" style={{ color: palette.navy }}>Profissões ligadas ao perfil {TIPOS_VOCACIONAIS[voc.t2].nome}</p>{li(TIPOS_VOCACIONAIS[voc.t2].profissoes.slice(0, 4))}</>}
+              <p className="text-xs mt-3" style={{ color: palette.navySoft }}>Com base no modelo de interesses vocacionais de John Holland. São pistas para explorar, não uma decisão: o propósito pode viver-se em muitas profissões.</p>
             </>
           ))}
           {bloco("VALORES A SEGUIR", "Os teus valores", li(valoresOrd.map((v) => `${v} — vives este valor ${d.viver[v]} em 5${d.viver[v] <= 3 ? " · dar-lhe mais espaço" : ""}`)))}
-          {bloco("CRENÇAS", crencasTop.length ? "Crenças que te limitam" : "Sem crenças limitantes fortes", crencasTop.length ? <div className="space-y-2.5">{crencasTop.map(({ c }) => <div key={c[0]}><p className="text-[13px] line-through" style={{ color: palette.navySoft }}>{c[0]}</p><p className="text-[13px] font-medium" style={{ color: palette.navy }}>→ {c[1]}</p></div>)}</div> : p_("Nenhuma das crenças avaliadas parece pesar muito em ti neste momento."))}
-          {bloco("DORES", dores.length ? "Áreas que pedem atenção" : "Sem áreas em sofrimento", <>{dores.length ? li(dores.map(([a, v]) => `${a}: ${v} em 10`)) : p_("Nenhuma área ficou abaixo de 6.")}{fortes.length > 0 && <p className="text-[12px] mt-2" style={{ color: palette.navySoft }}>Onde estás bem: {fortes.map(([a]) => a).join(", ")}.</p>}</>)}
-          {bloco("FERIDAS EMOCIONAIS", ferPrincipal ? `Ferida de ${ferPrincipal.nome.toLowerCase()}` : "Nenhuma ferida se destaca", ferPrincipal ? <>{p_(ferPrincipal.frase)}<p className="text-[12px] mt-1.5" style={{ color: palette.navySoft }}><b>Como pode aparecer:</b> {ferPrincipal.sinais}</p><p className="text-[12px] mt-1.5" style={{ color: palette.navySoft }}><b>Caminho de cuidado:</b> {ferPrincipal.cuidado}</p></> : p_("As tuas respostas não mostram nenhuma ferida com muito peso neste momento."))}
+          {bloco("CRENÇAS", crencasTop.length ? "Crenças que te limitam" : "Sem crenças limitantes fortes", crencasTop.length ? <div className="space-y-2.5">{crencasTop.map(({ c }) => <div key={c[0]}><p className="text-sm line-through" style={{ color: palette.navySoft }}>{c[0]}</p><p className="text-sm font-medium" style={{ color: palette.navy }}>→ {c[1]}</p></div>)}</div> : p_("Nenhuma das crenças avaliadas parece pesar muito em ti neste momento."))}
+          {bloco("DORES", dores.length ? "Áreas que pedem atenção" : "Sem áreas em sofrimento", <>{dores.length ? li(dores.map(([a, v]) => `${a}: ${v} em 10`)) : p_("Nenhuma área ficou abaixo de 6.")}{fortes.length > 0 && <p className="text-[13px] mt-2" style={{ color: palette.navySoft }}>Onde estás bem: {fortes.map(([a]) => a).join(", ")}.</p>}</>)}
+          {bloco("FERIDAS EMOCIONAIS", ferPrincipal ? `Ferida de ${ferPrincipal.nome.toLowerCase()}` : "Nenhuma ferida se destaca", ferPrincipal ? <>{p_(ferPrincipal.frase)}<p className="text-[13px] mt-1.5" style={{ color: palette.navySoft }}><b>Como pode aparecer:</b> {ferPrincipal.sinais}</p><p className="text-[13px] mt-1.5" style={{ color: palette.navySoft }}><b>Caminho de cuidado:</b> {ferPrincipal.cuidado}</p></> : p_("As tuas respostas não mostram nenhuma ferida com muito peso neste momento."))}
           {bloco("PLANO DE 4 SEMANAS", "Os teus próximos passos", li(plano))}
           <div className="rounded-2xl px-4 py-3" style={{ backgroundColor: "#F6EDD8" }}>
-            <p className="text-[12px] leading-relaxed" style={{ color: palette.navy }}>Este perfil é uma ferramenta de autoconhecimento e não é um diagnóstico. Se algum destes temas te pesa muito, falar com um/a psicólogo/a pode ajudar. Em Portugal, a linha SNS 24 (808 24 24 24) tem aconselhamento psicológico. Em emergência, liga 112.</p>
+            <p className="text-[13px] leading-relaxed" style={{ color: palette.navy }}>Este perfil é uma ferramenta de autoconhecimento e não é um diagnóstico. Se algum destes temas te pesa muito, falar com um/a psicólogo/a pode ajudar. Em Portugal, a linha SNS 24 (808 24 24 24) tem aconselhamento psicológico. Em emergência, liga 112.</p>
           </div>
           <EnviarPerfilEmail titulo="Perfil de Vida" seccoes={[
             frase && { titulo: "O teu propósito", texto: frase },
@@ -2197,7 +2195,7 @@ function PerfilVidaScreen({ guardado, onGuardar, onBack, onMarcar }) {
             { titulo: "Plano de 4 semanas", itens: plano },
           ].filter(Boolean)} />
           <button onClick={onMarcar} className="w-full rounded-full py-3.5 text-sm font-medium" style={{ backgroundColor: palette.gold, color: palette.navy }}>Marcar sessão de Life Coaching</button>
-          <button onClick={() => setPasso(0)} className="w-full text-xs underline pt-1" style={{ color: palette.navySoft }}>Rever as minhas respostas</button>
+          <button onClick={() => setPasso(0)} className="w-full text-[13px] underline pt-1" style={{ color: palette.navySoft }}>Rever as minhas respostas</button>
         </div>
       </div>
     );
@@ -2212,10 +2210,10 @@ function PerfilVidaScreen({ guardado, onGuardar, onBack, onMarcar }) {
           <div className="space-y-3">
             <div className="rounded-2xl px-4 py-4" style={caixa}>
               <p className="text-sm font-medium" style={{ color: palette.navy }}>Que atividades te dão mais energia?</p>
-              <p className="text-[12px] mb-2.5" style={{ color: palette.navySoft }}>Escolhe entre 3 e 6. Vamos ligá-las a profissões.</p>
+              <p className="text-[13px] mb-2.5" style={{ color: palette.navySoft }}>Escolhe entre 3 e 6. Vamos ligá-las a profissões.</p>
               <div className="flex flex-wrap gap-2">
                 {ATIVIDADES.map(([, t], i) => { const esc = d.atividades || []; const on = esc.includes(i); return (
-                  <button key={i} onClick={() => set("atividades", on ? esc.filter((x) => x !== i) : esc.length < 6 ? [...esc, i] : esc)} className="rounded-full px-3 py-1.5 text-[12.5px] text-left" style={on ? { backgroundColor: palette.navy, color: palette.creamSoft } : { border: `1px solid ${palette.goldSoft}`, color: palette.navy, backgroundColor: "#fff" }}>{t}</button>
+                  <button key={i} onClick={() => set("atividades", on ? esc.filter((x) => x !== i) : esc.length < 6 ? [...esc, i] : esc)} className="rounded-full px-3 py-1.5 text-[13.5px] text-left" style={on ? { backgroundColor: palette.navy, color: palette.creamSoft } : { border: `1px solid ${palette.goldSoft}`, color: palette.navy, backgroundColor: "#fff" }}>{t}</button>
                 ); })}
               </div>
             </div>
@@ -2242,10 +2240,10 @@ function PerfilVidaScreen({ guardado, onGuardar, onBack, onMarcar }) {
           {topo("Os teus valores", "Escolhe entre 3 e 5 valores que queres que guiem a tua vida.")}
           <div className="flex flex-wrap gap-2">
             {VALORES.map((v) => { const on = d.valores.includes(v); return (
-              <button key={v} onClick={() => set("valores", on ? d.valores.filter((x) => x !== v) : d.valores.length < 5 ? [...d.valores, v] : d.valores)} className="rounded-full px-3.5 py-2 text-[13px]" style={on ? { backgroundColor: palette.navy, color: palette.creamSoft } : { border: `1px solid ${palette.goldSoft}`, color: palette.navy, backgroundColor: "#fff" }}>{v}</button>
+              <button key={v} onClick={() => set("valores", on ? d.valores.filter((x) => x !== v) : d.valores.length < 5 ? [...d.valores, v] : d.valores)} className="rounded-full px-3.5 py-2 text-sm" style={on ? { backgroundColor: palette.navy, color: palette.creamSoft } : { border: `1px solid ${palette.goldSoft}`, color: palette.navy, backgroundColor: "#fff" }}>{v}</button>
             ); })}
           </div>
-          <p className="text-[12px] mt-3" style={{ color: palette.navySoft }}>{d.valores.length} de 5 escolhidos</p>
+          <p className="text-[13px] mt-3" style={{ color: palette.navySoft }}>{d.valores.length} de 5 escolhidos</p>
         </>)}
         {passo === 2 && (<>
           {topo("Quanto vives hoje cada valor?", "1 = quase nada, 5 = totalmente.")}
@@ -2269,8 +2267,8 @@ function PerfilVidaScreen({ guardado, onGuardar, onBack, onMarcar }) {
             <p className="text-[14px] leading-relaxed" style={{ color: palette.ink }}>Algumas experiências marcam-nos de forma profunda: perdas, situações de medo, violência ou abandono. Quando isso acontece, é normal que ainda hoje influenciem o que sentimos, as nossas reações e as nossas relações.</p>
             <p className="text-[14px] leading-relaxed" style={{ color: palette.ink }}>Esta aplicação não avalia traumas, porque é um tema que merece acompanhamento especializado e um espaço seguro. O coaching pode ajudar-te a avançar no presente, mas não substitui a psicoterapia.</p>
             <p className="text-sm font-medium" style={{ color: palette.navy }}>Procura apoio de um/a psicólogo/a se:</p>
-            <div className="space-y-1">{["memórias difíceis voltam muitas vezes ou de forma intensa;", "evitas pessoas, lugares ou situações por causa do que viveste;", "sentes ansiedade, tristeza ou irritação que não passam;", "tens dificuldade em dormir, concentrar-te ou sentir prazer."].map((t) => <p key={t} className="text-[13px] flex gap-2" style={{ color: palette.ink }}><span style={{ color: palette.gold }}>•</span>{t}</p>)}</div>
-            <p className="text-[13px] leading-relaxed" style={{ color: palette.navy }}>Em Portugal, a linha SNS 24 (808 24 24 24) tem aconselhamento psicológico. Em emergência, liga 112.</p>
+            <div className="space-y-1">{["memórias difíceis voltam muitas vezes ou de forma intensa;", "evitas pessoas, lugares ou situações por causa do que viveste;", "sentes ansiedade, tristeza ou irritação que não passam;", "tens dificuldade em dormir, concentrar-te ou sentir prazer."].map((t) => <p key={t} className="text-sm flex gap-2" style={{ color: palette.ink }}><span style={{ color: palette.gold }}>•</span>{t}</p>)}</div>
+            <p className="text-sm leading-relaxed" style={{ color: palette.navy }}>Em Portugal, a linha SNS 24 (808 24 24 24) tem aconselhamento psicológico. Em emergência, liga 112.</p>
           </div>
         </>)}
         {navegacao}
@@ -2309,8 +2307,8 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
       <div className="flex items-center gap-3">
         <div className="flex-1 min-w-0">
           <p className="font-serif text-base leading-snug" style={{ color: palette.navy }}>{titulo}</p>
-          <p className="text-[11px] mt-0.5 leading-snug" style={{ color: palette.navySoft }}>{desc}</p>
-          {extra && <p className="text-[11px] mt-1.5 font-medium" style={{ color: palette.gold }}>{extra}</p>}
+          <p className="text-xs mt-0.5 leading-snug" style={{ color: palette.navySoft }}>{desc}</p>
+          {extra && <p className="text-xs mt-1.5 font-medium" style={{ color: palette.gold }}>{extra}</p>}
         </div>
         <ChevronRight size={18} style={{ color: palette.gold }} />
       </div>
@@ -2362,10 +2360,10 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
         {cabecalho("O TEU RESULTADO", TX.perfilTitulo, voltarLab, "Laboratório")}
         <div className="px-6 space-y-4">
           <div className="rounded-3xl px-5 py-6 text-center" style={{ background: `linear-gradient(150deg, ${palette.navy} 0%, #24436E 100%)` }}>
-            <p className="text-[10px] tracking-[0.25em] font-semibold" style={{ color: palette.gold }}>O TEU PERFIL PRINCIPAL</p>
+            <p className="text-[11px] tracking-[0.25em] font-semibold" style={{ color: palette.gold }}>O TEU PERFIL PRINCIPAL</p>
             <p className="font-serif text-4xl mt-2" style={{ color: palette.creamSoft }}>{principal.nome}</p>
             <p className="text-sm mt-1" style={{ color: palette.goldSoft }}>{principal.frase}</p>
-            {contagem[ordenados[1]] > 0 && <p className="text-[11px] mt-3" style={{ color: palette.creamSoft, opacity: 0.8 }}>Segundo perfil: {segundo.nome}</p>}
+            {contagem[ordenados[1]] > 0 && <p className="text-xs mt-3" style={{ color: palette.creamSoft, opacity: 0.8 }}>Segundo perfil: {segundo.nome}</p>}
           </div>
           <div className="rounded-2xl px-5 py-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
             {ordenados.map((k) => <BarraPct key={k} rotulo={PERFIS_LIDER[k].nome} pct={Math.round((contagem[k] / PERGUNTAS_PERFIL.length) * 100)} destaque={k === ordenados[0]} />)}
@@ -2376,12 +2374,12 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
               <p className="text-sm mt-1 leading-relaxed" style={{ color: palette.ink }}>{d}</p>
             </div>
           ))}
-          <p className="text-xs leading-relaxed rounded-xl px-4 py-3" style={{ backgroundColor: `${palette.gold}1F`, color: palette.navy }}>{TX.notaPerfil}</p>
+          <p className="text-[13px] leading-relaxed rounded-xl px-4 py-3" style={{ backgroundColor: `${palette.gold}1F`, color: palette.navy }}>{TX.notaPerfil}</p>
           <PlanoCartao plano={planoPerfil} compacto />
           {botaoPrincipal("Guardar resultado e plano", guardar)}
-          {guardadoMsg && <p className="text-xs text-center" style={{ color: palette.navySoft }}>{guardadoMsg}</p>}
+          {guardadoMsg && <p className="text-[13px] text-center" style={{ color: palette.navySoft }}>{guardadoMsg}</p>}
           <button onClick={onMarcar} className="w-full rounded-full py-3 text-sm font-medium" style={{ border: `1px solid ${palette.navy}`, color: palette.navy }}>Falar sobre o meu perfil numa sessão</button>
-          <button onClick={() => { setPasso(0); setRespostas([]); setGuardadoMsg(""); }} className="w-full text-xs underline" style={{ color: palette.navySoft }}>Repetir o teste</button>
+          <button onClick={() => { setPasso(0); setRespostas([]); setGuardadoMsg(""); }} className="w-full text-[13px] underline" style={{ color: palette.navySoft }}>Repetir o teste</button>
         </div>
       </div>
     );
@@ -2402,7 +2400,7 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
             <div className="space-y-2">
               {ESCALA.map((rotulo, i) => (
                 <button key={rotulo} onClick={() => { setRespostas((r) => [...r, i + 1]); setPasso((p) => p + 1); }} className="w-full flex items-center gap-3 text-left rounded-2xl px-4 py-3 text-sm" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66`, color: palette.ink }}>
-                  <span className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold shrink-0" style={{ backgroundColor: palette.navy, color: palette.gold }}>{i + 1}</span>
+                  <span className="w-7 h-7 rounded-full flex items-center justify-center text-[13px] font-semibold shrink-0" style={{ backgroundColor: palette.navy, color: palette.gold }}>{i + 1}</span>
                   {rotulo}
                 </button>
               ))}
@@ -2441,9 +2439,9 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
           </div>
           <PlanoCartao plano={planoPilar} compacto />
           {botaoPrincipal("Guardar resultado e plano", guardar)}
-          {guardadoMsg && <p className="text-xs text-center" style={{ color: palette.navySoft }}>{guardadoMsg}</p>}
+          {guardadoMsg && <p className="text-[13px] text-center" style={{ color: palette.navySoft }}>{guardadoMsg}</p>}
           <button onClick={onMarcar} className="w-full rounded-full py-3 text-sm font-medium" style={{ border: `1px solid ${palette.navy}`, color: palette.navy }}>Trabalhar isto numa sessão</button>
-          <button onClick={() => { setPasso(0); setRespostas([]); setGuardadoMsg(""); }} className="w-full text-xs underline" style={{ color: palette.navySoft }}>Repetir o teste</button>
+          <button onClick={() => { setPasso(0); setRespostas([]); setGuardadoMsg(""); }} className="w-full text-[13px] underline" style={{ color: palette.navySoft }}>Repetir o teste</button>
         </div>
       </div>
     );
@@ -2544,9 +2542,9 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
           </div>
           <PlanoCartao plano={planoQuiz} compacto />
           {botaoPrincipal("Guardar este plano", guardar)}
-          {guardadoMsg && <p className="text-xs text-center" style={{ color: palette.navySoft }}>{guardadoMsg}</p>}
+          {guardadoMsg && <p className="text-[13px] text-center" style={{ color: palette.navySoft }}>{guardadoMsg}</p>}
           <button onClick={onMarcar} className="w-full rounded-full py-3 text-sm font-medium" style={{ border: `1px solid ${palette.navy}`, color: palette.navy }}>Treinar isto numa sessão</button>
-          <button onClick={() => { setPasso(0); setRespostas([]); setGuardadoMsg(""); }} className="w-full text-xs underline" style={{ color: palette.navySoft }}>Repetir o questionário</button>
+          <button onClick={() => { setPasso(0); setRespostas([]); setGuardadoMsg(""); }} className="w-full text-[13px] underline" style={{ color: palette.navySoft }}>Repetir o questionário</button>
         </div>
       </div>
     );
@@ -2565,7 +2563,7 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
                 <button onClick={() => setModeloAberto(aberto ? null : m.nome)} className="w-full flex items-center gap-3 text-left px-5 py-4">
                   <div className="flex-1">
                     <p className="font-serif text-lg" style={{ color: palette.navy }}>{m.nome}</p>
-                    <p className="text-xs" style={{ color: palette.navySoft }}>{m.para}</p>
+                    <p className="text-[13px]" style={{ color: palette.navySoft }}>{m.para}</p>
                   </div>
                   {aberto ? <ChevronDown size={18} style={{ color: palette.gold }} /> : <ChevronRight size={18} style={{ color: palette.gold }} />}
                 </button>
@@ -2573,14 +2571,14 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
                   <div className="px-5 pb-5 space-y-2.5">
                     {m.passos.map(([t, d], i) => (
                       <div key={t} className="flex gap-3">
-                        <span className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold shrink-0" style={{ backgroundColor: palette.navy, color: palette.gold }}>{i + 1}</span>
+                        <span className="w-7 h-7 rounded-full flex items-center justify-center text-[13px] font-semibold shrink-0" style={{ backgroundColor: palette.navy, color: palette.gold }}>{i + 1}</span>
                         <div>
                           <p className="text-sm font-semibold" style={{ color: palette.navy }}>{t}</p>
-                          <p className="text-xs leading-relaxed" style={{ color: palette.navySoft }}>{d}</p>
+                          <p className="text-[13px] leading-relaxed" style={{ color: palette.navySoft }}>{d}</p>
                         </div>
                       </div>
                     ))}
-                    {m.exemplo && <p className="text-xs italic rounded-xl px-3 py-2.5 mt-1" style={{ backgroundColor: `${palette.gold}1F`, color: palette.navy }}>Exemplo: {m.exemplo}</p>}
+                    {m.exemplo && <p className="text-[13px] italic rounded-xl px-3 py-2.5 mt-1" style={{ backgroundColor: `${palette.gold}1F`, color: palette.navy }}>Exemplo: {m.exemplo}</p>}
                   </div>
                 )}
               </div>
@@ -2606,21 +2604,21 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
         {cabecalho(TX.perguntasEyebrow, "Pergunta do dia", voltarLab, "Laboratório")}
         <div className="px-6 space-y-4">
           <div className="rounded-3xl px-5 py-7 text-center" style={{ background: `linear-gradient(150deg, ${palette.navy} 0%, #24436E 100%)` }}>
-            <p className="text-[10px] tracking-[0.25em] font-semibold" style={{ color: palette.gold }}>PENSA NISTO</p>
+            <p className="text-[11px] tracking-[0.25em] font-semibold" style={{ color: palette.gold }}>PENSA NISTO</p>
             <p className="font-serif text-2xl leading-snug mt-3" style={{ color: palette.creamSoft }}>{pergunta}</p>
           </div>
           <button onClick={() => { setIPergunta((i) => (i + 1) % PERGUNTAS_REFLEXAO.length); setGuardadoMsg(""); }} className="w-full text-sm font-medium rounded-full py-2.5" style={{ border: `1px solid ${palette.gold}`, color: palette.navy }}>Outra pergunta</button>
           <textarea value={textoReflexao} onChange={(e) => setTextoReflexao(e.target.value)} rows={4} placeholder="Escreve aqui a tua resposta (só tu vês)…" className="w-full rounded-2xl px-4 py-3 text-sm resize-none" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66`, color: palette.ink }} />
           {botaoPrincipal("Guardar no meu diário", guardar, !textoReflexao.trim())}
-          {guardadoMsg && <p className="text-xs text-center" style={{ color: palette.navySoft }}>{guardadoMsg}</p>}
+          {guardadoMsg && <p className="text-[13px] text-center" style={{ color: palette.navySoft }}>{guardadoMsg}</p>}
           {minhas.length > 0 && (
             <div>
               <p className="text-[11px] tracking-[0.2em] font-semibold mb-2" style={{ color: palette.gold }}>{TX.diario}</p>
               <div className="space-y-2">
                 {minhas.slice(0, 10).map((r, i) => (
                   <div key={i} className="rounded-xl px-4 py-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}44` }}>
-                    <p className="text-xs font-semibold" style={{ color: palette.navy }}>{r.pergunta}</p>
-                    <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{r.resposta}</p>
+                    <p className="text-[13px] font-semibold" style={{ color: palette.navy }}>{r.pergunta}</p>
+                    <p className="text-[13px] mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{r.resposta}</p>
                   </div>
                 ))}
               </div>
@@ -2702,7 +2700,7 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
                 }} className="w-full text-left rounded-2xl px-4 py-3.5 text-sm transition active:scale-[0.99]" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66`, color: palette.ink }}>{t}</button>
               ))}
             </div>
-            {passo > 0 && <button onClick={() => { setPasso(passo - 1); setRespostas(respostas.slice(0, -1)); }} className="mt-4 text-xs underline" style={{ color: palette.navySoft }}>Voltar à pergunta anterior</button>}
+            {passo > 0 && <button onClick={() => { setPasso(passo - 1); setRespostas(respostas.slice(0, -1)); }} className="mt-4 text-[13px] underline" style={{ color: palette.navySoft }}>Voltar à pergunta anterior</button>}
           </div>
         </div>
       );
@@ -2724,12 +2722,12 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
               <div key={t.id} className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66` }}>
                 <div className="flex items-start justify-between gap-2">
                   <p className="font-serif text-lg leading-tight" style={{ color: palette.navy }}>{t.nome}</p>
-                  {m && <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full shrink-0" style={{ border: `1px solid ${palette.gold}`, color: m.nivel === "Exige mais de ti" ? palette.navySoft : palette.gold }}>{m.nivel}</span>}
+                  {m && <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full shrink-0" style={{ border: `1px solid ${palette.gold}`, color: m.nivel === "Exige mais de ti" ? palette.navySoft : palette.gold }}>{m.nivel}</span>}
                 </div>
-                <p className="text-[13px] mt-1" style={{ color: palette.ink }}>{t.frase}</p>
-                <p className="text-[12.5px] mt-2" style={{ color: palette.navy }}><b>O que precisa:</b> {t.precisa}</p>
-                {melhor && <p className="text-[12.5px] mt-1" style={{ color: palette.navy }}><b>Estilo que funciona melhor:</b> {melhor}</p>}
-                {m && <p className="text-[12.5px] mt-1.5" style={{ color: palette.ink }}><b style={{ color: palette.navy }}>Para liderares esta equipa:</b> {m.melhorar}</p>}
+                <p className="text-sm mt-1" style={{ color: palette.ink }}>{t.frase}</p>
+                <p className="text-[13.5px] mt-2" style={{ color: palette.navy }}><b>O que precisa:</b> {t.precisa}</p>
+                {melhor && <p className="text-[13.5px] mt-1" style={{ color: palette.navy }}><b>Estilo que funciona melhor:</b> {melhor}</p>}
+                {m && <p className="text-[13.5px] mt-1.5" style={{ color: palette.ink }}><b style={{ color: palette.navy }}>Para liderares esta equipa:</b> {m.melhorar}</p>}
               </div>
             );
           })}
@@ -2741,14 +2739,14 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
     const r = montarRelatorio(resultados.perfilGeral);
     const bloco = (eyebrow, titulo, frase, extra) => (
       <div className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66` }}>
-        <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>{eyebrow}</p>
+        <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>{eyebrow}</p>
         <p className="font-serif text-xl leading-tight mt-1" style={{ color: palette.navy }}>{titulo}</p>
-        {frase && <p className="text-[13px] mt-1 leading-relaxed" style={{ color: palette.ink }}>{frase}</p>}
+        {frase && <p className="text-sm mt-1 leading-relaxed" style={{ color: palette.ink }}>{frase}</p>}
         {extra}
       </div>
     );
     const lista = (itens, cor) => (
-      <div className="space-y-1.5 mt-2">{itens.map((t, i) => <p key={i} className="text-[13px] leading-snug flex gap-2" style={{ color: palette.ink }}><span style={{ color: cor }}>{cor === palette.gold ? "★" : "→"}</span>{t}</p>)}</div>
+      <div className="space-y-1.5 mt-2">{itens.map((t, i) => <p key={i} className="text-sm leading-snug flex gap-2" style={{ color: palette.ink }}><span style={{ color: cor }}>{cor === palette.gold ? "★" : "→"}</span>{t}</p>)}</div>
     );
     const e = r.personalidade.eixos;
     const totCom = Object.values(r.comunicacao.contagem).reduce((a, b) => a + b, 0) || 1;
@@ -2757,11 +2755,11 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
         {cabecalho("O TEU RELATÓRIO", "Perfil Geral de Líder", voltarLab, "Laboratório")}
         <div className="px-6 space-y-3">
           <div className="rounded-2xl px-5 py-5" style={{ background: `linear-gradient(160deg, ${palette.navy} 0%, #24436E 100%)` }}>
-            <p className="text-[10px] tracking-[0.25em] font-semibold" style={{ color: palette.gold }}>EM RESUMO</p>
+            <p className="text-[11px] tracking-[0.25em] font-semibold" style={{ color: palette.gold }}>EM RESUMO</p>
             <div className="grid grid-cols-2 gap-2 mt-3">
               {[["Liderança", r.lideranca ? r.lideranca.nome : "Por fazer"], ["Arquétipo", r.arquetipo.nome], ["Personalidade", r.personalidade.nome], ["Comunicação", r.comunicacao.nome], ["Equipa ideal", r.equipas[0].nome]].map(([k, v]) => (
                 <div key={k} className={`rounded-xl px-3 py-2.5 ${k === "Equipa ideal" ? "col-span-2" : ""}`} style={{ backgroundColor: "rgba(255,255,255,0.07)", border: `1px solid ${palette.gold}44` }}>
-                  <p className="text-[10px]" style={{ color: palette.goldSoft }}>{k}</p>
+                  <p className="text-[11px]" style={{ color: palette.goldSoft }}>{k}</p>
                   <p className="font-serif text-base leading-tight" style={{ color: palette.creamSoft }}>{v}</p>
                 </div>
               ))}
@@ -2770,19 +2768,19 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
           {r.lideranca
             ? bloco("TIPO DE LIDERANÇA", r.lideranca.nome, r.lideranca.frase, (
               <div className="mt-2">
-                <p className="text-[12px]" style={{ color: palette.navySoft }}><b>Funciona melhor em:</b> {r.lideranca.quando}</p>
-                <p className="text-[12px] mt-1" style={{ color: palette.navySoft }}><b>Cuidado com:</b> {r.lideranca.risco}</p>
+                <p className="text-[13px]" style={{ color: palette.navySoft }}><b>Funciona melhor em:</b> {r.lideranca.quando}</p>
+                <p className="text-[13px] mt-1" style={{ color: palette.navySoft }}><b>Cuidado com:</b> {r.lideranca.risco}</p>
                 {r.lideranca.contagem && <div className="mt-3">{Object.entries(r.lideranca.contagem).sort((a, b) => b[1] - a[1]).map(([k, v]) => <BarraPct key={k} rotulo={PERFIS_LIDER[k].nome} pct={Math.round((v / Math.max(Object.values(r.lideranca.contagem).reduce((a, b) => a + b, 0), 1)) * 100)} destaque={PERFIS_LIDER[k].nome === r.lideranca.nome} />)}</div>}
-                <p className="text-[11px] mt-1" style={{ color: palette.navySoft }}>Os bons líderes usam os quatro estilos conforme a pessoa e a situação. O teu estilo principal é aquele a que recorres com mais naturalidade.</p>
+                <p className="text-xs mt-1" style={{ color: palette.navySoft }}>Os bons líderes usam os quatro estilos conforme a pessoa e a situação. O teu estilo principal é aquele a que recorres com mais naturalidade.</p>
               </div>
             ))
-            : bloco("TIPO DE LIDERANÇA", "Ainda por descobrir", "Faz o teste de perfil de liderança (2 minutos) para completares o relatório.", <button onClick={() => { setVista("perfil"); setPasso(0); setRespostas([]); }} className="mt-3 rounded-full px-4 py-2 text-xs font-medium" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Fazer agora</button>)}
-          {bloco("ARQUÉTIPO DE LÍDER", r.arquetipo.nome, r.arquetipo.frase, r.arquetipo.secundario && <p className="text-[12px] mt-2" style={{ color: palette.navySoft }}>Arquétipo secundário: {r.arquetipo.secundario}</p>)}
+            : bloco("TIPO DE LIDERANÇA", "Ainda por descobrir", "Faz o teste de perfil de liderança (2 minutos) para completares o relatório.", <button onClick={() => { setVista("perfil"); setPasso(0); setRespostas([]); }} className="mt-3 rounded-full px-4 py-2 text-[13px] font-medium" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Fazer agora</button>)}
+          {bloco("ARQUÉTIPO DE LÍDER", r.arquetipo.nome, r.arquetipo.frase, r.arquetipo.secundario && <p className="text-[13px] mt-2" style={{ color: palette.navySoft }}>Arquétipo secundário: {r.arquetipo.secundario}</p>)}
           {bloco("TIPO DE PERSONALIDADE", r.personalidade.nome, r.personalidade.frase, (
             <div className="mt-3">
               <BarraPct rotulo={`Ação ${e.acao} · Reflexão ${e.reflexao}`} pct={Math.round((e.acao / Math.max(e.acao + e.reflexao, 1)) * 100)} />
               <BarraPct rotulo={`Tarefas ${e.tarefas} · Pessoas ${e.pessoas}`} pct={Math.round((e.tarefas / Math.max(e.tarefas + e.pessoas, 1)) * 100)} />
-              <p className="text-[12px]" style={{ color: palette.navySoft }}><b>Como comunicar contigo:</b> {r.personalidade.comunicarComigo}</p>
+              <p className="text-[13px]" style={{ color: palette.navySoft }}><b>Como comunicar contigo:</b> {r.personalidade.comunicarComigo}</p>
             </div>
           ))}
           {bloco("TIPO DE COMUNICAÇÃO", r.comunicacao.nome, r.comunicacao.frase, (
@@ -2793,7 +2791,7 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
           ))}
           {r.competencias
             ? bloco("COMPETÊNCIAS 3S", "Saber · Sentir · Ser", null, <div className="mt-3">{r.competencias.map((c) => <BarraPct key={c.pilar} rotulo={c.pilar} pct={c.pct} />)}</div>)
-            : bloco("COMPETÊNCIAS 3S", "Ainda por medir", "Faz o teste de competências 3S para veres os teus três pilares.", <button onClick={() => { setVista("competencias"); setPasso(0); setRespostas([]); }} className="mt-3 rounded-full px-4 py-2 text-xs font-medium" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Fazer agora</button>)}
+            : bloco("COMPETÊNCIAS 3S", "Ainda por medir", "Faz o teste de competências 3S para veres os teus três pilares.", <button onClick={() => { setVista("competencias"); setPasso(0); setRespostas([]); }} className="mt-3 rounded-full px-4 py-2 text-[13px] font-medium" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Fazer agora</button>)}
           {bloco("ONDE ÉS FORTE", "Os teus pontos fortes", null, lista(r.fortes, palette.gold))}
           {bloco("TIPOS DE EQUIPA", `A tua equipa ideal: ${r.equipas[0].nome}`, "Como o teu perfil se encaixa em cada tipo de equipa e o que tens de melhorar para a liderar.", (
             <div className="space-y-2.5 mt-3">
@@ -2803,10 +2801,10 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
                   <div key={q.id} className="rounded-xl px-3 py-3" style={{ backgroundColor: i === 0 ? "#F6EDD8" : "#fff", border: `1px solid ${palette.goldSoft}66` }}>
                     <div className="flex items-start justify-between gap-2">
                       <p className="text-sm font-semibold leading-snug" style={{ color: palette.navy }}>{q.nome}</p>
-                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full shrink-0" style={{ border: `1px solid ${cor}`, color: cor }}>{q.nivel}</span>
+                      <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full shrink-0" style={{ border: `1px solid ${cor}`, color: cor }}>{q.nivel}</span>
                     </div>
-                    <p className="text-[12px] mt-1" style={{ color: palette.navySoft }}>{q.frase} Precisa de: {q.precisa}</p>
-                    <p className="text-[12.5px] mt-1.5 leading-snug" style={{ color: palette.ink }}><b style={{ color: palette.navy }}>Para liderares esta equipa:</b> {q.melhorar}</p>
+                    <p className="text-[13px] mt-1" style={{ color: palette.navySoft }}>{q.frase} Precisa de: {q.precisa}</p>
+                    <p className="text-[13.5px] mt-1.5 leading-snug" style={{ color: palette.ink }}><b style={{ color: palette.navy }}>Para liderares esta equipa:</b> {q.melhorar}</p>
                   </div>
                 );
               })}
@@ -2828,7 +2826,7 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
             { titulo: "Plano de 4 semanas", itens: r.plano },
           ].filter(Boolean)} />
           <button onClick={onMarcar} className="w-full rounded-full py-3.5 text-sm font-medium" style={{ backgroundColor: palette.gold, color: palette.navy }}>Marcar sessão para trabalhar o meu perfil</button>
-          <button onClick={() => { setVista("geral"); setPasso(0); setRespostas([]); }} className="w-full text-xs underline pt-1" style={{ color: palette.navySoft }}>Repetir o questionário</button>
+          <button onClick={() => { setVista("geral"); setPasso(0); setRespostas([]); }} className="w-full text-[13px] underline pt-1" style={{ color: palette.navySoft }}>Repetir o questionário</button>
         </div>
       </div>
     );
@@ -2849,16 +2847,16 @@ function LaboratorioScreen({ cfg, onBack, resultados = {}, onGuardar, onMarcar, 
       <div className="px-6 space-y-3">
         {temPerfilVida && (
           <button onClick={() => setVista("vida")} className="w-full text-left rounded-2xl px-4 py-4" style={{ background: "linear-gradient(150deg, #E4C98C 0%, #C6A253 100%)" }}>
-            <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: palette.navy }}>{resultados.perfilVida ? "O TEU RELATÓRIO" : "NOVO · 10 MINUTOS"}</p>
+            <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.navy }}>{resultados.perfilVida ? "O TEU RELATÓRIO" : "NOVO · 10 MINUTOS"}</p>
             <p className="font-serif text-xl mt-1" style={{ color: palette.navy }}>Perfil de Vida</p>
-            <p className="text-[12px] mt-1 leading-snug" style={{ color: palette.navy, opacity: 0.85 }}>Propósito, valores, crenças, dores e feridas emocionais. Recebe-o no teu correio eletrónico.</p>
+            <p className="text-[13px] mt-1 leading-snug" style={{ color: palette.navy, opacity: 0.85 }}>Propósito, valores, crenças, dores e feridas emocionais. Recebe-o no teu correio eletrónico.</p>
           </button>
         )}
         {temPerfilGeral && (
           <button onClick={() => { if (resultados.perfilGeral) setVista("relatorio"); else { setVista("geral"); setPasso(0); setRespostas([]); } }} className="w-full text-left rounded-2xl px-4 py-4" style={{ background: `linear-gradient(160deg, ${palette.navy} 0%, #24436E 100%)` }}>
-            <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>{resultados.perfilGeral ? "O TEU RELATÓRIO" : "NOVO · 8 MINUTOS"}</p>
+            <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>{resultados.perfilGeral ? "O TEU RELATÓRIO" : "NOVO · 8 MINUTOS"}</p>
             <p className="font-serif text-xl mt-1" style={{ color: palette.creamSoft }}>Perfil Geral de Líder</p>
-            <p className="text-[12px] mt-1 leading-snug" style={{ color: palette.goldSoft }}>Tipo de liderança, arquétipo, personalidade, comunicação, pontos fortes e a desenvolver. Recebe-o no teu correio eletrónico.</p>
+            <p className="text-[13px] mt-1 leading-snug" style={{ color: palette.goldSoft }}>Tipo de liderança, arquétipo, personalidade, comunicação, pontos fortes e a desenvolver. Recebe-o no teu correio eletrónico.</p>
           </button>
         )}
         {temPerfilGeral && cartao("Tipos de equipa", "Equipas seniores, juniores, conflituosas, com dificuldade em manter processos e outras: o que cada uma precisa e como lideras melhor cada uma.", resultados.perfilGeral ? "Com o teu encaixe em cada equipa" : "11 tipos de equipa", () => setVista("equipas"))}
@@ -2891,7 +2889,7 @@ function EscolherAreaSessaoScreen({ onBack, onEscolher }) {
   return (
     <div className="pb-28">
       <SectionHeader eyebrow="MARCAR SESSÃO" title="Em que área queres trabalhar?" onBack={onBack} />
-      <p className="px-6 -mt-2 mb-5 text-sm leading-relaxed" style={{ color: palette.navySoft }}>Cada área tem o seu coach. Escolhe e vês logo os horários livres. A primeira sessão (20 min) é gratuita.</p>
+      <p className="px-6 -mt-2 mb-5 text-sm leading-relaxed" style={{ color: palette.navySoft }}>Cada área tem o seu coach. Escolhe a tua e vês logo os horários disponíveis. Coaching ou mentoria, 50 minutos, 30€.</p>
       <div className="px-6 space-y-2.5">
         {Object.entries(ESCOLAS_3S).map(([area, e]) => {
           const Icon = e.icon;
@@ -2902,7 +2900,7 @@ function EscolherAreaSessaoScreen({ onBack, onEscolher }) {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-serif text-lg leading-tight" style={{ color: e.texto }}>{e.curto} <span style={{ color: e.acento, fontWeight: 600 }}>3S</span></p>
-                <p className="text-[11px] leading-snug" style={{ color: e.texto, opacity: 0.85 }}>{e.para}</p>
+                <p className="text-xs leading-snug" style={{ color: e.texto, opacity: 0.85 }}>{e.para}</p>
               </div>
               <ChevronRight size={18} style={{ color: e.acento }} />
             </button>
@@ -2946,7 +2944,7 @@ function EscolaScreen({ escola, onBack, onOpen, temAcesso, onAbrirCurso, desbloq
   if (e.app) tiles.push({ chave: "app", Ico: Footprints, rot: "Aplicação", titulo: e.app.nome, info: "Treinos e tempos", href: e.app.url, destaque: true });
   if (lab) tiles.push({ chave: "lab", Ico: Layers, rot: "Gratuito", titulo: "Laboratório", info: "Testes e treinos", acao: () => onOpen(lab.secao) });
   if (livro) tiles.push({ chave: "livro", Ico: BookOpen, rot: "Livro", titulo: "O livro", info: livro.emBreve ? "Em breve" : livroAberto ? "Ler" : livro.preco, acao: () => (livroAberto ? window.open(livro.url, "_blank") : onOpen("livros")) });
-  tiles.push({ chave: "marcar", Ico: Calendar, rot: "Sessão", titulo: coach && coach.nome ? `Sessão com ${coach.nome.split(" ")[0]}` : "Marcar sessão", info: "1.ª sessão grátis", acao: () => onOpen("marcar:" + escola) });
+  tiles.push({ chave: "marcar", Ico: Calendar, rot: "Sessão", titulo: coach && coach.nome ? `Sessão com ${coach.nome.split(" ")[0]}` : "Marcar sessão", info: "Coaching e mentoria · 30€", acao: () => onOpen("marcar:" + escola) });
   if (tiles.length % 2 === 1) tiles.push({ chave: "coach", Ico: User, rot: "Coach", titulo: coach === undefined ? "…" : coach ? coach.nome : "Em breve", info: "Responsável pela área", acao: () => onOpen("marcar:" + escola) });
 
   return (
@@ -2963,7 +2961,7 @@ function EscolaScreen({ escola, onBack, onOpen, temAcesso, onAbrirCurso, desbloq
         </div>
         <div className="min-w-0">
           <p className="font-serif text-2xl leading-tight" style={{ color: palette.navy }}>{e.curto} <span style={{ color: palette.gold }}>3S</span></p>
-          <p className="text-xs mt-0.5" style={{ color: palette.navySoft }}>{coach && coach.nome ? `com ${coach.nome}` : e.por || "com Conceição Alves"}</p>
+          <p className="text-[13px] mt-0.5" style={{ color: palette.navySoft }}>{coach && coach.nome ? `com ${coach.nome}` : e.por || "com Conceição Alves"}</p>
         </div>
       </div>
       <p className="px-6 -mt-2 mb-5 text-sm leading-relaxed" style={{ color: palette.ink }}>{e.frase}</p>
@@ -2986,7 +2984,7 @@ function EscolaScreen({ escola, onBack, onOpen, temAcesso, onAbrirCurso, desbloq
               </div>
               <div>
                 <p className="font-serif text-[16px] leading-tight" style={{ color: cTit }}>{t.titulo}</p>
-                <p className="text-[11px] mt-1 flex items-center gap-0.5" style={{ color: cSub, opacity: 0.85 }}>{t.info} <ChevronRight size={12} /></p>
+                <p className="text-xs mt-1 flex items-center gap-0.5" style={{ color: cSub, opacity: 0.85 }}>{t.info} <ChevronRight size={12} /></p>
               </div>
             </>
           );
@@ -3006,7 +3004,7 @@ function DivisorArea({ texto, id }) {
   return (
     <div id={id} className="px-6 mb-3 flex items-center gap-2" style={{ scrollMarginTop: 16 }}>
       <span className="h-px flex-1" style={{ backgroundColor: palette.gold, opacity: 0.5 }} />
-      <p className="text-[10px] tracking-[0.18em] font-semibold" style={{ color: palette.navy }}>{texto}</p>
+      <p className="text-[11px] tracking-[0.18em] font-semibold" style={{ color: palette.navy }}>{texto}</p>
       <span className="h-px flex-1" style={{ backgroundColor: palette.gold, opacity: 0.5 }} />
     </div>
   );
@@ -3038,10 +3036,10 @@ function EscolaHubScreen({ onBack, onOpen, eyebrow, nome, frase, por, lista }) {
       </div>
       <div className="px-6 pt-4 pb-6">
         <div className="rounded-3xl px-5 py-6 text-center" style={{ background: `linear-gradient(150deg, ${palette.navy} 0%, #24436E 100%)` }}>
-          <p className="text-[10px] tracking-[0.25em] font-semibold" style={{ color: palette.gold }}>{eyebrow}</p>
+          <p className="text-[11px] tracking-[0.25em] font-semibold" style={{ color: palette.gold }}>{eyebrow}</p>
           <p className="font-serif text-4xl leading-tight mt-2" style={{ color: palette.creamSoft }}>{nome} <span style={{ color: palette.gold }}>3S</span></p>
           <p className="text-sm mt-2 leading-relaxed" style={{ color: palette.goldSoft }}>{frase}</p>
-          <p className="text-[11px] mt-3" style={{ color: palette.creamSoft, opacity: 0.8 }}>{por}</p>
+          <p className="text-xs mt-3" style={{ color: palette.creamSoft, opacity: 0.8 }}>{por}</p>
         </div>
       </div>
       <div className="px-6 space-y-3">
@@ -3115,7 +3113,7 @@ function InicioScreen({ onOpen, email, papel, naoLidas, onVerAgenda, onVerNotifi
             );
           })}
         </div>
-        <p className="text-[10.5px] text-center mt-2.5" style={{ color: palette.navySoft }}>Três escolas de coaching · a primeira sessão (20 min) é gratuita</p>
+        <p className="text-xs text-center mt-2.5" style={{ color: palette.navySoft }}>Três escolas de coaching · sessões de coaching e mentoria a 30€</p>
       </div>
       {(papel === "dona" || papel === "mentora") && (
         <div className="px-6 mb-6">
@@ -3127,7 +3125,7 @@ function InicioScreen({ onOpen, email, papel, naoLidas, onVerAgenda, onVerNotifi
             <Calendar size={20} style={{ color: palette.navy }} />
             <span className="flex-1 font-serif text-lg" style={{ color: palette.navy }}>Marcações</span>
             {naoLidas > 0 && (
-              <span className="flex items-center justify-center rounded-full text-xs font-bold" style={{ minWidth: 24, height: 24, padding: "0 6px", backgroundColor: "#C0392B", color: "#fff" }}>
+              <span className="flex items-center justify-center rounded-full text-[13px] font-bold" style={{ minWidth: 24, height: 24, padding: "0 6px", backgroundColor: "#C0392B", color: "#fff" }}>
                 {naoLidas > 9 ? "9+" : naoLidas}
               </span>
             )}
@@ -3150,7 +3148,7 @@ function InicioScreen({ onOpen, email, papel, naoLidas, onVerAgenda, onVerNotifi
             <Layers size={20} style={{ color: palette.gold }} />
             <span className="flex-1">
               <span className="block font-serif text-lg" style={{ color: palette.navy }}>Material didático</span>
-              <span className="block text-[11px]" style={{ color: palette.navySoft }}>Só para coaches: fichas, ferramentas e cadernos</span>
+              <span className="block text-xs" style={{ color: palette.navySoft }}>Só para coaches: fichas, ferramentas e cadernos</span>
             </span>
             <ChevronRight size={18} style={{ color: palette.gold }} />
           </button>
@@ -3206,14 +3204,14 @@ function CertificadoScreen({ curso, dataConclusao, email, onBack }) {
           <p className="font-serif text-2xl leading-snug mb-6" style={{ color: palette.creamSoft }}>
             {curso.titulo}
           </p>
-          <p className="text-xs mb-8" style={{ color: palette.goldSoft }}>Certifico que</p>
+          <p className="text-[13px] mb-8" style={{ color: palette.goldSoft }}>Certifico que</p>
           <div className="w-full border-t mb-2" style={{ borderColor: `${palette.goldSoft}66` }} />
           <p className="text-sm mb-6" style={{ color: palette.creamSoft }}>{email}</p>
           <p className="text-sm leading-relaxed mb-8" style={{ color: palette.creamSoft }}>
             completou este percurso, com dedicação e verdade.
           </p>
           <div className="w-40 border-t mb-2" style={{ borderColor: `${palette.goldSoft}66` }} />
-          <p className="text-xs" style={{ color: palette.goldSoft }}>{dataFormatada}</p>
+          <p className="text-[13px]" style={{ color: palette.goldSoft }}>{dataFormatada}</p>
         </div>
         <p className="text-[11px] tracking-[0.2em] font-medium mt-8" style={{ color: palette.goldSoft }}>
           ESCOLA 3S · SABER · SENTIR · SER
@@ -3244,7 +3242,7 @@ function AreaAlunoScreen({ onBack, onOpenCurso, cursosConcluidos, materiaisDesbl
           <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: `${palette.navy}14` }}>
             <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: palette.gold }} />
           </div>
-          <p className="text-xs mt-2" style={{ color: palette.navySoft }}>{concluidos} de {total} conteúdos concluídos</p>
+          <p className="text-[13px] mt-2" style={{ color: palette.navySoft }}>{concluidos} de {total} conteúdos concluídos</p>
         </div>
       </div>
 
@@ -3259,8 +3257,8 @@ function AreaAlunoScreen({ onBack, onOpenCurso, cursosConcluidos, materiaisDesbl
           <div key={escola.id} className="px-6 mt-8">
             <div className="rounded-2xl px-5 py-4 mb-3" style={{ backgroundColor: palette.navy }}>
               <p className="font-serif text-xl" style={{ color: palette.creamSoft }}>{escola.nome}</p>
-              <p className="text-xs mt-0.5" style={{ color: palette.goldSoft }}>{escola.frase}</p>
-              <p className="text-[11px] mt-2" style={{ color: palette.gold }}>{feitos} de {lista.length} cursos concluídos</p>
+              <p className="text-[13px] mt-0.5" style={{ color: palette.goldSoft }}>{escola.frase}</p>
+              <p className="text-xs mt-2" style={{ color: palette.gold }}>{feitos} de {lista.length} cursos concluídos</p>
             </div>
             <div className="space-y-2">
               {lista.map((c) => {
@@ -3276,7 +3274,7 @@ function AreaAlunoScreen({ onBack, onOpenCurso, cursosConcluidos, materiaisDesbl
                     {feito ? <CheckCircle2 size={16} style={{ color: palette.gold }} /> : <Icon size={16} style={{ color: escolaCor[c.escolaId] }} />}
                     <div className="flex-1 min-w-0">
                       <p className="text-sm" style={{ color: palette.ink }}>{c.titulo}</p>
-                      <p className="text-[11px]" style={{ color: palette.navySoft }}>{feito ? "Concluído" : c.duracao}{c.gratuito ? " · Gratuito" : ""}</p>
+                      <p className="text-xs" style={{ color: palette.navySoft }}>{feito ? "Concluído" : c.duracao}{c.gratuito ? " · Gratuito" : ""}</p>
                     </div>
                     <ChevronRight size={16} style={{ color: palette.navySoft }} />
                   </button>
@@ -3303,7 +3301,7 @@ function AreaAlunoScreen({ onBack, onOpenCurso, cursosConcluidos, materiaisDesbl
                 style={{ backgroundColor: palette.navy }}
               >
                 <span
-                  className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-xs font-serif"
+                  className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-[13px] font-serif"
                   style={{ border: `1px solid ${palette.gold}`, color: palette.gold }}
                 >
                   3S
@@ -3349,10 +3347,10 @@ function WorkshopsScreen({ onBack, onAbrirCurso }) {
           const e = Object.values(ESCOLAS_3S).find((x) => (x.cursos || []).includes(c.id));
           return (
             <button key={c.id} onClick={() => onAbrirCurso(c)} className="w-full text-left rounded-2xl px-5 py-5 transition active:scale-[0.99]" style={{ background: e ? e.fundo : palette.navy, border: e && e.borda ? `1.5px solid ${e.borda}` : "none" }}>
-              <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: e ? e.acento : palette.gold }}>{e ? e.nome.toUpperCase() : "ESCOLA 3S"}</p>
+              <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: e ? e.acento : palette.gold }}>{e ? e.nome.toUpperCase() : "ESCOLA 3S"}</p>
               <p className="font-serif text-2xl leading-tight mt-1" style={{ color: e ? e.texto : palette.creamSoft }}>{c.titulo}</p>
-              <p className="text-[13px] mt-2 leading-relaxed" style={{ color: e ? e.texto : palette.creamSoft, opacity: 0.85 }}>{c.pergunta}</p>
-              <p className="text-[12px] mt-3 font-medium flex items-center gap-1" style={{ color: e ? e.acento : palette.gold }}>{c.emBreve ? "Em breve" : c.interativo ? `${(c.aulas || []).length} aulas · aula 1 grátis` : "Ver curso"} <ChevronRight size={13} /></p>
+              <p className="text-sm mt-2 leading-relaxed" style={{ color: e ? e.texto : palette.creamSoft, opacity: 0.85 }}>{c.pergunta}</p>
+              <p className="text-[13px] mt-3 font-medium flex items-center gap-1" style={{ color: e ? e.acento : palette.gold }}>{c.emBreve ? "Em breve" : c.interativo ? `${(c.aulas || []).length} aulas · aula 1 grátis` : "Ver curso"} <ChevronRight size={13} /></p>
             </button>
           );
         })}
@@ -3455,7 +3453,7 @@ function PodcastScreen({ onBack, souDona }) {
             </div>
             <div className="flex-1">
               <p className="font-serif text-lg leading-tight" style={{ color: palette.creamSoft }}>Ouvir no Spotify</p>
-              <p className="text-xs mt-0.5" style={{ color: palette.goldSoft }}>Todos os episódios do programa</p>
+              <p className="text-[13px] mt-0.5" style={{ color: palette.goldSoft }}>Todos os episódios do programa</p>
             </div>
             <ArrowRight size={18} style={{ color: palette.gold }} />
           </a>
@@ -3472,7 +3470,7 @@ function PodcastScreen({ onBack, souDona }) {
             </div>
             <div className="flex-1">
               <p className="font-serif text-lg leading-tight" style={{ color: palette.navy }}>Programa a chegar</p>
-              <p className="text-xs mt-0.5" style={{ color: palette.navySoft }}>Ainda sem ligação do Spotify</p>
+              <p className="text-[13px] mt-0.5" style={{ color: palette.navySoft }}>Ainda sem ligação do Spotify</p>
             </div>
           </div>
         )}
@@ -3552,8 +3550,8 @@ function PodcastScreen({ onBack, souDona }) {
             <div key={ep.id} className="flex items-center gap-4 rounded-2xl px-4 py-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
               <div className="flex-1 min-w-0">
                 <p className="text-[15px] font-medium" style={{ color: palette.ink }}>{ep.titulo}</p>
-                {ep.descricao && <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{ep.descricao}</p>}
-                {ep.duracao && <p className="text-xs mt-1" style={{ color: palette.navySoft }}>{ep.duracao}</p>}
+                {ep.descricao && <p className="text-[13px] mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{ep.descricao}</p>}
+                {ep.duracao && <p className="text-[13px] mt-1" style={{ color: palette.navySoft }}>{ep.duracao}</p>}
               </div>
               {souDona && (
                 <button onClick={() => apagarEpisodio(ep.id)} className="shrink-0 p-1">
@@ -3633,7 +3631,7 @@ function FormacaoScreen({ onBack, onOpenCurso, cursosConcluidos, escolaFixa }) {
             <p className="font-serif text-lg leading-snug mb-3" style={{ color: palette.creamSoft }}>
               Medo do conflito. Medo de apontarem as tuas falhas. Medo de seres diminuído/a. E se pudesses falar sem nenhum destes medos?
             </p>
-            <p className="text-xs flex items-center gap-1" style={{ color: palette.goldSoft }}>
+            <p className="text-[13px] flex items-center gap-1" style={{ color: palette.goldSoft }}>
               Explorar em "Conversas que Mudam Equipas" <ChevronRight size={13} />
             </p>
           </button>
@@ -3651,7 +3649,7 @@ function FormacaoScreen({ onBack, onOpenCurso, cursosConcluidos, escolaFixa }) {
             <p className="font-serif text-lg leading-snug mb-3" style={{ color: palette.navy }}>
               Quantas vezes ficaste calado/a por medo de dizer mal, de não ser entendido/a, ou de a mensagem soar a mais do que querias?
             </p>
-            <p className="text-xs flex items-center gap-1" style={{ color: palette.navySoft }}>
+            <p className="text-[13px] flex items-center gap-1" style={{ color: palette.navySoft }}>
               Explorar em "Conversas que Mudam Equipas" <ChevronRight size={13} />
             </p>
           </button>
@@ -3671,7 +3669,7 @@ function FormacaoScreen({ onBack, onOpenCurso, cursosConcluidos, escolaFixa }) {
               style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}
             >
               {mes && (
-                <p className="text-[10px] tracking-[0.2em] font-medium" style={{ color: escolaCor[c.escolaId] }}>{mes.toUpperCase()}</p>
+                <p className="text-[11px] tracking-[0.2em] font-medium" style={{ color: escolaCor[c.escolaId] }}>{mes.toUpperCase()}</p>
               )}
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ border: `1.5px solid ${escolaCor[c.escolaId]}` }}>
@@ -3679,7 +3677,7 @@ function FormacaoScreen({ onBack, onOpenCurso, cursosConcluidos, escolaFixa }) {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{c.titulo}</p>
-                  <p className="text-xs mt-0.5" style={{ color: palette.navySoft }}>{tipoLabel[c.tipo]} · {c.duracao}</p>
+                  <p className="text-[13px] mt-0.5" style={{ color: palette.navySoft }}>{tipoLabel[c.tipo]} · {c.duracao}</p>
                 </div>
                 {concluido ? <CheckCircle2 size={18} style={{ color: palette.gold }} /> : <ChevronRight size={18} style={{ color: palette.navySoft }} />}
               </div>
@@ -3699,7 +3697,7 @@ function FormacaoScreen({ onBack, onOpenCurso, cursosConcluidos, escolaFixa }) {
 function PilarEtiqueta({ pilar }) {
   const p = PILARES_3S[pilar] || PILARES_3S["3S"];
   return (
-    <span className="inline-block text-[10px] tracking-[0.15em] font-semibold px-2 py-0.5 rounded-full" style={{ backgroundColor: p.fundo, color: p.texto, border: `1px solid ${p.cor}33` }}>
+    <span className="inline-block text-[11px] tracking-[0.15em] font-semibold px-2 py-0.5 rounded-full" style={{ backgroundColor: p.fundo, color: p.texto, border: `1px solid ${p.cor}33` }}>
       {p.nome.toUpperCase()}
     </span>
   );
@@ -3763,12 +3761,12 @@ function CursoInterativoScreen({ curso, estado, onGuardar, concluidoEm, onConclu
             {["Saber", "Sentir", "Ser"].map((p) => (
               <div key={p} className="flex-1 rounded-xl py-2 text-center" style={{ backgroundColor: "rgba(255,255,255,0.08)", border: `1px solid ${palette.gold}55` }}>
                 <p className="font-serif text-base" style={{ color: palette.gold }}>{p}</p>
-                <p className="text-[10px]" style={{ color: palette.goldSoft }}>{p === "Saber" ? "cabeça" : p === "Sentir" ? "coração" : "identidade"}</p>
+                <p className="text-[11px]" style={{ color: palette.goldSoft }}>{p === "Saber" ? "cabeça" : p === "Sentir" ? "coração" : "identidade"}</p>
               </div>
             ))}
           </div>
           <div className="mt-4">
-            <div className="flex justify-between text-xs mb-1.5" style={{ color: palette.goldSoft }}>
+            <div className="flex justify-between text-[13px] mb-1.5" style={{ color: palette.goldSoft }}>
               <span>{feitas} de {aulas.length} aulas concluídas</span>
               <span>{pct}%</span>
             </div>
@@ -3785,16 +3783,16 @@ function CursoInterativoScreen({ curso, estado, onGuardar, concluidoEm, onConclu
 
         {semAcesso && (
           <div id="compra-curso" className="rounded-2xl px-5 py-5" style={{ backgroundColor: palette.card, border: `${mostrarCompra ? 2 : 1.5}px solid ${palette.gold}`, boxShadow: mostrarCompra ? "0 12px 30px -14px rgba(198,162,83,0.8)" : "none" }}>
-            <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>{feitas > 0 ? "GOSTASTE DA AULA 1?" : "A AULA 1 É GRÁTIS"}</p>
+            <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>{feitas > 0 ? "GOSTASTE DA AULA 1?" : "A AULA 1 É GRÁTIS"}</p>
             <p className="font-serif text-xl leading-snug mt-1" style={{ color: palette.navy }}>Desbloqueia o curso completo</p>
             <div className="mt-3 space-y-1.5">
               {[`${aulas.length} aulas com texto, ciência, exercícios e questionários`, "Avaliação 3S e plano de 30 dias à tua medida", "Certificado de conclusão", "Acesso para sempre, ao teu ritmo"].map((t) => (
-                <p key={t} className="text-[13px] flex gap-2" style={{ color: palette.ink }}><span style={{ color: palette.gold }}>✓</span>{t}</p>
+                <p key={t} className="text-sm flex gap-2" style={{ color: palette.ink }}><span style={{ color: palette.gold }}>✓</span>{t}</p>
               ))}
             </div>
             <div className="flex items-end justify-between gap-3 mt-4 mb-3">
               <span className="font-serif text-3xl shrink-0" style={{ color: palette.navy }}>{precoTexto(PRECO_CURSO)}</span>
-              <span className="text-[11px] text-right leading-snug" style={{ color: palette.navySoft }}>MB WAY · Multibanco · Payshop</span>
+              <span className="text-xs text-right leading-snug" style={{ color: palette.navySoft }}>MB WAY · Multibanco · Payshop</span>
             </div>
             <BotaoCarrinho rotulo="Comprar o curso" item={{ chave: `curso-${curso.id}`, tipo: "curso", cursoId: curso.id, titulo: `Curso — ${curso.titulo}`, valor: PRECO_CURSO }} />
           </div>
@@ -3820,7 +3818,7 @@ function CursoInterativoScreen({ curso, estado, onGuardar, concluidoEm, onConclu
                     {ok ? "✓" : bloqueada(i) ? <Lock size={13} /> : i + 1}
                   </span>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-0.5"><PilarEtiqueta pilar={a.pilar} /><span className="text-[11px]" style={{ color: palette.navySoft }}>{a.duracao}</span>{semAcesso && i < AULAS_GRATIS && <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ backgroundColor: palette.gold, color: palette.navy }}>GRÁTIS</span>}</div>
+                    <div className="flex items-center gap-2 mb-0.5"><PilarEtiqueta pilar={a.pilar} /><span className="text-xs" style={{ color: palette.navySoft }}>{a.duracao}</span>{semAcesso && i < AULAS_GRATIS && <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full" style={{ backgroundColor: palette.gold, color: palette.navy }}>GRÁTIS</span>}</div>
                     <p className="font-serif text-[15px] leading-snug" style={{ color: palette.navy }}>{a.titulo}</p>
                   </div>
                   <ChevronRight size={16} style={{ color: palette.navySoft, flexShrink: 0 }} />
@@ -3845,7 +3843,7 @@ function CursoInterativoScreen({ curso, estado, onGuardar, concluidoEm, onConclu
         {curso.materiaisFormadorIds && curso.materiaisFormadorIds.length > 0 && (acessoTotal || formadorAutorizado) && (
           <div>
             <p className="text-[11px] tracking-[0.2em] font-medium mb-1" style={{ color: palette.gold }}>MATERIAIS DO FORMADOR</p>
-            <p className="text-xs mb-3" style={{ color: palette.navySoft }}>Visíveis só para coaches e formadores.</p>
+            <p className="text-[13px] mb-3" style={{ color: palette.navySoft }}>Visíveis só para coaches e formadores.</p>
             <div className="space-y-2">
               {curso.materiaisFormadorIds.map((mid) => {
                 const m = materiais.find((mat) => mat.id === mid);
@@ -3897,13 +3895,13 @@ function AulaInterativaScreen({ curso, indice, aula, dados, estadoCurso, onGuard
         </button>
       </div>
       <div className="px-6 pt-4">
-        <div className="flex items-center gap-2 mb-2"><PilarEtiqueta pilar={aula.pilar} /><span className="text-[11px]" style={{ color: palette.navySoft }}>Aula {indice + 1} de {curso.aulas.length} · {aula.duracao}</span></div>
+        <div className="flex items-center gap-2 mb-2"><PilarEtiqueta pilar={aula.pilar} /><span className="text-xs" style={{ color: palette.navySoft }}>Aula {indice + 1} de {curso.aulas.length} · {aula.duracao}</span></div>
         <h1 className="font-serif text-2xl leading-tight" style={{ color: palette.navy }}>{aula.titulo}</h1>
         <div className="flex gap-1.5 mt-4">
           {passos.map((p, k) => (
             <button key={p} onClick={() => { if (k <= passo || dados.concluida) { if (nomePasso === "Exercício") guardarRespostas(); setPasso(k); } }} className="flex-1 text-center">
               <div className="h-1.5 rounded-full" style={{ backgroundColor: k <= passo ? pil.cor : palette.goldSoft + "66" }} />
-              <p className="text-[10px] mt-1 truncate" style={{ color: k === passo ? palette.navy : palette.navySoft, fontWeight: k === passo ? 600 : 400 }}>{p}</p>
+              <p className="text-[11px] mt-1 truncate" style={{ color: k === passo ? palette.navy : palette.navySoft, fontWeight: k === passo ? 600 : 400 }}>{p}</p>
             </button>
           ))}
         </div>
@@ -3918,7 +3916,7 @@ function AulaInterativaScreen({ curso, indice, aula, dados, estadoCurso, onGuard
               </div>
             )}
             <div className="rounded-2xl px-4 py-3" style={{ backgroundColor: pil.fundo }}>
-              <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: pil.texto }}>OBJETIVO DA AULA</p>
+              <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: pil.texto }}>OBJETIVO DA AULA</p>
               <p className="text-sm mt-1 leading-relaxed" style={{ color: pil.texto }}>{aula.objetivo}</p>
             </div>
             {aula.secoes.map((s, k) => (
@@ -3928,18 +3926,18 @@ function AulaInterativaScreen({ curso, indice, aula, dados, estadoCurso, onGuard
               </div>
             ))}
             <div className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}88` }}>
-              <p className="text-[10px] tracking-[0.2em] font-semibold mb-2" style={{ color: palette.gold }}>O QUE DIZ A CIÊNCIA</p>
+              <p className="text-[11px] tracking-[0.2em] font-semibold mb-2" style={{ color: palette.gold }}>O QUE DIZ A CIÊNCIA</p>
               <div className="space-y-2">
-                {aula.ciencia.map((c, k) => <p key={k} className="text-[13px] leading-relaxed" style={{ color: palette.ink }}>• {c}</p>)}
+                {aula.ciencia.map((c, k) => <p key={k} className="text-sm leading-relaxed" style={{ color: palette.ink }}>• {c}</p>)}
               </div>
             </div>
             <div className="rounded-2xl px-5 py-4" style={{ backgroundColor: palette.navy }}>
-              <p className="text-[10px] tracking-[0.2em] font-semibold mb-1" style={{ color: palette.gold }}>IDEIA-CHAVE</p>
+              <p className="text-[11px] tracking-[0.2em] font-semibold mb-1" style={{ color: palette.gold }}>IDEIA-CHAVE</p>
               <p className="font-serif text-lg leading-snug" style={{ color: palette.creamSoft }}>{aula.ideia}</p>
             </div>
             {aula.materiaisIds && aula.materiaisIds.length > 0 && (
               <div>
-                <p className="text-[10px] tracking-[0.2em] font-medium mb-2" style={{ color: palette.gold }}>MATERIAL DESTA AULA</p>
+                <p className="text-[11px] tracking-[0.2em] font-medium mb-2" style={{ color: palette.gold }}>MATERIAL DESTA AULA</p>
                 <div className="space-y-2">
                   {aula.materiaisIds.map((mid) => {
                     const m = materiais.find((mat) => mat.id === mid);
@@ -3951,7 +3949,7 @@ function AulaInterativaScreen({ curso, indice, aula, dados, estadoCurso, onGuard
             )}
             {aula.materiaisFormadorIds && aula.materiaisFormadorIds.length > 0 && (acessoTotal || formadorAutorizado) && (
               <div>
-                <p className="text-[10px] tracking-[0.2em] font-medium mb-2" style={{ color: palette.gold }}>MATERIAL DO FORMADOR — ESTA AULA</p>
+                <p className="text-[11px] tracking-[0.2em] font-medium mb-2" style={{ color: palette.gold }}>MATERIAL DO FORMADOR — ESTA AULA</p>
                 <div className="space-y-2">
                   {aula.materiaisFormadorIds.map((mid) => {
                     const m = materiais.find((mat) => mat.id === mid);
@@ -3981,7 +3979,7 @@ function AulaInterativaScreen({ curso, indice, aula, dados, estadoCurso, onGuard
                 />
               </div>
             ))}
-            <p className="text-[11px]" style={{ color: palette.navySoft }}>As tuas respostas ficam guardadas na tua conta. Só tu as vês.</p>
+            <p className="text-xs" style={{ color: palette.navySoft }}>As tuas respostas ficam guardadas na tua conta. Só tu as vês.</p>
           </>
         )}
 
@@ -4012,7 +4010,7 @@ function AulaInterativaScreen({ curso, indice, aula, dados, estadoCurso, onGuard
                     })}
                   </div>
                   {respondida && (
-                    <p className="text-[13px] leading-relaxed mt-3" style={{ color: palette.navySoft }}>
+                    <p className="text-sm leading-relaxed mt-3" style={{ color: palette.navySoft }}>
                       <strong style={{ color: palette.navy }}>{escolhida === q.certa ? "Certo. " : "Ainda não. "}</strong>{q.explica}
                     </p>
                   )}
@@ -4022,9 +4020,9 @@ function AulaInterativaScreen({ curso, indice, aula, dados, estadoCurso, onGuard
             {quizCompleto && (
               <div className="rounded-2xl px-4 py-3 text-center" style={{ backgroundColor: palette.navy }}>
                 <p className="font-serif text-lg" style={{ color: palette.gold }}>{certas} de {aula.quiz.length} certas</p>
-                <p className="text-xs mt-0.5" style={{ color: palette.creamSoft }}>{certas === aula.quiz.length ? "Excelente! Dominas esta aula." : "Relê a explicação das que falhaste: é aí que está a aprendizagem."}</p>
+                <p className="text-[13px] mt-0.5" style={{ color: palette.creamSoft }}>{certas === aula.quiz.length ? "Excelente! Dominas esta aula." : "Relê a explicação das que falhaste: é aí que está a aprendizagem."}</p>
                 {certas < aula.quiz.length && (
-                  <button onClick={() => setQuiz({})} className="mt-2 text-xs underline" style={{ color: palette.goldSoft }}>Repetir o questionário</button>
+                  <button onClick={() => setQuiz({})} className="mt-2 text-[13px] underline" style={{ color: palette.goldSoft }}>Repetir o questionário</button>
                 )}
               </div>
             )}
@@ -4034,7 +4032,7 @@ function AulaInterativaScreen({ curso, indice, aula, dados, estadoCurso, onGuard
         {nomePasso === "Desafio" && (
           <>
             <div className="rounded-2xl px-5 py-5" style={{ backgroundColor: palette.navy }}>
-              <p className="text-[10px] tracking-[0.2em] font-semibold mb-2" style={{ color: palette.gold }}>DESAFIO DA SEMANA</p>
+              <p className="text-[11px] tracking-[0.2em] font-semibold mb-2" style={{ color: palette.gold }}>DESAFIO DA SEMANA</p>
               <p className="font-serif text-lg leading-snug" style={{ color: palette.creamSoft }}>{aula.desafio}</p>
             </div>
             <button onClick={() => onGuardar({ desafioAceite: !dados.desafioAceite })} className="w-full flex items-center gap-3 rounded-2xl px-4 py-3.5 text-left" style={{ backgroundColor: palette.card, border: `1px solid ${dados.desafioAceite ? palette.gold : palette.goldSoft + "66"}` }}>
@@ -4060,7 +4058,7 @@ function AulaInterativaScreen({ curso, indice, aula, dados, estadoCurso, onGuard
           </button>
         </div>
         {!podeAvancar && (
-          <p className="text-[11px] text-center" style={{ color: palette.navySoft }}>{nomePasso === "Questionário" ? "Responde às perguntas para avançar." : "Responde a todas as frases para veres o teu resultado e avançar."}</p>
+          <p className="text-xs text-center" style={{ color: palette.navySoft }}>{nomePasso === "Questionário" ? "Responde às perguntas para avançar." : "Responde a todas as frases para veres o teu resultado e avançar."}</p>
         )}
       </div>
     </div>
@@ -4103,7 +4101,7 @@ function Avaliacao3S({ avaliacao, estadoCurso, onGuardarCurso, frases = AVALIACA
       {completa && (
         <>
           <div className="rounded-2xl px-5 py-5" style={{ backgroundColor: palette.navy }}>
-            <p className="text-[10px] tracking-[0.2em] font-semibold mb-3" style={{ color: palette.gold }}>O TEU PERFIL 3S</p>
+            <p className="text-[11px] tracking-[0.2em] font-semibold mb-3" style={{ color: palette.gold }}>O TEU PERFIL 3S</p>
             {["Saber", "Sentir", "Ser"].map((p) => (
               <div key={p} className="mb-2.5">
                 <div className="flex justify-between text-sm mb-1" style={{ color: palette.creamSoft }}><span>{p}{p === foco ? " · foco" : ""}</span><span>{medias[p].toFixed(1)} / 5</span></div>
@@ -4115,7 +4113,7 @@ function Avaliacao3S({ avaliacao, estadoCurso, onGuardarCurso, frases = AVALIACA
             <p className="text-sm leading-relaxed mt-3" style={{ color: palette.creamSoft }}>O pilar com mais margem para crescer agora é <strong style={{ color: palette.gold }}>{foco}</strong>. O teu plano de 30 dias começa aqui.</p>
           </div>
           <div className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.card, border: `1.5px solid ${palette.gold}` }}>
-            <p className="text-[10px] tracking-[0.2em] font-semibold mb-1" style={{ color: palette.gold }}>PLANO DE 30 DIAS</p>
+            <p className="text-[11px] tracking-[0.2em] font-semibold mb-1" style={{ color: palette.gold }}>PLANO DE 30 DIAS</p>
             <p className="font-serif text-lg mb-3" style={{ color: palette.navy }}>{plano.titulo}</p>
             <div className="space-y-2">
               {plano.semanas.map((s, k) => {
@@ -4123,14 +4121,14 @@ function Avaliacao3S({ avaliacao, estadoCurso, onGuardarCurso, frases = AVALIACA
                 const ok = feitos[chave];
                 return (
                   <button key={k} onClick={() => onGuardarCurso((e) => ({ ...(e || {}), planoFeito: { ...((e && e.planoFeito) || {}), [chave]: !ok } }))} className="w-full flex items-start gap-2.5 text-left">
-                    <span className="w-5 h-5 mt-0.5 rounded-md flex items-center justify-center text-xs shrink-0" style={ok ? { backgroundColor: palette.gold, color: palette.navy } : { border: `1.5px solid ${palette.navySoft}` }}>{ok ? "✓" : ""}</span>
+                    <span className="w-5 h-5 mt-0.5 rounded-md flex items-center justify-center text-[13px] shrink-0" style={ok ? { backgroundColor: palette.gold, color: palette.navy } : { border: `1.5px solid ${palette.navySoft}` }}>{ok ? "✓" : ""}</span>
                     <span className="text-sm leading-snug" style={{ color: palette.ink, textDecoration: ok ? "line-through" : "none" }}>{s}</span>
                   </button>
                 );
               })}
             </div>
             <div className="rounded-xl px-3 py-2.5 mt-3" style={{ backgroundColor: PILARES_3S[foco].fundo }}>
-              <p className="text-[10px] tracking-[0.15em] font-semibold" style={{ color: PILARES_3S[foco].texto }}>A TUA REGRA SE… ENTÃO…</p>
+              <p className="text-[11px] tracking-[0.15em] font-semibold" style={{ color: PILARES_3S[foco].texto }}>A TUA REGRA SE… ENTÃO…</p>
               <p className="text-sm mt-0.5" style={{ color: PILARES_3S[foco].texto }}>{plano.seEntao}</p>
             </div>
             <button onClick={partilhar} className="mt-3 w-full rounded-full py-2.5 text-sm font-medium" style={{ border: `1px solid ${palette.navy}`, color: palette.navy }}>Guardar ou enviar o meu plano</button>
@@ -4183,7 +4181,7 @@ function ConteudoDetalhe({ curso, concluido, onToggleConcluido, onBack, materiai
                       className="w-full flex items-start gap-3 text-left"
                     >
                       <span
-                        className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-xs font-medium mt-0.5"
+                        className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-[13px] font-medium mt-0.5"
                         style={{ border: `1.5px solid ${escolaCor[curso.escolaId]}`, color: escolaCor[curso.escolaId] }}
                       >
                         {i + 1}
@@ -4197,7 +4195,7 @@ function ConteudoDetalhe({ curso, concluido, onToggleConcluido, onBack, materiai
                               : <ChevronRight size={16} style={{ color: palette.navySoft, flexShrink: 0 }} />
                           )}
                         </div>
-                        <p className="text-xs leading-relaxed mt-1" style={{ color: palette.navySoft }}>{aula.descricao}</p>
+                        <p className="text-[13px] leading-relaxed mt-1" style={{ color: palette.navySoft }}>{aula.descricao}</p>
                       </div>
                     </button>
                     {aberta && aula.conteudo && (
@@ -4222,7 +4220,7 @@ function ConteudoDetalhe({ curso, concluido, onToggleConcluido, onBack, materiai
                         })()}
                         {aula.materiaisIds && aula.materiaisIds.length > 0 && (
                           <div className="mt-3">
-                            <p className="text-[10px] tracking-[0.2em] font-medium mb-2" style={{ color: palette.gold }}>MATERIAL DESTA AULA</p>
+                            <p className="text-[11px] tracking-[0.2em] font-medium mb-2" style={{ color: palette.gold }}>MATERIAL DESTA AULA</p>
                             <div className="space-y-2">
                               {aula.materiaisIds.map((mid) => {
                                 const m = materiais.find((mat) => mat.id === mid);
@@ -4243,7 +4241,7 @@ function ConteudoDetalhe({ curso, concluido, onToggleConcluido, onBack, materiai
                         )}
                         {aula.materiaisFormadorIds && aula.materiaisFormadorIds.length > 0 && (acessoTotal || formadorAutorizado) && (
                           <div className="mt-3">
-                            <p className="text-[10px] tracking-[0.2em] font-medium mb-2" style={{ color: palette.gold }}>MATERIAL DO FORMADOR — ESTA AULA</p>
+                            <p className="text-[11px] tracking-[0.2em] font-medium mb-2" style={{ color: palette.gold }}>MATERIAL DO FORMADOR — ESTA AULA</p>
                             <div className="space-y-2">
                               {aula.materiaisFormadorIds.map((mid) => {
                                 const m = materiais.find((mat) => mat.id === mid);
@@ -4292,7 +4290,7 @@ function ConteudoDetalhe({ curso, concluido, onToggleConcluido, onBack, materiai
         {curso.materiaisFormadorIds && curso.materiaisFormadorIds.length > 0 && (acessoTotal || formadorAutorizado) && (
           <div className="mt-7">
             <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>MATERIAIS DO FORMADOR</p>
-            <p className="text-xs mb-3" style={{ color: palette.navySoft }}>Visíveis só para ti, como coach autorizado/a para este curso.</p>
+            <p className="text-[13px] mb-3" style={{ color: palette.navySoft }}>Visíveis só para ti, como coach autorizado/a para este curso.</p>
             <div className="space-y-2">
               {curso.materiaisFormadorIds.map((mid) => {
                 const m = materiais.find((mat) => mat.id === mid);
@@ -5632,7 +5630,7 @@ function MaterialDidaticoScreen({ onBack, desbloqueados, onDesbloquear, acessoTo
         <SectionHeader eyebrow="MATERIAL DIDÁTICO" title={cartao.titulo} onBack={() => setCartaoAberto(null)} />
         {acessoTotal && (
           <div className="px-6 mb-4">
-            <p className="text-xs rounded-xl px-4 py-3" style={{ backgroundColor: `${palette.gold}1F`, color: palette.navy }}>
+            <p className="text-[13px] rounded-xl px-4 py-3" style={{ backgroundColor: `${palette.gold}1F`, color: palette.navy }}>
               Como coach, tens acesso a todo o material: podes descarregar, imprimir ou enviar aos teus clientes.
             </p>
           </div>
@@ -5646,7 +5644,7 @@ function MaterialDidaticoScreen({ onBack, desbloqueados, onDesbloquear, acessoTo
             >
               <div className="text-left">
                 <p className="font-serif text-base" style={{ color: palette.creamSoft }}>Ferramentas Interativas</p>
-                <p className="text-xs mt-0.5" style={{ color: palette.goldSoft }}>16 ferramentas de Coaching, PNL e Comunicação</p>
+                <p className="text-[13px] mt-0.5" style={{ color: palette.goldSoft }}>16 ferramentas de Coaching, PNL e Comunicação</p>
               </div>
               <ChevronRight size={18} style={{ color: palette.gold }} />
             </button>
@@ -5661,7 +5659,7 @@ function MaterialDidaticoScreen({ onBack, desbloqueados, onDesbloquear, acessoTo
             >
               <div className="text-left">
                 <p className="font-serif text-base" style={{ color: palette.creamSoft }}>Ferramentas Interativas</p>
-                <p className="text-xs mt-0.5" style={{ color: palette.goldSoft }}>16 ferramentas de Desenvolvimento Pessoal</p>
+                <p className="text-[13px] mt-0.5" style={{ color: palette.goldSoft }}>16 ferramentas de Desenvolvimento Pessoal</p>
               </div>
               <ChevronRight size={18} style={{ color: palette.gold }} />
             </button>
@@ -5703,7 +5701,7 @@ function MaterialDidaticoScreen({ onBack, desbloqueados, onDesbloquear, acessoTo
                 <Icon size={19} strokeWidth={1.6} style={{ color: palette.gold }} />
               </div>
               <p className="font-serif text-lg leading-tight" style={{ color: palette.creamSoft }}>{cartao.titulo}</p>
-              <p className="text-xs mt-1 leading-snug" style={{ color: palette.goldSoft }}>{cartao.desc}</p>
+              <p className="text-[13px] mt-1 leading-snug" style={{ color: palette.goldSoft }}>{cartao.desc}</p>
             </button>
           );
         })}
@@ -5814,7 +5812,7 @@ function MaterialCard({ material, desbloqueado, onDesbloquear, desbloqueadoFisic
   const blocoFisico = material.tambemFisico && (
     <div className="mt-3 pt-3" style={{ borderTop: `1px solid ${palette.goldSoft}40` }}>
       {desbloqueadoFisico ? (
-        <div className="flex items-center gap-1.5 text-xs font-medium" style={{ color: palette.gold }}>
+        <div className="flex items-center gap-1.5 text-[13px] font-medium" style={{ color: palette.gold }}>
           <CheckCircle2 size={14} />
           Versão física encomendada
         </div>
@@ -5822,8 +5820,8 @@ function MaterialCard({ material, desbloqueado, onDesbloquear, desbloqueadoFisic
         <BotaoCarrinho pequeno rotulo="Encomendar versão física" item={{ chave: `fisico-${material.id}`, tipo: "material_fisico", materialId: material.id, titulo: `${material.titulo} (versão física)`, valor: precoNumero(material.precoFisico) }} />
       ) : estadoPagamentoFisico === "a_confirmar" ? (
         <div className="text-center py-3">
-          <p className="text-xs font-medium" style={{ color: palette.navy }}>Confirma no teu telemóvel</p>
-          <p className="text-[11px]" style={{ color: palette.navySoft }}>Abre a aplicação MB WAY e aprova.</p>
+          <p className="text-[13px] font-medium" style={{ color: palette.navy }}>Confirma no teu telemóvel</p>
+          <p className="text-xs" style={{ color: palette.navySoft }}>Abre a aplicação MB WAY e aprova.</p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -5843,7 +5841,7 @@ function MaterialCard({ material, desbloqueado, onDesbloquear, desbloqueadoFisic
           >
             {estadoPagamentoFisico === "a_enviar" ? "A enviar pedido…" : `Pagar ${material.precoFisico} e encomendar`}
           </button>
-          {erroPagamentoFisico && <p className="text-[11px] text-center" style={{ color: "#B23A3A" }}>{erroPagamentoFisico}</p>}
+          {erroPagamentoFisico && <p className="text-xs text-center" style={{ color: "#B23A3A" }}>{erroPagamentoFisico}</p>}
         </div>
       )}
     </div>
@@ -5856,7 +5854,7 @@ function MaterialCard({ material, desbloqueado, onDesbloquear, desbloqueadoFisic
           <FileIcon size={16} style={{ color: palette.gold }} />
           <p className="text-sm flex-1" style={{ color: palette.ink }}>{material.titulo}</p>
           {material.fisico ? (
-            <span className="flex items-center gap-1.5 text-xs font-medium" style={{ color: palette.gold }}>
+            <span className="flex items-center gap-1.5 text-[13px] font-medium" style={{ color: palette.gold }}>
               <CheckCircle2 size={14} />
               Encomendado
             </span>
@@ -5864,14 +5862,14 @@ function MaterialCard({ material, desbloqueado, onDesbloquear, desbloqueadoFisic
             <button
               onClick={descarregarFicheiro}
               disabled={aDescarregar}
-              className="flex items-center gap-1.5 text-xs font-medium"
+              className="flex items-center gap-1.5 text-[13px] font-medium"
               style={{ color: palette.navy, opacity: aDescarregar ? 0.6 : 1 }}
             >
               <Download size={14} />
               {aDescarregar ? "A descarregar…" : "Descarregar"}
             </button>
           ) : (
-            <span className="flex items-center gap-1.5 text-xs font-medium" style={{ color: palette.navySoft, opacity: 0.6 }}>
+            <span className="flex items-center gap-1.5 text-[13px] font-medium" style={{ color: palette.navySoft, opacity: 0.6 }}>
               <Download size={14} />
               Em breve
             </span>
@@ -5879,8 +5877,8 @@ function MaterialCard({ material, desbloqueado, onDesbloquear, desbloqueadoFisic
         </div>
         {material.url && !material.fisico && (
           <div className="flex gap-2 mt-2.5">
-            <button onClick={imprimir} className="flex-1 rounded-lg py-1.5 text-xs font-medium" style={{ border: `1px solid ${palette.goldSoft}88`, color: palette.navy }}>🖨 Imprimir</button>
-            <button onClick={enviar} className="flex-1 rounded-lg py-1.5 text-xs font-medium" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Enviar a um cliente</button>
+            <button onClick={imprimir} className="flex-1 rounded-lg py-1.5 text-[13px] font-medium" style={{ border: `1px solid ${palette.goldSoft}88`, color: palette.navy }}>🖨 Imprimir</button>
+            <button onClick={enviar} className="flex-1 rounded-lg py-1.5 text-[13px] font-medium" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Enviar a um cliente</button>
           </div>
         )}
         {blocoFisico}
@@ -5894,7 +5892,7 @@ function MaterialCard({ material, desbloqueado, onDesbloquear, desbloqueadoFisic
         <FileIcon size={16} style={{ color: palette.gold }} />
         <div className="flex-1 min-w-0">
           <p className="text-sm" style={{ color: palette.ink }}>{material.titulo}</p>
-          <p className="text-xs mt-0.5" style={{ color: palette.navySoft }}>{material.formato}</p>
+          <p className="text-[13px] mt-0.5" style={{ color: palette.navySoft }}>{material.formato}</p>
         </div>
         <p className="font-serif text-base shrink-0" style={{ color: palette.gold }}>{material.preco}</p>
       </div>
@@ -5929,8 +5927,8 @@ function MaterialCard({ material, desbloqueado, onDesbloquear, desbloqueadoFisic
         <div className="mt-3 space-y-2">
           {estadoPagamento === "a_confirmar" ? (
             <div className="text-center py-3">
-              <p className="text-xs font-medium" style={{ color: palette.navy }}>Confirma no teu telemóvel</p>
-              <p className="text-[11px]" style={{ color: palette.navySoft }}>Abre a aplicação MB WAY e aprova.</p>
+              <p className="text-[13px] font-medium" style={{ color: palette.navy }}>Confirma no teu telemóvel</p>
+              <p className="text-xs" style={{ color: palette.navySoft }}>Abre a aplicação MB WAY e aprova.</p>
             </div>
           ) : (
             <>
@@ -5951,7 +5949,7 @@ function MaterialCard({ material, desbloqueado, onDesbloquear, desbloqueadoFisic
                 style={{ backgroundColor: palette.creamSoft, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
               />}
               {descontoValido && (
-                <p className="text-xs text-center" style={{ color: palette.gold }}>
+                <p className="text-[13px] text-center" style={{ color: palette.gold }}>
                   Código aplicado — 10% de desconto
                 </p>
               )}
@@ -5963,7 +5961,7 @@ function MaterialCard({ material, desbloqueado, onDesbloquear, desbloqueadoFisic
               >
                 {estadoPagamento === "a_enviar" ? "A enviar pedido…" : `Pagar ${descontoValido ? precoComDesconto(material.preco) : material.preco} e desbloquear`}
               </button>
-              {erroPagamento && <p className="text-[11px] text-center" style={{ color: "#B23A3A" }}>{erroPagamento}</p>}
+              {erroPagamento && <p className="text-xs text-center" style={{ color: "#B23A3A" }}>{erroPagamento}</p>}
             </>
           )}
         </div>
@@ -5996,7 +5994,7 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
   const TEXTO_CONSENTIMENTO = "Aceito fornecer os meus dados pessoais (nome, correio eletrónico e telemóvel) à Escola 3S, para fins de marcação e contacto sobre esta sessão.";
 
   const CODIGO_DESCONTO_COMUNIDADE = "COMUNIDADE10";
-  const descontoValido = descontoAluno || codigoDesconto.trim().toUpperCase() === CODIGO_DESCONTO_COMUNIDADE;
+  const descontoValido = codigoDesconto.trim().toUpperCase() === CODIGO_DESCONTO_COMUNIDADE;
   const precoComDesconto = (precoTexto) => {
     const valor = parseFloat(precoTexto.replace("€", "").replace(",", "."));
     if (isNaN(valor)) return precoTexto;
@@ -6148,7 +6146,7 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
 
   return (
     <div className="pb-28">
-      <SectionHeader eyebrow="MENTORIA, COACHING, ACOMPANHAMENTO" title="Marcar Sessão" onBack={passo === 1 ? onBack : () => setPasso(passo - 1)} />
+      <SectionHeader eyebrow="COACHING E MENTORIA · 30€" title="Marcar sessão" onBack={passo === 1 ? onBack : () => setPasso(passo - 1)} />
 
       <div className="px-6 mb-6 flex items-center gap-2">
         {[1, 2, 3].map((n) => (
@@ -6161,31 +6159,9 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
           {Object.entries(creditos).filter(([, n]) => n > 0).map(([tipo, n]) => (
             <div key={tipo} className="rounded-2xl px-4 py-3" style={{ backgroundColor: palette.gold }}>
               <p className="text-sm font-medium" style={{ color: palette.navy }}>Tens {n} sess{n === 1 ? "ão" : "ões"} de {tipo} do teu ciclo por marcar.</p>
-              <p className="text-xs" style={{ color: palette.navy }}>Escolhe {tipo} em baixo — não pagas nada.</p>
+              <p className="text-[13px]" style={{ color: palette.navy }}>Escolhe {tipo} em baixo — não pagas nada.</p>
             </div>
           ))}
-          <div className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.navy }}>
-            <p className="text-[11px] tracking-[0.2em] font-medium" style={{ color: palette.gold }}>CICLO DE 4 SESSÕES</p>
-            <p className="font-serif text-lg mt-1" style={{ color: palette.creamSoft }}>Compromete-te com o teu processo</p>
-            <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.goldSoft }}>
-              4 sessões ao teu ritmo.{" "}
-              {descontoCiclo > 0 ? (
-                <><span className="line-through">{precoTexto(PRECO_SESSAO * SESSOES_POR_CICLO)}</span> <b>{precoTexto(PRECO_SESSAO * SESSOES_POR_CICLO * (1 - descontoCiclo / 100))}</b> com o teu código ({descontoCiclo}%).</>
-              ) : (
-                <>{precoTexto(PRECO_SESSAO * SESSOES_POR_CICLO)}. Com um código de oferta, tens desconto.</>
-              )}
-            </p>
-            <div className="mt-3 space-y-2">
-              {servicosSessao.filter((s) => s.tipo === "Coaching" || s.tipo === "Mentoria").map((s) => (
-                <BotaoCarrinho
-                  key={s.id}
-                  pequeno
-                  rotulo={`Ciclo de 4 — ${s.tipo}`}
-                  item={{ chave: `ciclo-${s.tipo}`, tipo: "ciclo_sessoes", servicoTipo: s.tipo, sessoes: SESSOES_POR_CICLO, titulo: `Ciclo de 4 sessões — ${s.titulo}`, valor: PRECO_SESSAO * SESSOES_POR_CICLO }}
-                />
-              ))}
-            </div>
-          </div>
         </div>
       )}
 
@@ -6202,14 +6178,14 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
                 style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}
               >
                 <div className="flex items-start justify-between gap-2">
-                  <span className="inline-block text-[10px] tracking-[0.15em] font-medium px-2.5 py-1 rounded-full mb-2" style={{ backgroundColor: `${palette.gold}1F`, color: palette.gold }}>
+                  <span className="inline-block text-[11px] tracking-[0.15em] font-medium px-2.5 py-1 rounded-full mb-2" style={{ backgroundColor: `${palette.gold}1F`, color: palette.gold }}>
                     {s.tipo.toUpperCase()}
                   </span>
-                  <p className="font-serif text-lg shrink-0 text-right" style={{ color: palette.gold }}>{descontoAluno && !s.gratis ? <><span className="text-xs line-through mr-1" style={{ color: palette.navySoft }}>{s.preco}</span>{precoComDesconto(s.preco)}</> : s.preco}</p>
+                  <p className="font-serif text-lg shrink-0 text-right" style={{ color: palette.gold }}>{descontoAluno && !s.gratis ? <><span className="text-[13px] line-through mr-1" style={{ color: palette.navySoft }}>{s.preco}</span>{precoComDesconto(s.preco)}</> : s.preco}</p>
                 </div>
                 <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{s.titulo}</p>
                 <p className="text-sm mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{s.descricao}</p>
-                <p className="text-xs mt-2" style={{ color: palette.navySoft }}>{s.duracao}</p>
+                <p className="text-[13px] mt-2" style={{ color: palette.navySoft }}>{s.duracao}</p>
               </button>
             ))}
           </div>
@@ -6237,7 +6213,7 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{m.nome || m.email}</p>
-                    {m.titulo && <p className="text-xs mt-0.5" style={{ color: palette.navySoft }}>{m.titulo}</p>}
+                    {m.titulo && <p className="text-[13px] mt-0.5" style={{ color: palette.navySoft }}>{m.titulo}</p>}
                   </div>
                   <ChevronRight size={18} style={{ color: palette.navySoft }} />
                 </button>
@@ -6261,7 +6237,7 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
                 <button
                   key={h.chave}
                   onClick={() => setHorario(h)}
-                  className="rounded-full px-3.5 py-2 text-xs font-medium transition active:scale-[0.97]"
+                  className="rounded-full px-3.5 py-2 text-[13px] font-medium transition active:scale-[0.97]"
                   style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}`, color: palette.navy }}
                 >
                   {h.label}
@@ -6271,9 +6247,9 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
           ) : (
             <div className="space-y-3">
               <div className="rounded-2xl px-5 py-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
-                <p className="text-xs mb-1" style={{ color: palette.navySoft }}>{servicoEscolhido.titulo} com {mentoraEscolhida.nome || mentoraEscolhida.email}</p>
+                <p className="text-[13px] mb-1" style={{ color: palette.navySoft }}>{servicoEscolhido.titulo} com {mentoraEscolhida.nome || mentoraEscolhida.email}</p>
                 <p className="font-serif text-lg" style={{ color: palette.navy }}>{horario.label}</p>
-                <button onClick={() => setHorario(null)} className="text-xs underline mt-1" style={{ color: palette.navySoft }}>Escolher outro horário</button>
+                <button onClick={() => setHorario(null)} className="text-[13px] underline mt-1" style={{ color: palette.navySoft }}>Escolher outro horário</button>
               </div>
               <input
                 type="text"
@@ -6300,7 +6276,7 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
                 style={{ backgroundColor: palette.creamSoft, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
               />}
               {descontoValido && (
-                <p className="text-xs text-center" style={{ color: palette.gold }}>
+                <p className="text-[13px] text-center" style={{ color: palette.gold }}>
                   {descontoAluno ? "Desconto de aluno 3S: 10% nesta sessão" : "Código aplicado: 10% de desconto"}
                 </p>
               )}
@@ -6311,12 +6287,12 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
                   onChange={(e) => setAceitouConsentimento(e.target.checked)}
                   className="mt-0.5 shrink-0"
                 />
-                <span className="text-xs leading-relaxed" style={{ color: palette.navySoft }}>{TEXTO_CONSENTIMENTO}</span>
+                <span className="text-[13px] leading-relaxed" style={{ color: palette.navySoft }}>{TEXTO_CONSENTIMENTO}</span>
               </label>
               {estadoPagamento === "a_confirmar" ? (
                 <div className="text-center py-4">
                   <p className="text-sm font-medium mb-1" style={{ color: palette.navy }}>Confirma o pagamento no teu telemóvel</p>
-                  <p className="text-xs" style={{ color: palette.navySoft }}>Abre a notificação da aplicação MB WAY e aprova — pode demorar até 90 segundos.</p>
+                  <p className="text-[13px]" style={{ color: palette.navySoft }}>Abre a notificação da aplicação MB WAY e aprova — pode demorar até 90 segundos.</p>
                 </div>
               ) : (
                 <button
@@ -6329,11 +6305,11 @@ function MarcarSessaoScreen({ onBack, onConfirmar, creditos = {}, descontoCiclo 
                 </button>
               )}
               {!aConfirmar && estadoPagamento !== "a_confirmar" && (!nomeCompleto.trim() || !telemovel.trim() || !aceitouConsentimento) && (
-                <p className="text-xs text-center rounded-lg px-3 py-2" style={{ backgroundColor: `${palette.gold}1F`, color: palette.navy }}>
+                <p className="text-[13px] text-center rounded-lg px-3 py-2" style={{ backgroundColor: `${palette.gold}1F`, color: palette.navy }}>
                   Para avançar, falta: {[!nomeCompleto.trim() && "o teu nome", !telemovel.trim() && "o número de telemóvel (MB WAY)", !aceitouConsentimento && "aceitar a caixa dos dados pessoais"].filter(Boolean).join(", ")}.
                 </p>
               )}
-              {erro && <p className="text-xs text-center" style={{ color: "#B23A3A" }}>{erro}</p>}
+              {erro && <p className="text-[13px] text-center" style={{ color: "#B23A3A" }}>{erro}</p>}
             </div>
           )}
         </div>
@@ -6377,7 +6353,7 @@ function CalendarioMes({ eventosPorDia, mesAtual, setMesAtual, diaSelecionado, s
 
       <div className="grid grid-cols-7 gap-1 mb-1.5">
         {["S", "T", "Q", "Q", "S", "S", "D"].map((d, i) => (
-          <p key={i} className="text-center text-[10px] font-medium" style={{ color: palette.navySoft }}>{d}</p>
+          <p key={i} className="text-center text-[11px] font-medium" style={{ color: palette.navySoft }}>{d}</p>
         ))}
       </div>
 
@@ -6401,7 +6377,7 @@ function CalendarioMes({ eventosPorDia, mesAtual, setMesAtual, diaSelecionado, s
                     : {}
               }
             >
-              <span className="text-xs" style={{ color: selecionado ? palette.creamSoft : palette.ink }}>{d}</span>
+              <span className="text-[13px]" style={{ color: selecionado ? palette.creamSoft : palette.ink }}>{d}</span>
               {temEvento && (
                 <span
                   className="w-1 h-1 rounded-full absolute bottom-1.5"
@@ -6480,7 +6456,7 @@ function AgendaScreen({ inscricoesWorkshops, sessoesMarcadas }) {
                     {e.tipo === "sessao" ? <PenLine size={16} style={{ color: palette.gold }} /> : <Calendar size={16} style={{ color: palette.gold }} />}
                     <div className="flex-1 min-w-0">
                       <p className="text-sm" style={{ color: palette.ink }}>{e.titulo}</p>
-                      <p className="text-xs" style={{ color: palette.navySoft }}>{e.horario}</p>
+                      <p className="text-[13px]" style={{ color: palette.navySoft }}>{e.horario}</p>
                     </div>
                   </div>
                 ))}
@@ -6504,7 +6480,7 @@ function AgendaScreen({ inscricoesWorkshops, sessoesMarcadas }) {
                   <PenLine size={16} style={{ color: palette.gold }} />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm" style={{ color: palette.ink }}>{s.titulo}</p>
-                    <p className="text-xs" style={{ color: palette.navySoft }}>{s.horario}</p>
+                    <p className="text-[13px]" style={{ color: palette.navySoft }}>{s.horario}</p>
                   </div>
                 </div>
               ))}
@@ -6521,7 +6497,7 @@ function AgendaScreen({ inscricoesWorkshops, sessoesMarcadas }) {
                   <Calendar size={16} style={{ color: palette.gold }} />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm" style={{ color: palette.ink }}>{w.titulo}</p>
-                    <p className="text-xs" style={{ color: palette.navySoft }}>{w.data} · {w.hora}</p>
+                    <p className="text-[13px]" style={{ color: palette.navySoft }}>{w.data} · {w.hora}</p>
                   </div>
                 </div>
               ))}
@@ -6609,7 +6585,7 @@ function AgendaMentoraScreen({ onBack, linkVideochamada, onVista }) {
       <SectionHeader eyebrow="AS TUAS SESSÕES" title="A Minha Agenda" onBack={onBack} />
 
       <div className="px-6 mb-5">
-        <p className="text-xs rounded-xl px-4 py-3" style={{ backgroundColor: `${palette.gold}1F`, color: palette.navy }}>
+        <p className="text-[13px] rounded-xl px-4 py-3" style={{ backgroundColor: `${palette.gold}1F`, color: palette.navy }}>
           Cada marcação tem uma ligação de videochamada criada automaticamente, que é também enviada por correio eletrónico ao cliente e a ti.
           {linkVideochamada ? " Estás a usar a tua ligação fixa (definida em Disponibilidade)." : ""}
         </p>
@@ -6636,10 +6612,10 @@ function AgendaMentoraScreen({ onBack, linkVideochamada, onVista }) {
                     <div className="flex items-center justify-between mb-1">
                       <p className="text-sm font-medium" style={{ color: palette.ink }}>{hora} · {m.titulo}</p>
                     </div>
-                    <p className="text-xs" style={{ color: palette.ink }}>
+                    <p className="text-[13px]" style={{ color: palette.ink }}>
                       {cliente?.nome || "Pessoa sem ficha"}
                     </p>
-                    <p className="text-xs" style={{ color: palette.navySoft }}>
+                    <p className="text-[13px]" style={{ color: palette.navySoft }}>
                       {cliente?.email || "sem correio eletrónico"}
                       {cliente?.telefone ? ` · ${cliente.telefone}` : ""}
                     </p>
@@ -6684,23 +6660,23 @@ function DisponibilidadeRapida({ disponibilidade, onDefinir }) {
   return (
     <div className="rounded-2xl px-4 py-4 mb-8" style={{ backgroundColor: palette.card, border: `1.5px solid ${palette.gold}` }}>
       <p className="font-serif text-lg" style={{ color: palette.navy }}>Forma rápida</p>
-      <p className="text-xs mb-4" style={{ color: palette.navySoft }}>Escolhe os dias da semana e as horas. A aplicação repete para as próximas semanas.</p>
+      <p className="text-[13px] mb-4" style={{ color: palette.navySoft }}>Escolhe os dias da semana e as horas. A aplicação repete para as próximas semanas.</p>
       {rotulo("1. DIAS DA SEMANA")}
       <div className="grid grid-cols-7 gap-1.5 mb-4">
         {DIAS_SEMANA_CURTOS.map(([n, v]) => (
-          <button key={v} onClick={() => alternar(diasSemana, setDiasSemana, v)} className="rounded-md py-2 text-xs font-semibold" style={chip(diasSemana.includes(v))}>{n}</button>
+          <button key={v} onClick={() => alternar(diasSemana, setDiasSemana, v)} className="rounded-md py-2 text-[13px] font-semibold" style={chip(diasSemana.includes(v))}>{n}</button>
         ))}
       </div>
       {rotulo("2. HORAS")}
       <div className="grid grid-cols-4 gap-1.5 mb-4">
         {HORAS_POSSIVEIS.map((h) => (
-          <button key={h} onClick={() => alternar(horas, setHoras, h)} className="rounded-md py-2 text-xs font-semibold" style={chip(horas.includes(h))}>{h}</button>
+          <button key={h} onClick={() => alternar(horas, setHoras, h)} className="rounded-md py-2 text-[13px] font-semibold" style={chip(horas.includes(h))}>{h}</button>
         ))}
       </div>
       {rotulo("3. DURANTE")}
       <div className="grid grid-cols-3 gap-1.5 mb-4">
         {[4, 8, 12].map((n) => (
-          <button key={n} onClick={() => setSemanas(n)} className="rounded-md py-2 text-xs font-semibold" style={chip(semanas === n)}>{n} semanas</button>
+          <button key={n} onClick={() => setSemanas(n)} className="rounded-md py-2 text-[13px] font-semibold" style={chip(semanas === n)}>{n} semanas</button>
         ))}
       </div>
       {datasGeradas.length > 0 && (
@@ -6711,7 +6687,7 @@ function DisponibilidadeRapida({ disponibilidade, onDefinir }) {
               const [a, m, dd] = d.split("-").map(Number);
               const fora = excecoes.includes(d);
               return (
-                <button key={d} onClick={() => alternar(excecoes, setExcecoes, d)} className="rounded-md px-2 py-1 text-[11px]" style={{ backgroundColor: fora ? "transparent" : `${palette.gold}26`, color: palette.navy, border: `1px solid ${palette.goldSoft}88`, textDecoration: fora ? "line-through" : "none", opacity: fora ? 0.5 : 1 }}>
+                <button key={d} onClick={() => alternar(excecoes, setExcecoes, d)} className="rounded-md px-2 py-1 text-xs" style={{ backgroundColor: fora ? "transparent" : `${palette.gold}26`, color: palette.navy, border: `1px solid ${palette.goldSoft}88`, textDecoration: fora ? "line-through" : "none", opacity: fora ? 0.5 : 1 }}>
                   {dd}/{m}
                 </button>
               );
@@ -6722,7 +6698,7 @@ function DisponibilidadeRapida({ disponibilidade, onDefinir }) {
       <button onClick={guardar} disabled={!datasFinais.length || !horas.length} className="w-full rounded-full py-3 text-sm font-medium" style={{ backgroundColor: palette.navy, color: palette.creamSoft, opacity: !datasFinais.length || !horas.length ? 0.5 : 1 }}>
         Guardar disponibilidade
       </button>
-      {msg && <p className="text-xs text-center mt-2" style={{ color: palette.navySoft }}>{msg}</p>}
+      {msg && <p className="text-[13px] text-center mt-2" style={{ color: palette.navySoft }}>{msg}</p>}
     </div>
   );
 }
@@ -6744,7 +6720,7 @@ function DisponibilidadeScreen({ onBack, disponibilidade, onAdicionarData, onRem
         <DisponibilidadeRapida disponibilidade={disponibilidade} onDefinir={onDefinir} />
 
         <p className="text-[11px] tracking-[0.2em] font-medium mb-2" style={{ color: palette.gold }}>LIGAÇÃO DA VIDEOCHAMADA</p>
-        <p className="text-xs mb-3" style={{ color: palette.navySoft }}>
+        <p className="text-[13px] mb-3" style={{ color: palette.navySoft }}>
           A tua ligação fixa (Google Meet, Zoom…) — aparece na tua Agenda, em cada sessão marcada contigo.
         </p>
         <div className="flex gap-2 mb-8">
@@ -6778,7 +6754,7 @@ function DisponibilidadeScreen({ onBack, disponibilidade, onAdicionarData, onRem
             return (
               <span
                 key={d}
-                className="flex items-center gap-2 rounded-full pl-3.5 pr-2 py-2 text-xs font-medium"
+                className="flex items-center gap-2 rounded-full pl-3.5 pr-2 py-2 text-[13px] font-medium"
                 style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, color: palette.navy }}
               >
                 {label}
@@ -6823,7 +6799,7 @@ function DisponibilidadeScreen({ onBack, disponibilidade, onAdicionarData, onRem
           {disponibilidade.horas.map((h) => (
             <span
               key={h}
-              className="flex items-center gap-2 rounded-full pl-3.5 pr-2 py-2 text-xs font-medium"
+              className="flex items-center gap-2 rounded-full pl-3.5 pr-2 py-2 text-[13px] font-medium"
               style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, color: palette.navy }}
             >
               {h}
@@ -6871,7 +6847,7 @@ function DisponibilidadeScreen({ onBack, disponibilidade, onAdicionarData, onRem
         {disponibilidade.dias.length > 0 && disponibilidade.horas.length > 0 && (
           <div className="mt-8">
             <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>SESSÕES QUE VÃO FICAR DISPONÍVEIS</p>
-            <p className="text-xs mb-3" style={{ color: palette.navySoft }}>
+            <p className="text-[13px] mb-3" style={{ color: palette.navySoft }}>
               Cada data que adicionaste, com cada hora que escolheste — 1 hora por sessão.
             </p>
             <div className="space-y-2">
@@ -7014,11 +6990,11 @@ function DashboardMentoraScreen({ onBack, onAbrirCliente }) {
       <div className="px-6 grid grid-cols-2 gap-3 mb-8">
         <div className="rounded-2xl px-3 py-4 text-center" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
           <p className="font-serif text-2xl" style={{ color: palette.navy }}>{clientes.length}</p>
-          <p className="text-[10px] tracking-wide mt-1" style={{ color: palette.navySoft }}>SUBSCRITORES</p>
+          <p className="text-[11px] tracking-wide mt-1" style={{ color: palette.navySoft }}>SUBSCRITORES</p>
         </div>
         <div className="rounded-2xl px-3 py-4 text-center" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
           <p className="font-serif text-2xl" style={{ color: palette.navy }}>{valorTotal.toFixed(2)}€</p>
-          <p className="text-[10px] tracking-wide mt-1" style={{ color: palette.navySoft }}>PAGAMENTOS ({totalPagamentosPagos})</p>
+          <p className="text-[11px] tracking-wide mt-1" style={{ color: palette.navySoft }}>PAGAMENTOS ({totalPagamentosPagos})</p>
         </div>
       </div>
 
@@ -7033,7 +7009,7 @@ function DashboardMentoraScreen({ onBack, onAbrirCliente }) {
                   <button
                     disabled={aProcessar === p.id}
                     onClick={() => decidirPedido(p.id, "aprovar")}
-                    className="flex-1 rounded-lg py-2 text-xs font-medium"
+                    className="flex-1 rounded-lg py-2 text-[13px] font-medium"
                     style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
                   >
                     Aprovar
@@ -7041,7 +7017,7 @@ function DashboardMentoraScreen({ onBack, onAbrirCliente }) {
                   <button
                     disabled={aProcessar === p.id}
                     onClick={() => decidirPedido(p.id, "rejeitar")}
-                    className="flex-1 rounded-lg py-2 text-xs font-medium"
+                    className="flex-1 rounded-lg py-2 text-[13px] font-medium"
                     style={{ backgroundColor: "transparent", color: palette.navySoft, border: `1px solid ${palette.goldSoft}` }}
                   >
                     Rejeitar
@@ -7066,13 +7042,13 @@ function DashboardMentoraScreen({ onBack, onAbrirCliente }) {
               <div key={m.id} className="rounded-xl px-4 py-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-medium" style={{ color: palette.ink }}>{m.titulo}</p>
-                  <p className="text-xs font-medium" style={{ color: palette.gold }}>{formatarChaveHorario(m.horario)}</p>
+                  <p className="text-[13px] font-medium" style={{ color: palette.gold }}>{formatarChaveHorario(m.horario)}</p>
                 </div>
-                <p className="text-xs mt-1" style={{ color: palette.navySoft }}>
+                <p className="text-[13px] mt-1" style={{ color: palette.navySoft }}>
                   {cliente ? cliente.email : "correio eletrónico desconhecido"}{cliente?.telefone ? ` · ${cliente.telefone}` : ""}
                 </p>
                 {souDona && mentora && (
-                  <p className="text-[10px] mt-1 tracking-wide" style={{ color: palette.gold }}>COM {mentora.email.toUpperCase()}</p>
+                  <p className="text-[11px] mt-1 tracking-wide" style={{ color: palette.gold }}>COM {mentora.email.toUpperCase()}</p>
                 )}
               </div>
             );
@@ -7095,11 +7071,11 @@ function DashboardMentoraScreen({ onBack, onAbrirCliente }) {
                   <p className="font-serif text-sm" style={{ color: palette.gold }}>{Number(p.valor).toFixed(2)}€</p>
                 </div>
                 <div className="flex items-center justify-between mt-1">
-                  <p className="text-xs" style={{ color: palette.navySoft }}>
+                  <p className="text-[13px]" style={{ color: palette.navySoft }}>
                     {cliente ? cliente.email : "correio eletrónico desconhecido"}
                   </p>
                   <span
-                    className="text-[10px] tracking-wide font-medium"
+                    className="text-[11px] tracking-wide font-medium"
                     style={{ color: p.estado === "pago" ? palette.gold : palette.navySoft }}
                   >
                     {p.estado.toUpperCase()}
@@ -7134,7 +7110,7 @@ function DashboardMentoraScreen({ onBack, onAbrirCliente }) {
                 Inscritos no Evento — 2 de outubro
               </p>
             </div>
-            <span className="text-xs font-serif" style={{ color: mostrarInscricoesEvento ? palette.gold : palette.navySoft }}>
+            <span className="text-[13px] font-serif" style={{ color: mostrarInscricoesEvento ? palette.gold : palette.navySoft }}>
               {inscricoesEvento.length}
             </span>
           </button>
@@ -7143,10 +7119,10 @@ function DashboardMentoraScreen({ onBack, onAbrirCliente }) {
               {inscricoesEvento.map((i) => (
                 <div key={i.id} className="rounded-xl px-4 py-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
                   <p className="text-sm font-medium" style={{ color: palette.ink }}>{i.nome}</p>
-                  <p className="text-xs mt-0.5" style={{ color: palette.navySoft }}>
+                  <p className="text-[13px] mt-0.5" style={{ color: palette.navySoft }}>
                     {i.email}{i.telefone ? ` · ${i.telefone}` : ""}
                   </p>
-                  <p className="text-[10px] mt-1" style={{ color: palette.goldSoft }}>
+                  <p className="text-[11px] mt-1" style={{ color: palette.goldSoft }}>
                     Inscrito em {new Date(i.criado_em).toLocaleDateString("pt-PT", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}
                   </p>
                 </div>
@@ -7177,11 +7153,11 @@ function DashboardMentoraScreen({ onBack, onAbrirCliente }) {
                     style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}
                   >
                     <p className="text-sm font-medium" style={{ color: palette.ink }}>{m.nome || m.email}</p>
-                    <p className="text-xs mt-1" style={{ color: palette.navySoft }}>
+                    <p className="text-[13px] mt-1" style={{ color: palette.navySoft }}>
                       {m.nome ? m.email + " · " : ""}
                       {m.telefone || "sem telemóvel"} · {m.origem === "paga" ? "Comunidade paga" : "Comunidade grátis"}
                     </p>
-                    <p className="text-[10px] mt-1.5 tracking-wide" style={{ color: palette.gold }}>VER FICHA COMPLETA →</p>
+                    <p className="text-[11px] mt-1.5 tracking-wide" style={{ color: palette.gold }}>VER FICHA COMPLETA →</p>
                   </button>
                 ))}
             </div>
@@ -7205,14 +7181,14 @@ function DashboardMentoraScreen({ onBack, onAbrirCliente }) {
                     <div className="flex items-center justify-between">
                       <p className="text-sm font-medium" style={{ color: palette.ink }}>{c.nome || c.email}</p>
                       {(prog.papel === "mentora" || prog.papel === "dona") && (
-                        <span className="text-[10px] tracking-wide font-medium" style={{ color: palette.gold }}>{prog.papel === "dona" ? "DONA" : "MENTORA"}</span>
+                        <span className="text-[11px] tracking-wide font-medium" style={{ color: palette.gold }}>{prog.papel === "dona" ? "DONA" : "MENTORA"}</span>
                       )}
                     </div>
-                    <p className="text-xs mt-1" style={{ color: palette.navySoft }}>
+                    <p className="text-[13px] mt-1" style={{ color: palette.navySoft }}>
                       {c.nome ? c.email + " · " : ""}
                       {c.telefone || "sem telemóvel"} · {pagamentosDaPessoa.length} pagamento(s)
                     </p>
-                    <p className="text-[10px] mt-1.5 tracking-wide" style={{ color: palette.gold }}>VER FICHA COMPLETA →</p>
+                    <p className="text-[11px] mt-1.5 tracking-wide" style={{ color: palette.gold }}>VER FICHA COMPLETA →</p>
                   </button>
                 );
               })}
@@ -7339,13 +7315,13 @@ function FichaClienteScreen({ cliente, onBack, onNomeAtualizado }) {
           <button
             onClick={guardarNome}
             disabled={aGuardarNome}
-            className="rounded-xl px-4 text-xs font-medium disabled:opacity-60"
+            className="rounded-xl px-4 text-[13px] font-medium disabled:opacity-60"
             style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
           >
             {aGuardarNome ? "..." : "Guardar"}
           </button>
         </div>
-        <p className="text-xs mt-2" style={{ color: palette.navySoft }}>{cliente.email} · {cliente.telefone || "sem telemóvel registado"}</p>
+        <p className="text-[13px] mt-2" style={{ color: palette.navySoft }}>{cliente.email} · {cliente.telefone || "sem telemóvel registado"}</p>
       </div>
 
       <div className="px-6 mb-8">
@@ -7364,7 +7340,7 @@ function FichaClienteScreen({ cliente, onBack, onNomeAtualizado }) {
           >
             {aGuardar ? "A guardar…" : "Guardar ficha"}
           </button>
-          {guardado && <p className="text-center text-xs mt-2" style={{ color: palette.gold }}>Guardado</p>}
+          {guardado && <p className="text-center text-[13px] mt-2" style={{ color: palette.gold }}>Guardado</p>}
         </div>
       </div>
 
@@ -7406,7 +7382,7 @@ function FichaClienteScreen({ cliente, onBack, onNomeAtualizado }) {
               <div key={n.id} className="rounded-xl px-4 py-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
                 <div className="flex items-center justify-between mb-1">
                   <p className="text-sm font-medium" style={{ color: palette.navy }}>{n.titulo || "Nota"}</p>
-                  <p className="text-[10px]" style={{ color: palette.navySoft }}>
+                  <p className="text-[11px]" style={{ color: palette.navySoft }}>
                     {new Date(n.criado_em).toLocaleDateString("pt-PT")}
                   </p>
                 </div>
@@ -7524,7 +7500,7 @@ function CoachPorAreaPainel() {
     <div className="px-6 mb-6">
       <div className="rounded-2xl px-5 py-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
         <p className="font-serif text-lg" style={{ color: palette.navy }}>Coach por área</p>
-        <p className="text-xs mt-0.5 mb-3" style={{ color: palette.navySoft }}>Quem recebe as marcações de cada escola. Só aparecem coaches com conta de coach aprovada.</p>
+        <p className="text-[13px] mt-0.5 mb-3" style={{ color: palette.navySoft }}>Quem recebe as marcações de cada escola. Só aparecem coaches com conta de coach aprovada.</p>
         {Object.entries(ESCOLAS_3S).map(([area, e]) => (
           <div key={area} className="mb-3">
             <p className="text-[11px] tracking-[0.15em] font-semibold mb-1" style={{ color: palette.gold }}>{e.curto.toUpperCase()} 3S</p>
@@ -7539,7 +7515,7 @@ function CoachPorAreaPainel() {
             </select>
           </div>
         ))}
-        {estado && <p className="text-xs" style={{ color: palette.navySoft }}>{estado}</p>}
+        {estado && <p className="text-[13px]" style={{ color: palette.navySoft }}>{estado}</p>}
       </div>
     </div>
   );
@@ -7616,8 +7592,8 @@ function ResultadosTestesScreen({ onBack }) {
   }).filter((c) => c.media !== null).sort((a, b) => a.media - b.media);
   const blocoDist = (titulo, pares, total) => (
     <div className="rounded-2xl px-4 py-4" style={caixa}>
-      <p className="text-[10px] tracking-[0.2em] font-semibold mb-2" style={{ color: palette.gold }}>{titulo}</p>
-      {pares.length ? pares.slice(0, 6).map(([k, v]) => <BarraPct key={k} rotulo={`${k} · ${v}`} pct={Math.round((v / n(total)) * 100)} />) : <p className="text-[12px]" style={{ color: palette.navySoft }}>Ainda sem dados.</p>}
+      <p className="text-[11px] tracking-[0.2em] font-semibold mb-2" style={{ color: palette.gold }}>{titulo}</p>
+      {pares.length ? pares.slice(0, 6).map(([k, v]) => <BarraPct key={k} rotulo={`${k} · ${v}`} pct={Math.round((v / n(total)) * 100)} />) : <p className="text-[13px]" style={{ color: palette.navySoft }}>Ainda sem dados.</p>}
     </div>
   );
   const incidir = [];
@@ -7644,7 +7620,7 @@ function ResultadosTestesScreen({ onBack }) {
         <div className="grid grid-cols-3 gap-2 mb-4">
           {[["Pessoas", linhas.length], ["Liderança", lider.length], ["Vida", vida.length]].map(([k, v]) => (
             <div key={k} className="rounded-2xl px-3 py-3 text-center" style={{ backgroundColor: palette.navy }}>
-              <p className="font-serif text-2xl" style={{ color: palette.gold }}>{v}</p><p className="text-[11px]" style={{ color: palette.creamSoft }}>{k}</p>
+              <p className="font-serif text-2xl" style={{ color: palette.gold }}>{v}</p><p className="text-xs" style={{ color: palette.creamSoft }}>{k}</p>
             </div>
           ))}
         </div>
@@ -7656,12 +7632,12 @@ function ResultadosTestesScreen({ onBack }) {
         {tab === "resumo" && (
           <div className="space-y-3">
             <div className="rounded-2xl px-4 py-4" style={{ background: `linear-gradient(150deg, #E4C98C 0%, ${palette.gold} 100%)` }}>
-              <p className="text-[10px] tracking-[0.2em] font-semibold" style={{ color: palette.navy }}>ONDE DEVES INCIDIR</p>
-              {incidir.length ? <div className="space-y-1.5 mt-2">{incidir.map((t, i) => <p key={i} className="text-[13px] leading-snug flex gap-2" style={{ color: palette.navy }}><span>→</span>{t}</p>)}</div> : <p className="text-[13px] mt-2" style={{ color: palette.navy }}>Ainda há poucos resultados. À medida que mais pessoas fizerem os testes, aparecem aqui as prioridades.</p>}
+              <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.navy }}>ONDE DEVES INCIDIR</p>
+              {incidir.length ? <div className="space-y-1.5 mt-2">{incidir.map((t, i) => <p key={i} className="text-sm leading-snug flex gap-2" style={{ color: palette.navy }}><span>→</span>{t}</p>)}</div> : <p className="text-sm mt-2" style={{ color: palette.navy }}>Ainda há poucos resultados. À medida que mais pessoas fizerem os testes, aparecem aqui as prioridades.</p>}
             </div>
             {mediaComp.length > 0 && (
               <div className="rounded-2xl px-4 py-4" style={caixa}>
-                <p className="text-[10px] tracking-[0.2em] font-semibold mb-2" style={{ color: palette.gold }}>COMPETÊNCIAS DE LIDERANÇA · MÉDIA DO GRUPO</p>
+                <p className="text-[11px] tracking-[0.2em] font-semibold mb-2" style={{ color: palette.gold }}>COMPETÊNCIAS DE LIDERANÇA · MÉDIA DO GRUPO</p>
                 {mediaComp.map((c) => <BarraPct key={c.nome} rotulo={`${c.nome} · ${c.media.toFixed(1)}`} pct={Math.round(c.media * 20)} />)}
               </div>
             )}
@@ -7681,7 +7657,7 @@ function ResultadosTestesScreen({ onBack }) {
           <div className="space-y-2.5">
             <div className="flex gap-2">
               <input value={pesquisa} onChange={(e) => setPesquisa(e.target.value)} placeholder="Procurar por nome, correio ou telefone" className="flex-1 rounded-xl px-3 py-2.5 text-sm outline-none" style={{ backgroundColor: "#fff", border: `1px solid ${palette.goldSoft}`, color: palette.ink }} />
-              <button onClick={exportar} className="rounded-xl px-3 text-xs font-medium" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Exportar</button>
+              <button onClick={exportar} className="rounded-xl px-3 text-[13px] font-medium" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Exportar</button>
             </div>
             {filtradas.length === 0 && <p className="text-sm" style={{ color: palette.navySoft }}>Ainda ninguém fez os testes.</p>}
             {filtradas.map((l) => (
@@ -7689,12 +7665,12 @@ function ResultadosTestesScreen({ onBack }) {
                 <button onClick={() => setAberto(aberto === l.id ? null : l.id)} className="w-full text-left">
                   <div className="flex justify-between gap-2">
                     <p className="text-sm font-semibold" style={{ color: palette.navy }}>{l.nome}</p>
-                    <span className="text-[11px] shrink-0" style={{ color: palette.navySoft }}>{l.ultima ? new Date(l.ultima).toLocaleDateString("pt-PT") : ""}</span>
+                    <span className="text-xs shrink-0" style={{ color: palette.navySoft }}>{l.ultima ? new Date(l.ultima).toLocaleDateString("pt-PT") : ""}</span>
                   </div>
-                  <p className="text-[12px] mt-0.5" style={{ color: palette.navySoft }}>{[l.lideranca, l.comunicacao && `Comunicação ${l.comunicacao.toLowerCase()}`, l.vocacao].filter(Boolean).join(" · ") || "Testes parciais"}</p>
+                  <p className="text-[13px] mt-0.5" style={{ color: palette.navySoft }}>{[l.lideranca, l.comunicacao && `Comunicação ${l.comunicacao.toLowerCase()}`, l.vocacao].filter(Boolean).join(" · ") || "Testes parciais"}</p>
                 </button>
                 {aberto === l.id && (
-                  <div className="mt-2 pt-2 space-y-1 text-[12.5px]" style={{ borderTop: `1px solid ${palette.goldSoft}55`, color: palette.ink }}>
+                  <div className="mt-2 pt-2 space-y-1 text-[13.5px]" style={{ borderTop: `1px solid ${palette.goldSoft}55`, color: palette.ink }}>
                     {l.email && <p><b>Correio:</b> <a href={`mailto:${l.email}`} style={{ color: palette.navy }}>{l.email}</a></p>}
                     {l.telefone && <p><b>Telefone:</b> <a href={`tel:${l.telefone}`} style={{ color: palette.navy }}>{l.telefone}</a></p>}
                     {l.arquetipo && <p><b>Arquétipo:</b> {l.arquetipo} · <b>Personalidade:</b> {l.personalidade}</p>}
@@ -7763,7 +7739,7 @@ function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFor
         >
           <div className="text-left">
             <p className="font-serif text-lg" style={{ color: palette.creamSoft }}>Painel de Clientes</p>
-            <p className="text-xs mt-0.5" style={{ color: palette.goldSoft }}>Clientes, telefones, pagamentos e pedidos de acesso</p>
+            <p className="text-[13px] mt-0.5" style={{ color: palette.goldSoft }}>Clientes, telefones, pagamentos e pedidos de acesso</p>
           </div>
           <ChevronRight size={18} style={{ color: palette.gold }} />
         </button>
@@ -7778,7 +7754,7 @@ function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFor
           >
             <div className="text-left">
               <p className="font-serif text-lg" style={{ color: palette.navy }}>Arquivo da Escola</p>
-              <p className="text-xs mt-0.5" style={{ color: palette.navySoft }}>Autorizações RGPD, fichas, inscrições, pagamentos e documentos</p>
+              <p className="text-[13px] mt-0.5" style={{ color: palette.navySoft }}>Autorizações RGPD, fichas, inscrições, pagamentos e documentos</p>
             </div>
             <ChevronRight size={18} style={{ color: palette.navySoft }} />
           </button>
@@ -7790,7 +7766,7 @@ function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFor
           <button onClick={onVerTestes} className="w-full flex items-center justify-between rounded-2xl px-5 py-4" style={{ background: `linear-gradient(150deg, #E4C98C 0%, ${palette.gold} 100%)` }}>
             <div className="text-left">
               <p className="font-serif text-lg" style={{ color: palette.navy }}>Resultados dos testes</p>
-              <p className="text-xs mt-0.5" style={{ color: palette.navy, opacity: 0.8 }}>Quem fez os testes, os perfis e onde incidir</p>
+              <p className="text-[13px] mt-0.5" style={{ color: palette.navy, opacity: 0.8 }}>Quem fez os testes, os perfis e onde incidir</p>
             </div>
             <ChevronRight size={18} style={{ color: palette.navy }} />
           </button>
@@ -7808,7 +7784,7 @@ function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFor
           >
             <div className="text-left">
               <p className="font-serif text-lg" style={{ color: palette.navy }}>Acesso de Formadores</p>
-              <p className="text-xs mt-0.5" style={{ color: palette.navySoft }}>Escolhe que coaches podem lecionar cada curso</p>
+              <p className="text-[13px] mt-0.5" style={{ color: palette.navySoft }}>Escolhe que coaches podem lecionar cada curso</p>
             </div>
             <ChevronRight size={18} style={{ color: palette.navySoft }} />
           </button>
@@ -7824,14 +7800,14 @@ function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFor
           >
             <div className="text-left">
               <p className="font-serif text-lg" style={{ color: palette.navy }}>Anunciar Novidade</p>
-              <p className="text-xs mt-0.5" style={{ color: palette.navySoft }}>Avisa todos os registados por correio eletrónico (curso ou material novo)</p>
+              <p className="text-[13px] mt-0.5" style={{ color: palette.navySoft }}>Avisa todos os registados por correio eletrónico (curso ou material novo)</p>
             </div>
             {novidadeAberta ? <ChevronDown size={18} style={{ color: palette.navySoft }} /> : <ChevronRight size={18} style={{ color: palette.navySoft }} />}
           </button>
           {novidadeAberta && (
             <div className="mt-3 rounded-2xl px-5 py-4 space-y-3" style={{ backgroundColor: palette.creamSoft }}>
               <div>
-                <p className="text-xs font-medium mb-1.5" style={{ color: palette.navySoft }}>Título</p>
+                <p className="text-[13px] font-medium mb-1.5" style={{ color: palette.navySoft }}>Título</p>
                 <input
                   type="text"
                   value={tituloNovidade}
@@ -7842,7 +7818,7 @@ function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFor
                 />
               </div>
               <div>
-                <p className="text-xs font-medium mb-1.5" style={{ color: palette.navySoft }}>Mensagem</p>
+                <p className="text-[13px] font-medium mb-1.5" style={{ color: palette.navySoft }}>Mensagem</p>
                 <textarea
                   value={mensagemNovidade}
                   onChange={(e) => setMensagemNovidade(e.target.value)}
@@ -7861,7 +7837,7 @@ function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFor
                 {aEnviar ? "A enviar…" : "Enviar a todos"}
               </button>
               {enviado && (
-                <p className="text-xs text-center" style={{ color: palette.navySoft }}>{enviado}</p>
+                <p className="text-[13px] text-center" style={{ color: palette.navySoft }}>{enviado}</p>
               )}
             </div>
           )}
@@ -7871,15 +7847,15 @@ function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFor
       <div className="px-6 grid grid-cols-3 gap-3 mb-8">
         <div className="rounded-2xl px-3 py-4 text-center" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
           <p className="font-serif text-2xl" style={{ color: palette.navy }}>{totalInscricoes}</p>
-          <p className="text-[10px] tracking-wide mt-1" style={{ color: palette.navySoft }}>INSCRIÇÕES EM FORMAÇÕES</p>
+          <p className="text-[11px] tracking-wide mt-1" style={{ color: palette.navySoft }}>INSCRIÇÕES EM FORMAÇÕES</p>
         </div>
         <div className="rounded-2xl px-3 py-4 text-center" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
           <p className="font-serif text-2xl" style={{ color: palette.navy }}>{progresso.sessoesMarcadas.length}</p>
-          <p className="text-[10px] tracking-wide mt-1" style={{ color: palette.navySoft }}>SESSÕES MARCADAS</p>
+          <p className="text-[11px] tracking-wide mt-1" style={{ color: palette.navySoft }}>SESSÕES MARCADAS</p>
         </div>
         <div className="rounded-2xl px-3 py-4 text-center" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
           <p className="font-serif text-2xl" style={{ color: palette.navy }}>{totalMateriais}</p>
-          <p className="text-[10px] tracking-wide mt-1" style={{ color: palette.navySoft }}>MATERIAIS DESBLOQUEADOS</p>
+          <p className="text-[11px] tracking-wide mt-1" style={{ color: palette.navySoft }}>MATERIAIS DESBLOQUEADOS</p>
         </div>
       </div>
 
@@ -7894,7 +7870,7 @@ function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFor
                 <PenLine size={16} style={{ color: palette.gold }} />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm" style={{ color: palette.ink }}>{s.titulo}</p>
-                  <p className="text-xs" style={{ color: palette.navySoft }}>{s.horario}</p>
+                  <p className="text-[13px]" style={{ color: palette.navySoft }}>{s.horario}</p>
                 </div>
               </div>
             ))}
@@ -7911,7 +7887,7 @@ function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFor
               <div key={w.id} className="flex items-center gap-3 rounded-xl px-4 py-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
                 <Calendar size={16} style={{ color: inscrito ? palette.gold : palette.navySoft }} />
                 <p className="text-sm flex-1" style={{ color: palette.ink }}>{w.titulo}</p>
-                <span className="text-xs font-medium" style={{ color: inscrito ? palette.gold : palette.navySoft }}>
+                <span className="text-[13px] font-medium" style={{ color: inscrito ? palette.gold : palette.navySoft }}>
                   {inscrito ? "1 inscrição" : "0 inscrições"}
                 </span>
               </div>
@@ -7947,7 +7923,7 @@ function PerfilScreen({ onVerAreaAluno, onVerDisponibilidade, onVerPainelMentora
         <div className="w-20 h-20 rounded-full flex items-center justify-center font-serif text-2xl" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>
           {iniciais}
         </div>
-        <p className="text-xs mt-3" style={{ color: palette.navySoft }}>{email}</p>
+        <p className="text-[13px] mt-3" style={{ color: palette.navySoft }}>{email}</p>
       </div>
       {(papel === "mentora" || papel === "dona") && (
         <div className="px-6 mb-6">
@@ -7958,7 +7934,7 @@ function PerfilScreen({ onVerAreaAluno, onVerDisponibilidade, onVerPainelMentora
             <p className="text-sm font-medium" style={{ color: palette.ink }}>
               {papel === "dona" ? "És a dona da escola" : "És coach da escola"}
             </p>
-            <p className="text-xs mt-0.5" style={{ color: palette.navySoft }}>
+            <p className="text-[13px] mt-0.5" style={{ color: palette.navySoft }}>
               {papel === "dona" ? "Vês tudo: coaches, clientes e marcações" : "Acesso aprovado pela dona da escola"}
             </p>
           </div>
@@ -8072,8 +8048,8 @@ function NotificacoesScreen({ onBack }) {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium" style={{ color: palette.ink }}>{n.titulo}</p>
-                {n.detalhe && <p className="text-xs mt-0.5" style={{ color: palette.navySoft }}>{n.detalhe}</p>}
-                <p className="text-[10px] mt-1" style={{ color: palette.goldSoft }}>
+                {n.detalhe && <p className="text-[13px] mt-0.5" style={{ color: palette.navySoft }}>{n.detalhe}</p>}
+                <p className="text-[11px] mt-1" style={{ color: palette.goldSoft }}>
                   {new Date(n.criado_em).toLocaleString("pt-PT", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}
                 </p>
               </div>
@@ -8118,7 +8094,7 @@ function NotificacoesSino({ onAbrir, papel }) {
       <Bell size={17} style={{ color: palette.creamSoft }} />
       {contagem > 0 && (
         <span
-          className="absolute -top-1 -right-1 flex items-center justify-center rounded-full text-[10px] font-bold"
+          className="absolute -top-1 -right-1 flex items-center justify-center rounded-full text-[11px] font-bold"
           style={{ width: 18, height: 18, backgroundColor: palette.gold, color: palette.navy }}
         >
           {contagem > 9 ? "9+" : contagem}
@@ -8153,7 +8129,7 @@ function BottomNav({ active, onChange, badgeAgenda }) {
                   </span>
                 )}
               </span>
-              <span className="text-[10px] font-medium tracking-wide" style={{ color: isActive ? palette.navy : palette.navySoft, opacity: isActive ? 1 : 0.55 }}>
+              <span className="text-[11px] font-medium tracking-wide" style={{ color: isActive ? palette.navy : palette.navySoft, opacity: isActive ? 1 : 0.55 }}>
                 {label}
               </span>
             </button>
@@ -8218,7 +8194,7 @@ function ResgatarCodigo({ onAtivado, titulo }) {
           {estado === "a_ativar" ? "…" : "Ativar"}
         </button>
       </div>
-      {mensagem && <p className="text-xs mt-2" style={{ color: estado === "ok" ? palette.gold : "#B23A3A" }}>{mensagem}</p>}
+      {mensagem && <p className="text-[13px] mt-2" style={{ color: estado === "ok" ? palette.gold : "#B23A3A" }}>{mensagem}</p>}
     </div>
   );
 }
@@ -8384,18 +8360,18 @@ function CarrinhoScreen({ onBack, onPagamentoConfirmado }) {
       style={metodo === id ? { backgroundColor: palette.navy, color: palette.creamSoft } : { backgroundColor: palette.card, color: palette.navy, border: `1px solid ${palette.goldSoft}55` }}
     >
       <p className="text-sm font-medium">{titulo}</p>
-      <p className="text-[11px] mt-0.5" style={{ color: metodo === id ? palette.goldSoft : palette.navySoft }}>{desc}</p>
+      <p className="text-xs mt-0.5" style={{ color: metodo === id ? palette.goldSoft : palette.navySoft }}>{desc}</p>
     </button>
   );
 
   const blocoReferencia = (r) => (
     <div className="rounded-2xl px-5 py-4 space-y-1" style={{ backgroundColor: palette.card, border: `1px solid ${palette.gold}` }}>
-      <p className="text-[10px] tracking-[0.2em] font-medium" style={{ color: palette.gold }}>{r.metodo === "mb" || r.tipo === "mb" ? "MULTIBANCO" : "PAYSHOP"}</p>
+      <p className="text-[11px] tracking-[0.2em] font-medium" style={{ color: palette.gold }}>{r.metodo === "mb" || r.tipo === "mb" ? "MULTIBANCO" : "PAYSHOP"}</p>
       {r.entidade && <p className="text-sm" style={{ color: palette.navy }}>Entidade: <b>{r.entidade}</b></p>}
       <p className="text-sm" style={{ color: palette.navy }}>Referência: <b>{r.referencia || r.referencia_pagamento}</b></p>
       <p className="text-sm" style={{ color: palette.navy }}>Valor: <b>{precoTexto(r.valor)}</b></p>
-      {r.validade && <p className="text-xs" style={{ color: palette.navySoft }}>Válida até: {r.validade}</p>}
-      {r.descricao && <p className="text-xs" style={{ color: palette.navySoft }}>{r.descricao}</p>}
+      {r.validade && <p className="text-[13px]" style={{ color: palette.navySoft }}>Válida até: {r.validade}</p>}
+      {r.descricao && <p className="text-[13px]" style={{ color: palette.navySoft }}>{r.descricao}</p>}
     </div>
   );
 
@@ -8407,7 +8383,7 @@ function CarrinhoScreen({ onBack, onPagamentoConfirmado }) {
           <div className="rounded-2xl px-5 py-5 text-center" style={{ backgroundColor: palette.navy }}>
             <CheckCircle2 size={28} style={{ color: palette.gold, margin: "0 auto" }} />
             <p className="font-serif text-xl mt-2" style={{ color: palette.creamSoft }}>Pagamento confirmado</p>
-            <p className="text-xs mt-1" style={{ color: palette.goldSoft }}>Já tens acesso ao que compraste. Obrigada!</p>
+            <p className="text-[13px] mt-1" style={{ color: palette.goldSoft }}>Já tens acesso ao que compraste. Obrigada!</p>
           </div>
         )}
 
@@ -8428,7 +8404,7 @@ function CarrinhoScreen({ onBack, onPagamentoConfirmado }) {
               <div key={i.chave} className="rounded-2xl px-4 py-3 flex items-center gap-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm" style={{ color: palette.navy }}>{i.titulo}</p>
-                  <p className="text-xs" style={{ color: palette.gold }}>{precoTexto(valorItem(i))}{i.tipo === "comunidade" ? " · 1 mês" : i.tipo === "curso" ? " · curso completo" : i.tipo === "ciclo_sessoes" ? (descontoCiclo > 0 ? ` · ${descontoCiclo}% de desconto aplicado` : " · 4 sessões") : ""}</p>
+                  <p className="text-[13px]" style={{ color: palette.gold }}>{precoTexto(valorItem(i))}{i.tipo === "comunidade" ? " · 1 mês" : i.tipo === "curso" ? " · curso completo" : i.tipo === "ciclo_sessoes" ? (descontoCiclo > 0 ? ` · ${descontoCiclo}% de desconto aplicado` : " · 4 sessões") : ""}</p>
                 </div>
                 <button onClick={() => carrinho.remover(i.chave)} aria-label="Remover"><Trash2 size={16} style={{ color: palette.navySoft }} /></button>
               </div>
@@ -8445,7 +8421,7 @@ function CarrinhoScreen({ onBack, onPagamentoConfirmado }) {
               className="w-full rounded-xl px-4 py-2.5 text-sm outline-none"
               style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
             />}
-            {descontoValido && <p className="text-xs" style={{ color: palette.gold }}>Desconto de 10% aplicado aos materiais.</p>}
+            {descontoValido && <p className="text-[13px]" style={{ color: palette.gold }}>Desconto de 10% aplicado aos materiais.</p>}
 
             <div className="flex items-center justify-between px-1 pt-1">
               <p className="text-sm font-medium" style={{ color: palette.navy }}>Total</p>
@@ -8471,7 +8447,7 @@ function CarrinhoScreen({ onBack, onPagamentoConfirmado }) {
             {estado === "a_confirmar" ? (
               <div className="text-center py-4">
                 <p className="text-sm font-medium" style={{ color: palette.navy }}>Confirma no teu telemóvel</p>
-                <p className="text-xs" style={{ color: palette.navySoft }}>Abre a aplicação MB WAY e aprova o pagamento de {precoTexto(total)}.</p>
+                <p className="text-[13px]" style={{ color: palette.navySoft }}>Abre a aplicação MB WAY e aprova o pagamento de {precoTexto(total)}.</p>
               </div>
             ) : (
               <button
@@ -8486,7 +8462,7 @@ function CarrinhoScreen({ onBack, onPagamentoConfirmado }) {
           </>
         )}
 
-        {erro && <p className="text-xs text-center" style={{ color: "#B23A3A" }}>{erro}</p>}
+        {erro && <p className="text-[13px] text-center" style={{ color: "#B23A3A" }}>{erro}</p>}
 
         {pendentes.length > 0 && estado !== "referencia" && (
           <div className="pt-4 space-y-2">
@@ -8533,7 +8509,7 @@ function FichaCursoScreen({ curso, session, onBack, onGuardada }) {
         <p className="text-sm leading-relaxed" style={{ color: palette.ink }}>Este curso é gratuito. Para começares, preenche a tua ficha — só precisamos disto uma vez.</p>
         {campo(nome, setNome, "Nome completo")}
         {campo(telefone, setTelefone, "Telemóvel", "tel")}
-        {erro && <p className="text-xs" style={{ color: "#B23A3A" }}>{erro}</p>}
+        {erro && <p className="text-[13px]" style={{ color: "#B23A3A" }}>{erro}</p>}
         <button
           onClick={guardar}
           disabled={!nome.trim() || !telefone.trim() || aGuardar}
@@ -8572,14 +8548,14 @@ EVENTOS_PUBLICOS.outubro = {
   descricao: "Um encontro ao vivo, à distância, para refletir, partilhar e crescer em conjunto com a Escola 3S.",
 };
 EVENTOS_PUBLICOS.novembro = {
-  nome: "Encontro à distância da Escola 3S — 27 de novembro (21h)",
-  titulo: "Encontro à distância da Escola 3S",
-  subtitulo: "Encontro à distância",
+  nome: "Encontro à distância — Menos pressão, mais clareza (27 nov, 21h)",
+  titulo: "Menos pressão, mais clareza",
+  subtitulo: "Encontro gratuito à distância",
   data: "Sexta-feira, 27 de novembro · 21h00",
   inicio: "2026-11-27T21:00:00+00:00",
-  chamada: "Encontro à distância da Escola 3S",
+  chamada: "Menos pressão, mais clareza",
   quandoCurto: "Sexta, 27 nov · 21h",
-  descricao: "Um encontro ao vivo, à distância, para refletir, partilhar e crescer em conjunto com a Escola 3S.",
+  descricao: "Como gerir a ansiedade e a pressão do dia a dia e comunicar com calma quando tudo aperta, no trabalho e na vida. Uma hora com ferramentas práticas do método 3S para saíres com mais clareza e menos peso.",
 };
 EVENTOS_PUBLICOS.dezembro = {
   nome: "Encontro à distância da Escola 3S — 18 de dezembro (21h)",
@@ -8608,7 +8584,7 @@ function BannerEncontro() {
         className="block rounded-3xl px-5 py-6 text-center transition active:scale-[0.99]"
         style={{ backgroundColor: palette.navy, boxShadow: "0 10px 30px rgba(20,30,60,0.18)" }}
       >
-        <p className="text-[10px] tracking-[0.25em] font-medium" style={{ color: palette.gold }}>ENCONTRO GRATUITO À DISTÂNCIA · {ev.quandoCurto.toUpperCase()}</p>
+        <p className="text-[11px] tracking-[0.15em] font-semibold" style={{ color: palette.gold }}>ENCONTRO GRATUITO · {ev.quandoCurto.toUpperCase()}</p>
         <p className="font-serif text-3xl leading-tight mt-3" style={{ color: palette.creamSoft }}>{ev.chamada}</p>
         <span className="inline-block mt-5 rounded-full px-6 py-3 text-sm font-medium" style={{ backgroundColor: palette.gold, color: palette.navy }}>
           Quero participar
@@ -8694,9 +8670,9 @@ function InscricaoEventoPublica({ eventoId }) {
                   {campo(localidade, setLocalidade, "Localidade (opcional)")}
                   <label className="flex items-start gap-2.5 px-1 pt-1">
                     <input type="checkbox" checked={aceitou} onChange={(e) => setAceitou(e.target.checked)} className="mt-0.5 shrink-0" />
-                    <span className="text-xs leading-relaxed" style={{ color: palette.navySoft }}>{TEXTO_CONSENTIMENTO_EVENTO}</span>
+                    <span className="text-[13px] leading-relaxed" style={{ color: palette.navySoft }}>{TEXTO_CONSENTIMENTO_EVENTO}</span>
                   </label>
-                  {erro && <p className="text-xs" style={{ color: "#B23A3A" }}>{erro}</p>}
+                  {erro && <p className="text-[13px]" style={{ color: "#B23A3A" }}>{erro}</p>}
                   <button
                     onClick={enviar}
                     disabled={!pode || estado === "a_enviar"}
@@ -8765,17 +8741,17 @@ function CatalogoCursosScreen({ onBack, temAcesso, onAbrirCurso, onAreaAluno }) 
         style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, boxShadow: "0 4px 14px -8px rgba(27,51,85,0.25)" }}
       >
         <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{c.titulo}</p>
-        {c.promessa && <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{c.promessa}</p>}
-        <p className="text-[11px] mt-2 leading-relaxed" style={{ color: palette.navySoft }}>{incluiCurso(c).join(" · ")}</p>
+        {c.promessa && <p className="text-[13px] mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{c.promessa}</p>}
+        <p className="text-xs mt-2 leading-relaxed" style={{ color: palette.navySoft }}>{incluiCurso(c).join(" · ")}</p>
         <div className="flex items-center justify-between mt-3">
           {acesso ? (
-            <span className="text-xs font-medium flex items-center gap-1" style={{ color: palette.gold }}><CheckCircle2 size={14} /> Tens acesso — entrar</span>
+            <span className="text-[13px] font-medium flex items-center gap-1" style={{ color: palette.gold }}><CheckCircle2 size={14} /> Tens acesso — entrar</span>
           ) : c.gratuito ? (
-            <span className="text-xs font-medium" style={{ color: palette.gold }}>Gratuito</span>
+            <span className="text-[13px] font-medium" style={{ color: palette.gold }}>Gratuito</span>
           ) : (
             <span className="font-serif text-xl" style={{ color: palette.gold }}>{precoTexto(PRECO_CURSO)}</span>
           )}
-          <span className="text-xs font-medium flex items-center gap-1 rounded-full px-3 py-1.5" style={acesso ? { color: palette.navySoft } : { backgroundColor: palette.navy, color: palette.creamSoft }}>{acesso ? "" : "Ver o curso"} <ChevronRight size={14} /></span>
+          <span className="text-[13px] font-medium flex items-center gap-1 rounded-full px-3 py-1.5" style={acesso ? { color: palette.navySoft } : { backgroundColor: palette.navy, color: palette.creamSoft }}>{acesso ? "" : "Ver o curso"} <ChevronRight size={14} /></span>
         </div>
       </button>
     );
@@ -8791,7 +8767,7 @@ function CatalogoCursosScreen({ onBack, temAcesso, onAbrirCurso, onAreaAluno }) 
         >
           <div className="text-left">
             <p className="font-serif text-lg" style={{ color: palette.navy }}>A minha área de aluno</p>
-            <p className="text-xs mt-0.5" style={{ color: palette.navySoft }}>Progresso, certificados e materiais</p>
+            <p className="text-[13px] mt-0.5" style={{ color: palette.navySoft }}>Progresso, certificados e materiais</p>
           </div>
           <ChevronRight size={18} style={{ color: palette.navySoft }} />
         </button>
@@ -8800,7 +8776,7 @@ function CatalogoCursosScreen({ onBack, temAcesso, onAbrirCurso, onAreaAluno }) 
         <div key={grupo.nome} className="px-6 mt-8">
           <div className="rounded-2xl px-5 py-4 mb-4" style={{ backgroundColor: palette.navy }}>
             <p className="font-serif text-xl" style={{ color: palette.creamSoft }}>{grupo.nome}</p>
-            <p className="text-xs mt-0.5" style={{ color: palette.goldSoft }}>{grupo.frase}</p>
+            <p className="text-[13px] mt-0.5" style={{ color: palette.goldSoft }}>{grupo.frase}</p>
           </div>
           {grupo.sub.map((sub, i) => {
             const lista = sub.ids
@@ -8816,7 +8792,7 @@ function CatalogoCursosScreen({ onBack, temAcesso, onAbrirCurso, onAreaAluno }) 
                   {(sub.emBreve || []).map((t) => (
                     <div key={t} className="rounded-2xl px-4 py-4" style={{ border: `1px dashed ${palette.gold}`, backgroundColor: palette.creamSoft }}>
                       <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{t}</p>
-                      <p className="text-xs mt-1" style={{ color: palette.gold }}>Em breve</p>
+                      <p className="text-[13px] mt-1" style={{ color: palette.gold }}>Em breve</p>
                     </div>
                   ))}
                 </div>
@@ -8847,7 +8823,7 @@ function CursoVendaScreen({ curso, onBack }) {
                 <Lock size={14} style={{ color: palette.goldSoft, marginTop: 3, flexShrink: 0 }} />
                 <div>
                   <p className="text-sm" style={{ color: palette.navy }}>Aula {i + 1} — {a.titulo}</p>
-                  {a.descricao && <p className="text-xs mt-0.5 leading-relaxed" style={{ color: palette.navySoft }}>{a.descricao}</p>}
+                  {a.descricao && <p className="text-[13px] mt-0.5 leading-relaxed" style={{ color: palette.navySoft }}>{a.descricao}</p>}
                 </div>
               </div>
             ))}
@@ -8867,7 +8843,7 @@ function CursoVendaScreen({ curso, onBack }) {
         ) : (
           <BotaoCarrinho rotulo="Comprar o curso" item={{ chave: `curso-${curso.id}`, tipo: "curso", cursoId: curso.id, titulo: `Curso — ${curso.titulo}`, valor: PRECO_CURSO }} />
         )}
-        <p className="text-[11px] text-center" style={{ color: palette.navySoft }}>Pagas por MB WAY, Multibanco ou Payshop. Assim que o pagamento é confirmado, o curso abre automaticamente.</p>
+        <p className="text-xs text-center" style={{ color: palette.navySoft }}>Pagas por MB WAY, Multibanco ou Payshop. Assim que o pagamento é confirmado, o curso abre automaticamente.</p>
       </div>
     </div>
   );
@@ -8884,8 +8860,8 @@ function LivrosScreen({ onBack, materiaisDesbloqueados }) {
         {livros.map((m) => m.emBreve ? (
           <div key={m.id} className="rounded-xl px-4 py-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66` }}>
             <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{m.titulo}</p>
-            {m.desc && <p className="text-xs mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{m.desc}</p>}
-            <span className="inline-block mt-2 text-xs font-medium rounded-full px-3 py-1" style={{ border: `1px dashed ${palette.gold}`, color: palette.navy }}>Em breve · {m.preco}</span>
+            {m.desc && <p className="text-[13px] mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{m.desc}</p>}
+            <span className="inline-block mt-2 text-[13px] font-medium rounded-full px-3 py-1" style={{ border: `1px dashed ${palette.gold}`, color: palette.navy }}>Em breve · {m.preco}</span>
           </div>
         ) : (
           <MaterialCard
@@ -8926,18 +8902,18 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher, onDestino }) {
               <img src="/marca-3s.png" alt="" className="w-9 h-auto" />
               <p className="font-serif text-xl" style={{ color: palette.creamSoft }}>Escola <span style={{ color: palette.gold }}>3S</span></p>
             </div>
-            <button onClick={onEntrar} className="text-xs font-medium rounded-full px-4 py-2" style={{ border: `1px solid ${palette.goldSoft}88`, color: palette.creamSoft }}>Entrar</button>
+            <button onClick={onEntrar} className="text-[13px] font-medium rounded-full px-4 py-2" style={{ border: `1px solid ${palette.goldSoft}88`, color: palette.creamSoft }}>Entrar</button>
           </div>
           <p className="relative text-[11px] tracking-[0.3em] font-semibold mt-9" style={{ color: palette.gold }}>SABER · SENTIR · SER</p>
           <h1 className="relative font-serif text-[40px] leading-[1.05] mt-3" style={{ color: palette.creamSoft }}>Uma filosofia.<br />Três escolas.<br /><span style={{ color: palette.gold }}>A tua evolução.</span></h1>
-          <p className="relative text-[15px] mt-4 leading-relaxed" style={{ color: palette.creamSoft, opacity: 0.85 }}>Coaching para liderar melhor, viver com mais sentido e treinar com propósito. Começa sem pagar nada.</p>
+          <p className="relative text-[15px] mt-4 leading-relaxed" style={{ color: palette.creamSoft, opacity: 0.85 }}>Coaching e mentoria para quem quer liderar com impacto, viver com propósito e treinar com consistência. Descobre o teu perfil gratuitamente e dá o próximo passo com um coach ao teu lado.</p>
           <div className="relative mt-6 space-y-2.5">
-            <button onClick={() => marcar(null)} className="w-full rounded-full py-4 text-[15px] font-semibold transition active:scale-[0.98]" style={{ backgroundColor: palette.gold, color: palette.navy, boxShadow: "0 10px 26px -10px rgba(198,162,83,0.9)" }}>Marcar a minha sessão gratuita</button>
-            <button onClick={() => irPara("gratis")} className="w-full rounded-full py-3.5 text-sm font-medium" style={{ border: `1px solid ${palette.goldSoft}88`, color: palette.creamSoft }}>Ver tudo o que é gratuito</button>
+            <button onClick={() => marcar(null)} className="w-full rounded-full py-4 text-[15px] font-semibold transition active:scale-[0.98]" style={{ backgroundColor: palette.gold, color: palette.navy, boxShadow: "0 10px 26px -10px rgba(198,162,83,0.9)" }}>Marcar sessão de coaching</button>
+            <button onClick={() => irPara("gratis")} className="w-full rounded-full py-3.5 text-sm font-medium" style={{ border: `1px solid ${palette.goldSoft}88`, color: palette.creamSoft }}>Descobrir o meu perfil, grátis</button>
           </div>
           <div className="relative flex flex-wrap gap-x-4 gap-y-1.5 mt-5">
-            {["20 min de sessão grátis", "Aula 1 grátis", "Sem cartão de crédito"].map((t) => (
-              <span key={t} className="text-[12px] flex items-center gap-1.5" style={{ color: palette.goldSoft }}><CheckCircle2 size={13} />{t}</span>
+            {["Perfis e testes gratuitos", "Aula 1 grátis", "Sessões a 30€"].map((t) => (
+              <span key={t} className="text-[13px] flex items-center gap-1.5" style={{ color: palette.goldSoft }}><CheckCircle2 size={13} />{t}</span>
             ))}
           </div>
         </div>
@@ -8955,38 +8931,38 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher, onDestino }) {
                   <div className="relative overflow-hidden px-5 py-4" style={{ background: e.fundo, borderBottom: e.borda ? `1.5px solid ${e.borda}` : "none" }}>
                     <Icon size={90} strokeWidth={1} className="absolute -right-3 -bottom-5" style={{ color: e.texto, opacity: 0.1 }} />
                     <p className="font-serif text-[26px] leading-tight relative" style={{ color: e.texto }}>{e.curto} <span style={{ color: e.acento, fontWeight: 600 }}>3S</span></p>
-                    <p className="text-[13px] mt-1 relative" style={{ color: e.texto, opacity: 0.85 }}>{e.frase}</p>
+                    <p className="text-sm mt-1 relative" style={{ color: e.texto, opacity: 0.85 }}>{e.frase}</p>
                   </div>
                   <div className="px-5 py-4 space-y-3">
                     <div className="flex items-center gap-3">
                       <span className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: `${palette.gold}22` }}><User size={16} style={{ color: palette.gold }} /></span>
-                      <div className="min-w-0"><p className="text-sm font-medium" style={{ color: palette.navy }}>{coachNome[chave]}</p><p className="text-[11px]" style={{ color: palette.navySoft }}>Coaching e mentoria · 1.ª sessão de 20 min grátis</p></div>
+                      <div className="min-w-0"><p className="text-sm font-medium" style={{ color: palette.navy }}>{coachNome[chave]}</p><p className="text-xs" style={{ color: palette.navySoft }}>Coaching e mentoria · 50 min · 30€ por sessão</p></div>
                     </div>
                     {curso && (
                       <div className="flex items-center gap-3">
                         <span className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: `${palette.gold}22` }}><GraduationCap size={16} style={{ color: palette.gold }} /></span>
-                        <div className="min-w-0"><p className="text-sm font-medium" style={{ color: palette.navy }}>Curso {curso.titulo}</p><p className="text-[11px]" style={{ color: palette.navySoft }}>{curso.emBreve ? "Em breve" : curso.interativo ? `Aula 1 grátis · curso completo ${precoTexto(PRECO_CURSO)}` : precoTexto(PRECO_CURSO)}</p></div>
+                        <div className="min-w-0"><p className="text-sm font-medium" style={{ color: palette.navy }}>Curso {curso.titulo}</p><p className="text-xs" style={{ color: palette.navySoft }}>{curso.emBreve ? "Em breve" : curso.interativo ? `Aula 1 grátis · curso completo ${precoTexto(PRECO_CURSO)}` : precoTexto(PRECO_CURSO)}</p></div>
                       </div>
                     )}
                     {livro && (
                       <div className="flex items-center gap-3">
                         <span className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: `${palette.gold}22` }}><BookOpen size={16} style={{ color: palette.gold }} /></span>
-                        <div className="min-w-0"><p className="text-sm font-medium" style={{ color: palette.navy }}>{livro.titulo}</p><p className="text-[11px]" style={{ color: palette.navySoft }}>{livro.emBreve ? `Em breve · ${livro.preco}` : livro.preco}</p></div>
+                        <div className="min-w-0"><p className="text-sm font-medium" style={{ color: palette.navy }}>{livro.titulo}</p><p className="text-xs" style={{ color: palette.navySoft }}>{livro.emBreve ? `Em breve · ${livro.preco}` : livro.preco}</p></div>
                       </div>
                     )}
                     {e.app && (
                       <a href={e.app.url} className="flex items-center gap-3">
                         <span className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: `${palette.gold}22` }}><Footprints size={16} style={{ color: palette.gold }} /></span>
-                        <div className="min-w-0 flex-1"><p className="text-sm font-medium" style={{ color: palette.navy }}>Aplicação {e.app.nome}</p><p className="text-[11px]" style={{ color: palette.navySoft }}>Treinos, tempos e plano · gratuita</p></div>
+                        <div className="min-w-0 flex-1"><p className="text-sm font-medium" style={{ color: palette.navy }}>Aplicação {e.app.nome}</p><p className="text-xs" style={{ color: palette.navySoft }}>Treinos, tempos e plano · gratuita</p></div>
                         <ChevronRight size={16} style={{ color: palette.navySoft }} />
                       </a>
                     )}
                     <div className="grid grid-cols-2 gap-2 pt-1">
-                      <button onClick={() => marcar(chave)} className="rounded-full py-3 text-[13px] font-semibold" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Sessão grátis</button>
+                      <button onClick={() => marcar(chave)} className="rounded-full py-3 text-sm font-semibold" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Marcar sessão</button>
                       {curso && !curso.emBreve ? (
-                        <button onClick={() => onDestino(`curso:${curso.id}`)} className="rounded-full py-3 text-[13px] font-semibold" style={{ border: `1.5px solid ${palette.navy}`, color: palette.navy }}>Aula 1 grátis</button>
+                        <button onClick={() => onDestino(`curso:${curso.id}`)} className="rounded-full py-3 text-sm font-semibold" style={{ border: `1.5px solid ${palette.navy}`, color: palette.navy }}>Aula 1 grátis</button>
                       ) : (
-                        <button onClick={() => onDestino(e.secao)} className="rounded-full py-3 text-[13px] font-semibold" style={{ border: `1.5px solid ${palette.navy}`, color: palette.navy }}>Testes grátis</button>
+                        <button onClick={() => onDestino(e.secao)} className="rounded-full py-3 text-sm font-semibold" style={{ border: `1.5px solid ${palette.navy}`, color: palette.navy }}>Testes grátis</button>
                       )}
                     </div>
                   </div>
@@ -9001,7 +8977,7 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher, onDestino }) {
           {sec("COMEÇA SEM PAGAR", "O que tens gratuitamente, já hoje")}
           <div className="grid grid-cols-2 gap-3">
             {[
-              [Calendar, "Sessão de 20 min", "Com o coach da tua escola, por videochamada."],
+              [Layers, "Perfil de Líder e de Vida", "Relatório completo enviado para o teu correio eletrónico."],
               [GraduationCap, "Aula 1 de cada curso", "Texto, exercício, questionário e desafio."],
               [Layers, "Laboratórios", "Testes de perfil, treinos e planos automáticos."],
               [Footprints, "Movimento 3S", "Registo de treinos, tempos e provas."],
@@ -9009,7 +8985,7 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher, onDestino }) {
               <div key={t} className="rounded-2xl p-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
                 <Ico size={18} style={{ color: palette.gold }} />
                 <p className="font-serif text-[17px] leading-tight mt-2" style={{ color: palette.navy }}>{t}</p>
-                <p className="text-[12px] mt-1 leading-snug" style={{ color: palette.navySoft }}>{d}</p>
+                <p className="text-[13px] mt-1 leading-snug" style={{ color: palette.navySoft }}>{d}</p>
               </div>
             ))}
           </div>
@@ -9018,17 +8994,17 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher, onDestino }) {
         {/* FIDELIZAÇÃO */}
         <div className="px-6 pt-10">
           <div className="rounded-3xl px-5 py-6" style={{ background: `linear-gradient(150deg, #E4C98C 0%, ${palette.gold} 100%)` }}>
-            <p className="text-[11px] tracking-[0.25em] font-semibold" style={{ color: palette.navy }}>VANTAGENS DE ALUNO 3S</p>
-            <p className="font-serif text-[26px] leading-tight mt-1" style={{ color: palette.navy }}>Quanto mais caminhas connosco, mais ganhas</p>
+            <p className="text-[11px] tracking-[0.25em] font-semibold" style={{ color: palette.navy }}>PORQUÊ O COACHING 3S</p>
+            <p className="font-serif text-[26px] leading-tight mt-1" style={{ color: palette.navy }}>Uma conversa que transforma a forma como lideras e vives</p>
             <div className="mt-4 space-y-2.5">
               {[
-                ["10% em todas as sessões", "Quem compra um curso tem desconto automático nas sessões de coaching e mentoria."],
-                ["Ciclos de 4 sessões", "Acompanhamento contínuo com o mesmo coach, marcado ao teu ritmo."],
-                ["Plano e certificado", "Cada curso termina com o teu perfil 3S, um plano de 30 dias e certificado."],
+                ["Clareza", "Sais de cada sessão a saber exatamente qual é o teu próximo passo."],
+                ["Um método com base científica", "Saber, Sentir e Ser: conhecimento, gestão emocional e coerência, apoiados em investigação reconhecida."],
+                ["Um coach dedicado à tua área", "Liderança, vida ou desporto: acompanhamento por quem conhece o teu contexto."],
               ].map(([t, d]) => (
                 <div key={t} className="flex gap-2.5">
                   <CheckCircle2 size={18} className="shrink-0 mt-0.5" style={{ color: palette.navy }} />
-                  <div><p className="text-sm font-semibold" style={{ color: palette.navy }}>{t}</p><p className="text-[12.5px] leading-snug" style={{ color: palette.navy, opacity: 0.85 }}>{d}</p></div>
+                  <div><p className="text-sm font-semibold" style={{ color: palette.navy }}>{t}</p><p className="text-[13.5px] leading-snug" style={{ color: palette.navy, opacity: 0.85 }}>{d}</p></div>
                 </div>
               ))}
             </div>
@@ -9042,8 +9018,8 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher, onDestino }) {
             {[["Saber", "cabeça", "Método e conhecimento"], ["Sentir", "coração", "Emoções e relação"], ["Ser", "identidade", "Valores e hábitos"]].map(([n, s2, d]) => (
               <div key={n} className="rounded-2xl px-3 py-4 text-center" style={{ backgroundColor: palette.navy }}>
                 <p className="font-serif text-xl" style={{ color: palette.gold }}>{n}</p>
-                <p className="text-[10px] tracking-[0.15em]" style={{ color: palette.goldSoft }}>{s2.toUpperCase()}</p>
-                <p className="text-[11px] mt-2 leading-snug" style={{ color: palette.creamSoft }}>{d}</p>
+                <p className="text-[11px] tracking-[0.15em]" style={{ color: palette.goldSoft }}>{s2.toUpperCase()}</p>
+                <p className="text-xs mt-2 leading-snug" style={{ color: palette.creamSoft }}>{d}</p>
               </div>
             ))}
           </div>
@@ -9060,7 +9036,7 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher, onDestino }) {
             ].map(([n, t, d]) => (
               <div key={n} className="flex gap-3">
                 <span className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 font-serif" style={{ backgroundColor: palette.navy, color: palette.gold }}>{n}</span>
-                <div><p className="text-sm font-medium" style={{ color: palette.navy }}>{t}</p><p className="text-xs" style={{ color: palette.navySoft }}>{d}</p></div>
+                <div><p className="text-sm font-medium" style={{ color: palette.navy }}>{t}</p><p className="text-[13px]" style={{ color: palette.navySoft }}>{d}</p></div>
               </div>
             ))}
           </div>
@@ -9070,11 +9046,11 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher, onDestino }) {
         <div className="px-6 pt-10">
           <div className="rounded-3xl px-5 py-7 text-center" style={{ background: `linear-gradient(160deg, ${palette.navy} 0%, #24436E 100%)` }}>
             <p className="font-serif text-[26px] leading-tight" style={{ color: palette.creamSoft }}>O primeiro passo é uma conversa.</p>
-            <p className="text-sm mt-2" style={{ color: palette.goldSoft }}>20 minutos, gratuitos, para perceberes se é para ti.</p>
-            <button onClick={() => marcar(null)} className="mt-5 w-full rounded-full py-3.5 text-sm font-semibold" style={{ backgroundColor: palette.gold, color: palette.navy }}>Marcar sessão gratuita</button>
-            <button onClick={onEntrar} className="mt-3 text-xs underline underline-offset-2" style={{ color: palette.goldSoft }}>Já tenho conta</button>
+            <p className="text-sm mt-2" style={{ color: palette.goldSoft }}>50 minutos de foco total em ti, com um plano de ação no final. 30€ por sessão.</p>
+            <button onClick={() => marcar(null)} className="mt-5 w-full rounded-full py-3.5 text-sm font-semibold" style={{ backgroundColor: palette.gold, color: palette.navy }}>Marcar sessão de coaching</button>
+            <button onClick={onEntrar} className="mt-3 text-[13px] underline underline-offset-2" style={{ color: palette.goldSoft }}>Já tenho conta</button>
           </div>
-          <p className="text-[11px] text-center mt-6" style={{ color: palette.navySoft }}>Escola 3S · Leadership, Life e Sports Coaching · Saber · Sentir · Ser</p>
+          <p className="text-xs text-center mt-6" style={{ color: palette.navySoft }}>Escola 3S · Leadership, Life e Sports Coaching · Saber · Sentir · Ser</p>
         </div>
       </div>
 
@@ -9082,7 +9058,7 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher, onDestino }) {
       <div className="fixed bottom-0 inset-x-0 flex justify-center z-40 pointer-events-none">
         <div className="w-full max-w-md px-4 pb-[calc(12px+env(safe-area-inset-bottom))] pt-3 pointer-events-auto" style={{ background: `linear-gradient(to top, ${palette.creamSoft} 65%, ${palette.creamSoft}00)` }}>
           <button onClick={() => marcar(null)} className="w-full rounded-full py-3.5 text-[15px] font-semibold flex items-center justify-center gap-2" style={{ backgroundColor: palette.navy, color: palette.creamSoft, boxShadow: "0 10px 24px -12px rgba(27,51,85,0.8)" }}>
-            <Calendar size={17} style={{ color: palette.gold }} /> Marcar sessão gratuita
+            <Calendar size={17} style={{ color: palette.gold }} /> Marcar sessão de coaching
           </button>
         </div>
       </div>
@@ -9130,7 +9106,7 @@ function EventosOnlineMentora({ compacto }) {
           <div key={e.id} className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.navy }}>
             {compacto && <p className="text-[11px] tracking-[0.2em] font-medium" style={{ color: palette.gold }}>PRÓXIMO EVENTO À DISTÂNCIA</p>}
             <p className="font-serif text-lg mt-1 leading-snug" style={{ color: palette.creamSoft }}>{e.titulo}</p>
-            <p className="text-xs mt-0.5" style={{ color: palette.goldSoft }}>
+            <p className="text-[13px] mt-0.5" style={{ color: palette.goldSoft }}>
               {formatarHorarioSessao(new Date(e.inicio).toISOString())} · {e.inscritos} inscrito{e.inscritos === 1 ? "" : "s"}
             </p>
             <BotaoLinkSessao link={e.link} />
@@ -9151,7 +9127,7 @@ function BotaoLinkSessao({ link }) {
       </a>
       <button
         onClick={() => { try { navigator.clipboard.writeText(link); setCopiado(true); setTimeout(() => setCopiado(false), 2000); } catch (e) {} }}
-        className="rounded-lg px-3 py-2 text-xs font-medium"
+        className="rounded-lg px-3 py-2 text-[13px] font-medium"
         style={{ backgroundColor: palette.creamSoft, color: palette.navy, border: `1px solid ${palette.goldSoft}55` }}
       >
         {copiado ? "Copiado ✓" : "Copiar ligação"}
@@ -9185,7 +9161,7 @@ function MinhasSessoesMarcadas() {
         {sessoes.map((m) => (
           <div key={m.id} className="rounded-xl px-4 py-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.gold}` }}>
             <p className="text-sm font-medium" style={{ color: palette.navy }}>{m.titulo}</p>
-            <p className="text-xs" style={{ color: palette.navySoft }}>{formatarHorarioSessao(m.horario)}</p>
+            <p className="text-[13px]" style={{ color: palette.navySoft }}>{formatarHorarioSessao(m.horario)}</p>
             <BotaoLinkSessao link={m.link} />
           </div>
         ))}
@@ -9245,7 +9221,7 @@ function PopupMarcacoesDoDia({ papel }) {
           {sessoes.map((m) => (
             <div key={m.id} className="rounded-2xl px-4 py-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.gold}` }}>
               <p className="font-serif text-lg" style={{ color: palette.navy }}>{String(m.horario).slice(11, 16)} · {m.titulo}</p>
-              {m.cliente && <p className="text-xs" style={{ color: palette.navySoft }}>{m.cliente}{m.telefone ? ` · ${m.telefone}` : ""}</p>}
+              {m.cliente && <p className="text-[13px]" style={{ color: palette.navySoft }}>{m.cliente}{m.telefone ? ` · ${m.telefone}` : ""}</p>}
               <BotaoLinkSessao link={m.link} />
             </div>
           ))}
@@ -9290,7 +9266,7 @@ function AvisosMentoraInicio({ naoLidas, onVerAgenda, onVerNotificacoes }) {
           </span>
           <div className="flex-1">
             <p className="font-serif text-lg leading-tight" style={{ color: palette.navy }}>{naoLidas === 1 ? "Tens 1 novidade" : `Tens ${naoLidas} novidades`}</p>
-            <p className="text-xs" style={{ color: palette.navy }}>Novas marcações e avisos — toca para ver</p>
+            <p className="text-[13px]" style={{ color: palette.navy }}>Novas marcações e avisos — toca para ver</p>
           </div>
           <ChevronRight size={18} style={{ color: palette.navy }} />
         </button>
@@ -9299,9 +9275,9 @@ function AvisosMentoraInicio({ naoLidas, onVerAgenda, onVerNotificacoes }) {
         <div className="rounded-2xl px-4 py-4" style={{ backgroundColor: palette.navy }}>
           <p className="text-[11px] tracking-[0.2em] font-medium" style={{ color: palette.gold }}>PRÓXIMA SESSÃO</p>
           <p className="font-serif text-lg mt-1" style={{ color: palette.creamSoft }}>{formatarHorarioSessao(proxima.horario)}</p>
-          <p className="text-xs mt-0.5" style={{ color: palette.goldSoft }}>{proxima.titulo}{proxima.cliente ? ` · ${proxima.cliente}` : ""}</p>
+          <p className="text-[13px] mt-0.5" style={{ color: palette.goldSoft }}>{proxima.titulo}{proxima.cliente ? ` · ${proxima.cliente}` : ""}</p>
           <BotaoLinkSessao link={proxima.link} />
-          <button onClick={onVerAgenda} className="text-xs underline underline-offset-2 mt-2" style={{ color: palette.goldSoft }}>Ver a agenda toda</button>
+          <button onClick={onVerAgenda} className="text-[13px] underline underline-offset-2 mt-2" style={{ color: palette.goldSoft }}>Ver a agenda toda</button>
         </div>
       )}
       <EventosOnlineMentora compacto />
@@ -9336,9 +9312,9 @@ function ConsentimentoGate({ session, onAceite }) {
         </p>
         <label className="flex items-start gap-2.5 rounded-2xl px-4 py-4 mb-5" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
           <input type="checkbox" checked={aceitou} onChange={(e) => setAceitou(e.target.checked)} className="mt-0.5 shrink-0" />
-          <span className="text-xs leading-relaxed" style={{ color: palette.navySoft }}>{TEXTO_CONSENTIMENTO_GERAL}</span>
+          <span className="text-[13px] leading-relaxed" style={{ color: palette.navySoft }}>{TEXTO_CONSENTIMENTO_GERAL}</span>
         </label>
-        {erro && <p className="text-xs mb-3" style={{ color: "#A33" }}>{erro}</p>}
+        {erro && <p className="text-[13px] mb-3" style={{ color: "#A33" }}>{erro}</p>}
         <button
           onClick={guardar}
           disabled={!aceitou || aGuardar}
@@ -9347,7 +9323,7 @@ function ConsentimentoGate({ session, onAceite }) {
         >
           {aGuardar ? "A guardar…" : "Aceito e continuar"}
         </button>
-        <button onClick={() => supabase.auth.signOut()} className="w-full text-xs mt-4 py-2" style={{ color: palette.navySoft }}>
+        <button onClick={() => supabase.auth.signOut()} className="w-full text-[13px] mt-4 py-2" style={{ color: palette.navySoft }}>
           Não aceito — sair
         </button>
       </div>
@@ -9398,7 +9374,7 @@ function ArquivoCartao({ titulo, linhas }) {
     <div className="rounded-2xl px-4 py-3.5" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
       <p className="font-serif text-base leading-snug" style={{ color: palette.navy }}>{titulo}</p>
       {linhas.filter(Boolean).map((l, i) => (
-        <p key={i} className="text-xs leading-relaxed mt-0.5 break-words" style={{ color: palette.navySoft }}>{l}</p>
+        <p key={i} className="text-[13px] leading-relaxed mt-0.5 break-words" style={{ color: palette.navySoft }}>{l}</p>
       ))}
     </div>
   );
@@ -9516,7 +9492,7 @@ function ArquivoEscolaScreen({ onBack }) {
   ];
 
   const botaoExportar = (onClick) => (
-    <button onClick={onClick} className="flex items-center gap-1.5 text-xs font-medium rounded-full px-3.5 py-2" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>
+    <button onClick={onClick} className="flex items-center gap-1.5 text-[13px] font-medium rounded-full px-3.5 py-2" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>
       <Download size={14} /> Exportar para Excel
     </button>
   );
@@ -9530,7 +9506,7 @@ function ArquivoEscolaScreen({ onBack }) {
           <button
             key={s.id}
             onClick={() => { setTab(s.id); setPesquisa(""); }}
-            className="shrink-0 rounded-full px-3.5 py-2 text-xs font-medium"
+            className="shrink-0 rounded-full px-3.5 py-2 text-[13px] font-medium"
             style={tab === s.id ? { backgroundColor: palette.navy, color: palette.creamSoft } : { backgroundColor: palette.card, color: palette.navySoft, border: `1px solid ${palette.goldSoft}55` }}
           >
             {s.nome}{s.n !== null ? ` (${s.n})` : ""}
@@ -9557,7 +9533,7 @@ function ArquivoEscolaScreen({ onBack }) {
         {!carregando && tab === "autorizacoes" && (
           <>
             <div className="flex items-center justify-between">
-              <p className="text-xs" style={{ color: palette.navySoft }}>Autorizações RGPD aceites na aplicação</p>
+              <p className="text-[13px]" style={{ color: palette.navySoft }}>Autorizações RGPD aceites na aplicação</p>
               {botaoExportar(() => exportarCSV("autorizacoes-rgpd.csv", ["Data", "Nome", "Correio eletrónico", "Telefone", "Texto aceite"],
                 consentimentos.map((c) => [arquivoData(c.aceite_em), c.nome, c.email, c.telefone, c.texto_aceite])))}
             </div>
@@ -9571,7 +9547,7 @@ function ArquivoEscolaScreen({ onBack }) {
         {!carregando && tab === "fichas" && (
           <>
             <div className="flex items-center justify-between">
-              <p className="text-xs" style={{ color: palette.navySoft }}>Todas as pessoas registadas</p>
+              <p className="text-[13px]" style={{ color: palette.navySoft }}>Todas as pessoas registadas</p>
               {botaoExportar(() => exportarCSV("fichas-clientes.csv", ["Nome", "Correio eletrónico", "Telefone", "Registo"],
                 clientes.map((c) => [c.nome, c.email, c.telefone, arquivoData(c.criado_em)])))}
             </div>
@@ -9584,7 +9560,7 @@ function ArquivoEscolaScreen({ onBack }) {
         {!carregando && tab === "inscricoes" && (
           <>
             <div className="flex items-center justify-between">
-              <p className="text-xs" style={{ color: palette.navySoft }}>Ações, formações, encontros e diretos</p>
+              <p className="text-[13px]" style={{ color: palette.navySoft }}>Ações, formações, encontros e diretos</p>
               {botaoExportar(() => exportarCSV("inscricoes.csv", ["Ação", "Data", "Nome", "Correio eletrónico", "Telefone", "Localidade"],
                 inscricoesTodas.map((i) => [i.acao, i.data, i.nome, i.email, i.telefone, i.localidade])))}
             </div>
@@ -9594,10 +9570,10 @@ function ArquivoEscolaScreen({ onBack }) {
               return (
                 <div key={e.id} className="rounded-2xl px-4 py-3" style={{ backgroundColor: palette.navy }}>
                   <p className="text-sm font-medium" style={{ color: palette.creamSoft }}>{e.titulo}</p>
-                  <p className="text-xs" style={{ color: palette.goldSoft }}>{n} inscrito{n === 1 ? "" : "s"} · ligação: {e.link}</p>
+                  <p className="text-[13px]" style={{ color: palette.goldSoft }}>{n} inscrito{n === 1 ? "" : "s"} · ligação: {e.link}</p>
                   <button
                     onClick={() => { try { navigator.clipboard.writeText(mensagemEvento("", e)); alert("Mensagem copiada! Cola-a no grupo ou na lista de transmissão do WhatsApp."); } catch (err) {} }}
-                    className="mt-2 w-full rounded-lg py-2 text-xs font-medium"
+                    className="mt-2 w-full rounded-lg py-2 text-[13px] font-medium"
                     style={{ backgroundColor: palette.gold, color: palette.navy }}
                   >
                     Copiar mensagem com a ligação (para grupos do WhatsApp)
@@ -9616,7 +9592,7 @@ function ArquivoEscolaScreen({ onBack }) {
                       href={`https://wa.me/${num}?text=${encodeURIComponent(mensagemEvento(i.nome, ev))}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-1.5 flex items-center justify-center rounded-lg py-2 text-xs font-medium"
+                      className="mt-1.5 flex items-center justify-center rounded-lg py-2 text-[13px] font-medium"
                       style={{ backgroundColor: "#25D366", color: "#fff" }}
                     >
                       Enviar ligação por WhatsApp
@@ -9631,11 +9607,11 @@ function ArquivoEscolaScreen({ onBack }) {
         {!carregando && tab === "pagamentos" && (
           <>
             <div className="rounded-2xl px-5 py-4" style={{ backgroundColor: palette.navy }}>
-              <p className="text-[10px] tracking-[0.2em]" style={{ color: palette.goldSoft }}>TOTAL RECEBIDO</p>
+              <p className="text-[11px] tracking-[0.2em]" style={{ color: palette.goldSoft }}>TOTAL RECEBIDO</p>
               <p className="font-serif text-3xl" style={{ color: palette.creamSoft }}>{totalPago.toFixed(2).replace(".", ",")} €</p>
             </div>
             <div className="flex items-center justify-between">
-              <p className="text-xs" style={{ color: palette.navySoft }}>Quem pagou e o quê</p>
+              <p className="text-[13px]" style={{ color: palette.navySoft }}>Quem pagou e o quê</p>
               {botaoExportar(() => exportarCSV("pagamentos.csv", ["Data", "Nome", "Correio eletrónico", "O que pagou", "Método", "Valor (€)", "Estado"],
                 pagamentos.map((p) => { const pe = pessoa(p.user_id); return [arquivoData(p.pago_em || p.criado_em), pe.nome, pe.email, p.descricao, p.tipo, String(p.valor).replace(".", ","), p.estado]; })))}
             </div>
@@ -9657,7 +9633,7 @@ function ArquivoEscolaScreen({ onBack }) {
         {!carregando && tab === "visualizacoes" && (
           <>
             <div className="flex items-center justify-between">
-              <p className="text-xs" style={{ color: palette.navySoft }}>Quem abriu cada aula dos cursos</p>
+              <p className="text-[13px]" style={{ color: palette.navySoft }}>Quem abriu cada aula dos cursos</p>
               {botaoExportar(() => exportarCSV("quem-viu-aulas.csv", ["Data", "Nome", "Correio eletrónico", "Telefone", "Curso", "Aula"],
                 visualizacoes.map((v) => { const pe = pessoa(v.user_id); return [arquivoData(v.visto_em), pe.nome, pe.email, pe.telefone, v.curso_titulo, `Aula ${v.aula_numero} — ${v.aula_titulo}`]; })))}
             </div>
@@ -9684,13 +9660,13 @@ function ArquivoEscolaScreen({ onBack }) {
         {!carregando && tab === "codigos" && (
           <>
             <div className="flex items-center justify-between">
-              <p className="text-xs" style={{ color: palette.navySoft }}>Quem usou códigos de oferta</p>
+              <p className="text-[13px]" style={{ color: palette.navySoft }}>Quem usou códigos de oferta</p>
               {botaoExportar(() => exportarCSV("codigos-usados.csv", ["Data", "Código", "Nome", "Correio eletrónico", "Telefone"],
                 codigosUsados.map((c) => { const pe = pessoa(c.user_id); return [arquivoData(c.resgatado_em), c.codigo, pe.nome, pe.email, pe.telefone]; })))}
             </div>
             {codigosUsados.length === 0 && <p className="text-sm" style={{ color: palette.navySoft }}>Ainda ninguém usou um código.</p>}
             {[...new Set(codigosUsados.map((c) => c.codigo))].map((cod) => (
-              <p key={cod} className="text-xs font-medium" style={{ color: palette.gold }}>{cod}: {codigosUsados.filter((c) => c.codigo === cod).length} pessoa(s)</p>
+              <p key={cod} className="text-[13px] font-medium" style={{ color: palette.gold }}>{cod}: {codigosUsados.filter((c) => c.codigo === cod).length} pessoa(s)</p>
             ))}
             {codigosUsados.filter((c) => { const pe = pessoa(c.user_id); return filtro(`${c.codigo} ${pe.nome} ${pe.email} ${pe.telefone}`); }).map((c) => {
               const pe = pessoa(c.user_id);
@@ -9701,13 +9677,13 @@ function ArquivoEscolaScreen({ onBack }) {
 
         {tab === "documentos" && (
           <>
-            <p className="text-xs" style={{ color: palette.navySoft }}>Guarda aqui autorizações assinadas, fichas em papel digitalizadas e listas de presenças (PDF ou foto, até 20 MB). Só tu consegues ver estes documentos.</p>
+            <p className="text-[13px]" style={{ color: palette.navySoft }}>Guarda aqui autorizações assinadas, fichas em papel digitalizadas e listas de presenças (PDF ou foto, até 20 MB). Só tu consegues ver estes documentos.</p>
             <div className="flex gap-2 overflow-x-auto pb-1">
               {ARQUIVO_PASTAS.map((p) => (
                 <button
                   key={p.id}
                   onClick={() => setPasta(p.id)}
-                  className="shrink-0 rounded-full px-3 py-1.5 text-xs"
+                  className="shrink-0 rounded-full px-3 py-1.5 text-[13px]"
                   style={pasta === p.id ? { backgroundColor: palette.gold, color: palette.navy } : { backgroundColor: palette.card, color: palette.navySoft, border: `1px solid ${palette.goldSoft}55` }}
                 >
                   {p.nome}
@@ -9718,14 +9694,14 @@ function ArquivoEscolaScreen({ onBack }) {
               <Plus size={16} /> {aCarregarFicheiro ? "A carregar…" : "Adicionar documento"}
               <input type="file" accept="application/pdf,image/*" onChange={carregarFicheiro} className="hidden" disabled={aCarregarFicheiro} />
             </label>
-            {mensagem && <p className="text-xs" style={{ color: palette.navySoft }}>{mensagem}</p>}
+            {mensagem && <p className="text-[13px]" style={{ color: palette.navySoft }}>{mensagem}</p>}
             {ficheiros.length === 0 && <p className="text-sm" style={{ color: palette.navySoft }}>Ainda não há documentos nesta pasta.</p>}
             {ficheiros.map((f) => (
               <div key={f.name} className="rounded-2xl px-4 py-3 flex items-center gap-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
                 <FileText size={18} style={{ color: palette.gold, flexShrink: 0 }} />
                 <button onClick={() => abrirFicheiro(f.name)} className="flex-1 min-w-0 text-left">
                   <p className="text-sm truncate" style={{ color: palette.navy }}>{f.name.replace(/^\d+-/, "")}</p>
-                  <p className="text-[11px]" style={{ color: palette.navySoft }}>{arquivoData(f.created_at)}</p>
+                  <p className="text-xs" style={{ color: palette.navySoft }}>{arquivoData(f.created_at)}</p>
                 </button>
                 <button onClick={() => apagarFicheiro(f.name)} aria-label="Apagar">
                   <Trash2 size={16} style={{ color: palette.navySoft }} />
@@ -10231,11 +10207,11 @@ export default function App() {
             <>
               <div className="w-full flex justify-center" style={{ backgroundColor: palette.cream }}>
                 <div className="w-full max-w-md px-6 pt-4" style={{ backgroundColor: palette.creamSoft }}>
-                  <button onClick={() => setEcraPublico("montra")} className="flex items-center gap-1 text-xs" style={{ color: palette.navySoft }}>
+                  <button onClick={() => setEcraPublico("montra")} className="flex items-center gap-1 text-[13px]" style={{ color: palette.navySoft }}>
                     <ChevronLeft size={16} /> Ver cursos e preços
                   </button>
                   {carrinhoItens.length > 0 && (
-                    <p className="text-xs mt-2 rounded-xl px-3 py-2" style={{ backgroundColor: palette.card, color: palette.navy, border: `1px solid ${palette.gold}` }}>
+                    <p className="text-[13px] mt-2 rounded-xl px-3 py-2" style={{ backgroundColor: palette.card, color: palette.navy, border: `1px solid ${palette.gold}` }}>
                       🛒 Guardámos no teu carrinho: {carrinhoItens.map((i) => i.titulo).join(", ")}. Cria a tua conta (ou entra) para finalizar a compra.
                     </p>
                   )}
@@ -10430,7 +10406,6 @@ export default function App() {
         descontoCiclo={descontoCiclo}
         onUsouCredito={sincronizarCompras}
         area={(secao || "").startsWith("marcar:") ? secao.split(":")[1] : null}
-        descontoAluno={Object.keys(progresso.cursosComprados || {}).length > 0}
       />
     );
   } else if (secao === "agenda-mentora") {
