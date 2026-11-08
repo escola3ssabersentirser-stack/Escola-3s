@@ -447,40 +447,8 @@ const materiais = [
   { id: 47, titulo: "Caderno de Trabalho — Zona de Conforto", formato: "Caderno", preco: "4,99€", url: "/caderno-zona-conforto.pdf" },
 ];
 
-const workshops = [
-  {
-    id: 1,
-    titulo: "Educar para a Liberdade Interior",
-    descricao: "Uma reflexão aberta sobre formar pessoas livres e conscientes.",
-    data: "3 set",
-    hora: "18:30",
-    local: "Auditório Principal",
-  },
-  {
-    id: 2,
-    titulo: "Corpo, Respiração e Presença",
-    descricao: "Sessão prática de respiração e movimento consciente.",
-    data: "9 set",
-    hora: "10:00",
-    local: "Sala 3",
-  },
-  {
-    id: 3,
-    titulo: "Círculo de Partilha 3S",
-    descricao: "Encontro em grupo para partilhar emoções e padrões.",
-    data: "14 set",
-    hora: "19:00",
-    local: "Sala de Convívio",
-  },
-  {
-    id: 4,
-    titulo: "Retiro 3S de Fim de Semana",
-    descricao: "Imersão em grupo para viver o que aprendeste.",
-    data: "27 set",
-    hora: "09:00",
-    local: "Casa de Retiros",
-  },
-];
+// Formações presenciais genéricas retiradas (nov 2026): fica só o encontro à distância do mês
+const workshops = [];
 
 const escolas = [
   { id: "lideranca", nome: "Liderança 3S" },
@@ -938,7 +906,7 @@ const areas = [
   { key: "livros", titulo: "Livros", desc: "Liderança 3S e Filosofia 3S", icon: BookOpen },
   { key: "escola-lideranca", titulo: "Liderança 3S", desc: "Comunicação e liderança de pessoas", icon: BookOpen },
   { key: "escola-ser", titulo: "Vida 3S", desc: "Autoconhecimento, emoções e crenças", icon: BookOpen },
-  { key: "workshops", titulo: "Formações", desc: "Próximas sessões e inscrição", icon: Calendar },
+  { key: "workshops", titulo: "Encontro do mês", desc: "Encontro gratuito à distância", icon: Calendar },
   { key: "podcast", titulo: "Podcast", desc: "Episódios para ouvir", icon: Headphones },
   { key: "marcar", titulo: "Coaching e Mentoria", desc: "Sessões individuais e acompanhamento", icon: PenLine },
 ];
@@ -3050,7 +3018,7 @@ function DivisorArea({ texto, id }) {
 const areasLideranca = [
   { key: "marcar", titulo: "Marcar sessões", desc: "Coaching e mentoria individual com a Conceição", icon: PenLine, full: true },
   { key: "escola-lideranca", titulo: "Cursos de liderança", desc: "Comunicar e liderar pessoas", icon: GraduationCap },
-  { key: "workshops", titulo: "Formações", desc: "Próximas sessões e inscrição", icon: Calendar },
+  { key: "workshops", titulo: "Encontro do mês", desc: "Encontro gratuito à distância", icon: Calendar },
 ];
 const areasDesenvolvimento = [
   { key: "escola-ser", titulo: "Cursos de desenvolvimento", desc: "Autoconhecimento, emoções e crenças limitantes", icon: GraduationCap, full: true },
@@ -3371,35 +3339,24 @@ function AreaAlunoScreen({ onBack, onOpenCurso, cursosConcluidos, materiaisDesbl
 /* ---------------------------------------------------------
    Comunidade 3S
 --------------------------------------------------------- */
-function WorkshopsScreen({ onBack, inscricoes, onToggleInscricao }) {
+function WorkshopsScreen({ onBack }) {
+  const ev = EVENTOS_PUBLICOS[ENCONTRO_DO_MES];
+  const ativo = ev && new Date(ev.inicio).getTime() + 2 * 3600e3 > Date.now();
   return (
     <div className="pb-28">
-      <SectionHeader eyebrow="PRÓXIMAS" title="Formações" onBack={onBack} />
+      <SectionHeader eyebrow="ESTE MÊS" title="Encontro à distância" onBack={onBack} />
       <div className="px-6 space-y-3">
-        {workshops.map((w) => {
-          const inscrito = Boolean(inscricoes[w.id]);
-          return (
-            <div key={w.id} className="rounded-2xl px-5 py-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
-              <div className="flex items-center gap-3 text-xs mb-2" style={{ color: palette.navySoft }}>
-                <span className="flex items-center gap-1"><Clock size={12} />{w.data} · {w.hora}</span>
-                <span className="flex items-center gap-1"><MapPin size={12} />{w.local}</span>
-              </div>
-              <p className="font-serif text-lg leading-snug" style={{ color: palette.navy }}>{w.titulo}</p>
-              <p className="text-sm mt-1 leading-relaxed" style={{ color: palette.navySoft }}>{w.descricao}</p>
-              <button
-                onClick={() => onToggleInscricao(w.id)}
-                className="w-full rounded-full py-2.5 mt-4 text-sm font-medium tracking-wide transition active:scale-[0.98]"
-                style={
-                  inscrito
-                    ? { backgroundColor: "transparent", color: palette.navy, border: `1px solid ${palette.navy}` }
-                    : { backgroundColor: palette.navy, color: palette.creamSoft }
-                }
-              >
-                {inscrito ? "Inscrito ✓" : "Inscrever-me"}
-              </button>
-            </div>
-          );
-        })}
+        {ativo ? (
+          <div className="rounded-3xl px-5 py-6" style={{ background: `linear-gradient(160deg, ${palette.navy} 0%, #24436E 100%)` }}>
+            <p className="text-[10px] tracking-[0.25em] font-semibold" style={{ color: palette.gold }}>GRATUITO · À DISTÂNCIA</p>
+            <p className="font-serif text-2xl leading-tight mt-2" style={{ color: palette.creamSoft }}>{ev.titulo}</p>
+            <p className="text-sm mt-2 flex items-center gap-1.5" style={{ color: palette.goldSoft }}><Clock size={14} />{ev.data}</p>
+            <p className="text-sm mt-3 leading-relaxed" style={{ color: palette.creamSoft, opacity: 0.85 }}>{ev.descricao}</p>
+            <a href={`/?inscricao=${ENCONTRO_DO_MES}`} className="block text-center mt-5 rounded-full py-3 text-sm font-semibold" style={{ backgroundColor: palette.gold, color: palette.navy }}>Quero participar</a>
+          </div>
+        ) : (
+          <p className="text-sm" style={{ color: palette.navySoft }}>O próximo encontro à distância será anunciado em breve.</p>
+        )}
       </div>
     </div>
   );
@@ -7941,7 +7898,7 @@ function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFor
         )}
       </div>
 
-      <div className="px-6 mb-8">
+      {workshops.length > 0 && <div className="px-6 mb-8">
         <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>INSCRIÇÕES POR FORMAÇÃO</p>
         <div className="space-y-2">
           {workshops.map((w) => {
@@ -7957,7 +7914,7 @@ function PainelMentoraScreen({ onBack, progresso, onVerDashboard, onVerAcessoFor
             );
           })}
         </div>
-      </div>
+      </div>}
 
       <div className="px-6">
         <p className="text-[11px] tracking-[0.2em] font-medium mb-3" style={{ color: palette.gold }}>DISPONIBILIDADE ATUAL</p>
@@ -8632,8 +8589,11 @@ EVENTOS_PUBLICOS.dezembro = {
 };
 const TEXTO_CONSENTIMENTO_EVENTO = "Aceito que a Escola 3S guarde os meus dados (nome, correio eletrónico e telemóvel) para gerir a minha inscrição neste evento e me enviar a ligação e informações sobre ele.";
 
+// O único encontro à distância em destaque (atualizar a chave todos os meses)
+const ENCONTRO_DO_MES = "novembro";
+
 function BannerEncontro() {
-  const chaves = ["encontro"];
+  const chaves = [ENCONTRO_DO_MES];
   const chave = chaves.find((k) => EVENTOS_PUBLICOS[k] && new Date(EVENTOS_PUBLICOS[k].inicio).getTime() + 2 * 3600e3 > Date.now());
   if (!chave) return null;
   const ev = EVENTOS_PUBLICOS[chave];
