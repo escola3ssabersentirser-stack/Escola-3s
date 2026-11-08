@@ -3752,6 +3752,11 @@ function CursoInterativoScreen({ curso, estado, onGuardar, concluidoEm, onConclu
     <div className="pb-28">
       <SectionHeader eyebrow={escolaCurso ? escolaCurso.nome.toUpperCase() : "ESCOLA 3S"} title={curso.titulo} onBack={onBack} />
       <div className="px-6 space-y-5">
+        {[1, 30, 40].includes(curso.id) && (
+          <div className="rounded-2xl overflow-hidden" style={{ backgroundColor: palette.navy, boxShadow: "0 12px 28px -18px rgba(27,51,85,0.8)" }}>
+            <video src={`/videos/curso-${curso.id}.mp4`} poster={`/videos/curso-${curso.id}.jpg`} controls playsInline preload="metadata" className="w-full block" style={{ aspectRatio: "16 / 9" }} />
+          </div>
+        )}
         <div className="rounded-2xl px-5 py-5" style={{ backgroundColor: palette.navy }}>
           <p className="font-serif text-lg leading-snug" style={{ color: palette.creamSoft }}>“{curso.pergunta}”</p>
           <div className="flex gap-2 mt-4">
