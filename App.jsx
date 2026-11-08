@@ -3954,7 +3954,10 @@ function AulaInterativaScreen({ curso, indice, aula, dados, estadoCurso, onGuard
             </div>
             {APROFUNDAR[`${curso.id}-${indice + 1}`] && (() => { const v = APROFUNDAR[`${curso.id}-${indice + 1}`]; return (
               <a href={`https://www.youtube.com/watch?v=${v.id}`} target="_blank" rel="noopener noreferrer" className="flex gap-3 items-center rounded-2xl p-3" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}88` }}>
-                <img src={`https://i.ytimg.com/vi/${v.id}/mqdefault.jpg`} alt="" loading="lazy" className="w-28 rounded-lg flex-none" style={{ aspectRatio: "16 / 9", objectFit: "cover" }} />
+                <div className="relative w-28 rounded-lg flex-none overflow-hidden flex items-center justify-center" style={{ aspectRatio: "16 / 9", backgroundColor: palette.navy }}>
+                  <img src={`https://i.ytimg.com/vi/${v.id}/mqdefault.jpg`} alt="" loading="lazy" onError={(e) => { e.currentTarget.style.display = "none"; }} className="absolute inset-0 w-full h-full" style={{ objectFit: "cover" }} />
+                  <span className="relative w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: "rgba(0,0,0,.55)" }}><Play size={14} color="#fff" fill="#fff" /></span>
+                </div>
                 <div className="min-w-0">
                   <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>PARA APROFUNDAR</p>
                   <p className="text-sm font-semibold leading-snug mt-0.5" style={{ color: palette.navy }}>{v.titulo}</p>
