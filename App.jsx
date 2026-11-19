@@ -306,7 +306,7 @@ const TODOS_CURSOS = [
 ];
 
 // Cada escola mostra só o seu curso principal (+ Crenças grátis). Os outros ficam guardados, escondidos.
-const CURSOS_VISIVEIS = [1, 30, 40];
+const CURSOS_VISIVEIS = [1, 30]; // 40 (Atleta 3S) oculto com a escola de desporto
 // Capítulo do livro «Liderar com Saber, Sentir e Ser» ligado a cada aula · [n.º no índice do leitor, nome]
 const LIVRO_AULAS = {
   "1-1": [2, "Introdução — Liderar a partir de dentro", 130],
@@ -336,7 +336,7 @@ const APROFUNDAR = {
 }; // um curso por escola
 const cursos = TODOS_CURSOS.filter((c) => CURSOS_VISIVEIS.includes(c.id)); // Comunidade do mês retirada
 
-const materiais = [
+const TODOS_MATERIAIS = [
   { id: 1, titulo: "Guia de Reflexão Diária", formato: "PDF", preco: "8€", url: "/guia-reflexao-diaria.pdf" },
   { id: 2, titulo: "Caderno de Exercícios 3S", formato: "Caderno", preco: "4,99€", url: "/caderno-3s.pdf", tambemFisico: true, precoFisico: "18€" },
   { id: 3, titulo: "Planeador 3S", formato: "PDF", preco: "10€", url: "/planeador-3s.pdf" },
@@ -475,6 +475,8 @@ const materiais = [
   { id: 46, titulo: "Livro do Aluno — Zona de Conforto", formato: "Livro", preco: "6,99€", url: "/livro-zona-conforto.pdf" },
   { id: 47, titulo: "Caderno de Trabalho — Zona de Conforto", formato: "Caderno", preco: "4,99€", url: "/caderno-zona-conforto.pdf" },
 ];
+// Materiais da escola oculta (desporto) ficam guardados mas não aparecem na app
+const materiais = TODOS_MATERIAIS.filter((m) => !(m.id === 132 || (m.id >= 140 && m.id <= 147)));
 
 // Formações presenciais genéricas retiradas (nov 2026): fica só o encontro à distância do mês
 const workshops = [];
@@ -1116,6 +1118,7 @@ function AreasGrid({ onOpen, lista }) {
 /* ---------------------------------------------------------
    As escolas da Escola 3S: Liderança 3S e Vida 3S
 --------------------------------------------------------- */
+const ESCOLAS_OCULTAS = ["desporto"]; // para voltar a mostrar a escola de desporto, retirar daqui e repor 40 em CURSOS_VISIVEIS
 const ESCOLAS_3S = {
   lideranca: {
     secao: "lideranca-3s",
@@ -1171,7 +1174,7 @@ function EscolasDuplas({ publico, onAbrir }) {
   const irPara = (id) => { const el = document.getElementById(id); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); };
   return (
     <div className={`px-6 space-y-2 ${publico ? "mb-7" : "mb-4"}`}>
-      {Object.values(ESCOLAS_3S).map((e) => {
+      {Object.entries(ESCOLAS_3S).filter(([k]) => !ESCOLAS_OCULTAS.includes(k)).map(([, e]) => {
         const Icon = e.icon;
         return (
           <button
@@ -1195,7 +1198,7 @@ function EscolasDuplas({ publico, onAbrir }) {
           </button>
         );
       })}
-      {publico && <p className="text-xs text-center" style={{ color: palette.navySoft }}>Uma só conta dá acesso às três escolas.</p>}
+      {publico && <p className="text-xs text-center" style={{ color: palette.navySoft }}>Uma só conta dá acesso às duas escolas.</p>}
     </div>
   );
 }
@@ -2921,7 +2924,7 @@ function EscolherAreaSessaoScreen({ onBack, onEscolher }) {
       <SectionHeader eyebrow="MARCAR SESSÃO" title="Em que área queres trabalhar?" onBack={onBack} />
       <p className="px-6 -mt-2 mb-5 text-sm leading-relaxed" style={{ color: palette.navySoft }}>Cada área tem o seu coach. Escolhe a tua e vês logo os horários disponíveis. Coaching ou mentoria, 50 minutos, 30€.</p>
       <div className="px-6 space-y-2.5">
-        {Object.entries(ESCOLAS_3S).map(([area, e]) => {
+        {Object.entries(ESCOLAS_3S).filter(([k]) => !ESCOLAS_OCULTAS.includes(k)).map(([area, e]) => {
           const Icon = e.icon;
           return (
             <button key={area} onClick={() => onEscolher(area)} className="relative overflow-hidden w-full flex items-center gap-3 rounded-xl px-4 py-3 text-left transition active:scale-[0.98]" style={{ background: e.fundo, border: e.borda ? `1.5px solid ${e.borda}` : "none" }}>
@@ -3130,7 +3133,7 @@ function InicioScreen({ onOpen, email, papel, naoLidas, onVerAgenda, onVerNotifi
       <div className="px-6 mb-6">
         <div className="grid grid-cols-4 gap-2">
           {[
-            ...Object.values(ESCOLAS_3S).map((e) => ({ key: e.secao, titulo: e.mini, sub: "Coaching 3S", icon: e.icon, fundo: e.fundo, borda: e.borda, texto: e.texto, acento: e.acento })),
+            ...Object.entries(ESCOLAS_3S).filter(([k]) => !ESCOLAS_OCULTAS.includes(k)).map(([, e]) => ({ key: e.secao, titulo: e.mini, sub: "Coaching 3S", icon: e.icon, fundo: e.fundo, borda: e.borda, texto: e.texto, acento: e.acento })),
             { key: "marcar", titulo: "Sessões", sub: "coaching", icon: PenLine, fundo: palette.card, borda: palette.goldSoft, texto: palette.navy, acento: palette.gold },
             ...areasEscolaComuns.map((a) => ({ key: a.key, titulo: a.titulo, sub: "", icon: a.icon, fundo: palette.card, borda: palette.goldSoft, texto: palette.navy, acento: palette.gold })),
           ].map((c) => {
@@ -3144,7 +3147,7 @@ function InicioScreen({ onOpen, email, papel, naoLidas, onVerAgenda, onVerNotifi
             );
           })}
         </div>
-        <p className="text-xs text-center mt-2.5" style={{ color: palette.navySoft }}>Três escolas de coaching · sessões de coaching e mentoria a 30€</p>
+        <p className="text-xs text-center mt-2.5" style={{ color: palette.navySoft }}>Duas escolas de coaching · sessões de coaching e mentoria a 30€</p>
       </div>
       {(papel === "dona" || papel === "mentora") && (
         <div className="px-6 mb-6">
@@ -5881,7 +5884,7 @@ function MaterialDidaticoScreen({ onBack, desbloqueados, onDesbloquear, acessoTo
     <div className="pb-28">
       <SectionHeader eyebrow="FORMAÇÃO" title="Material Didático" onBack={onBack} backLabel="Formação" />
       <div className="px-6 grid grid-cols-1 gap-3">
-        {CARTOES_MATERIAL_DIDATICO.map((cartao) => {
+        {CARTOES_MATERIAL_DIDATICO.filter((c) => !ESCOLAS_OCULTAS.includes(c.chave)).map((cartao) => {
           const Icon = cartao.icon;
           return (
             <button
@@ -9319,7 +9322,7 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher, onDestino }) {
             <button onClick={onEntrar} className="text-[13px] font-medium rounded-full px-4 py-2" style={{ border: `1px solid ${palette.goldSoft}88`, color: palette.creamSoft }}>Entrar</button>
           </div>
           <p className="relative text-[11px] tracking-[0.3em] font-semibold mt-9" style={{ color: palette.gold }}>SABER · SENTIR · SER</p>
-          <h1 className="relative font-serif text-[40px] leading-[1.05] mt-3" style={{ color: palette.creamSoft }}>Uma filosofia.<br />Três escolas.<br /><span style={{ color: palette.gold }}>A tua evolução.</span></h1>
+          <h1 className="relative font-serif text-[40px] leading-[1.05] mt-3" style={{ color: palette.creamSoft }}>Uma filosofia.<br />Duas escolas.<br /><span style={{ color: palette.gold }}>A tua evolução.</span></h1>
           <p className="relative text-[15px] mt-4 leading-relaxed" style={{ color: palette.creamSoft, opacity: 0.85 }}>Coaching e mentoria para quem quer liderar com impacto, viver com propósito e treinar com consistência. Descobre o teu perfil gratuitamente e dá o próximo passo com um coach ao teu lado.</p>
           <div className="relative mt-6 space-y-2.5">
             <button onClick={() => marcar(null)} className="w-full rounded-full py-4 text-[15px] font-semibold transition active:scale-[0.98]" style={{ backgroundColor: palette.gold, color: palette.navy, boxShadow: "0 10px 26px -10px rgba(198,162,83,0.9)" }}>Marcar sessão de coaching</button>
@@ -9334,9 +9337,9 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher, onDestino }) {
 
         {/* AS TRÊS ESCOLAS */}
         <div className="px-6 pt-9" id="escolas">
-          {sec("TRÊS ESCOLAS", "Escolhe o teu caminho", "Cada escola tem um curso, um livro e um coach dedicado para sessões de coaching e mentoria.")}
+          {sec("DUAS ESCOLAS", "Escolhe o teu caminho", "Cada escola tem um curso, um livro e um coach dedicado para sessões de coaching e mentoria.")}
           <div className="space-y-4">
-            {Object.entries(ESCOLAS_3S).map(([chave, e]) => {
+            {Object.entries(ESCOLAS_3S).filter(([k]) => !ESCOLAS_OCULTAS.includes(k)).map(([chave, e]) => {
               const curso = (e.cursos || []).map((id) => TODOS_CURSOS.find((c) => c.id === id)).filter(Boolean)[0];
               const livro = materiais.find((m) => m.id === e.livro);
               const Icon = e.icon;
@@ -9414,7 +9417,7 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher, onDestino }) {
               {[
                 ["Clareza", "Sais de cada sessão a saber exatamente qual é o teu próximo passo."],
                 ["Um método com base científica", "Saber, Sentir e Ser: conhecimento, gestão emocional e coerência, apoiados em investigação reconhecida."],
-                ["Um coach dedicado à tua área", "Liderança, vida ou desporto: acompanhamento por quem conhece o teu contexto."],
+                ["Um coach dedicado à tua área", "Liderança ou vida: acompanhamento por quem conhece o teu contexto."],
               ].map(([t, d]) => (
                 <div key={t} className="flex gap-2.5">
                   <CheckCircle2 size={18} className="shrink-0 mt-0.5" style={{ color: palette.navy }} />
@@ -9427,7 +9430,7 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher, onDestino }) {
 
         {/* MÉTODO */}
         <div className="px-6 pt-10">
-          {sec("UMA FILOSOFIA", "O método 3S", "A mesma base nas três escolas: conhecer, sentir e agir de acordo com quem és.")}
+          {sec("UMA FILOSOFIA", "O método 3S", "A mesma base nas duas escolas: conhecer, sentir e agir de acordo com quem és.")}
           <div className="grid grid-cols-3 gap-2">
             {[["Saber", "cabeça", "Método e conhecimento"], ["Sentir", "coração", "Emoções e relação"], ["Ser", "identidade", "Valores e hábitos"]].map(([n, s2, d]) => (
               <div key={n} className="rounded-2xl px-3 py-4 text-center" style={{ backgroundColor: palette.navy }}>
@@ -9464,7 +9467,7 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher, onDestino }) {
             <button onClick={() => marcar(null)} className="mt-5 w-full rounded-full py-3.5 text-sm font-semibold" style={{ backgroundColor: palette.gold, color: palette.navy }}>Marcar sessão de coaching</button>
             <button onClick={onEntrar} className="mt-3 text-[13px] underline underline-offset-2" style={{ color: palette.goldSoft }}>Já tenho conta</button>
           </div>
-          <p className="text-xs text-center mt-6" style={{ color: palette.navySoft }}>Escola 3S · Leadership, Life e Sports Coaching · Saber · Sentir · Ser</p>
+          <p className="text-xs text-center mt-6" style={{ color: palette.navySoft }}>Escola 3S · Leadership e Life Coaching · Saber · Sentir · Ser</p>
         </div>
       </div>
 
@@ -10584,7 +10587,7 @@ export default function App() {
             <div style={{ width: 110, height: 2, borderRadius: 2, background: "rgba(220,196,138,0.22)", overflow: "hidden" }}>
               <div style={{ width: "40%", height: "100%", background: palette.gold, animation: "carregar 1.3s ease-in-out infinite" }} />
             </div>
-            <p style={{ margin: "14px 0 0", fontSize: 10, letterSpacing: "0.25em", color: "rgba(247,238,221,0.6)" }}>LIDERANÇA · VIDA · DESPORTO</p>
+            <p style={{ margin: "14px 0 0", fontSize: 10, letterSpacing: "0.25em", color: "rgba(247,238,221,0.6)" }}>LIDERANÇA · VIDA</p>
           </div>
         </div>
       </>
