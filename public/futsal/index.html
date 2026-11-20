@@ -309,6 +309,8 @@ async function carregar(){
   await carregarReunioes();
   const idsM=S.meus.map(j=>j.id);
   S.av360=idsM.length?(await q(sb.from('fut_avaliacoes_360').select('jogador_id,respondente_tipo,autor_id').eq('trimestre',trimAtual()).in('jogador_id',idsM))||[]):[];
+  S.exames=idsM.length?(await q(sb.from('fut_exames').select('jogador_id,data,valido_ate,resultado').in('jogador_id',idsM).order('data',{ascending:false}))||[]):[];
+  S.pagPend=idsM.length?(await q(sb.from('fut_pagamentos').select('*').in('jogador_id',idsM).in('estado',['pendente','avisado']))||[]):[];
   // presenças dos próximos eventos (pais: só dos filhos)
   const prox=S.eventos.filter(e=>e.data>=addDias(-1)).map(e=>e.id);
   S.presencas=prox.length?(await q(sb.from('fut_presencas').select('*').in('evento_id',prox))||[]):[];
@@ -358,6 +360,12 @@ function vInicio(){
   }
   const reu=(S.reunioes||[]).find(r=>r.data>=hoje()&&r.estado!=='cancelada'&&(isCoach()||!r.jogador_id||S.meus.some(m=>m.id===r.jogador_id)));
   if(reu){const jr=reu.jogador_id&&S.jogadores.find(x=>x.id===reu.jogador_id);h+=`<div class="card"><div class="row between"><h2>🤝 Próxima reunião</h2><span class="chip ${ESTADOS_REUNIAO[reu.estado][1]}">${ESTADOS_REUNIAO[reu.estado][0]}</span></div><p style="margin:0;font-weight:600">${TIPOS_REUNIAO[reu.tipo]}${jr?' · '+esc(primeiro(jr.nome)):''}</p><p class="muted" style="margin:2px 0 10px">${diaSemana(reu.data)}, ${dataCurta(reu.data)} · ${esc(reu.hora||'')}${reu.assunto?' · '+esc(reu.assunto):''}</p><button class="btn ghost full sm" onclick="S.agTab='reunioes';irPara('agenda')">Ver reuniões</button></div>`}
+  {const ultEx=j=>S.exames.find(e=>e.jogador_id===j.id);
+   const probEx=S.meus.map(j=>[j,estadoExame(ultEx(j))]).filter(([,e])=>e[1]!=='mint');
+   if(probEx.length)h+=`<div class="card"><h2>🩺 Exames médicos</h2><div class="list">${probEx.slice(0,6).map(([j,e])=>`<button class="item" onclick="abrirJogador('${j.id}','ficha')"><div class="av">${iniciais(j.nome)}</div><div class="grow"><b>${esc(j.nome)}</b><div><span class="chip ${e[1]}">${e[0]}</span></div></div></button>`).join('')}</div>${probEx.length>6?`<p class="faint">e mais ${probEx.length-6}.</p>`:''}</div>`;
+   const pend=S.pagPend||[];
+   if(pend.length){const tot=pend.filter(p=>p.estado==='pendente').reduce((s,p)=>s+Number(p.valor),0);const av=pend.filter(p=>p.estado==='avisado').length;
+     h+=`<div class="card"><h2>💶 Pagamentos</h2><p class="muted" style="margin-top:0">${isCoach()?`${euro(tot)} por receber${av?` · ${av} pai(s) avisaram que já pagaram`:''}.`:`Tem ${euro(tot)} por pagar.`}</p>${isCoach()?'<button class="btn ghost full sm" onclick="painelPagamentos()">Ver pagamentos</button>':S.meus.filter(j=>pend.some(p=>p.jogador_id===j.id)).map(j=>`<button class="btn ghost full sm" style="margin-top:6px" onclick="abrirJogador('${j.id}','pagamentos')">Pagamentos de ${esc(primeiro(j.nome))}</button>`).join('')}</div>`}}
   const tipoEu=isCoach()?'treinador':'pai';
   const faltam=S.meus.filter(j=>!(S.av360||[]).some(a=>a.jogador_id===j.id&&a.respondente_tipo===tipoEu&&a.autor_id===S.me));
   if(S.meus.length&&faltam.length){h+=`<div class="card" style="border:2px solid var(--gold)"><h2>📋 Avaliação trimestral</h2><p class="muted" style="margin-top:0">${trimLabel(trimAtual())}: ${isCoach()?`falta avaliar ${faltam.length} de ${S.meus.length} jogadores.`:'responda ao questionário de 4 minutos sobre o desenvolvimento do seu filho.'}</p>${faltam.slice(0,isCoach()?3:4).map(j=>`<button class="btn gold full sm" style="margin-top:6px" onclick="responder360('${j.id}')">Avaliar ${esc(primeiro(j.nome))}</button>`).join('')}${isCoach()&&faltam.length>3?`<button class="btn ghost full sm" style="margin-top:6px" onclick="irPara('jogadores')">Ver todos</button>`:''}</div>`}
@@ -477,7 +485,7 @@ function blocoTreinador(e){
     const r={vai:'✅',talvez:'🤔',nao_vai:'❌'}[p.resposta]||'⏳';
     return `<div><div class="row between"><div class="grow"><b>${r} ${esc(j.nome)}</b>${p.minutos!=null?`<div class="faint">${p.minutos} min${p.esforco?' · esforço '+p.esforco+'/5':''}${p.atitude?' · atitude '+p.atitude+'/5':''}</div>`:''}</div>
       ${e.tipo==='jogo'&&!passado?`<button class="btn sm ${p.convocado?'gold':'ghost'}" onclick="convocar('${e.id}','${j.id}',${!p.convocado})">${p.convocado?'Convocado':'Convocar'}</button>`:''}
-      ${passado?`<button class="btn ghost sm" onclick="registoJogador('${e.id}','${j.id}')">Registar</button>`:''}</div></div>`}).join('')}</div>
+      ${passado?`<button class="btn sm ${p.presente===true?'':'ghost'}" aria-label="Presente" onclick="marcarPresente('${e.id}','${j.id}',true)">✔</button><button class="btn sm ${p.presente===false?'red':'ghost'}" aria-label="Faltou" onclick="marcarPresente('${e.id}','${j.id}',false)">✖</button><button class="btn ghost sm" onclick="registoJogador('${e.id}','${j.id}')">Registar</button>`:''}</div></div>`}).join('')}</div>
   ${passado&&e.tipo==='jogo'?`<button class="btn ghost full sm" style="margin-top:10px" onclick="resultadoJogo('${e.id}')">Resultado do jogo</button>`:''}</div>`;
 }
 async function convocar(ev,j,v){
@@ -539,7 +547,7 @@ async function vJogadores(){
     if(evJ.length){const ps=await q(sb.from('fut_presencas').select('jogador_id,minutos').in('evento_id',evJ));(ps||[]).forEach(p=>mins[p.jogador_id]=(mins[p.jogador_id]||0)+(p.minutos||0))}
   }
   const maxMin=Math.max(1,...Object.values(mins));
-  m.innerHTML=`<div class="card">${lista.length?`<div class="list">${lista.map(j=>`<button class="item" onclick="abrirJogador('${j.id}')"><div class="av">${j.numero??iniciais(j.nome)}</div><div class="grow"><b>${esc(j.nome)}</b><div class="muted">${esc(j.posicao||'')}${j.ano_escolar?' · '+esc(j.ano_escolar):''}</div>
+  m.innerHTML=`${isCoach()&&lista.length?`<div class="row" style="margin-bottom:14px;gap:8px"><button class="btn ghost grow" style="background:var(--card);box-shadow:0 6px 20px var(--shadow)" onclick="mapaPresencas()">📋 Presenças</button><button class="btn ghost grow" style="background:var(--card);box-shadow:0 6px 20px var(--shadow)" onclick="painelPagamentos()">💶 Pagamentos</button></div>`:''}<div class="card">${lista.length?`<div class="list">${lista.map(j=>`<button class="item" onclick="abrirJogador('${j.id}')"><div class="av">${j.numero??iniciais(j.nome)}</div><div class="grow"><b>${esc(j.nome)}</b><div class="muted">${esc(j.posicao||'')}${j.ano_escolar?' · '+esc(j.ano_escolar):''}</div>
     ${isCoach()?`<div class="bar mint" style="margin-top:6px" title="minutos"><i style="width:${Math.round((mins[j.id]||0)/maxMin*100)}%"></i></div><div class="faint">${mins[j.id]||0} min jogados nos últimos 60 dias</div>`:''}</div><span class="faint">›</span></button>`).join('')}</div>`
     :`<p class="empty">${isCoach()?'Ainda não há jogadores. Os pais registam os filhos quando entram com o código da equipa, ou pode registá-los aqui.':'Ainda não registou o seu filho.'}</p>`}
     <button class="btn gold full" style="margin-top:12px" onclick="adicionarFilho()">+ ${isCoach()?'Registar jogador':'Registar filho(a)'}</button>
@@ -566,14 +574,14 @@ async function guardarFilho(){
 }
 function abrirJogador(id,tab){S.tab='jogadores';S.jog=id;S.jogTab=tab||'resumo';closeSheet();render();window.scrollTo(0,0)}
 
-const JTABS=[['resumo','Resumo'],['avaliacao','Avaliação 3S'],['melhorar','A melhorar'],['escola','Escola'],['evolucao','Evolução'],['objetivos','Objetivos'],['desafios','Desafios'],['emocoes','Emoções'],['rotina','Rotina'],['conversa','Conversa']];
+const JTABS=[['resumo','Resumo'],['avaliacao','Avaliação 3S'],['ficha','Ficha'],['presencas','Presenças'],['pagamentos','Pagamentos'],['melhorar','A melhorar'],['escola','Escola'],['evolucao','Evolução'],['objetivos','Objetivos'],['desafios','Desafios'],['emocoes','Emoções'],['rotina','Rotina'],['conversa','Conversa']];
 async function vJogador(){
   const j=S.jogadores.find(x=>x.id===S.jog);if(!j){S.jog=null;return vJogadores()}
   const m=$('#main');
   m.innerHTML=`<div class="card"><div class="row"><button class="btn ghost sm" onclick="S.jog=null;render()">‹</button><div class="av">${j.numero??iniciais(j.nome)}</div><div class="grow"><h2 style="margin:0">${esc(j.nome)}</h2><div class="muted">${esc(j.posicao||'')}${j.ano_escolar?' · '+esc(j.ano_escolar):''}</div></div><button class="btn ghost sm" onclick="editarJogador()">⚙</button></div></div>
   <div class="seg">${JTABS.map(([k,l])=>`<button class="${S.jogTab===k?'on':''}" onclick="S.jogTab='${k}';vJogador()">${l}</button>`).join('')}</div>
   <div id="jBody"><div class="card"><p class="empty">A carregar…</p></div></div>`;
-  const f={resumo:jResumo,avaliacao:jAvaliacao,melhorar:jMelhorar,escola:jEscola,evolucao:jEvolucao,objetivos:jObjetivos,desafios:jDesafios,emocoes:jEmocoes,rotina:jRotina,conversa:jConversa}[S.jogTab];
+  const f={resumo:jResumo,avaliacao:jAvaliacao,ficha:jFicha,presencas:jPresencas,pagamentos:jPagamentos,melhorar:jMelhorar,escola:jEscola,evolucao:jEvolucao,objetivos:jObjetivos,desafios:jDesafios,emocoes:jEmocoes,rotina:jRotina,conversa:jConversa}[S.jogTab];
   $('#jBody').innerHTML=await f(j);
   if(S.jogTab==='conversa'){const b=$('#chatEnd');if(b)b.scrollIntoView()}
 }
@@ -1172,6 +1180,171 @@ async function montarDocx(D,R){
       children:filhos}]
   });
   return Packer.toBlob(doc);
+}
+
+/* ---------- ficha do jogador ---------- */
+const idade=d=>{if(!d)return null;const n=new Date(d+'T12:00'),h=new Date();let a=h.getFullYear()-n.getFullYear();if(h<new Date(h.getFullYear(),n.getMonth(),n.getDate()))a--;return a};
+const RESULT_EXAME={apto:['Apto','mint'],apto_condicionado:['Apto com restrições','gold'],nao_apto:['Não apto','red']};
+function estadoExame(ex){
+  if(!ex)return ['Sem exame registado','red'];
+  if(ex.resultado==='nao_apto')return ['Não apto','red'];
+  if(!ex.valido_ate)return [RESULT_EXAME[ex.resultado][0],RESULT_EXAME[ex.resultado][1]];
+  const dias=Math.round((new Date(ex.valido_ate+'T12:00')-new Date(hoje()+'T12:00'))/864e5);
+  if(dias<0)return ['Exame caducado','red'];
+  if(dias<=30)return [`Caduca em ${dias} dia${dias===1?'':'s'}`,'gold'];
+  return [`Válido até ${dataCurta(ex.valido_ate)} ${ex.valido_ate.slice(0,4)}`,'mint'];
+}
+async function jFicha(j){
+  const [fi,med,ex]=await Promise.all([
+    q(sb.from('fut_fichas').select('*').eq('jogador_id',j.id).maybeSingle()),
+    q(sb.from('fut_medidas').select('*').eq('jogador_id',j.id).order('data')),
+    q(sb.from('fut_exames').select('*').eq('jogador_id',j.id).order('data',{ascending:false}))
+  ]);
+  const f=fi||{};const m=med||[];const ult=m[m.length-1];const exs=ex||[];const est=estadoExame(exs[0]);
+  const linha=(r,v)=>`<div class="row between" style="padding:7px 0;border-top:1px solid var(--line)"><span class="muted">${r}</span><b style="font-size:14px;text-align:right">${v||'<span class="faint">—</span>'}</b></div>`;
+  const alt=m.filter(x=>x.altura);
+  return `<div class="card"><div class="row between"><h3 style="margin:0">Dados do jogador</h3><button class="btn ghost sm" onclick="editarFicha()">Editar</button></div>
+    <div style="margin-top:8px">
+    ${linha('Nome',esc(j.nome))}
+    ${linha('Data de nascimento',f.data_nascimento?`${new Date(f.data_nascimento+'T12:00').toLocaleDateString('pt-PT')} (${idade(f.data_nascimento)} anos)`:'')}
+    ${linha('N.º camisola',j.numero??'')}
+    ${linha('Posição',esc(j.posicao||''))}
+    ${linha('Pé dominante',esc(f.pe_dominante||''))}
+    ${linha('Tamanho do equipamento',esc(f.tamanho_equip||''))}
+    ${linha('Ano escolar',esc(j.ano_escolar||''))}
+    ${linha('Contacto de emergência',esc(f.contacto_emergencia||''))}
+    ${linha('Saúde (alergias, cuidados)',esc(f.saude_notas||''))}
+    </div><p class="faint" style="margin:8px 0 0">🔒 Só a família e o treinador veem estes dados.</p></div>
+  <div class="card"><div class="row between"><h3 style="margin:0">📏 Peso e altura</h3><button class="btn ghost sm" onclick="novaMedida()">+ Registar</button></div>
+    ${ult?`<div class="kpis" style="grid-template-columns:repeat(2,1fr);margin-top:10px"><div class="kpi"><b>${ult.peso!=null?String(ult.peso).replace('.',','):'–'}</b><small>kg</small></div><div class="kpi"><b>${ult.altura!=null?String(ult.altura).replace('.',','):'–'}</b><small>cm</small></div></div>
+    <p class="faint" style="margin:6px 0 0">Última medição: ${new Date(ult.data+'T12:00').toLocaleDateString('pt-PT')}</p>
+    ${alt.length>1?`<p class="muted" style="margin:8px 0 0">Cresceu ${String(Math.round((alt[alt.length-1].altura-alt[0].altura)*10)/10).replace('.',',')} cm desde ${new Date(alt[0].data+'T12:00').toLocaleDateString('pt-PT')}.</p>`:''}
+    <div class="list" style="margin-top:8px">${[...m].reverse().slice(0,6).map(x=>`<div class="row between"><span class="muted">${new Date(x.data+'T12:00').toLocaleDateString('pt-PT')}</span><span>${x.peso!=null?String(x.peso).replace('.',',')+' kg':''} ${x.altura!=null?'· '+String(x.altura).replace('.',',')+' cm':''}</span><button class="btn red sm" aria-label="Apagar medição" onclick="apagarMedida('${x.id}')">✕</button></div>`).join('')}</div>`
+    :'<p class="empty">Ainda sem medições.</p>'}</div>
+  <div class="card"><div class="row between"><h3 style="margin:0">🩺 Exame médico desportivo</h3><button class="btn ghost sm" onclick="novoExame()">+ Registar</button></div>
+    <p style="margin:10px 0"><span class="chip ${est[1]}">${est[0]}</span></p>
+    ${exs.length?`<div class="list">${exs.map(e=>`<div><div class="row between"><b style="font-size:14px">${new Date(e.data+'T12:00').toLocaleDateString('pt-PT')}</b><span class="chip ${RESULT_EXAME[e.resultado][1]}">${RESULT_EXAME[e.resultado][0]}</span></div><div class="muted">${e.valido_ate?'Válido até '+new Date(e.valido_ate+'T12:00').toLocaleDateString('pt-PT'):''}${e.medico?' · '+esc(e.medico):''}${e.notas?'<br>'+esc(e.notas):''}</div><button class="btn red sm" style="margin-top:4px" onclick="apagarExame('${e.id}')">Apagar</button></div>`).join('')}</div>`:'<p class="muted" style="margin:0">Registe a data do exame e até quando é válido. O treinador recebe um aviso quando estiver a caducar.</p>'}</div>`;
+}
+async function editarFicha(){
+  const j=S.jogadores.find(x=>x.id===S.jog);
+  const f=await q(sb.from('fut_fichas').select('*').eq('jogador_id',j.id).maybeSingle())||{};
+  openSheet(`<h2>Dados de ${esc(primeiro(j.nome))}</h2>
+  <label class="f" for="fNome">Nome</label><input id="fNome" class="in" value="${esc(j.nome)}">
+  <div class="row"><div class="grow"><label class="f" for="fNum">N.º camisola</label><input id="fNum" type="number" class="in" value="${j.numero??''}"></div>
+  <div class="grow"><label class="f" for="fPos">Posição</label><select id="fPos" class="in"><option value="">—</option>${['Guarda-redes','Fixo','Ala','Pivô','Universal'].map(p=>`<option ${j.posicao===p?'selected':''}>${p}</option>`).join('')}</select></div></div>
+  <label class="f" for="fNasc">Data de nascimento</label><input id="fNasc" type="date" class="in" value="${f.data_nascimento||''}">
+  <div class="row"><div class="grow"><label class="f" for="fPe">Pé dominante</label><select id="fPe" class="in"><option value="">—</option>${['Direito','Esquerdo','Ambos'].map(p=>`<option ${f.pe_dominante===p?'selected':''}>${p}</option>`).join('')}</select></div>
+  <div class="grow"><label class="f" for="fTam">Equipamento</label><select id="fTam" class="in"><option value="">—</option>${['4 anos','6 anos','8 anos','10 anos','12 anos','14 anos','XS','S','M','L','XL'].map(p=>`<option ${f.tamanho_equip===p?'selected':''}>${p}</option>`).join('')}</select></div></div>
+  <label class="f" for="fAno">Ano escolar</label><input id="fAno" class="in" value="${esc(j.ano_escolar||'')}">
+  <label class="f" for="fEme">Contacto de emergência</label><input id="fEme" class="in" value="${esc(f.contacto_emergencia||'')}" placeholder="Nome e telemóvel">
+  <label class="f" for="fSau">Saúde: alergias, asma, medicação, cuidados</label><textarea id="fSau" class="in" placeholder="O que o treinador deve saber">${esc(f.saude_notas||'')}</textarea>
+  <button class="btn full" style="margin-top:14px" onclick="guardarFicha()">Guardar</button>`);
+}
+async function guardarFicha(){
+  if(!g('fNome')){toast('Escreva o nome');return}
+  await q(sb.from('fut_jogadores').update({nome:g('fNome'),numero:g('fNum')?parseInt(g('fNum')):null,posicao:g('fPos')||null,ano_escolar:g('fAno')||null}).eq('id',S.jog));
+  await q(sb.from('fut_fichas').upsert({jogador_id:S.jog,data_nascimento:g('fNasc')||null,pe_dominante:g('fPe')||null,tamanho_equip:g('fTam')||null,contacto_emergencia:g('fEme')||null,saude_notas:g('fSau')||null,updated_at:new Date().toISOString()},{onConflict:'jogador_id'}));
+  closeSheet();await carregar();vJogador();toast('Ficha guardada');
+}
+function novaMedida(){openSheet(`<h2>Peso e altura</h2>
+  <label class="f" for="mData">Data</label><input id="mData" type="date" class="in" value="${hoje()}">
+  <div class="row"><div class="grow"><label class="f" for="mPeso">Peso (kg)</label><input id="mPeso" class="in" inputmode="decimal" placeholder="Ex.: 32,5"></div><div class="grow"><label class="f" for="mAlt">Altura (cm)</label><input id="mAlt" class="in" inputmode="decimal" placeholder="Ex.: 138"></div></div>
+  <button class="btn full" style="margin-top:14px" onclick="guardarMedida()">Guardar</button>`)}
+async function guardarMedida(){
+  const n=v=>{v=String(v).replace(',','.').trim();return v===''?null:parseFloat(v)};
+  const peso=n(g('mPeso')),alt=n(g('mAlt'));
+  if(peso==null&&alt==null){toast('Escreva o peso ou a altura');return}
+  if((peso!=null&&(isNaN(peso)||peso<8||peso>150))||(alt!=null&&(isNaN(alt)||alt<70||alt>220))){toast('Verifique os valores (peso em kg, altura em cm)');return}
+  await q(sb.from('fut_medidas').insert({jogador_id:S.jog,data:g('mData')||hoje(),peso,altura:alt}));closeSheet();vJogador();toast('Guardado');
+}
+async function apagarMedida(id){await q(sb.from('fut_medidas').delete().eq('id',id));vJogador()}
+function novoExame(){openSheet(`<h2>Exame médico desportivo</h2>
+  <label class="f" for="xData">Data do exame</label><input id="xData" type="date" class="in" value="${hoje()}" onchange="const d=new Date(this.value+'T12:00');d.setFullYear(d.getFullYear()+1);document.getElementById('xVal').value=d.toISOString().slice(0,10)">
+  <label class="f" for="xVal">Válido até</label><input id="xVal" type="date" class="in" value="${(()=>{const d=new Date();d.setFullYear(d.getFullYear()+1);return d.toISOString().slice(0,10)})()}">
+  <label class="f" for="xRes">Resultado</label><select id="xRes" class="in"><option value="apto">Apto</option><option value="apto_condicionado">Apto com restrições</option><option value="nao_apto">Não apto</option></select>
+  <label class="f" for="xMed">Médico / clínica (opcional)</label><input id="xMed" class="in">
+  <label class="f" for="xNot">Notas (opcional)</label><textarea id="xNot" class="in" placeholder="Restrições, recomendações"></textarea>
+  <button class="btn full" style="margin-top:14px" onclick="guardarExame()">Guardar</button>`)}
+async function guardarExame(){if(!g('xData')){toast('Escolha a data');return}
+  await q(sb.from('fut_exames').insert({jogador_id:S.jog,data:g('xData'),valido_ate:g('xVal')||null,resultado:g('xRes'),medico:g('xMed')||null,notas:g('xNot')||null}));closeSheet();vJogador();toast('Exame registado')}
+async function apagarExame(id){await q(sb.from('fut_exames').delete().eq('id',id));vJogador()}
+
+/* ---------- cartão de presenças ---------- */
+function marcaPresenca(p){if(!p)return ['–','faint','Sem registo'];if(p.presente===true)return ['✔','mint','Presente'];if(p.presente===false)return [p.resposta==='nao_vai'?'J':'✖',p.resposta==='nao_vai'?'gold':'red',p.resposta==='nao_vai'?'Faltou (avisou)':'Faltou'];if(p.resposta==='nao_vai')return ['J','gold','Avisou que faltava'];return ['–','faint','Sem registo']}
+async function jPresencas(j){
+  const evs=await q(sb.from('fut_eventos').select('*').eq('equipa_id',S.eq.id).lte('data',hoje()).gte('data',addDias(-180)).order('data',{ascending:false}))||[];
+  const pres=evs.length?(await q(sb.from('fut_presencas').select('*').eq('jogador_id',j.id).in('evento_id',evs.map(e=>e.id)))||[]):[];
+  const pm=Object.fromEntries(pres.map(p=>[p.evento_id,p]));
+  const conta=t=>{const es=evs.filter(e=>e.tipo===t);const pr=es.filter(e=>pm[e.id]?.presente===true).length;return [pr,es.length]};
+  const [pt,tt]=conta('treino'),[pj,tj]=conta('jogo');
+  let seq=0;for(const e of evs){if(pm[e.id]?.presente===true)seq++;else if(pm[e.id]?.presente===false)break}
+  const pctT=tt?Math.round(pt/tt*100):0;
+  return `<div class="card" style="background:var(--navy);color:#fff"><div class="row between"><div><div style="font-size:12px;opacity:.75">CARTÃO DE PRESENÇAS</div><h2 style="color:#fff;margin:2px 0 0">${esc(j.nome)}</h2><div style="font-size:13px;opacity:.8">${esc(S.eq.nome)} · últimos 6 meses</div></div><div>${ESCUDO(40)}</div></div>
+    <div class="kpis" style="margin-top:14px"><div class="kpi" style="background:rgba(255,255,255,.1)"><b style="color:#fff">${pctT}%</b><small style="color:#E7EAF1">treinos (${pt}/${tt})</small></div><div class="kpi" style="background:rgba(255,255,255,.1)"><b style="color:#fff">${pj}/${tj}</b><small style="color:#E7EAF1">jogos</small></div><div class="kpi" style="background:rgba(255,255,255,.1)"><b style="color:var(--gold)">${seq}</b><small style="color:#E7EAF1">seguidas</small></div></div>
+    <div class="bar" style="margin-top:12px;background:rgba(255,255,255,.15)"><i style="width:${pctT}%"></i></div>
+    <p style="margin:10px 0 0;font-size:13px;opacity:.85">${pctT>=90?'🏅 Assiduidade de ouro!':pctT>=75?'💪 Muito assíduo, continua!':tt?'Cada treino conta. Vamos a isso!':'Ainda sem treinos registados.'}</p></div>
+  <div class="card"><h3>Registo</h3><p class="faint" style="margin-top:0">✔ presente · ✖ faltou · J avisou que faltava · – sem registo</p>
+    ${evs.length?`<div class="list">${evs.slice(0,40).map(e=>{const mk=marcaPresenca(pm[e.id]);return `<div class="row"><span class="chip ${mk[1]==='faint'?'':mk[1]}" style="min-width:34px;justify-content:center" aria-label="${mk[2]}">${mk[0]}</span><div class="grow"><b style="font-size:14px">${e.tipo==='jogo'?'⚽ Jogo vs '+esc(e.adversario||''):'🏃 Treino'}</b><div class="faint">${diaSemana(e.data)}, ${new Date(e.data+'T12:00').toLocaleDateString('pt-PT')}</div></div></div>`}).join('')}</div>`:'<p class="empty">Ainda sem treinos ou jogos passados.</p>'}</div>`;
+}
+async function mapaPresencas(){
+  const evs=(await q(sb.from('fut_eventos').select('*').eq('equipa_id',S.eq.id).lte('data',hoje()).order('data',{ascending:false}).limit(10))||[]).reverse();
+  if(!evs.length){openSheet('<h2>Mapa de presenças</h2><p class="empty">Ainda sem treinos ou jogos passados.</p>');return}
+  const pres=await q(sb.from('fut_presencas').select('*').in('evento_id',evs.map(e=>e.id)))||[];
+  const pm={};pres.forEach(p=>pm[p.evento_id+'|'+p.jogador_id]=p);
+  openSheet(`<h2>Mapa de presenças</h2><p class="muted">Últimos ${evs.length} treinos e jogos. Toque num nome para ver o cartão.</p>
+  <div style="overflow-x:auto;margin-top:8px"><table style="border-collapse:collapse;font-size:13px;min-width:100%">
+  <tr><th style="text-align:left;padding:6px;position:sticky;left:0;background:var(--bg)">Jogador</th>${evs.map(e=>`<th style="padding:4px;font-weight:600;color:var(--soft);white-space:nowrap">${e.tipo==='jogo'?'⚽':''}${new Date(e.data+'T12:00').getDate()}/${new Date(e.data+'T12:00').getMonth()+1}</th>`).join('')}<th style="padding:4px">%</th></tr>
+  ${S.jogadores.map(j=>{let pr=0;const cel=evs.map(e=>{const p=pm[e.id+'|'+j.id];if(p?.presente)pr++;const mk=marcaPresenca(p);return `<td style="text-align:center;padding:5px;color:var(--${mk[1]==='faint'?'faint':mk[1]==='mint'?'mint':mk[1]==='gold'?'gold':'red'})" title="${mk[2]}">${mk[0]}</td>`}).join('');
+    return `<tr style="border-top:1px solid var(--line)"><td style="padding:6px;white-space:nowrap;position:sticky;left:0;background:var(--bg)"><button style="border:0;background:none;padding:0;font-weight:600;color:var(--ink);font-size:13px" onclick="abrirJogador('${j.id}','presencas')">${esc(j.nome.split(' ')[0])} ${esc((j.nome.split(' ').slice(-1)[0]||'')[0]||'')}.</button></td>${cel}<td style="text-align:center;font-weight:700">${Math.round(pr/evs.length*100)}%</td></tr>`}).join('')}
+  </table></div><p class="faint">Para marcar presenças, abra o treino na Agenda e toque em ✔ ou ✖.</p>`);
+}
+async function marcarPresente(ev,j,v){
+  await q(sb.from('fut_presencas').upsert({evento_id:ev,jogador_id:j,presente:v},{onConflict:'evento_id,jogador_id'}));
+  const p=respostaDe(ev,j);if(p)p.presente=v;else S.presencas.push({evento_id:ev,jogador_id:j,presente:v});
+  abrirEvento(ev);
+}
+
+/* ---------- pagamentos ---------- */
+const ESTADO_PAG={pendente:['Por pagar','red'],avisado:['Pago? (a confirmar)','gold'],pago:['Pago','mint'],isento:['Isento','']};
+const mesLabel=m=>{const [y,mm]=m.split('-');return ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'][+mm-1]+' '+y};
+const euro=v=>Number(v||0).toLocaleString('pt-PT',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
+async function jPagamentos(j){
+  const ps=await q(sb.from('fut_pagamentos').select('*').eq('jogador_id',j.id).order('mes',{ascending:false}))||[];
+  const dev=ps.filter(p=>p.estado==='pendente'),tot=dev.reduce((s,p)=>s+Number(p.valor),0);
+  return `<div class="card"><div class="kpis" style="grid-template-columns:repeat(2,1fr)"><div class="kpi"><b style="color:${tot?'var(--red)':'var(--mint)'}">${euro(tot)}</b><small>por pagar</small></div><div class="kpi"><b>${ps.filter(p=>p.estado==='pago').length}</b><small>pagamentos feitos</small></div></div>
+    ${isCoach()?`<button class="btn ghost full sm" style="margin-top:12px" onclick="novoPagamento('${j.id}')">+ Acrescentar pagamento</button>`:'<p class="faint" style="margin:10px 0 0">Depois de pagar, toque em «Já paguei» para o treinador confirmar.</p>'}</div>
+  <div class="card">${ps.length?`<div class="list">${ps.map(p=>{const e=ESTADO_PAG[p.estado];return `<div><div class="row between"><div class="grow"><b style="font-size:14px">${esc(p.descricao)} · ${mesLabel(p.mes)}</b><div class="muted">${euro(p.valor)}${p.pago_em?' · pago a '+new Date(p.pago_em+'T12:00').toLocaleDateString('pt-PT'):''}${p.metodo?' · '+esc(p.metodo):''}</div></div><span class="chip ${e[1]}">${e[0]}</span></div>
+    <div class="row" style="margin-top:6px;gap:6px">${!isCoach()&&p.estado==='pendente'?`<button class="btn sm" onclick="avisarPagamento('${p.id}')">Já paguei</button>`:''}${isCoach()&&p.estado!=='pago'?`<button class="btn sm" onclick="confirmarPagamento('${p.id}')">✔ Marcar pago</button>`:''}${isCoach()&&p.estado==='pago'?`<button class="btn ghost sm" onclick="estadoPagamento('${p.id}','pendente')">Desfazer</button>`:''}${isCoach()?`<button class="btn red sm" onclick="apagarPagamento('${p.id}')">Apagar</button>`:''}</div></div>`}).join('')}</div>`:'<p class="empty">Sem pagamentos registados.</p>'}</div>`;
+}
+function avisarPagamento(id){openSheet(`<h2>Já paguei</h2><label class="f" for="apM">Como pagou?</label><select id="apM" class="in"><option>MB Way</option><option>Transferência</option><option>Dinheiro</option><option>Multibanco</option><option>Outro</option></select>
+  <button class="btn full" style="margin-top:14px" onclick="avisarPagamentoOk('${id}')">Avisar o treinador</button>`)}
+async function avisarPagamentoOk(id){const {error}=await sb.rpc('fut_avisar_pagamento',{p_id:id,p_metodo:g('apM')});if(error){toast('Não foi possível avisar');return}closeSheet();vJogador();toast('O treinador vai confirmar')}
+async function confirmarPagamento(id){await q(sb.from('fut_pagamentos').update({estado:'pago',pago_em:hoje(),registado_por:S.me}).eq('id',id));if(S.jog&&S.tab==='jogadores'&&!$('.sheet'))vJogador();else painelPagamentos();toast('Pagamento confirmado')}
+async function estadoPagamento(id,e){await q(sb.from('fut_pagamentos').update({estado:e,pago_em:e==='pago'?hoje():null}).eq('id',id));vJogador()}
+async function apagarPagamento(id){await q(sb.from('fut_pagamentos').delete().eq('id',id));vJogador()}
+function novoPagamento(jid){const m=hoje().slice(0,7);openSheet(`<h2>Novo pagamento</h2>
+  <label class="f" for="npD">Descrição</label><select id="npD" class="in"><option>Quota mensal</option><option>Inscrição</option><option>Seguro desportivo</option><option>Equipamento</option><option>Torneio</option><option>Outro</option></select>
+  <div class="row"><div class="grow"><label class="f" for="npM">Mês</label><input id="npM" type="month" class="in" value="${m}"></div><div class="grow"><label class="f" for="npV">Valor (€)</label><input id="npV" class="in" inputmode="decimal" value="${S.eq.quota_valor??''}"></div></div>
+  <button class="btn full" style="margin-top:14px" onclick="guardarPagamento('${jid}')">Guardar</button>`)}
+async function guardarPagamento(jid){const v=parseFloat(g('npV').replace(',','.'));if(isNaN(v)||v<0){toast('Escreva o valor');return}
+  const r=await q(sb.from('fut_pagamentos').insert({jogador_id:jid,mes:g('npM'),descricao:g('npD'),valor:v,registado_por:S.me}),'Já existe este pagamento para este mês');if(r===null)return;closeSheet();vJogador();toast('Pagamento acrescentado')}
+async function painelPagamentos(){
+  const m=S.mesPag||hoje().slice(0,7);
+  const ps=await q(sb.from('fut_pagamentos').select('*').in('jogador_id',S.jogadores.map(j=>j.id).concat(['00000000-0000-0000-0000-000000000000'])).eq('mes',m))||[];
+  const recebido=ps.filter(p=>p.estado==='pago').reduce((s,p)=>s+Number(p.valor),0),falta=ps.filter(p=>p.estado==='pendente'||p.estado==='avisado').reduce((s,p)=>s+Number(p.valor),0);
+  openSheet(`<h2>💶 Pagamentos</h2>
+  <div class="row"><div class="grow"><label class="f" for="ppM">Mês</label><input id="ppM" type="month" class="in" value="${m}" onchange="S.mesPag=this.value;painelPagamentos()"></div><div class="grow"><label class="f" for="ppQ">Quota mensal (€)</label><input id="ppQ" class="in" inputmode="decimal" value="${S.eq.quota_valor??''}" placeholder="Ex.: 20"></div></div>
+  <button class="btn gold full" style="margin-top:12px" onclick="gerarQuotas()">Criar a quota de ${mesLabel(m)} para todos</button>
+  <div class="kpis" style="grid-template-columns:repeat(2,1fr);margin-top:12px"><div class="kpi"><b style="color:var(--mint)">${euro(recebido)}</b><small>recebido</small></div><div class="kpi"><b style="color:var(--red)">${euro(falta)}</b><small>por receber</small></div></div>
+  <div class="list" style="margin-top:10px">${S.jogadores.map(j=>{const mine=ps.filter(p=>p.jogador_id===j.id);return `<div class="row between"><button style="border:0;background:none;padding:0;text-align:left;color:var(--ink)" class="grow" onclick="abrirJogador('${j.id}','pagamentos')"><b style="font-size:14px">${esc(j.nome)}</b><div class="faint">${mine.map(p=>esc(p.descricao)+' '+euro(p.valor)).join(' · ')||'Sem pagamentos neste mês'}</div></button>${mine.map(p=>p.estado==='pago'?`<span class="chip mint">Pago</span>`:p.estado==='isento'?'<span class="chip">Isento</span>':`<button class="btn sm ${p.estado==='avisado'?'gold':''}" onclick="confirmarPagamento('${p.id}')">${p.estado==='avisado'?'Confirmar':'✔ Pago'}</button>`).join(' ')}</div>`}).join('')}</div>
+  <p class="faint" style="margin-top:10px">A app regista quem pagou; o dinheiro não passa pela app.</p>`);
+}
+async function gerarQuotas(){
+  const v=parseFloat(g('ppQ').replace(',','.'));if(isNaN(v)||v<=0){toast('Escreva o valor da quota');return}
+  const m=g('ppM');
+  await q(sb.from('fut_equipas').update({quota_valor:v}).eq('id',S.eq.id));S.eq.quota_valor=v;
+  const r=await q(sb.from('fut_pagamentos').upsert(S.jogadores.map(j=>({jogador_id:j.id,mes:m,descricao:'Quota mensal',valor:v,registado_por:S.me})),{onConflict:'jogador_id,mes,descricao',ignoreDuplicates:true}));
+  if(r===null)return;S.mesPag=m;painelPagamentos();toast('Quotas criadas');
 }
 
 /* ---------- mensagens ---------- */
