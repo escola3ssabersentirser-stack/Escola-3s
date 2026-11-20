@@ -110,6 +110,32 @@ nav.bottom button.on span{filter:none;opacity:1}
 .kpi small{font-size:11px;color:var(--soft)}
 .check{display:flex;gap:10px;align-items:flex-start;font-size:14px;margin:10px 0}
 .check input{width:20px;height:20px;margin-top:1px;flex:none;accent-color:var(--navy)}
+
+/* cartões ao estilo do Gestor de Loja */
+.h3s-card{background:var(--card);border-radius:24px;box-shadow:0 6px 22px var(--shadow);padding:20px}
+.h3s-hero{text-align:center;cursor:pointer}
+.h3s-hero-tit{font-size:18px;color:var(--ink);font-weight:600}
+.h3s-hero-num{font-size:clamp(38px,11vw,58px);font-weight:800;color:var(--ink);line-height:1.05;margin:8px 0 4px;letter-spacing:-.02em;font-family:'Baloo 2',sans-serif}
+.h3s-hero-sub{font-size:15px;color:var(--soft)}
+.h3s-hero-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
+.h3s-mini-tit{font-size:14px;color:var(--soft)}
+.h3s-mini-num{font-size:28px;font-weight:800;margin-top:2px;font-family:'Baloo 2',sans-serif}
+.h3s-mini-num.pos,.h3s-stat-num.pos{color:var(--mint)}.h3s-mini-num.neg,.h3s-tile-num.neg,.h3s-stat-num.neg{color:var(--red)}
+.h3s-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;text-align:center;padding:14px 8px}
+.h3s-stat{cursor:pointer;padding:6px 2px;border-radius:14px}.h3s-stat:active{background:var(--navy-soft)}
+.h3s-stat-tit{font-size:13px;color:var(--soft);line-height:1.3;min-height:34px}
+.h3s-stat-num{font-size:26px;font-weight:800;color:var(--ink);margin-top:4px;font-family:'Baloo 2',sans-serif}
+.h3s-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:10px}
+.h3s-tile{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:2px;padding:10px 4px;min-height:96px;border-radius:16px;background:#fff;border:1px solid var(--line);box-shadow:0 2px 6px var(--shadow);transition:transform .15s}
+.h3s-tile:active{transform:scale(.97)}.h3s-tile:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.h3s-ic{font-size:20px;line-height:1}
+.h3s-tile-tit{font-size:12px;color:var(--ink);margin-top:3px;line-height:1.2;font-weight:600}
+.h3s-tile-num{font-size:18px;font-weight:800;color:var(--ink);word-break:break-word;font-family:'Baloo 2',sans-serif}
+.h3s-tile-num.h3s-abrir{font-size:13px;font-weight:700;color:var(--gold);font-family:inherit}
+.h3s-tile-sub{font-size:10.5px;color:var(--soft);font-weight:600}
+.h3s-bloco-tit{font-size:15px;font-weight:700;color:var(--navy);margin:20px 4px 10px}
+.h3s-pills{display:flex;flex-wrap:wrap;gap:10px}
+.h3s-pill{border:none;cursor:pointer;background:var(--navy);color:#fff;font-size:15px;font-weight:700;padding:12px 22px;border-radius:999px;min-height:44px;font-family:inherit}
 </style>
 </head>
 <body>
@@ -582,7 +608,7 @@ async function apagarBoleia(id,ev){await q(sb.from('fut_boleias').delete().eq('i
 
 /* ---------- jogadores ---------- */
 async function vJogadores(){
-  if(!S.jog&&isAtleta()&&S.meus[0]){S.jog=S.meus[0].id;if(!S.jogTab||!areaDe(S.jogTab))S.jogTab='presencas'}
+  if(!S.jog&&isAtleta()&&S.meus[0]){S.jog=S.meus[0].id;if(!S.jogTab)S.jogTab='resumo'}
   if(S.jog)return vJogador();
   const lista=S.meus;const m=$('#main');
   let mins={};
@@ -626,9 +652,9 @@ async function vJogador(){
   const j=S.jogadores.find(x=>x.id===S.jog);if(!j){S.jog=null;return vJogadores()}
   const m=$('#main');
   m.innerHTML=`<div class="card"><div class="row">${isAtleta()?'':`<button class="btn ghost sm" aria-label="Voltar atrás" onclick="botaoVoltar()">‹</button>`}<button style="border:0;background:none;padding:0;position:relative" aria-label="Fotografia do atleta" onclick="${isAtleta()?'':`menuFoto('${j.id}')`}">${avatar(j,56)}${isAtleta()?'':'<span style="position:absolute;right:-4px;bottom:-4px;background:var(--gold);color:#fff;border-radius:99px;width:22px;height:22px;display:grid;place-items:center;font-size:12px">📷</span>'}</button><div class="grow"><h2 style="margin:0">${esc(j.nome)}</h2><div class="muted">${[j.posicao,(S.pes||{})[j.id]?'pé '+(S.pes||{})[j.id].toLowerCase():'',j.ano_escolar].filter(Boolean).map(esc).join(' · ')}</div></div>${isAtleta()?'':`<button class="btn ghost sm" aria-label="Definições" onclick="editarJogador()">⚙</button>`}</div></div>
-  ${(()=>{const A=areasPerfil();const area=areaDe(S.jogTab);const sub=area?A.find(a=>a[0]===area)[3]:[];return `<div class="kpis" style="grid-template-columns:repeat(${A.length},1fr);gap:8px;margin-bottom:12px">${A.map(([k,ic,l,s])=>`<button class="kpi" style="border:0;cursor:pointer;padding:10px 4px;${area===k?'background:var(--navy);color:#fff':''}" onclick="S.jogTab='${s[0][0]}';vJogador()"><span style="font-size:22px;display:block">${ic}</span><small style="${area===k?'color:#fff':''};font-weight:600">${l}</small></button>`).join('')}</div>${area?`<div class="seg">${sub.map(([k,l])=>`<button class="${S.jogTab===k?'on':''}" onclick="S.jogTab='${k}';vJogador()">${l}</button>`).join('')}</div>`:''}`})()}
+  ${S.jogTab&&S.jogTab!=='resumo'?`<div class="h3s-bloco-tit" style="margin-top:2px">${(VISTAS[S.jogTab]||['',''])[0]} ${(VISTAS[S.jogTab]||['',''])[1]}</div>`:''}
   <div id="jBody"><div class="card"><p class="empty">A carregar…</p></div></div>`;
-  const f={resumo:jResumo,avaliacao:jAvaliacao,fpf:jFPF,ficha:jFicha,presencas:jPresencas,pagamentos:jPagamentos,melhorar:jMelhorar,escola:jEscola,evolucao:jEvolucao,objetivos:jObjetivos,desafios:jDesafios,emocoes:jEmocoes,rotina:jRotina,conversa:jConversa}[S.jogTab];
+  const f={resumo:jPainel,evolucaoGeral:jEvolucaoGeral,plano:jPlano,conta:jContaCorrente,clube:jClube,avaliacao:jAvaliacao,fpf:jFPF,ficha:jFicha,presencas:jPresencas,pagamentos:jPagamentos,melhorar:jMelhorar,escola:jEscola,evolucao:jEvolucao,objetivos:jObjetivos,desafios:jDesafios,emocoes:jEmocoes,rotina:jRotina,conversa:jConversa}[S.jogTab];
   $('#jBody').innerHTML=await f(j);
   if(S.jogTab==='conversa'){const b=$('#chatEnd');if(b)b.scrollIntoView()}
 }
@@ -1663,6 +1689,175 @@ async function fpPDF(id){
       <p class="faint" style="margin-top:12px">É o PDF oficial do clube, já preenchido e ainda editável.</p>`);
   }catch(e){console.error(e);openSheet('<h2>Não foi possível criar o PDF</h2><p class="muted">Verifique a ligação e tente outra vez.</p>')}
 }
+
+/* ---------- página do atleta em cartões (estilo Gestor de Loja) ---------- */
+const VISTAS={
+  evolucaoGeral:['📈','Evolução do atleta'],fpf:['📋','Ficha FPF'],plano:['🎯','Plano de ação'],conta:['💶','Conta corrente'],clube:['🛡️','Arcas'],
+  ficha:['📇','Ficha e saúde'],presencas:['✅','Presenças'],escola:['📚','Escola'],melhorar:['🔎','A melhorar'],avaliacao:['💛','Avaliação 3S'],
+  objetivos:['🏁','Objetivos'],desafios:['🏆','Desafios'],emocoes:['😀','Emoções'],rotina:['🌙','Rotina'],conversa:['💬','Conversa'],evolucao:['⚽','Competências'],pagamentos:['💶','Pagamentos']
+};
+function tileC(id,ic,tit,num,sub,cls){return `<button class="h3s-tile" onclick="S.jogTab='${id}';vJogador();window.scrollTo(0,0)"><span class="h3s-ic">${ic}</span><span class="h3s-tile-tit">${tit}</span><span class="h3s-tile-num ${cls||''}">${num}</span><span class="h3s-tile-sub">${sub}</span></button>`}
+async function jPainel(j){
+  const at=isAtleta();
+  const evs=await q(sb.from('fut_eventos').select('id,tipo,data').eq('equipa_id',S.eq.id).lte('data',hoje()).gte('data',addDias(-90)))||[];
+  const tre=evs.filter(e=>e.tipo==='treino');
+  const [fpf,pres,pags,notas,av,plano,objs,feitos,emo]=await Promise.all([
+    q(sb.from('fut_fichas_fpf').select('periodo,niveis,created_at').eq('jogador_id',j.id).order('created_at')),
+    evs.length?q(sb.from('fut_presencas').select('evento_id,presente,minutos').eq('jogador_id',j.id).in('evento_id',evs.map(e=>e.id))):[],
+    at?[]:q(sb.from('fut_pagamentos').select('valor,estado').eq('jogador_id',j.id)),
+    q(sb.from('fut_notas_escola').select('*').eq('jogador_id',j.id)),
+    q(sb.from('fut_avaliacoes_360').select('respondente_tipo,respostas').eq('jogador_id',j.id).eq('trimestre',trimAtual())),
+    q(sb.from('fut_plano_acao').select('estado').eq('jogador_id',j.id)),
+    q(sb.from('fut_objetivos').select('cumprido').eq('jogador_id',j.id)),
+    q(sb.from('fut_desafios_feitos').select('desafio_id').eq('jogador_id',j.id)),
+    q(sb.from('fut_emocoes').select('emocao').eq('jogador_id',j.id).order('created_at',{ascending:false}).limit(1))
+  ]);
+  const F=fpf||[];const ult=F[F.length-1],ant=F[F.length-2];
+  const mG=ult?mediaGeralFPF(ult.niveis):null,mA=ant?mediaGeralFPF(ant.niveis):null;
+  const P=pres||[];const pT=P.filter(p=>tre.some(e=>e.id===p.evento_id)&&p.presente===true).length;const pctT=tre.length?Math.round(pT/tre.length*100):null;
+  const mins=P.reduce((s,p)=>s+(p.minutos||0),0);
+  const pts=(feitos||[]).reduce((s,f)=>s+(S.desafios.find(d=>d.id===f.desafio_id)?.pontos||0),0);
+  const dev=(pags||[]).filter(p=>p.estado==='pendente').reduce((s,p)=>s+Number(p.valor),0);
+  const un=ultimasNotas(notas||[]);const sub_=un.filter(u=>u.ant&&pct(u.ult)>pct(u.ant)).length,des=un.filter(u=>u.ant&&pct(u.ult)<pct(u.ant)).length;
+  const m3s=av&&av.length?(()=>{const v=DIMS.map(([d])=>mediaDim(av,d)).filter(x=>x!=null);return v.length?v.reduce((s,x)=>s+x,0)/v.length:null})():null;
+  const pa=(plano||[]).filter(x=>x.estado!=='feito').length;
+  const ex=estadoExame((S.exames||[]).find(e=>e.jogador_id===j.id));
+  const ob=(objs||[]).filter(o=>!o.cumprido).length;const em=emo&&emo[0];
+  const seta=(a,b)=>a!=null&&b!=null?(a>b+0.05?'<span style="color:var(--mint)">▲</span>':a<b-0.05?'<span style="color:var(--red)">▼</span>':''):'';
+  return `<div class="h3s-card h3s-hero" onclick="S.jogTab='evolucaoGeral';vJogador()">
+      <div class="h3s-hero-tit">📈 Evolução do atleta</div>
+      <div class="h3s-hero-num">${mG!=null?fmt1(mG):'–'}<span style="font-size:.4em;color:var(--soft);font-weight:600"> / 4</span> ${seta(mG,mA)}</div>
+      <div class="h3s-hero-sub">${ult?'Ficha FPF · '+esc(ult.periodo):'Ainda sem ficha FPF'}</div>
+      ${F.length>1?`<div style="max-width:320px;margin:10px auto 0">${sparkFPF(F)}</div>`:''}
+      <div class="h3s-hero-row"><div><div class="h3s-mini-tit">Avaliação 3S</div><div class="h3s-mini-num">${m3s!=null?fmt1(m3s):'–'}</div></div><div><div class="h3s-mini-tit">Plano de ação</div><div class="h3s-mini-num ${pa?'neg':'pos'}">${pa}</div></div></div>
+    </div>
+    <div class="h3s-card h3s-stats" style="margin-top:14px">
+      <div class="h3s-stat" onclick="S.jogTab='presencas';vJogador()"><div class="h3s-stat-tit">Presenças<br>treinos</div><div class="h3s-stat-num ${pctT!=null&&pctT<70?'neg':''}">${pctT!=null?pctT+'%':'–'}</div></div>
+      <div class="h3s-stat" onclick="S.jogTab='evolucao';vJogador()"><div class="h3s-stat-tit">Minutos<br>em jogo</div><div class="h3s-stat-num">${mins}</div></div>
+      <div class="h3s-stat" onclick="S.jogTab='desafios';vJogador()"><div class="h3s-stat-tit">Pontos<br>desafios</div><div class="h3s-stat-num">${pts}</div></div>
+    </div>
+    <div class="h3s-bloco-tit">⚽ Desporto</div>
+    <div class="h3s-card h3s-tiles">
+      ${tileC('fpf','📋','Ficha FPF',mG!=null?fmt1(mG):'Abrir ›',ult?esc(ult.periodo.split(' · ')[0]):'Arcas · Critério 7',mG==null?'h3s-abrir':'')}
+      ${tileC('plano','🎯','Plano de ação',pa,pa?'a melhorar':'tudo em dia',pa?'neg':'')}
+      ${tileC('presencas','✅','Presenças',pctT!=null?pctT+'%':'–','últimos 3 meses',pctT!=null&&pctT<70?'neg':'')}
+      ${tileC('evolucao','⚽','Competências','Abrir ›','técnica e tática','h3s-abrir')}
+      ${tileC('objetivos','🏁','Objetivos',ob,'em curso')}
+      ${tileC('desafios','🏆','Desafios',pts,'pontos')}
+    </div>
+    <div class="h3s-bloco-tit">📚 Escola e crescer</div>
+    <div class="h3s-card h3s-tiles">
+      ${tileC('escola','📚','Escola',un.length?`<span style="color:var(--mint)">▲${sub_}</span> <span style="color:var(--red)">▼${des}</span>`:'–',un.length?un.length+' disciplinas':'sem notas')}
+      ${tileC('avaliacao','💛',at?'Autoavaliação':'Avaliação 3S',m3s!=null?fmt1(m3s):'–',trimLabel(trimAtual()))}
+      ${tileC('emocoes','😀','Emoções',em?(EMOCOES.find(x=>x[1]===em.emocao)||['–'])[0]:'–',em?esc(em.emocao):'sem registo')}
+      ${tileC('rotina','🌙','Rotina','Abrir ›','sono, água, estudo','h3s-abrir')}
+      ${at?'':tileC('melhorar','🔎','A melhorar','Abrir ›','jogo, treino, escola','h3s-abrir')}
+      ${at?'':tileC('conversa','💬','Conversa','Abrir ›','família e treinador','h3s-abrir')}
+    </div>
+    <div class="h3s-bloco-tit">🛡️ Clube e ficha</div>
+    <div class="h3s-card h3s-tiles">
+      ${tileC('clube','🛡️','Arcas',esc(S.eq.escalao?S.eq.escalao.split(' (')[0]:S.eq.nome),'clube e horários')}
+      ${at?'':tileC('conta','💶','Conta corrente',euro(dev),dev?'por pagar':'em dia',dev?'neg':'')}
+      ${at?'':tileC('ficha','📇','Ficha e saúde',ex[1]==='mint'?'✔':'!',ex[0],ex[1]==='mint'?'':'neg')}
+    </div>`;
+}
+function sparkFPF(F){const W=300,H=50,P=6;const v=F.map(f=>mediaGeralFPF(f.niveis)).map(x=>x??0);const n=v.length;const xs=i=>P+i*(W-2*P)/(n-1);const ys=x=>H-P-(x-1)/3*(H-2*P);
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:50px" aria-hidden="true"><polyline fill="none" stroke="var(--gold)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" points="${v.map((x,i)=>xs(i)+','+ys(x)).join(' ')}"/>${v.map((x,i)=>`<circle cx="${xs(i)}" cy="${ys(x)}" r="4" fill="var(--navy)"/>`).join('')}</svg>`}
+
+/* evolução geral */
+async function jEvolucaoGeral(j){
+  const [F,av,notas]=await Promise.all([
+    q(sb.from('fut_fichas_fpf').select('*').eq('jogador_id',j.id).order('created_at')),
+    q(sb.from('fut_avaliacoes_360').select('trimestre,respondente_tipo,respostas').eq('jogador_id',j.id)),
+    q(sb.from('fut_notas_escola').select('*').eq('jogador_id',j.id))
+  ]);
+  const trims=[...new Set((av||[]).map(a=>a.trimestre))].sort();
+  const porPer={};ordenarNotas(notas||[]).forEach(n=>{const k=n.ano_letivo+' '+n.periodo;(porPer[k]=porPer[k]||[]).push(n)});
+  const per=Object.entries(porPer);
+  return `<div class="h3s-card"><div class="h3s-hero-tit" style="text-align:center">Ficha FPF · média por componente</div>${(F||[]).length?graficoFPF(F)+`<div class="row wrap" style="gap:10px;margin-top:6px">${FPF.map(c=>`<span style="font-size:12px;display:inline-flex;align-items:center;gap:4px"><i style="width:10px;height:10px;border-radius:3px;background:${c.c};display:inline-block"></i>${c.t.split(' (')[0]}</span>`).join('')}</div>`:'<p class="empty">Ainda sem fichas FPF.</p>'}</div>
+  <div class="h3s-card" style="margin-top:14px"><div class="h3s-hero-tit" style="text-align:center">Avaliação 3S por trimestre</div>
+    ${trims.length?`<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:13px"><tr><th></th>${trims.map(t=>`<th style="padding:6px 4px;color:var(--soft)">${trimLabel(t)}</th>`).join('')}</tr>${DIMS.map(([d,i])=>`<tr style="border-top:1px solid var(--line)"><td style="padding:7px 4px;font-weight:600;white-space:nowrap">${i} ${d}</td>${trims.map((t,k)=>{const m=mediaDim(av.filter(a=>a.trimestre===t),d),ma=k?mediaDim(av.filter(a=>a.trimestre===trims[k-1]),d):null;return `<td style="text-align:center;font-weight:600">${fmt1(m)}${m!=null&&ma!=null?(m>ma+0.05?' <span style="color:var(--mint)">▲</span>':m<ma-0.05?' <span style="color:var(--red)">▼</span>':''):''}</td>`}).join('')}</tr>`).join('')}</table></div>`:'<p class="empty">Ainda sem avaliações 3S.</p>'}</div>
+  <div class="h3s-card" style="margin-top:14px"><div class="h3s-hero-tit" style="text-align:center">Escola · média por período</div>
+    ${per.length?`<div class="list">${per.map(([k,ns])=>{const m=ns.reduce((s,n)=>s+pct(n),0)/ns.length;return `<div class="row between"><span>${esc(k)}</span><span class="row" style="gap:8px;width:55%"><span class="bar grow"><i style="width:${Math.round(m*100)}%"></i></span><b>${Math.round(m*100)}%</b></span></div>`}).join('')}</div><p class="faint">Média das disciplinas convertida em percentagem da escala.</p>`:'<p class="empty">Ainda sem notas.</p>'}</div>
+  <div style="margin-top:14px">${await jEvolucao(j)}</div>`;
+}
+
+/* conta corrente */
+async function jContaCorrente(j){
+  const ps=await q(sb.from('fut_pagamentos').select('*').eq('jogador_id',j.id))||[];
+  const mov=[];ps.forEach(p=>{mov.push({d:p.mes+'-01',t:`${p.descricao} · ${mesLabel(p.mes)}`,deb:p.estado==='isento'?0:Number(p.valor),cre:0,est:p.estado});if(p.estado==='pago')mov.push({d:p.pago_em||p.mes+'-01',t:`Pagamento${p.metodo?' ('+p.metodo+')':''} · ${p.descricao}`,deb:0,cre:Number(p.valor)})});
+  mov.sort((a,b)=>a.d.localeCompare(b.d)||(a.cre-b.cre));let s=0;mov.forEach(m=>{s+=m.deb-m.cre;m.s=s});
+  const tD=mov.reduce((a,m)=>a+m.deb,0),tC=mov.reduce((a,m)=>a+m.cre,0);
+  return `<div class="h3s-card h3s-hero"><div class="h3s-hero-tit">💶 Saldo</div><div class="h3s-hero-num" style="color:${s>0?'var(--red)':'var(--mint)'}">${euro(s)}</div><div class="h3s-hero-sub">${s>0?'por pagar':'conta em dia'}</div>
+    <div class="h3s-hero-row"><div><div class="h3s-mini-tit">Total a pagar</div><div class="h3s-mini-num">${euro(tD)}</div></div><div><div class="h3s-mini-tit">Total pago</div><div class="h3s-mini-num pos">${euro(tC)}</div></div></div></div>
+  <div class="h3s-card" style="margin-top:14px"><b>Movimentos</b>${mov.length?`<div style="overflow-x:auto;margin-top:8px"><table style="width:100%;border-collapse:collapse;font-size:12.5px"><tr style="color:var(--soft)"><th style="text-align:left;padding:5px 3px">Data</th><th style="text-align:left;padding:5px 3px">Descrição</th><th style="padding:5px 3px">Débito</th><th style="padding:5px 3px">Crédito</th><th style="padding:5px 3px">Saldo</th></tr>
+    ${[...mov].reverse().map(m=>`<tr style="border-top:1px solid var(--line)"><td style="padding:6px 3px;white-space:nowrap">${new Date(m.d+'T12:00').toLocaleDateString('pt-PT',{day:'2-digit',month:'2-digit',year:'2-digit'})}</td><td style="padding:6px 3px">${esc(m.t)}</td><td style="text-align:right;white-space:nowrap;padding-left:4px;color:var(--red)">${m.deb?euro(m.deb):''}</td><td style="text-align:right;white-space:nowrap;padding-left:4px;color:var(--mint)">${m.cre?euro(m.cre):''}</td><td style="text-align:right;white-space:nowrap;padding-left:4px;font-weight:700">${euro(m.s)}</td></tr>`).join('')}</table></div>`:'<p class="empty">Sem movimentos.</p>'}</div>
+  <div style="margin-top:14px">${await jPagamentos(j)}</div>`;
+}
+
+/* clube */
+async function jClube(j){
+  const tre=S.eventos.filter(e=>e.tipo==='treino');const cont={};tre.forEach(e=>{const k=diaSemana(e.data)+'|'+horaEv(e);cont[k]=(cont[k]||0)+1});
+  const horario=Object.entries(cont).filter(([,n])=>n>=2).sort((a,b)=>b[1]-a[1]).slice(0,4).map(([k])=>k.split('|'));
+  const prox=proximos().find(e=>e.tipo==='jogo');const tr=S.perfis[S.eq.treinador_id]||{};
+  return `<div class="h3s-card h3s-hero" style="background:var(--navy);color:#fff"><div style="margin:0 auto 8px;width:fit-content">${ESCUDO(64)}</div><div style="font-family:'Baloo 2';font-size:28px">${CLUBE.toUpperCase()}</div><div style="color:var(--gold);letter-spacing:2px;font-size:12px">FUTSAL · FORMAÇÃO</div>
+    <div class="h3s-hero-row" style="border-color:rgba(255,255,255,.2)"><div><div class="h3s-mini-tit" style="color:#E7EAF1">Equipa</div><div style="font-size:18px;font-weight:700;margin-top:4px">${esc(S.eq.nome)}</div></div><div><div class="h3s-mini-tit" style="color:#E7EAF1">Escalão</div><div style="font-size:18px;font-weight:700;margin-top:4px">${esc(S.eq.escalao||'')}</div></div></div></div>
+  <div class="h3s-card" style="margin-top:14px"><b>🗓️ Treinos</b>${horario.length?horario.map(([d,h])=>`<div class="row between" style="padding:8px 0;border-top:1px solid var(--line)"><span style="text-transform:capitalize">${d}</span><b>${esc(h)}</b></div>`).join(''):'<p class="muted">Ainda sem horário marcado.</p>'}</div>
+  <div class="h3s-card" style="margin-top:14px"><b>⚽ Próximo jogo</b><p style="margin:6px 0 0">${prox?`${diaSemana(prox.data)}, ${dataCurta(prox.data)} · ${esc(horaEv(prox))} · vs ${esc(prox.adversario||'a definir')}${prox.local?'<br>📍 '+esc(prox.local):''}`:'<span class="muted">Sem jogos marcados.</span>'}</p></div>
+  <div class="h3s-card" style="margin-top:14px"><b>🧢 Treinador</b><p style="margin:6px 0 0">${esc(tr.nome||'')}${tr.telefone?'<br>📞 '+esc(tr.telefone):''}</p>${isCoach()?`<p class="faint" style="margin-top:8px">Código da equipa para os pais: <b>${esc(S.eq.codigo)}</b></p>`:''}</div>
+  <div class="h3s-card" style="margin-top:14px"><b>🎒 Para cada treino</b><p class="muted" style="margin:6px 0 0">${esc(LEVAR_PADRAO)}.</p></div>`;
+}
+
+/* plano de ação */
+const RESP_PA=['Atleta','Pais','Treinador','Escola'];
+async function sugestoesPlano(j){
+  const [F,av,obs,notas,comp]=await Promise.all([
+    q(sb.from('fut_fichas_fpf').select('*').eq('jogador_id',j.id).order('created_at',{ascending:false}).limit(1)),
+    q(sb.from('fut_avaliacoes_360').select('respostas').eq('jogador_id',j.id).eq('trimestre',trimAtual())),
+    isAtleta()?[]:q(sb.from('fut_observacoes').select('*').eq('jogador_id',j.id).eq('tipo','melhorar').eq('resolvido',false)),
+    q(sb.from('fut_notas_escola').select('*').eq('jogador_id',j.id)),
+    q(sb.from('fut_avaliacoes').select('*').eq('jogador_id',j.id))
+  ]);
+  const s=[];
+  const f=F&&F[0];if(f)FPF.forEach(c=>c.p.forEach((p,i)=>{const v=f.niveis?.[campoFPF(c.k,i)];if(v&&v<=2)s.push({area:c.k==='4'?'escola':c.k==='3'?'atitude':'futsal',melhorar:p,origem:`Ficha FPF (nível ${v})`,resp:c.k==='4'?'Pais':'Treinador'})}));
+  QUEST.forEach(qq=>{const v=(av||[]).map(a=>a.respostas?.[qq.id]).filter(Boolean);if(v.length){const m=v.reduce((a,b)=>a+b,0)/v.length;if(m<=2.2)s.push({area:qq.dim==='Hábitos'?'saude':'atitude',melhorar:qq.o,origem:`Avaliação 3S (média ${fmt1(m)})`,resp:qq.dim==='Hábitos'?'Pais':'Atleta'})}});
+  (obs||[]).forEach(o=>s.push({area:o.contexto==='escola'?'escola':'futsal',melhorar:o.texto,origem:`Observação · ${CONTEXTOS[o.contexto]}`,resp:o.contexto==='escola'||o.contexto==='casa'?'Pais':'Treinador'}));
+  ultimasNotas(notas||[]).forEach(u=>{const neg=u.ult.escala==='0-20'?u.ult.nota<10:u.ult.escala==='IS-MB'?u.ult.nota<2:u.ult.nota<3;const desceu=u.ant&&pct(u.ult)<pct(u.ant);if(neg||desceu)s.push({area:'escola',melhorar:`${u.disciplina}: ${neg?'nota negativa':'a nota desceu'} (${fmtNota(u.ult)})`,origem:'Notas escolares',resp:'Escola'})});
+  resumoComp(comp||[]).filter(c=>c.nivel<=1).forEach(c=>s.push({area:'futsal',melhorar:c.competencia,origem:'Competências (a começar)',resp:'Treinador'}));
+  return s;
+}
+const AREA_PA={futsal:'⚽ Futsal',atitude:'🤝 Atitude',escola:'📚 Escola',saude:'🌙 Saúde e hábitos'};
+async function jPlano(j){
+  const [pl,sug]=await Promise.all([q(sb.from('fut_plano_acao').select('*').eq('jogador_id',j.id).order('created_at')),sugestoesPlano(j)]);
+  const P=pl||[];const jaTem=new Set(P.map(p=>p.melhorar));const novas=sug.filter(x=>!jaTem.has(x.melhorar));S._sugPA=novas;
+  const ab=P.filter(p=>p.estado!=='feito'),fe=P.filter(p=>p.estado==='feito');
+  const edita=!isAtleta();
+  const card=p=>`<div class="obs ${p.estado==='feito'?'positivo done':'melhorar'}"><div class="row between"><span class="chip">${AREA_PA[p.area]||p.area}</span><span class="chip ${p.estado==='feito'?'mint':p.estado==='em_curso'?'gold':''}">${p.estado==='feito'?'✔ Feito':p.estado==='em_curso'?'Em curso':'Por começar'}</span></div>
+    <p style="margin:8px 0 4px;font-weight:600">${esc(p.melhorar)}</p>${p.acao?`<p style="margin:0 0 4px">👉 ${esc(p.acao)}</p>`:''}
+    <div class="faint">${p.responsavel?'Responsável: '+esc(p.responsavel):''}${p.prazo?' · até '+new Date(p.prazo+'T12:00').toLocaleDateString('pt-PT'):''}${p.origem?' · '+esc(p.origem):''}</div>
+    ${edita?`<div class="row" style="gap:6px;margin-top:8px">${p.estado!=='em_curso'&&p.estado!=='feito'?`<button class="btn ghost sm" onclick="estadoPA('${p.id}','em_curso')">Começar</button>`:''}${p.estado!=='feito'?`<button class="btn sm" onclick="estadoPA('${p.id}','feito')">✔ Feito</button>`:`<button class="btn ghost sm" onclick="estadoPA('${p.id}','aberto')">Reabrir</button>`}<button class="btn ghost sm" onclick='editarPA(${JSON.stringify(p).replace(/'/g,"&#39;")})'>Editar</button><button class="btn red sm" onclick="apagarPA('${p.id}')">✕</button></div>`:''}</div>`;
+  return `<div class="h3s-card h3s-hero"><div class="h3s-hero-tit">🎯 Plano de ação</div><div class="h3s-hero-num">${ab.length}</div><div class="h3s-hero-sub">${ab.length===1?'ponto a melhorar':'pontos a melhorar'}</div>
+    <div class="h3s-hero-row"><div><div class="h3s-mini-tit">Em curso</div><div class="h3s-mini-num">${P.filter(p=>p.estado==='em_curso').length}</div></div><div><div class="h3s-mini-tit">Já melhorou</div><div class="h3s-mini-num pos">${fe.length}</div></div></div></div>
+  ${edita?`<div class="h3s-pills" style="margin:14px 0"><button class="h3s-pill" onclick="editarPA()">+ Novo ponto</button></div>`:''}
+  ${edita&&novas.length?`<div class="h3s-card" style="margin-bottom:14px"><b>💡 A app sugere (${novas.length})</b><p class="faint" style="margin:4px 0 8px">A partir da ficha FPF, da avaliação 3S, das notas, das competências e das observações.</p>${novas.slice(0,10).map((x,i)=>`<div class="row between" style="padding:8px 0;border-top:1px solid var(--line)"><div class="grow"><b style="font-size:14px">${esc(x.melhorar)}</b><div class="faint">${AREA_PA[x.area]} · ${esc(x.origem)}</div></div><button class="btn gold sm" onclick="adicionarSugPA(${i})">+ Plano</button></div>`).join('')}</div>`:''}
+  <div class="h3s-card"><b>Onde tem de melhorar</b><div style="margin-top:8px">${ab.length?ab.map(card).join(''):'<p class="empty">Nada pendente. 👏</p>'}</div></div>
+  ${fe.length?`<div class="h3s-card" style="margin-top:14px"><b>✔ Conquistas</b><div style="margin-top:8px">${fe.map(card).join('')}</div></div>`:''}`;
+}
+function prazoPadrao(){const d=new Date();d.setMonth(d.getMonth()+3);return d.toISOString().slice(0,10)}
+function editarPA(p,sug){p=p||{};const v=sug||p;
+  openSheet(`<h2>${p.id?'Editar ponto':'Novo ponto do plano'}</h2>
+  <label class="f" for="paA">Área</label><select id="paA" class="in">${Object.entries(AREA_PA).map(([k,l])=>`<option value="${k}" ${v.area===k?'selected':''}>${l}</option>`).join('')}</select>
+  <label class="f" for="paM">Onde tem de melhorar</label><textarea id="paM" class="in">${esc(v.melhorar||'')}</textarea>
+  <label class="f" for="paC">Ação concreta</label><textarea id="paC" class="in" placeholder="Ex.: 15 minutos de passe à parede com o pé esquerdo, 3 vezes por semana">${esc(p.acao||'')}</textarea>
+  <div class="row"><div class="grow"><label class="f" for="paR">Responsável</label><select id="paR" class="in">${RESP_PA.map(r=>`<option ${(p.responsavel||v.resp)===r?'selected':''}>${r}</option>`).join('')}</select></div><div class="grow"><label class="f" for="paP">Até</label><input id="paP" type="date" class="in" value="${p.prazo||prazoPadrao()}"></div></div>
+  <button class="btn full" style="margin-top:14px" onclick="guardarPA('${p.id||''}','${esc(v.origem||'')}')">Guardar</button>`)}
+function adicionarSugPA(i){editarPA(null,S._sugPA[i])}
+async function guardarPA(id,origem){if(!g('paM')){toast('Escreva onde tem de melhorar');return}
+  const row={jogador_id:S.jog,area:g('paA'),melhorar:g('paM'),acao:g('paC')||null,responsavel:g('paR'),prazo:g('paP')||null};
+  if(id)await q(sb.from('fut_plano_acao').update(row).eq('id',id));else await q(sb.from('fut_plano_acao').insert({...row,origem:origem||null,autor_id:S.me}));
+  closeSheet();vJogador();toast('Plano atualizado')}
+async function estadoPA(id,e){await q(sb.from('fut_plano_acao').update({estado:e}).eq('id',id));if(e==='feito')toast('🎉 Conquista registada');vJogador()}
+async function apagarPA(id){await q(sb.from('fut_plano_acao').delete().eq('id',id));vJogador()}
 
 /* ---------- mensagens ---------- */
 async function vMensagens(){
