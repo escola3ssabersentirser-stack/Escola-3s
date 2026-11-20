@@ -305,6 +305,9 @@ async function carregar(){
   S.meus=isCoach()?S.jogadores:S.jogadores.filter(j=>minhas.has(j.id));
   const ids=[...new Set([S.eq.treinador_id,...(mem||[]).map(m=>m.user_id),...(fam||[]).map(f=>f.user_id)])];
   if(ids.length){const ps=await q(sb.from('fut_perfis').select('user_id,nome,papel,telefone').in('user_id',ids));(ps||[]).forEach(p=>S.perfis[p.user_id]=p)}
+  await carregarReunioes();
+  const idsM=S.meus.map(j=>j.id);
+  S.av360=idsM.length?(await q(sb.from('fut_avaliacoes_360').select('jogador_id,respondente_tipo,autor_id').eq('trimestre',trimAtual()).in('jogador_id',idsM))||[]):[];
   // presenças dos próximos eventos (pais: só dos filhos)
   const prox=S.eventos.filter(e=>e.data>=addDias(-1)).map(e=>e.id);
   S.presencas=prox.length?(await q(sb.from('fut_presencas').select('*').in('evento_id',prox))||[]):[];
@@ -352,6 +355,11 @@ function vInicio(){
   } else {
     h+=`<div class="card"><h2>Agenda</h2><p class="empty">Ainda não há treinos nem jogos marcados.${isCoach()?'':' O treinador vai marcá-los aqui.'}</p>${isCoach()?'<button class="btn full" onclick="novoEvento()">+ Marcar treino ou jogo</button>':''}</div>`;
   }
+  const reu=(S.reunioes||[]).find(r=>r.data>=hoje()&&r.estado!=='cancelada'&&(isCoach()||!r.jogador_id||S.meus.some(m=>m.id===r.jogador_id)));
+  if(reu){const jr=reu.jogador_id&&S.jogadores.find(x=>x.id===reu.jogador_id);h+=`<div class="card"><div class="row between"><h2>🤝 Próxima reunião</h2><span class="chip ${ESTADOS_REUNIAO[reu.estado][1]}">${ESTADOS_REUNIAO[reu.estado][0]}</span></div><p style="margin:0;font-weight:600">${TIPOS_REUNIAO[reu.tipo]}${jr?' · '+esc(primeiro(jr.nome)):''}</p><p class="muted" style="margin:2px 0 10px">${diaSemana(reu.data)}, ${dataCurta(reu.data)} · ${esc(reu.hora||'')}${reu.assunto?' · '+esc(reu.assunto):''}</p><button class="btn ghost full sm" onclick="S.agTab='reunioes';irPara('agenda')">Ver reuniões</button></div>`}
+  const tipoEu=isCoach()?'treinador':'pai';
+  const faltam=S.meus.filter(j=>!(S.av360||[]).some(a=>a.jogador_id===j.id&&a.respondente_tipo===tipoEu&&a.autor_id===S.me));
+  if(S.meus.length&&faltam.length){h+=`<div class="card" style="border:2px solid var(--gold)"><h2>📋 Avaliação trimestral</h2><p class="muted" style="margin-top:0">${trimLabel(trimAtual())}: ${isCoach()?`falta avaliar ${faltam.length} de ${S.meus.length} jogadores.`:'responda ao questionário de 4 minutos sobre o desenvolvimento do seu filho.'}</p>${faltam.slice(0,isCoach()?3:4).map(j=>`<button class="btn gold full sm" style="margin-top:6px" onclick="responder360('${j.id}')">Avaliar ${esc(primeiro(j.nome))}</button>`).join('')}${isCoach()&&faltam.length>3?`<button class="btn ghost full sm" style="margin-top:6px" onclick="irPara('jogadores')">Ver todos</button>`:''}</div>`}
   if(isCoach()&&S.alertas&&S.alertas.length){
     h+=`<div class="card"><h2>💛 Atenção a estes miúdos</h2><p class="muted" style="margin-top:0">Disseram que se sentiram assim nos últimos dias.</p><div class="list">${S.alertas.slice(0,5).map(a=>{const j=S.jogadores.find(x=>x.id===a.jogador_id);return j?`<button class="item" onclick="abrirJogador('${j.id}','emocoes')"><div class="av">${iniciais(j.nome)}</div><div class="grow"><b>${esc(j.nome)}</b><div class="muted">${(EMOCOES.find(e=>e[1]===a.emocao)||[''])[0]} ${esc(a.emocao)} ${a.nota?'· '+esc(a.nota):''}</div></div></button>`:''}).join('')}</div></div>`;
   }
@@ -389,12 +397,14 @@ async function feitoDesafio(d,j){
 }
 
 /* ---------- agenda ---------- */
-function vAgenda(){
+async function vAgenda(){
+  const segA=`<div class="seg"><button class="${S.agTab!=='reunioes'?'on':''}" onclick="S.agTab='eventos';vAgenda()">📅 Treinos e jogos</button><button class="${S.agTab==='reunioes'?'on':''}" onclick="S.agTab='reunioes';vAgenda()">🤝 Reuniões</button></div>`;
+  if(S.agTab==='reunioes'){$('#main').innerHTML=segA+await vReunioes();return}
   const prox=proximos(),pass=S.eventos.filter(e=>e.data<hoje()).reverse().slice(0,10);
   const linha=e=>`<button class="item" onclick="abrirEvento('${e.id}')"><div class="date ${e.tipo}"><b>${new Date(e.data+'T12:00').getDate()}</b><small>${MESES[new Date(e.data+'T12:00').getMonth()]}</small></div>
     <div class="grow"><b>${e.tipo==='jogo'?'⚽ Jogo vs '+esc(e.adversario||'?'):'🏃 Treino'}</b><div class="muted">${diaSemana(e.data)} · ${esc(e.hora||'')} ${e.local?'· '+esc(e.local):''}</div></div>
     ${e.resultado?`<span class="chip gold">${esc(e.resultado)}</span>`:''}</button>`;
-  $('#main').innerHTML=`${isCoach()?'<div class="card"><button class="btn full" onclick="novoEvento()">+ Marcar treino ou jogo</button></div>':''}
+  $('#main').innerHTML=segA+`${isCoach()?'<div class="card"><button class="btn full" onclick="novoEvento()">+ Marcar treino ou jogo</button></div>':''}
   <div class="card"><h2>Próximos</h2>${prox.length?`<div class="list">${prox.map(linha).join('')}</div>`:'<p class="empty">Nada marcado.</p>'}</div>
   ${pass.length?`<div class="card"><h2>Anteriores</h2><div class="list">${pass.map(linha).join('')}</div></div>`:''}`;
 }
@@ -555,14 +565,14 @@ async function guardarFilho(){
 }
 function abrirJogador(id,tab){S.tab='jogadores';S.jog=id;S.jogTab=tab||'resumo';closeSheet();render();window.scrollTo(0,0)}
 
-const JTABS=[['resumo','Resumo'],['melhorar','A melhorar'],['escola','Escola'],['evolucao','Evolução'],['objetivos','Objetivos'],['desafios','Desafios'],['emocoes','Emoções'],['rotina','Rotina'],['conversa','Conversa']];
+const JTABS=[['resumo','Resumo'],['avaliacao','Avaliação 3S'],['melhorar','A melhorar'],['escola','Escola'],['evolucao','Evolução'],['objetivos','Objetivos'],['desafios','Desafios'],['emocoes','Emoções'],['rotina','Rotina'],['conversa','Conversa']];
 async function vJogador(){
   const j=S.jogadores.find(x=>x.id===S.jog);if(!j){S.jog=null;return vJogadores()}
   const m=$('#main');
   m.innerHTML=`<div class="card"><div class="row"><button class="btn ghost sm" onclick="S.jog=null;render()">‹</button><div class="av">${j.numero??iniciais(j.nome)}</div><div class="grow"><h2 style="margin:0">${esc(j.nome)}</h2><div class="muted">${esc(j.posicao||'')}${j.ano_escolar?' · '+esc(j.ano_escolar):''}</div></div><button class="btn ghost sm" onclick="editarJogador()">⚙</button></div></div>
   <div class="seg">${JTABS.map(([k,l])=>`<button class="${S.jogTab===k?'on':''}" onclick="S.jogTab='${k}';vJogador()">${l}</button>`).join('')}</div>
   <div id="jBody"><div class="card"><p class="empty">A carregar…</p></div></div>`;
-  const f={resumo:jResumo,melhorar:jMelhorar,escola:jEscola,evolucao:jEvolucao,objetivos:jObjetivos,desafios:jDesafios,emocoes:jEmocoes,rotina:jRotina,conversa:jConversa}[S.jogTab];
+  const f={resumo:jResumo,avaliacao:jAvaliacao,melhorar:jMelhorar,escola:jEscola,evolucao:jEvolucao,objetivos:jObjetivos,desafios:jDesafios,emocoes:jEmocoes,rotina:jRotina,conversa:jConversa}[S.jogTab];
   $('#jBody').innerHTML=await f(j);
   if(S.jogTab==='conversa'){const b=$('#chatEnd');if(b)b.scrollIntoView()}
 }
@@ -819,6 +829,350 @@ async function jConversa(j){
 }
 async function enviarPrivada(){const t=g('cTxt');if(!t)return;await q(sb.from('fut_mensagens').insert({equipa_id:S.eq.id,jogador_id:S.jog,autor_id:S.me,texto:t}));vJogador()}
 
+/* ---------- avaliação trimestral 3S (pais, treinador, professores, aluno) ---------- */
+const QUEST=[
+ {dim:'Saber',id:'s1',o:'Está atento e concentrado nas tarefas',e:'Consigo estar atento e concentrado'},
+ {dim:'Saber',id:'s2',o:'Esforça-se para aprender coisas novas',e:'Esforço-me para aprender coisas novas'},
+ {dim:'Saber',id:'s3',o:'Cumpre as tarefas com responsabilidade (estudo, treinos, casa)',e:'Faço as minhas tarefas (estudo, treinos, casa)'},
+ {dim:'Sentir',id:'e1',o:'Lida bem com erros, derrotas e notas baixas',e:'Quando erro ou perco, acalmo-me e tento outra vez'},
+ {dim:'Sentir',id:'e2',o:'Mostra confiança em si próprio',e:'Acredito em mim'},
+ {dim:'Sentir',id:'e3',o:'Parece feliz e motivado',e:'Sinto-me feliz e com vontade de fazer as coisas'},
+ {dim:'Sentir',id:'e4',o:'Diz o que sente de forma calma e respeitosa',e:'Consigo dizer o que sinto sem gritar nem magoar'},
+ {dim:'Ser',id:'v1',o:'Respeita adultos, colegas e regras',e:'Respeito os adultos, os colegas e as regras'},
+ {dim:'Ser',id:'v2',o:'Coopera e ajuda os colegas',e:'Ajudo os meus colegas e jogo em equipa'},
+ {dim:'Ser',id:'v3',o:'É pontual e cumpre o que combina',e:'Chego a horas e cumpro o que combino'},
+ {dim:'Hábitos',id:'h1',o:'Dorme o suficiente e anda descansado',e:'Durmo bem e acordo descansado'},
+ {dim:'Hábitos',id:'h2',o:'Usa ecrãs (telemóvel, consola, TV) com moderação',e:'Uso o telemóvel, a consola e a TV só um bocadinho'},
+ {dim:'Hábitos',id:'h3',o:'Alimenta-se de forma saudável (poucos doces e refrigerantes)',e:'Como bem e bebo poucos refrigerantes'},
+ {dim:'Hábitos',id:'h4',o:'Mantém-se afastado de tabaco, vape e álcool',e:'Fico longe do tabaco, do vape e do álcool',velhos:true}
+];
+const DIMS=[['Saber','🧠','Aprender'],['Sentir','💛','Emoções'],['Ser','🌱','Valores e relações'],['Hábitos','🌙','Saúde e hábitos']];
+const ESC4=['','Raramente','Às vezes','Muitas vezes','Quase sempre'];
+const ESC4K=[['',''],['😟','Quase nunca'],['🙂','Às vezes'],['😀','Muitas vezes'],['🤩','Sempre']];
+const TIPOS360=[['pai','Pais'],['treinador','Treinador'],['professor','Professores'],['aluno','Aluno']];
+const trimDe=d=>{const x=new Date((d||hoje())+'T12:00');return x.getFullYear()+'-T'+(Math.floor(x.getMonth()/3)+1)};
+const trimAtual=()=>trimDe(hoje());
+const trimLabel=t=>{const [y,q]=t.split('-T');return ['Jan–Mar','Abr–Jun','Jul–Set','Out–Dez'][q-1]+' '+y};
+const trimRange=t=>{const [y,q]=t.split('-T').map(Number);const m=(q-1)*3;const ini=new Date(Date.UTC(y,m,1)),fim=new Date(Date.UTC(y,m+3,0));return [ini.toISOString().slice(0,10),fim.toISOString().slice(0,10)]};
+const trimAnterior=t=>{let [y,q]=t.split('-T').map(Number);q--;if(!q){q=4;y--}return y+'-T'+q};
+function eVelho(escalao,ano){const m=String(escalao||'').match(/sub-(\d+)/);if(m&&+m[1]>=12)return true;const a=parseInt(ano||'');return a>=7}
+function questoesPara(velho){return QUEST.filter(q=>!q.velhos||velho)}
+function mediaDim(lista,dim){const v=[];lista.forEach(a=>QUEST.filter(q=>q.dim===dim).forEach(q=>{const n=a.respostas?.[q.id];if(n)v.push(n)}));return v.length?v.reduce((s,x)=>s+x,0)/v.length:null}
+const fmt1=n=>n==null?'–':n.toFixed(1).replace('.',',');
+
+/* questionário interativo: uma pergunta de cada vez */
+let QZ=null;
+function abrirQuestionario(cfg){
+  // cfg: {modo:'pai'|'treinador'|'aluno'|'professor', nome, velho, jogadorId?, token?, anterior?, host?}
+  QZ={...cfg,passo:0,resp:{...(cfg.anterior?.respostas||{})},forcas:cfg.anterior?.forcas||'',melhorar:cfg.anterior?.melhorar||'',comentario:cfg.anterior?.comentario||'',nomeResp:cfg.nomeResp||''};
+  QZ.qs=questoesPara(cfg.velho);
+  qzRender();
+}
+function qzHost(html){if(QZ.host==='screen'){$('#screen').innerHTML=`<div class="login" style="padding-top:calc(24px + env(safe-area-inset-top,0px))">${html}</div>`;window.scrollTo(0,0)}else openSheet(html)}
+function qzRender(){
+  const eu=QZ.modo==='aluno';const total=QZ.qs.length;const p=QZ.passo;
+  const barra=`<div class="bar" style="margin:8px 0 16px"><i style="width:${Math.round(Math.min(p,total+1)/(total+1)*100)}%"></i></div>`;
+  if(p===0){
+    qzHost(`<div style="text-align:center">${ESCUDO(56)}</div>
+    <h2 style="text-align:center;margin-top:8px">${eu?`Olá, ${esc(QZ.nome)}!`:`Avaliação de ${esc(QZ.nome)}`}</h2>
+    <p class="muted" style="text-align:center">${trimLabel(QZ.trim)} · ${QZ.qs.length} perguntas rápidas</p>
+    <div class="card" style="margin-top:12px"><p style="margin:0">${eu?'Vamos pensar em como te correram estes 3 meses. Não há respostas certas nem erradas: responde com sinceridade, a pensar em ti.':`Pais, treinador, professores e o próprio ${esc(QZ.nome)} respondem às mesmas perguntas. Juntas, as respostas mostram como está a crescer: a aprender (Saber), nas emoções (Sentir) e nos valores e hábitos (Ser).`}</p>
+    <p class="faint" style="margin:10px 0 0">${eu?'Demora uns 3 minutos.':'Demora uns 4 minutos. Se não souber responder a alguma pergunta, escolha «Não sei».'}</p></div>
+    ${QZ.modo==='professor'?`<label class="f" for="qzNome">O seu nome e disciplina</label><input id="qzNome" class="in" value="${esc(QZ.nomeResp)}" placeholder="Ex.: Prof.ª Ana Silva – Matemática">`:''}
+    <button class="btn gold full" style="margin-top:16px" onclick="qzComecar()">Começar</button>
+    ${QZ.host!=='screen'?'<button class="btn ghost full" style="margin-top:8px" onclick="closeSheet()">Agora não</button>':''}`);
+    return;
+  }
+  if(p<=total){
+    const q=QZ.qs[p-1];const v=QZ.resp[q.id];const d=DIMS.find(x=>x[0]===q.dim);
+    const ops=eu?[1,2,3,4].map(n=>`<button class="${v===n?'on':''}" style="flex:1;min-width:70px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px" onclick="qzResp('${q.id}',${n})"><span style="font-size:30px">${ESC4K[n][0]}</span><span style="font-size:12px">${ESC4K[n][1]}</span></button>`).join('')
+      :[1,2,3,4].map(n=>`<button class="${v===n?'on':''}" style="flex:1 1 45%;padding:14px 8px" onclick="qzResp('${q.id}',${n})">${ESC4[n]}</button>`).join('')+`<button class="${v===0?'on':''}" style="flex:1 1 100%;padding:10px" onclick="qzResp('${q.id}',0)">Não sei</button>`;
+    qzHost(`${barra}<div class="row between"><span class="chip gold">${d[1]} ${d[0]} · ${d[2]}</span><span class="faint">${p} de ${total}</span></div>
+    <h2 style="margin:18px 0 18px;font-size:23px">${eu?esc(q.e):esc(q.o)}</h2>
+    <div class="opts" style="gap:8px">${ops}</div>
+    <div class="row between" style="margin-top:20px"><button class="btn ghost sm" onclick="QZ.passo--;qzRender()">‹ Voltar</button>${v!=null?`<button class="btn sm" onclick="QZ.passo++;qzRender()">Seguinte ›</button>`:''}</div>`);
+    return;
+  }
+  qzHost(`${barra}<h2>${eu?'Quase a acabar!':'Para terminar'}</h2>
+  <label class="f" for="qzF">${eu?'Em que é que sou bom/boa?':'Pontos fortes'}</label><textarea id="qzF" class="in">${esc(QZ.forcas)}</textarea>
+  <label class="f" for="qzM">${eu?'O que quero melhorar nos próximos 3 meses?':'O que pode melhorar nos próximos 3 meses'}</label><textarea id="qzM" class="in">${esc(QZ.melhorar)}</textarea>
+  <label class="f" for="qzC">${eu?'Queres dizer mais alguma coisa? (opcional)':'Comentário ou sugestão (opcional)'}</label><textarea id="qzC" class="in">${esc(QZ.comentario)}</textarea>
+  <button class="btn gold full" style="margin-top:14px" onclick="qzEnviar()">${eu?'Enviar 🎉':'Enviar avaliação'}</button>
+  <button class="btn ghost full sm" style="margin-top:8px" onclick="QZ.passo--;qzRender()">‹ Voltar</button>`);
+}
+function qzComecar(){if(QZ.modo==='professor'){QZ.nomeResp=g('qzNome');if(!QZ.nomeResp){toast('Escreva o seu nome e disciplina');return}}QZ.passo=1;qzRender()}
+function qzResp(id,n){QZ.resp[id]=n;setTimeout(()=>{QZ.passo++;qzRender()},180);qzRender()}
+async function qzEnviar(){
+  QZ.forcas=g('qzF');QZ.melhorar=g('qzM');QZ.comentario=g('qzC');
+  const resp={};Object.entries(QZ.resp).forEach(([k,v])=>{if(v)resp[k]=v});
+  if(QZ.token){
+    const {error}=await sb.rpc('fut_convite_responder',{p_token:QZ.token,p_nome:QZ.nomeResp||null,p_respostas:resp,p_forcas:QZ.forcas||null,p_melhorar:QZ.melhorar||null,p_comentario:QZ.comentario||null});
+    if(error){toast('Não foi possível enviar: o link pode já ter sido usado');return}
+    qzHost(`<div style="text-align:center">${ESCUDO(64)}<h2 style="margin-top:12px">Obrigado!</h2><p class="muted">A avaliação foi enviada à família e ao treinador${QZ.modo==='aluno'?'. Bom trabalho! 💪':'.'}</p><p class="faint">Já pode fechar esta página.</p></div>`);
+    return;
+  }
+  const row={jogador_id:QZ.jogadorId,trimestre:QZ.trim,respondente_tipo:QZ.modo,respondente_nome:QZ.modo==='aluno'?QZ.nome:S.perfil.nome,autor_id:S.me,respostas:resp,forcas:QZ.forcas||null,melhorar:QZ.melhorar||null,comentario:QZ.comentario||null};
+  const r=QZ.anterior?.id?await q(sb.from('fut_avaliacoes_360').update(row).eq('id',QZ.anterior.id)):await q(sb.from('fut_avaliacoes_360').insert(row));
+  if(r===null)return;
+  closeSheet();toast(QZ.modo==='aluno'?'Autoavaliação guardada 🎉':'Avaliação guardada');
+  if(S.tab==='jogadores'&&S.jog){S.jogTab='avaliacao';vJogador()}else render();
+}
+
+/* página aberta pelo link (professor ou aluno, sem conta) */
+async function ecraConvite(token){
+  $('#screen').innerHTML='<div class="login"><p class="muted">A abrir…</p></div>';
+  const {data,error}=await sb.rpc('fut_convite_info',{p_token:token});
+  if(error||!data){$('#screen').innerHTML=`<div class="login">${ESCUDO(56)}<h2 style="margin-top:12px">Link inválido</h2><p class="muted">Peça um novo link à família ou ao treinador.</p></div>`;return}
+  if(data.usado||data.expirado){$('#screen').innerHTML=`<div class="login">${ESCUDO(56)}<h2 style="margin-top:12px">${data.usado?'Esta avaliação já foi enviada':'Este link expirou'}</h2><p class="muted">Obrigado! Se precisar de responder outra vez, peça um novo link.</p></div>`;return}
+  abrirQuestionario({modo:data.tipo,nome:data.nome_aluno,velho:eVelho(data.escalao),token,trim:data.trimestre,host:'screen',nomeResp:data.convidado||''});
+}
+
+/* separador do jogador */
+async function jAvaliacao(j){
+  const t=S.trim360||trimAtual();const tAnt=trimAnterior(t);
+  const [av,avAnt,conv]=await Promise.all([
+    q(sb.from('fut_avaliacoes_360').select('*').eq('jogador_id',j.id).eq('trimestre',t).order('created_at')),
+    q(sb.from('fut_avaliacoes_360').select('*').eq('jogador_id',j.id).eq('trimestre',tAnt)),
+    q(sb.from('fut_convites').select('*').eq('jogador_id',j.id).eq('trimestre',t).order('created_at'))
+  ]);
+  const lista=av||[],ant=avAnt||[];
+  const minha=lista.find(a=>a.autor_id===S.me&&a.respondente_tipo===(isCoach()?'treinador':'pai'));
+  const porTipo=k=>lista.filter(a=>a.respondente_tipo===k);
+  const opcoesTrim=[];let x=trimAtual();for(let i=0;i<6;i++){opcoesTrim.push(x);x=trimAnterior(x)}
+  const tabela=`<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:13px"><tr><th style="text-align:left;padding:6px 4px"></th>${TIPOS360.map(([k,l])=>`<th style="padding:6px 4px;color:var(--soft);font-weight:600">${l}</th>`).join('')}<th style="padding:6px 4px">Média</th></tr>
+    ${DIMS.map(([d,i])=>{const m=mediaDim(lista,d),ma=mediaDim(ant,d);return `<tr style="border-top:1px solid var(--line)"><td style="padding:8px 4px;font-weight:600;white-space:nowrap">${i} ${d}</td>${TIPOS360.map(([k])=>`<td style="text-align:center">${fmt1(mediaDim(porTipo(k),d))}</td>`).join('')}<td style="text-align:center;font-weight:700">${fmt1(m)} ${m!=null&&ma!=null?(m>ma+0.05?'<span style="color:var(--mint)">▲</span>':m<ma-0.05?'<span style="color:var(--red)">▼</span>':''):''}</td></tr>`}).join('')}</table></div>
+    <p class="faint" style="margin:8px 0 0">Escala de 1 (raramente) a 4 (quase sempre). ▲▼ em relação a ${trimLabel(tAnt)}.</p>`;
+  const linksConv=(conv||[]).map(c=>`<div class="row between" style="padding:6px 0"><div class="grow"><b style="font-size:14px">${c.tipo==='professor'?'👩‍🏫':'🧒'} ${esc(c.nome||(c.tipo==='aluno'?j.nome:'Professor'))}</b><div class="faint">${c.usado_em?'✔ Respondeu':'⏳ À espera de resposta'}</div></div>${!c.usado_em?`<button class="btn ghost sm" onclick="partilharConvite('${c.token}','${c.tipo}')">Enviar link</button>`:''}</div>`).join('');
+  return `<div class="card"><div class="row between"><h3 style="margin:0">Avaliação trimestral 3S</h3><select class="in" style="width:auto;padding:6px 8px;font-size:14px" onchange="S.trim360=this.value;vJogador()">${opcoesTrim.map(o=>`<option value="${o}" ${o===t?'selected':''}>${trimLabel(o)}</option>`).join('')}</select></div>
+    <p class="muted" style="margin:8px 0 12px">De 3 em 3 meses, pais, treinador, professores e o próprio ${esc(primeiro(j.nome))} respondem às mesmas perguntas.</p>
+    <div class="kpis" style="grid-template-columns:repeat(4,1fr)">${TIPOS360.map(([k,l])=>`<div class="kpi"><b>${porTipo(k).length?'✔':'–'}</b><small>${l}</small></div>`).join('')}</div>
+    <button class="btn gold full" style="margin-top:14px" onclick="responder360('${j.id}')">${minha?'Rever a minha avaliação':(isCoach()?'Avaliar como treinador':'Avaliar como pai / mãe')}</button>
+    <button class="btn full" style="margin-top:8px" onclick="autoavaliacao('${j.id}')">🧒 Autoavaliação de ${esc(primeiro(j.nome))} (neste telemóvel)</button>
+    <div class="row" style="margin-top:8px"><button class="btn ghost sm grow" onclick="novoConvite('${j.id}','professor')">👩‍🏫 Convidar professor</button><button class="btn ghost sm grow" onclick="novoConvite('${j.id}','aluno')">🔗 Link para o aluno</button></div>
+    ${linksConv?`<div style="margin-top:10px">${linksConv}</div>`:''}</div>
+  ${lista.length?`<div class="card"><h3>Resultados · ${trimLabel(t)}</h3>${tabela}</div>
+  <div class="card"><h3>O que disseram</h3>${lista.map(a=>`<div class="obs ${a.respondente_tipo==='aluno'?'positivo':'melhorar'}"><div class="faint">${(TIPOS360.find(x=>x[0]===a.respondente_tipo)||['',''])[1]} · ${esc(a.respondente_nome||'')}</div>${a.forcas?`<p style="margin:6px 0 0"><b>👍 </b>${esc(a.forcas)}</p>`:''}${a.melhorar?`<p style="margin:4px 0 0"><b>🎯 </b>${esc(a.melhorar)}</p>`:''}${a.comentario?`<p class="muted" style="margin:4px 0 0">${esc(a.comentario)}</p>`:''}</div>`).join('')}</div>`:'<div class="card"><p class="empty">Ainda ninguém respondeu neste trimestre.</p></div>'}
+  <div class="card"><h3>📄 Relatório para enviar</h3><p class="muted" style="margin-top:0">Junta tudo deste trimestre num documento Word (espaçamento 1,5), pronto a enviar aos pais e professores por email ou WhatsApp.</p><button class="btn full" onclick="gerarRelatorio('${j.id}','${t}')">Criar relatório Word</button></div>`;
+}
+async function responder360(jid){
+  const j=S.jogadores.find(x=>x.id===jid);const t=S.trim360||trimAtual();const tipo=isCoach()?'treinador':'pai';
+  const ant=await q(sb.from('fut_avaliacoes_360').select('*').eq('jogador_id',jid).eq('trimestre',t).eq('autor_id',S.me).eq('respondente_tipo',tipo).maybeSingle());
+  abrirQuestionario({modo:tipo,nome:primeiro(j.nome),velho:eVelho(S.eq.escalao,j.ano_escolar),jogadorId:jid,trim:t,anterior:ant||null});
+}
+async function autoavaliacao(jid){
+  const j=S.jogadores.find(x=>x.id===jid);const t=S.trim360||trimAtual();
+  abrirQuestionario({modo:'aluno',nome:primeiro(j.nome),velho:eVelho(S.eq.escalao,j.ano_escolar),jogadorId:jid,trim:t});
+}
+function novoConvite(jid,tipo){
+  const j=S.jogadores.find(x=>x.id===jid);
+  openSheet(`<h2>${tipo==='professor'?'Convidar professor':'Link para '+esc(primeiro(j.nome))}</h2>
+  <p class="muted">${tipo==='professor'?'O professor recebe um link, responde no telemóvel ou no computador, sem criar conta. Só vê o primeiro nome do aluno.':'O aluno responde à autoavaliação no telemóvel dele, sem conta.'} O link serve uma vez e dura 60 dias.</p>
+  ${tipo==='professor'?'<label class="f" for="cvN">Nome e disciplina (opcional)</label><input id="cvN" class="in" placeholder="Ex.: Diretora de turma – Prof.ª Ana">':''}
+  <button class="btn full" style="margin-top:14px" onclick="criarConvite('${jid}','${tipo}')">Criar link</button>`);
+}
+async function criarConvite(jid,tipo){
+  const j=S.jogadores.find(x=>x.id===jid);
+  const r=await q(sb.from('fut_convites').insert({jogador_id:jid,trimestre:S.trim360||trimAtual(),tipo,nome:tipo==='professor'?(g('cvN')||null):j.nome,criado_por:S.me}).select().single());
+  if(!r)return;partilharConvite(r.token,tipo,true);
+}
+function partilharConvite(token,tipo,novo){
+  const link=location.origin+location.pathname+'?q='+token;
+  const texto=tipo==='professor'?`Olá! Sou ${S.perfil.nome}. Pode ajudar-nos com uma avaliação rápida (4 minutos) sobre o desenvolvimento do aluno? Não precisa de criar conta: ${link}`:`Olá! Responde à tua autoavaliação do Futsal 3S (3 minutos): ${link}`;
+  openSheet(`<h2>${novo?'Link criado':'Enviar link'}</h2><p class="muted">Escolha como quer enviar.</p>
+  <div class="card" style="word-break:break-all;font-size:13px">${esc(link)}</div>
+  <a class="btn full" style="display:block;text-align:center;text-decoration:none;background:#25D366" href="https://wa.me/?text=${encodeURIComponent(texto)}" target="_blank" rel="noopener">WhatsApp</a>
+  <a class="btn ghost full" style="display:block;text-align:center;text-decoration:none;margin-top:8px" href="mailto:?subject=${encodeURIComponent('Avaliação trimestral – Futsal 3S')}&body=${encodeURIComponent(texto)}">Email</a>
+  <button class="btn ghost full" style="margin-top:8px" onclick="copiar(${JSON.stringify(link).replace(/"/g,'&quot;')})">Copiar link</button>`);
+}
+async function copiar(t){try{await navigator.clipboard.writeText(t);toast('Link copiado')}catch(_){toast('Não foi possível copiar')}}
+
+/* ---------- reuniões ---------- */
+const TIPOS_REUNIAO={pai:'👨‍👩‍👦 Com a família',pais:'👥 Com todos os pais',professores:'👩‍🏫 Com professores'};
+const ESTADOS_REUNIAO={pedida:['Pedida','gold'],marcada:['Marcada','mint'],realizada:['Realizada',''],cancelada:['Cancelada','red']};
+async function carregarReunioes(){S.reunioes=await q(sb.from('fut_reunioes').select('*').eq('equipa_id',S.eq.id).gte('data',addDias(-120)).order('data').order('hora'))||[]}
+async function vReunioes(){
+  await carregarReunioes();
+  const prox=S.reunioes.filter(r=>r.data>=hoje()&&r.estado!=='cancelada'),pass=S.reunioes.filter(r=>r.data<hoje()||r.estado==='cancelada').reverse();
+  const linha=r=>{const j=r.jogador_id&&S.jogadores.find(x=>x.id===r.jogador_id);const e=ESTADOS_REUNIAO[r.estado];return `<button class="item" onclick="abrirReuniao('${r.id}')"><div class="date"><b>${new Date(r.data+'T12:00').getDate()}</b><small>${MESES[new Date(r.data+'T12:00').getMonth()]}</small></div><div class="grow"><b>${TIPOS_REUNIAO[r.tipo]}${j?' · '+esc(primeiro(j.nome)):''}</b><div class="muted">${esc(r.hora||'')} ${r.assunto?'· '+esc(r.assunto):''}</div></div><span class="chip ${e[1]}">${e[0]}</span></button>`};
+  return `<div class="card"><button class="btn full" onclick="novaReuniao()">${isCoach()?'+ Marcar reunião':'+ Pedir reunião'}</button></div>
+  <div class="card"><h2>Próximas</h2>${prox.length?`<div class="list">${prox.map(linha).join('')}</div>`:'<p class="empty">Sem reuniões marcadas.</p>'}</div>
+  ${pass.length?`<div class="card"><h2>Anteriores</h2><div class="list">${pass.slice(0,15).map(linha).join('')}</div></div>`:''}`;
+}
+function novaReuniao(r){
+  r=r||{};const tipos=isCoach()?['pai','pais','professores']:['pai','professores'];
+  openSheet(`<h2>${r.id?'Editar reunião':isCoach()?'Marcar reunião':'Pedir reunião ao treinador'}</h2>
+  <label class="f" for="rTipo">Tipo</label><select id="rTipo" class="in" onchange="document.getElementById('rJogW').hidden=this.value==='pais'">${tipos.map(t=>`<option value="${t}" ${r.tipo===t?'selected':''}>${TIPOS_REUNIAO[t]}</option>`).join('')}</select>
+  <div id="rJogW" ${r.tipo==='pais'?'hidden':''}><label class="f" for="rJog">Sobre</label><select id="rJog" class="in">${S.meus.map(j=>`<option value="${j.id}" ${r.jogador_id===j.id?'selected':''}>${esc(j.nome)}</option>`).join('')}</select></div>
+  <div class="row"><div class="grow"><label class="f" for="rData">Dia</label><input id="rData" type="date" class="in" value="${r.data||addDias(7)}"></div><div class="grow"><label class="f" for="rHora">Hora</label><input id="rHora" type="time" class="in" value="${esc(r.hora||'19:00')}"></div></div>
+  <label class="f" for="rLocal">Local</label><input id="rLocal" class="in" value="${esc(r.local||'')}" placeholder="Pavilhão, escola…">
+  <label class="f" for="rLink">Link da videochamada (opcional)</label><input id="rLink" class="in" type="url" value="${esc(r.link||'')}" placeholder="https://meet.google.com/…">
+  <label class="f" for="rAss">Assunto</label><input id="rAss" class="in" value="${esc(r.assunto||'')}" placeholder="Ex.: avaliação do 1.º trimestre">
+  <label class="f" for="rPart">Participantes</label><input id="rPart" class="in" value="${esc(r.participantes||'')}" placeholder="Ex.: mãe, pai, diretora de turma">
+  <button class="btn full" style="margin-top:14px" onclick="guardarReuniao('${r.id||''}')">${r.id?'Guardar':isCoach()?'Marcar':'Enviar pedido'}</button>`);
+}
+async function guardarReuniao(id){
+  const tipo=g('rTipo');if(!g('rData')){toast('Escolha o dia');return}
+  const lk=g('rLink');
+  const row={equipa_id:S.eq.id,tipo,jogador_id:tipo==='pais'?null:(g('rJog')||null),data:g('rData'),hora:g('rHora')||null,local:g('rLocal')||null,link:/^https?:\/\//.test(lk)?lk:null,assunto:g('rAss')||null,participantes:g('rPart')||null};
+  if(tipo!=='pais'&&!row.jogador_id){toast('Escolha o jogador');return}
+  if(id)await q(sb.from('fut_reunioes').update(row).eq('id',id));
+  else await q(sb.from('fut_reunioes').insert({...row,estado:isCoach()?'marcada':'pedida',criado_por:S.me}));
+  closeSheet();S.agTab='reunioes';render();toast(id?'Guardado':isCoach()?'Reunião marcada':'Pedido enviado ao treinador');
+}
+function abrirReuniao(id){
+  const r=S.reunioes.find(x=>x.id===id);if(!r)return;const j=r.jogador_id&&S.jogadores.find(x=>x.id===r.jogador_id);const e=ESTADOS_REUNIAO[r.estado];
+  const podeEditar=isCoach()||(r.jogador_id&&S.meus.some(m=>m.id===r.jogador_id));
+  openSheet(`<div class="row between"><span class="chip">${TIPOS_REUNIAO[r.tipo]}</span><span class="chip ${e[1]}">${e[0]}</span></div>
+  <h2 style="margin-top:8px">${esc(r.assunto||'Reunião')}${j?' · '+esc(primeiro(j.nome)):''}</h2>
+  <p class="muted">${diaSemana(r.data)}, ${dataCurta(r.data)} · ${esc(r.hora||'')}${r.local?'<br>📍 '+esc(r.local):''}${r.participantes?'<br>👥 '+esc(r.participantes):''}<br>Marcada por ${esc(nomeDe(r.criado_por))}</p>
+  ${r.link?`<a class="btn full" style="display:block;text-align:center;text-decoration:none" href="${esc(r.link)}" target="_blank" rel="noopener">Entrar na videochamada</a>`:''}
+  ${isCoach()&&r.estado==='pedida'?`<button class="btn gold full" style="margin-top:8px" onclick="estadoReuniao('${id}','marcada')">✔ Confirmar reunião</button>`:''}
+  ${podeEditar?`<label class="f" for="rAta">Conclusões / ata</label><textarea id="rAta" class="in" style="min-height:120px" placeholder="O que se combinou, próximos passos…">${esc(r.ata||'')}</textarea>
+  <button class="btn full" style="margin-top:8px" onclick="guardarAta('${id}')">Guardar conclusões</button>`:r.ata?`<div class="card" style="margin-top:10px"><b>Conclusões</b><p style="margin:4px 0 0">${esc(r.ata)}</p></div>`:''}
+  ${podeEditar?`<div class="row" style="margin-top:10px"><button class="btn ghost sm grow" onclick='novaReuniao(${JSON.stringify(r).replace(/'/g,"&#39;")})'>Editar</button>${r.estado!=='cancelada'?`<button class="btn red sm grow" onclick="estadoReuniao('${id}','cancelada')">Cancelar</button>`:''}</div>`:''}`);
+}
+async function estadoReuniao(id,e){await q(sb.from('fut_reunioes').update({estado:e}).eq('id',id));await carregarReunioes();abrirReuniao(id);toast(e==='cancelada'?'Reunião cancelada':'Reunião confirmada')}
+async function guardarAta(id){await q(sb.from('fut_reunioes').update({ata:g('rAta')||null,estado:'realizada'}).eq('id',id));await carregarReunioes();closeSheet();if(S.tab==='agenda')render();toast('Conclusões guardadas')}
+
+/* ---------- relatório Word ---------- */
+let DOCX_P=null;
+function carregarDocx(){if(window.docx)return Promise.resolve(window.docx);if(!DOCX_P)DOCX_P=new Promise((ok,ko)=>{const s=document.createElement('script');s.src='docx.iife.js';s.onload=()=>ok(window.docx);s.onerror=ko;document.head.appendChild(s)});return DOCX_P}
+let REL=null;
+async function gerarRelatorio(jid,t){
+  const j=S.jogadores.find(x=>x.id===jid);const [ini,fim]=trimRange(t);
+  openSheet(`<h2>A preparar o relatório…</h2><p class="muted">Isto demora uns segundos.</p>`);
+  try{
+    const [D,av,avAnt,notas,comp,obs,objs,evs,reun]=await Promise.all([
+      carregarDocx(),
+      q(sb.from('fut_avaliacoes_360').select('*').eq('jogador_id',jid).eq('trimestre',t)),
+      q(sb.from('fut_avaliacoes_360').select('*').eq('jogador_id',jid).eq('trimestre',trimAnterior(t))),
+      q(sb.from('fut_notas_escola').select('*').eq('jogador_id',jid)),
+      q(sb.from('fut_avaliacoes').select('*').eq('jogador_id',jid)),
+      q(sb.from('fut_observacoes').select('*').eq('jogador_id',jid).order('created_at')),
+      q(sb.from('fut_objetivos').select('*').eq('jogador_id',jid).order('created_at')),
+      q(sb.from('fut_eventos').select('*').eq('equipa_id',S.eq.id).gte('data',ini).lte('data',fim)),
+      q(sb.from('fut_reunioes').select('*').eq('equipa_id',S.eq.id).gte('data',ini).lte('data',fim).neq('estado','cancelada').order('data'))
+    ]);
+    const evIds=(evs||[]).map(e=>e.id);
+    const pres=evIds.length?(await q(sb.from('fut_presencas').select('*').eq('jogador_id',jid).in('evento_id',evIds))||[]):[];
+    const blob=await montarDocx(D,{j,t,av:av||[],avAnt:avAnt||[],notas:notas||[],comp:comp||[],obs:(obs||[]).filter(o=>!o.resolvido||(o.created_at.slice(0,10)>=ini&&o.created_at.slice(0,10)<=fim)),objs:objs||[],evs:evs||[],pres,reun:(reun||[]).filter(r=>!r.jogador_id||r.jogador_id===jid)});
+    const nome=`Relatorio_${primeiro(j.nome)}_${trimLabel(t).replace(/[–\s]/g,'_')}.docx`;
+    REL=new File([blob],nome,{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+    openSheet(`<div style="text-align:center;font-size:44px">📄</div><h2 style="text-align:center">Relatório pronto</h2><p class="muted" style="text-align:center">${esc(nome)}</p>
+    <button class="btn gold full" style="margin-top:12px" onclick="partilharRelatorio()">Enviar (WhatsApp, email…)</button>
+    <button class="btn ghost full" style="margin-top:8px" onclick="descarregarRelatorio()">Descarregar</button>
+    <p class="faint" style="margin-top:12px">No telemóvel, «Enviar» abre a lista de apps: escolha o WhatsApp ou o email e o contacto.</p>`);
+  }catch(e){console.error(e);openSheet(`<h2>Não foi possível criar o relatório</h2><p class="muted">Verifique a ligação à internet e tente outra vez.</p>`)}
+}
+async function partilharRelatorio(){
+  if(!REL)return;
+  try{if(navigator.canShare&&navigator.canShare({files:[REL]})){await navigator.share({files:[REL],title:REL.name,text:'Relatório de desenvolvimento – Futsal 3S'});return}}catch(e){if(e.name==='AbortError')return}
+  descarregarRelatorio();toast('Este aparelho não envia ficheiros diretamente: descarreguei-o para o enviar depois');
+}
+function descarregarRelatorio(){if(!REL)return;const u=URL.createObjectURL(REL);const a=document.createElement('a');a.href=u;a.download=REL.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000)}
+
+async function montarDocx(D,R){
+  const {Document,Packer,Paragraph,TextRun,Table,TableRow,TableCell,WidthType,ShadingType,AlignmentType,BorderStyle,LevelFormat,Footer,PageNumber,HeadingLevel}=D;
+  const AZUL='1B2A4A',OURO='B3843F',CINZA='5E6782',W=9070;
+  const P=(texto,o={})=>new Paragraph({...o,children:[new TextRun({text:String(texto??''),...(o.run||{})})]});
+  const H1=t=>new Paragraph({heading:HeadingLevel.HEADING_1,children:[new TextRun(t)]});
+  const H2=t=>new Paragraph({heading:HeadingLevel.HEADING_2,children:[new TextRun(t)]});
+  const B=t=>new Paragraph({numbering:{reference:'pontos',level:0},children:[new TextRun(String(t))]});
+  const BL=(rot,t)=>new Paragraph({numbering:{reference:'pontos',level:0},children:[new TextRun({text:rot+': ',bold:true}),new TextRun(String(t))]});
+  const borda={style:BorderStyle.SINGLE,size:4,color:'E8DDCF'};const bordas={top:borda,bottom:borda,left:borda,right:borda};
+  const celula=(t,w,o={})=>new TableCell({borders:bordas,width:{size:w,type:WidthType.DXA},shading:o.fundo?{fill:o.fundo,type:ShadingType.CLEAR,color:'auto'}:undefined,margins:{top:60,bottom:60,left:100,right:100},
+    children:[new Paragraph({alignment:o.centro?AlignmentType.CENTER:AlignmentType.LEFT,spacing:{line:276},children:[new TextRun({text:String(t??''),bold:!!o.negrito,color:o.cor})]})]});
+  const tabela=(cab,linhas,larg)=>new Table({width:{size:W,type:WidthType.DXA},columnWidths:larg,rows:[
+    new TableRow({tableHeader:true,children:cab.map((c,i)=>celula(c,larg[i],{fundo:AZUL,cor:'FFFFFF',negrito:true,centro:i>0}))}),
+    ...linhas.map((l,k)=>new TableRow({children:l.map((c,i)=>celula(c,larg[i],{centro:i>0,fundo:k%2?'F6EEE4':undefined,negrito:i===0}))}))]});
+  const j=R.j,nome=j.nome;const filhos=[];
+  // capa / cabeçalho
+  filhos.push(new Paragraph({alignment:AlignmentType.LEFT,spacing:{after:0},children:[new TextRun({text:'FUTSAL ',bold:true,size:36,color:AZUL}),new TextRun({text:'3S',bold:true,size:36,color:OURO})]}));
+  filhos.push(P('Saber · Sentir · Ser',{run:{color:CINZA,size:20}}));
+  filhos.push(new Paragraph({heading:HeadingLevel.TITLE,children:[new TextRun('Relatório de desenvolvimento')]}));
+  filhos.push(new Paragraph({children:[new TextRun({text:'Atleta: ',bold:true}),new TextRun(nome)]}));
+  filhos.push(new Paragraph({children:[new TextRun({text:'Equipa: ',bold:true}),new TextRun(`${S.eq.nome} · ${S.eq.escalao||''}`)]}));
+  filhos.push(new Paragraph({children:[new TextRun({text:'Período: ',bold:true}),new TextRun(trimLabel(R.t))]}));
+  if(j.ano_escolar)filhos.push(new Paragraph({children:[new TextRun({text:'Ano escolar: ',bold:true}),new TextRun(j.ano_escolar)]}));
+  filhos.push(new Paragraph({border:{bottom:{style:BorderStyle.SINGLE,size:8,color:OURO,space:4}},children:[new TextRun({text:`Data do relatório: ${new Date().toLocaleDateString('pt-PT')}`,color:CINZA})]}));
+  filhos.push(P(`Este relatório junta o olhar da família, do treinador, dos professores e do próprio ${primeiro(nome)} sobre os últimos três meses. O objetivo é perceber em conjunto o que está a correr bem e onde podemos ajudar, sempre com o foco no crescimento e não na comparação.`));
+
+  // 1. Desporto
+  filhos.push(H1('1. No futsal'));
+  const treinos=R.evs.filter(e=>e.tipo==='treino'&&e.data<=hoje()),jogos=R.evs.filter(e=>e.tipo==='jogo'&&e.data<=hoje());
+  const presT=R.pres.filter(p=>treinos.some(e=>e.id===p.evento_id)&&p.presente!==false&&(p.presente||p.resposta==='vai')).length;
+  const mins=R.pres.reduce((s,p)=>s+(p.minutos||0),0);
+  const esf=R.pres.filter(p=>p.esforco),ati=R.pres.filter(p=>p.atitude);
+  const med=a=>a.length?(a.reduce((s,x)=>s+x,0)/a.length).toFixed(1).replace('.',','):'–';
+  filhos.push(BL('Presença nos treinos',treinos.length?`${presT} de ${treinos.length}`:'sem treinos registados'));
+  filhos.push(BL('Jogos no período',`${jogos.length} (${mins} minutos jogados)`));
+  filhos.push(BL('Esforço médio (1 a 5)',med(esf.map(p=>p.esforco))));
+  filhos.push(BL('Atitude média (1 a 5)',med(ati.map(p=>p.atitude))));
+  const comp=resumoComp(R.comp);
+  if(comp.length){filhos.push(H2('Competências'));filhos.push(tabela(['Competência','Nível','Evolução'],comp.map(c=>[c.competencia,NIVEIS[c.nivel],c.ant==null?'–':c.nivel>c.ant?'▲ subiu':c.nivel<c.ant?'▼ desceu':'= manteve']),[4070,3000,2000]))}
+
+  // 2. Escola
+  filhos.push(H1('2. Na escola'));
+  const ult=ultimasNotas(R.notas);
+  if(ult.length){filhos.push(tabela(['Disciplina','Nota anterior','Nota atual','Evolução'],ult.map(u=>[u.disciplina,u.ant?fmtNota(u.ant)+' ('+u.ant.periodo.replace(' Período','.ºP').replace('.º.º','.º')+')':'–',fmtNota(u.ult)+' ('+u.ult.periodo.replace(' Período','.ºP').replace('.º.º','.º')+')',!u.ant?'–':pct(u.ult)>pct(u.ant)?'▲ subiu':pct(u.ult)<pct(u.ant)?'▼ desceu':'= manteve']),[2870,2200,2200,1800]))}
+  else filhos.push(P('Ainda não há notas escolares registadas.',{run:{color:CINZA,italics:true}}));
+  const obsEsc=R.obs.filter(o=>o.contexto==='escola');
+  if(obsEsc.length){filhos.push(H2('Observações sobre a escola'));obsEsc.forEach(o=>filhos.push(B(`${o.tipo==='positivo'?'Correu bem':'A melhorar'}: ${o.texto}`)))}
+
+  // 3. Avaliação 3S
+  filhos.push(H1('3. Avaliação trimestral 3S'));
+  if(R.av.length){
+    filhos.push(P('Cada pessoa respondeu às mesmas perguntas, numa escala de 1 (raramente) a 4 (quase sempre).',{run:{color:CINZA}}));
+    const porTipo=k=>R.av.filter(a=>a.respondente_tipo===k);
+    filhos.push(tabela(['Área','Pais','Treinador','Professores','Aluno','Média'],DIMS.map(([d,,l])=>{const m=mediaDim(R.av,d),ma=mediaDim(R.avAnt,d);return [`${d} (${l})`,...TIPOS360.map(([k])=>fmt1(mediaDim(porTipo(k),d))),fmt1(m)+(m!=null&&ma!=null?(m>ma+0.05?' ▲':m<ma-0.05?' ▼':''):'')]}),[2170,1250,1300,1650,1200,1500]));
+    if(R.avAnt.length)filhos.push(P(`▲ ▼ comparam com ${trimLabel(trimAnterior(R.t))}.`,{run:{color:CINZA,size:18}}));
+    // destaques
+    const medQ=QUEST.map(qq=>{const v=R.av.map(a=>a.respostas?.[qq.id]).filter(Boolean);return {q:qq,m:v.length?v.reduce((s,x)=>s+x,0)/v.length:null}}).filter(x=>x.m!=null).sort((a,b)=>b.m-a.m);
+    if(medQ.length>=6){filhos.push(H2('Destaques'));medQ.slice(0,3).forEach(x=>filhos.push(BL('Ponto forte',x.q.o)));medQ.slice(-3).reverse().forEach(x=>filhos.push(BL('A trabalhar',x.q.o)))}
+    filhos.push(H2('O que cada um disse'));
+    R.av.forEach(a=>{const quem=(TIPOS360.find(x=>x[0]===a.respondente_tipo)||['',''])[1];
+      filhos.push(new Paragraph({spacing:{before:120},children:[new TextRun({text:`${quem}${a.respondente_nome?' – '+a.respondente_nome:''}`,bold:true,color:AZUL})]}));
+      if(a.forcas)filhos.push(BL('Pontos fortes',a.forcas));if(a.melhorar)filhos.push(BL('A melhorar',a.melhorar));if(a.comentario)filhos.push(BL('Comentário',a.comentario));
+      if(!a.forcas&&!a.melhorar&&!a.comentario)filhos.push(P('Sem comentários escritos.',{run:{color:CINZA,italics:true}}));});
+  } else filhos.push(P('Ainda não há respostas ao questionário neste trimestre.',{run:{color:CINZA,italics:true}}));
+
+  // 4. A melhorar e objetivos
+  filhos.push(H1('4. Aspetos a melhorar e objetivos'));
+  const pend=R.obs.filter(o=>o.tipo==='melhorar'&&o.contexto!=='escola'),bons=R.obs.filter(o=>o.tipo==='positivo'&&o.contexto!=='escola');
+  const CTX={jogo:'Jogo',treino:'Treino',casa:'Casa',escola:'Escola'};
+  if(bons.length){filhos.push(H2('O que correu bem'));bons.forEach(o=>filhos.push(BL(CTX[o.contexto],o.texto)))}
+  if(pend.length){filhos.push(H2('A melhorar'));pend.forEach(o=>filhos.push(BL(CTX[o.contexto],o.texto+(o.resolvido?' (já melhorou)':''))))}
+  const ok=R.objs.filter(o=>o.cumprido),cur=R.objs.filter(o=>!o.cumprido);
+  if(ok.length){filhos.push(H2('Objetivos cumpridos'));ok.forEach(o=>filhos.push(B(o.texto)))}
+  if(cur.length){filhos.push(H2('Objetivos em curso'));cur.forEach(o=>filhos.push(B(o.texto)))}
+  if(!bons.length&&!pend.length&&!R.objs.length)filhos.push(P('Sem registos neste período.',{run:{color:CINZA,italics:true}}));
+
+  // 5. Reuniões
+  if(R.reun.length){filhos.push(H1('5. Reuniões do período'));R.reun.forEach(r=>{
+    filhos.push(new Paragraph({spacing:{before:120},children:[new TextRun({text:`${new Date(r.data+'T12:00').toLocaleDateString('pt-PT')} – ${TIPOS_REUNIAO[r.tipo].replace(/^\S+\s/,'')}`,bold:true,color:AZUL})]}));
+    if(r.assunto)filhos.push(BL('Assunto',r.assunto));if(r.participantes)filhos.push(BL('Participantes',r.participantes));if(r.ata)filhos.push(BL('Conclusões',r.ata));})}
+
+  // fecho
+  filhos.push(H1(R.reun.length?'6. Próximos passos':'5. Próximos passos'));
+  filhos.push(P(`Sugerimos que família, treinador e professores conversem sobre este relatório com o ${primeiro(nome)}, celebrem o que já conseguiu e escolham juntos um ou dois objetivos para os próximos três meses.`));
+  filhos.push(new Paragraph({spacing:{before:600},children:[new TextRun('O treinador: ______________________________')]}));
+  filhos.push(new Paragraph({spacing:{before:300},children:[new TextRun('O encarregado de educação: ______________________________')]}));
+
+  const doc=new Document({
+    creator:'Futsal 3S – Escola 3S',title:`Relatório de ${nome}`,
+    styles:{default:{document:{run:{font:'Arial',size:22,color:'222222'},paragraph:{spacing:{line:360,after:80}}}},
+      paragraphStyles:[
+        {id:'Title',name:'Title',basedOn:'Normal',next:'Normal',run:{font:'Arial',size:40,bold:true,color:AZUL},paragraph:{spacing:{before:120,after:200,line:360},keepNext:true}},
+        {id:'Heading1',name:'Heading 1',basedOn:'Normal',next:'Normal',quickFormat:true,run:{font:'Arial',size:28,bold:true,color:AZUL},paragraph:{spacing:{before:360,after:120,line:360},keepNext:true,outlineLevel:0}},
+        {id:'Heading2',name:'Heading 2',basedOn:'Normal',next:'Normal',quickFormat:true,run:{font:'Arial',size:24,bold:true,color:OURO},paragraph:{spacing:{before:200,after:80,line:360},keepNext:true,outlineLevel:1}}]},
+    numbering:{config:[{reference:'pontos',levels:[{level:0,format:LevelFormat.BULLET,text:'•',alignment:AlignmentType.LEFT,style:{paragraph:{indent:{left:540,hanging:270}}}}]}]},
+    sections:[{properties:{page:{size:{width:11906,height:16838},margin:{top:1418,bottom:1418,left:1418,right:1418}}},
+      footers:{default:new Footer({children:[new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({text:'Futsal 3S · Escola 3S · Documento confidencial para a família e professores · pág. ',size:16,color:CINZA}),new TextRun({children:[PageNumber.CURRENT],size:16,color:CINZA})]})]})},
+      children:filhos}]
+  });
+  return Packer.toBlob(doc);
+}
+
 /* ---------- mensagens ---------- */
 async function vMensagens(){
   const m=$('#main');
@@ -876,6 +1230,8 @@ async function mudarEquipa(id){try{localStorage.setItem('fut_eq',id)}catch(_){}S
 /* ---------- arranque ---------- */
 (async()=>{
   sb.auth.onAuthStateChange(ev=>{if(ev==='PASSWORD_RECOVERY')setTimeout(novaPass,300)});
+  const tk=new URLSearchParams(location.search).get('q');
+  if(tk&&/^[a-f0-9]{32}$/.test(tk)){ecraConvite(tk);return}
   const {data:{session}}=await sb.auth.getSession();
   if(session?.user) await depoisLogin(session.user); else ecraLogin();
 })();
