@@ -328,6 +328,7 @@ async function carregar(){
   S.exames=idsM.length?(await q(sb.from('fut_exames').select('jogador_id,data,valido_ate,resultado').in('jogador_id',idsM).order('data',{ascending:false}))||[]):[];
   S.pagPend=idsM.length?(await q(sb.from('fut_pagamentos').select('*').in('jogador_id',idsM).in('estado',['pendente','avisado']))||[]):[];
   S.pes={};if(!isAtleta()&&idsM.length){const fs=await q(sb.from('fut_fichas').select('jogador_id,pe_dominante').in('jogador_id',idsM))||[];fs.forEach(f=>{if(f.pe_dominante)S.pes[f.jogador_id]=f.pe_dominante})}
+  await carregarFotos(S.jogadores.map(j=>j.id));
   // presenças dos próximos eventos (pais: só dos filhos)
   const prox=S.eventos.filter(e=>e.data>=addDias(-1)).map(e=>e.id);
   S.presencas=prox.length?(await q(sb.from('fut_presencas').select('*').in('evento_id',prox))||[]):[];
@@ -575,7 +576,7 @@ async function vJogadores(){
     if(evJ.length){const ps=await q(sb.from('fut_presencas').select('jogador_id,minutos').in('evento_id',evJ));(ps||[]).forEach(p=>mins[p.jogador_id]=(mins[p.jogador_id]||0)+(p.minutos||0))}
   }
   const maxMin=Math.max(1,...Object.values(mins));
-  m.innerHTML=`${isCoach()&&lista.length?`<div class="row" style="margin-bottom:14px;gap:8px"><button class="btn ghost grow" style="background:var(--card);box-shadow:0 6px 20px var(--shadow)" onclick="mapaPresencas()">📋 Presenças</button><button class="btn ghost grow" style="background:var(--card);box-shadow:0 6px 20px var(--shadow)" onclick="painelPagamentos()">💶 Pagamentos</button><button class="btn ghost grow" style="background:var(--card);box-shadow:0 6px 20px var(--shadow)" onclick="painelRelatorios()">📄 Relatórios</button></div>`:''}<div class="card">${lista.length?`<div class="list">${lista.map(j=>`<button class="item" onclick="abrirJogador('${j.id}')"><div class="av">${j.numero??iniciais(j.nome)}</div><div class="grow"><b>${esc(j.nome)}</b><div class="muted">${[j.posicao,(S.pes||{})[j.id]?'pé '+(S.pes||{})[j.id].toLowerCase():'',j.ano_escolar].filter(Boolean).map(esc).join(' · ')}</div>
+  m.innerHTML=`${isCoach()&&lista.length?`<div class="row" style="margin-bottom:14px;gap:8px"><button class="btn ghost grow" style="background:var(--card);box-shadow:0 6px 20px var(--shadow)" onclick="mapaPresencas()">📋 Presenças</button><button class="btn ghost grow" style="background:var(--card);box-shadow:0 6px 20px var(--shadow)" onclick="painelPagamentos()">💶 Pagamentos</button><button class="btn ghost grow" style="background:var(--card);box-shadow:0 6px 20px var(--shadow)" onclick="painelRelatorios()">📄 Relatórios</button></div>`:''}<div class="card">${lista.length?`<div class="list">${lista.map(j=>`<button class="item" onclick="abrirJogador('${j.id}')">${avatar(j)}<div class="grow"><b>${esc(j.nome)}</b><div class="muted">${[j.posicao,(S.pes||{})[j.id]?'pé '+(S.pes||{})[j.id].toLowerCase():'',j.ano_escolar].filter(Boolean).map(esc).join(' · ')}</div>
     ${isCoach()?`<div class="bar mint" style="margin-top:6px" title="minutos"><i style="width:${Math.round((mins[j.id]||0)/maxMin*100)}%"></i></div><div class="faint">${mins[j.id]||0} min jogados nos últimos 60 dias</div>`:''}</div><span class="faint">›</span></button>`).join('')}</div>`
     :`<p class="empty">${isCoach()?'Ainda não há jogadores. Os pais registam os filhos quando entram com o código da equipa, ou pode registá-los aqui.':'Ainda não registou o seu filho.'}</p>`}
     <button class="btn gold full" style="margin-top:12px" onclick="adicionarFilho()">+ ${isCoach()?'Registar jogador':'Registar filho(a)'}</button>
@@ -608,10 +609,10 @@ const JTABS=[['resumo','Resumo'],['avaliacao','Avaliação 3S'],['ficha','Ficha'
 async function vJogador(){
   const j=S.jogadores.find(x=>x.id===S.jog);if(!j){S.jog=null;return vJogadores()}
   const m=$('#main');
-  m.innerHTML=`<div class="card"><div class="row">${isAtleta()?'':`<button class="btn ghost sm" onclick="S.jog=null;render()">‹</button>`}<div class="av">${j.numero??iniciais(j.nome)}</div><div class="grow"><h2 style="margin:0">${esc(j.nome)}</h2><div class="muted">${[j.posicao,(S.pes||{})[j.id]?'pé '+(S.pes||{})[j.id].toLowerCase():'',j.ano_escolar].filter(Boolean).map(esc).join(' · ')}</div></div>${isAtleta()?'':`<button class="btn ghost sm" aria-label="Definições" onclick="editarJogador()">⚙</button>`}</div></div>
+  m.innerHTML=`<div class="card"><div class="row">${isAtleta()?'':`<button class="btn ghost sm" onclick="S.jog=null;render()">‹</button>`}<button style="border:0;background:none;padding:0;position:relative" aria-label="Fotografia do atleta" onclick="${isAtleta()?'':`menuFoto('${j.id}')`}">${avatar(j,56)}${isAtleta()?'':'<span style="position:absolute;right:-4px;bottom:-4px;background:var(--gold);color:#fff;border-radius:99px;width:22px;height:22px;display:grid;place-items:center;font-size:12px">📷</span>'}</button><div class="grow"><h2 style="margin:0">${esc(j.nome)}</h2><div class="muted">${[j.posicao,(S.pes||{})[j.id]?'pé '+(S.pes||{})[j.id].toLowerCase():'',j.ano_escolar].filter(Boolean).map(esc).join(' · ')}</div></div>${isAtleta()?'':`<button class="btn ghost sm" aria-label="Definições" onclick="editarJogador()">⚙</button>`}</div></div>
   ${(()=>{const A=areasPerfil();const area=areaDe(S.jogTab);const sub=area?A.find(a=>a[0]===area)[3]:[];return `<div class="kpis" style="grid-template-columns:repeat(${A.length},1fr);gap:8px;margin-bottom:12px">${A.map(([k,ic,l,s])=>`<button class="kpi" style="border:0;cursor:pointer;padding:10px 4px;${area===k?'background:var(--navy);color:#fff':''}" onclick="S.jogTab='${s[0][0]}';vJogador()"><span style="font-size:22px;display:block">${ic}</span><small style="${area===k?'color:#fff':''};font-weight:600">${l}</small></button>`).join('')}</div>${area?`<div class="seg">${sub.map(([k,l])=>`<button class="${S.jogTab===k?'on':''}" onclick="S.jogTab='${k}';vJogador()">${l}</button>`).join('')}</div>`:''}`})()}
   <div id="jBody"><div class="card"><p class="empty">A carregar…</p></div></div>`;
-  const f={resumo:jResumo,avaliacao:jAvaliacao,ficha:jFicha,presencas:jPresencas,pagamentos:jPagamentos,melhorar:jMelhorar,escola:jEscola,evolucao:jEvolucao,objetivos:jObjetivos,desafios:jDesafios,emocoes:jEmocoes,rotina:jRotina,conversa:jConversa}[S.jogTab];
+  const f={resumo:jResumo,avaliacao:jAvaliacao,fpf:jFPF,ficha:jFicha,presencas:jPresencas,pagamentos:jPagamentos,melhorar:jMelhorar,escola:jEscola,evolucao:jEvolucao,objetivos:jObjetivos,desafios:jDesafios,emocoes:jEmocoes,rotina:jRotina,conversa:jConversa}[S.jogTab];
   $('#jBody').innerHTML=await f(j);
   if(S.jogTab==='conversa'){const b=$('#chatEnd');if(b)b.scrollIntoView()}
 }
@@ -1095,9 +1096,10 @@ async function gerarRelatorio(jid,t){
       q(sb.from('fut_eventos').select('*').eq('equipa_id',S.eq.id).gte('data',ini).lte('data',fim)),
       q(sb.from('fut_reunioes').select('*').eq('equipa_id',S.eq.id).gte('data',ini).lte('data',fim).neq('estado','cancelada').order('data'))
     ]);
+    const fpf=await q(sb.from('fut_fichas_fpf').select('*').eq('jogador_id',jid).order('created_at',{ascending:false}).limit(1))||[];
     const evIds=(evs||[]).map(e=>e.id);
     const pres=evIds.length?(await q(sb.from('fut_presencas').select('*').eq('jogador_id',jid).in('evento_id',evIds))||[]):[];
-    const blob=await montarDocx(D,{j,t,av:av||[],avAnt:avAnt||[],notas:notas||[],comp:comp||[],obs:(obs||[]).filter(o=>!o.resolvido||(o.created_at.slice(0,10)>=ini&&o.created_at.slice(0,10)<=fim)),objs:objs||[],evs:evs||[],pres,reun:(reun||[]).filter(r=>!r.jogador_id||r.jogador_id===jid)});
+    const blob=await montarDocx(D,{j,t,av:av||[],avAnt:avAnt||[],notas:notas||[],comp:comp||[],obs:(obs||[]).filter(o=>!o.resolvido||(o.created_at.slice(0,10)>=ini&&o.created_at.slice(0,10)<=fim)),objs:objs||[],evs:evs||[],pres,reun:(reun||[]).filter(r=>!r.jogador_id||r.jogador_id===jid),fpf:fpf[0]||null});
     const nome=`Relatorio_${primeiro(j.nome)}_${trimLabel(t).replace(/[–\s]/g,'_')}.docx`;
     REL=new File([blob],nome,{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
     openSheet(`<div style="text-align:center;font-size:44px">📄</div><h2 style="text-align:center">Relatório pronto</h2><p class="muted" style="text-align:center">${esc(nome)}</p>
@@ -1153,6 +1155,9 @@ async function montarDocx(D,R){
   const comp=resumoComp(R.comp);
   if(comp.length){filhos.push(H2('Competências'));filhos.push(tabela(['Competência','Nível','Evolução'],comp.map(c=>[c.competencia,NIVEIS[c.nivel],c.ant==null?'–':c.nivel>c.ant?'▲ subiu':c.nivel<c.ant?'▼ desceu':'= manteve']),[4070,3000,2000]))}
 
+  if(R.fpf){filhos.push(H2(`Ficha FPF – ${R.fpf.periodo}`));
+    filhos.push(tabela(['Componente','Média (1 a 4)'],FPF.map(c=>[c.t,fmt1(mediaFPF(R.fpf.niveis,c.k))]).concat([['Média geral',fmt1(mediaGeralFPF(R.fpf.niveis))]]),[6570,2500]));
+    if(R.fpf.objetivos_treinador)filhos.push(BL('Objetivos do treinador',R.fpf.objetivos_treinador.replace(/•\s?/g,'').replace(/\n/g,'; ')));}
   // 2. Escola
   filhos.push(H1('2. Na escola'));
   const ult=ultimasNotas(R.notas);
@@ -1454,12 +1459,12 @@ function abrirJogadorEm(id,tab){const j=(S.todosMeus||[]).find(x=>x.id===id)||S.
 /* ---------- página do miúdo: 4 áreas ---------- */
 const AREAS=[
   ['ficha','📇','Ficha',[['ficha','Dados e saúde'],['pagamentos','Pagamentos']]],
-  ['desporto','⚽','Desporto',[['presencas','Presenças'],['evolucao','Evolução'],['desafios','Desafios'],['objetivos','Objetivos']]],
+  ['desporto','⚽','Desporto',[['fpf','Ficha FPF'],['presencas','Presenças'],['evolucao','Evolução'],['desafios','Desafios'],['objetivos','Objetivos']]],
   ['escola','📚','Escola',[['escola','Notas'],['melhorar','A melhorar'],['rotina','Rotina']]],
   ['crescer','💛','Crescer',[['avaliacao','Avaliação 3S'],['emocoes','Emoções'],['conversa','Conversa']]]
 ];
 const AREAS_ATLETA=[
-  ['desporto','⚽','Desporto',[['presencas','Presenças'],['evolucao','Evolução'],['desafios','Desafios'],['objetivos','Objetivos']]],
+  ['desporto','⚽','Desporto',[['presencas','Presenças'],['fpf','Ficha FPF'],['evolucao','Evolução'],['desafios','Desafios'],['objetivos','Objetivos']]],
   ['escola','📚','Escola',[['escola','Notas'],['rotina','Rotina']]],
   ['crescer','💛','Crescer',[['avaliacao','Autoavaliação'],['emocoes','Emoções']]]
 ];
@@ -1511,6 +1516,138 @@ const GUIA_ATLETA=[
  {t:'Sentir',i:'💛',c:[['Errar é aprender','Toda a gente falha passes, mesmo os profissionais. O que conta é o que fazes a seguir.'],['Respira antes de reagir','Depois de um golo sofrido: respira fundo três vezes e volta ao teu lugar.'],['Diz como te sentes','Usa as «Emoções» na app. O treinador e os teus pais querem saber, para te poderem ajudar.']]},
  {t:'Ser',i:'🌱',c:[['Equipa primeiro','Ajuda o colega que errou, celebra os golos dos outros e cumprimenta sempre o adversário.'],['Cuida de ti','Dormir bem, beber água e comer bem são parte do treino. Menos ecrã à noite, mais energia no jogo.'],['Cumpre o que combinas','Chegar a horas e trazer o equipamento também é ser bom jogador.']]}
 ];
+/* ---------- foto do atleta ---------- */
+S.fotos={};
+async function carregarFotos(ids){if(!ids.length)return;const fs=await q(sb.from('fut_fotos').select('jogador_id,foto').in('jogador_id',ids))||[];fs.forEach(f=>S.fotos[f.jogador_id]=f.foto)}
+function avatar(j,tam){tam=tam||42;const f=S.fotos[j.id];return f?`<img src="${f}" alt="" style="width:${tam}px;height:${tam}px;border-radius:${Math.round(tam/3)}px;object-fit:cover;flex:none">`:`<div class="av" style="width:${tam}px;height:${tam}px">${j.numero??iniciais(j.nome)}</div>`}
+function menuFoto(jid){if(!S.fotos[jid]){escolherFoto(jid);return}openSheet(`<h2>Fotografia</h2><div style="text-align:center">${avatar(S.jogadores.find(x=>x.id===jid),140)}</div><button class="btn full" style="margin-top:14px" onclick="closeSheet();escolherFoto('${jid}')">Mudar fotografia</button><button class="btn red full" style="margin-top:8px" onclick="apagarFoto('${jid}')">Retirar fotografia</button>`)}
+function escolherFoto(jid){const i=document.createElement('input');i.type='file';i.accept='image/*';i.onchange=()=>{const f=i.files[0];if(f)guardarFoto(jid,f)};i.click()}
+async function guardarFoto(jid,file){
+  try{
+    const img=await new Promise((ok,ko)=>{const u=URL.createObjectURL(file);const im=new Image();im.onload=()=>{ok(im);URL.revokeObjectURL(u)};im.onerror=ko;im.src=u});
+    const T=320,c=document.createElement('canvas');c.width=T;c.height=T;const s=Math.min(img.width,img.height);
+    c.getContext('2d').drawImage(img,(img.width-s)/2,(img.height-s)/2,s,s,0,0,T,T);
+    const data=c.toDataURL('image/jpeg',0.82);
+    const r=await q(sb.from('fut_fotos').upsert({jogador_id:jid,foto:data,updated_at:new Date().toISOString()},{onConflict:'jogador_id'}));if(r===null)return;
+    S.fotos[jid]=data;toast('Fotografia guardada');if(S.tab==='jogadores')vJogador();
+  }catch(e){toast('Não foi possível ler a fotografia')}
+}
+async function apagarFoto(jid){await q(sb.from('fut_fotos').delete().eq('jogador_id',jid));delete S.fotos[jid];closeSheet();vJogador();toast('Fotografia retirada')}
+
+/* ---------- ficha FPF (cartão interativo) ---------- */
+const CLUBE='Arcas Futsal';
+const FPF=[
+ {k:'1',t:'Componente técnica e tática (futsal)',c:'#1B2A4A',p:['Domínio de bola, passe e receção orientada','Capacidade de remate e finalização','Compreensão das dinâmicas defensivas (1v1, coberturas)','Compreensão do jogo ofensivo (desmarcação, apoio)','Tomada de decisão sob pressão']},
+ {k:'2',t:'Componente físico-motora',c:'#B3843F',p:['Velocidade, agilidade e coordenação motora','Resistência e capacidade de esforço no jogo']},
+ {k:'3',t:'Atitude, comportamento e ética',c:'#4F8466',p:['Assiduidade, pontualidade e compromisso','Respeito por colegas, treinadores e adversários (Fair-play)','Espírito de equipa, interajuda e liderança','Foco, recetividade à correção e disciplina']},
+ {k:'4',t:'Acompanhamento escolar e social',c:'#7A5BA8',p:['Rendimento e aproveitamento escolar (Dual Career)','Hábitos de vida saudável e nutrição']}
+];
+const ESCALA_FPF=['','Insuficiente / Em formação','Suficiente / Satisfatório','Bom / Evolução positiva','Excelente / Desempenho elevado'];
+const campoFPF=(g_,i)=>`r_${g_}._${i}`;
+const mediaFPF=(niv,g_)=>{const comp=FPF.find(x=>x.k===g_);const v=comp.p.map((_,i)=>niv?.[campoFPF(g_,i)]).filter(n=>n>=1&&n<=4);return v.length?v.reduce((s,x)=>s+x,0)/v.length:null};
+const mediaGeralFPF=niv=>{const v=FPF.flatMap(c=>c.p.map((_,i)=>niv?.[campoFPF(c.k,i)])).filter(n=>n>=1&&n<=4);return v.length?v.reduce((s,x)=>s+x,0)/v.length:null};
+function periodoPadrao(){const d=new Date();const y=d.getFullYear(),m=d.getMonth();const ep=m>=8?`${y}/${String(y+1).slice(2)}`:`${y-1}/${String(y).slice(2)}`;const per=m>=8&&m<=11?'1.º Período':m<=2?'2.º Período':'3.º Período';return `${per} · Época ${ep}`}
+let FP=null;
+async function jFPF(j){
+  const [fichas,fi]=await Promise.all([
+    q(sb.from('fut_fichas_fpf').select('*').eq('jogador_id',j.id).order('created_at')),
+    isAtleta()?Promise.resolve(null):q(sb.from('fut_fichas').select('data_nascimento').eq('jogador_id',j.id).maybeSingle())
+  ]);
+  const lista=fichas||[];S.fpfLista=lista;S.fpfNasc=fi?.data_nascimento||null;
+  const edita=isCoach();
+  const sel=(S.fpfSel==='novo'&&edita)?null:(lista.find(f=>f.id===S.fpfSel)||lista[lista.length-1]||null);
+  if(!FP||FP.jog!==j.id||FP.id!==(sel?.id||null))FP={jog:j.id,id:sel?.id||null,niveis:{...(sel?.niveis||{})}};
+  const cab=`<div style="background:var(--navy);color:#fff;border-radius:16px;padding:14px 16px;margin:-2px -2px 12px">
+    <div class="row between" style="font-size:11px;letter-spacing:1px;opacity:.85"><b>${CLUBE.toUpperCase()}</b><span>CERTIFICAÇÃO FPF | CRITÉRIO 7</span></div>
+    <div class="row between" style="margin-top:6px;align-items:flex-end"><div><div style="font-family:'Baloo 2';font-size:20px;line-height:1.1">FICHA INDIVIDUAL DO ATLETA</div><div style="font-size:11px;letter-spacing:1px;color:var(--gold)">AVALIAÇÃO &amp; DESENVOLVIMENTO</div></div>${ESCUDO(30)}</div></div>`;
+  const ident=`<div class="row" style="gap:12px;align-items:flex-start">${avatar(j,72)}<div class="grow">
+    <b style="font-size:16px">${esc(j.nome)}</b>
+    <div class="muted" style="font-size:13px">${esc(S.eq.escalao||'')}${S.fpfNasc?' · nasc. '+new Date(S.fpfNasc+'T12:00').toLocaleDateString('pt-PT'):''}</div>
+    <div class="muted" style="font-size:13px">${esc(S.eq.nome)}${j.posicao?' · '+esc(j.posicao):''}${S.pes?.[j.id]?' · pé '+esc(S.pes[j.id].toLowerCase()):''}</div></div></div>
+    ${edita?`<label class="f" for="fpPer">Período de avaliação / época</label><input id="fpPer" class="in" value="${esc(sel?.periodo||periodoPadrao())}">`:`<p class="faint" style="margin:8px 0 0">${sel?esc(sel.periodo):''}</p>`}`;
+  const escala=`<div class="row wrap" style="gap:4px;margin:12px 0 4px">${[1,2,3,4].map(n=>`<span class="chip" style="font-size:11px">${n} · ${ESCALA_FPF[n].split(' / ')[0]}</span>`).join('')}</div>`;
+  const comps=FPF.map(c=>{const m=mediaFPF(FP.niveis,c.k);return `<div style="margin-top:16px"><div class="row between"><b style="font-size:14px;color:${c.c}">${c.k}. ${c.t.toUpperCase()}</b><span class="chip" style="background:${c.c};color:#fff">${fmt1(m)}</span></div>
+    ${c.p.map((par,i)=>{const f=campoFPF(c.k,i),v=FP.niveis[f];return `<div style="padding:8px 0;border-top:1px solid var(--line)"><div style="font-size:14px;margin-bottom:6px">${par}</div>
+      ${edita?`<div class="opts" style="gap:6px">${[1,2,3,4].map(n=>`<button class="${v===n?'on':''}" style="flex:1;padding:8px 0;${v===n?`background:${c.c};border-color:${c.c}`:''}" title="${ESCALA_FPF[n]}" onclick="fpNivel('${f}',${n})">${n}</button>`).join('')}</div>`
+      :`<div class="row" style="gap:8px"><div class="bar grow"><i style="width:${(v||0)*25}%;background:${c.c}"></i></div><b style="width:22px;text-align:right">${v||'–'}</b></div>`}</div>`}).join('')}</div>`}).join('');
+  const txt=(id,rot,val)=>edita?`<label class="f" for="${id}">${rot}</label><textarea id="${id}" class="in">${esc(val||'')}</textarea>`:(val?`<div style="margin-top:12px"><b style="font-size:13px;color:var(--soft)">${rot}</b><p style="margin:4px 0 0">${esc(val)}</p></div>`:'');
+  const plano=`<div style="margin-top:20px;padding-top:12px;border-top:2px solid var(--gold)"><b style="font-size:13px;letter-spacing:1px">PLANO DE DESENVOLVIMENTO INDIVIDUAL</b>
+    ${edita?`<button class="btn ghost sm full" style="margin-top:8px" onclick="fpSugerir()">✨ Preencher com as observações registadas na app</button>`:''}
+    ${txt('fpT','1. Aspetos técnico-táticos e físicos a potenciar no treino',sel?.sugestoes_tecnicas)}
+    ${txt('fpC','2. Aspetos comportamentais, atitudinais e rendimento escolar',sel?.sugestoes_comportamentais)}
+    ${txt('fpO','3. Recomendações e objetivos concretos do treinador / coordenador',sel?.objetivos_treinador)}
+    ${txt('fpP','Sugestões e recomendações aos pais / encarregados de educação',sel?.recomendacoes_pais)}
+    ${edita?`<div class="row"><div class="grow"><label class="f" for="fpTr">Treinador principal</label><input id="fpTr" class="in" value="${esc(sel?.treinador_nome||nomeDe(S.eq.treinador_id))}"></div><div class="grow"><label class="f" for="fpCo">Coordenador técnico</label><input id="fpCo" class="in" value="${esc(sel?.coordenador_nome||'')}"></div></div>`
+      :(sel?.treinador_nome?`<p class="faint" style="margin-top:12px">Treinador: ${esc(sel.treinador_nome)}${sel.coordenador_nome?' · Coordenador: '+esc(sel.coordenador_nome):''}</p>`:'')}</div>`;
+  const hist=lista.length?`<div class="card"><h3>📈 Evolução por componente</h3>${graficoFPF(lista)}
+    <div class="row wrap" style="gap:10px;margin-top:6px">${FPF.map(c=>`<span style="font-size:12px;display:inline-flex;align-items:center;gap:4px"><i style="width:10px;height:10px;border-radius:3px;background:${c.c};display:inline-block"></i>${c.t.split(' (')[0]}</span>`).join('')}</div></div>
+    <div class="card"><h3>📊 Tabela</h3>${tabelaFPF(lista)}</div>`:'';
+  const seletor=lista.length?`<div class="seg">${lista.map(f=>`<button class="${sel&&f.id===sel.id?'on':''}" onclick="S.fpfSel='${f.id}';FP=null;vJogador()">${esc(f.periodo.split(' · ')[0])} ${esc((f.periodo.split('Época ')[1]||'').trim())}</button>`).join('')}${edita?`<button onclick="S.fpfSel='novo';FP=null;vJogador()" class="${!sel?'on':''}">+ Nova</button>`:''}</div>`:'';
+  const s2=sel;
+  if(!s2&&!edita)return `${seletor}<div class="card">${cab}<p class="empty">O treinador ainda não preencheu a ficha FPF.</p></div>${hist}`;
+  return `${seletor}<div class="card">${cab}${ident}${escala}${comps}${plano}
+    ${edita?`<button class="btn gold full" style="margin-top:16px" onclick="fpGuardar()">Guardar ficha</button>`:''}
+    ${s2?`<button class="btn full" style="margin-top:8px" onclick="fpPDF('${s2.id}')">📄 Descarregar PDF oficial FPF</button>`:''}
+    ${s2&&edita?`<button class="btn red sm" style="margin-top:8px" onclick="fpApagar('${s2.id}')">Apagar esta ficha</button>`:''}</div>${hist}`;
+}
+function fpNivel(f,n){FP.niveis[f]=n;const y=window.scrollY;const keep={};['fpPer','fpT','fpC','fpO','fpP','fpTr','fpCo'].forEach(i=>{const e=document.getElementById(i);if(e)keep[i]=e.value});
+  vJogador().then?.(()=>{});setTimeout(()=>{Object.entries(keep).forEach(([i,v])=>{const e=document.getElementById(i);if(e)e.value=v});window.scrollTo(0,y)},60)}
+async function fpSugerir(){
+  const obs=await q(sb.from('fut_observacoes').select('*').eq('jogador_id',S.jog).eq('tipo','melhorar').eq('resolvido',false))||[];
+  const t=obs.filter(o=>o.contexto==='jogo'||o.contexto==='treino').map(o=>'• '+o.texto).join('\n'),c=obs.filter(o=>o.contexto==='escola'||o.contexto==='casa').map(o=>'• '+o.texto).join('\n');
+  if(t&&!g('fpT'))$('#fpT').value=t;if(c&&!g('fpC'))$('#fpC').value=c;
+  const fracos=FPF.flatMap(x=>x.p.map((p,i)=>({p,v:FP.niveis[campoFPF(x.k,i)]}))).filter(x=>x.v&&x.v<=2).map(x=>'• Melhorar: '+x.p.toLowerCase()).join('\n');
+  if(fracos&&!g('fpO'))$('#fpO').value=fracos;
+  toast(obs.length||fracos?'Sugestões preenchidas: reveja antes de guardar':'Ainda não há observações registadas');
+}
+async function fpGuardar(){
+  const row={jogador_id:S.jog,periodo:g('fpPer')||periodoPadrao(),niveis:FP.niveis,sugestoes_tecnicas:g('fpT')||null,sugestoes_comportamentais:g('fpC')||null,objetivos_treinador:g('fpO')||null,recomendacoes_pais:g('fpP')||null,treinador_nome:g('fpTr')||null,coordenador_nome:g('fpCo')||null,autor_id:S.me,updated_at:new Date().toISOString()};
+  let r;if(FP.id)r=await q(sb.from('fut_fichas_fpf').update(row).eq('id',FP.id).select().single());else r=await q(sb.from('fut_fichas_fpf').insert(row).select().single());
+  if(!r)return;S.fpfSel=r.id;FP=null;vJogador();toast('Ficha FPF guardada');
+}
+async function fpApagar(id){openSheet(`<h2>Apagar esta ficha?</h2><p class="muted">Não dá para desfazer.</p><button class="btn red full" onclick="fpApagarOk('${id}')">Sim, apagar</button><button class="btn ghost full" style="margin-top:8px" onclick="closeSheet()">Cancelar</button>`)}
+async function fpApagarOk(id){await q(sb.from('fut_fichas_fpf').delete().eq('id',id));closeSheet();S.fpfSel=null;FP=null;vJogador()}
+function graficoFPF(lista){
+  const W=320,Hh=170,L=26,R=34,T=10,B=28;const n=lista.length;const xs=i=>n===1?L+(W-L-R)/2:L+i*(W-L-R)/(n-1);const ys=v=>T+(4-v)/3*(Hh-T-B);
+  let s=`<svg viewBox="0 0 ${W} ${Hh}" style="width:100%;height:auto;display:block" role="img" aria-label="Gráfico da evolução das componentes FPF">`;
+  [1,2,3,4].forEach(v=>{s+=`<line x1="${L}" x2="${W-R}" y1="${ys(v)}" y2="${ys(v)}" stroke="#E8DDCF" stroke-width="1"/><text x="${L-8}" y="${ys(v)+4}" font-size="10" text-anchor="end" fill="#5E6782">${v}</text>`});
+  lista.forEach((f,i)=>{s+=`<text x="${xs(i)}" y="${Hh-8}" font-size="9" text-anchor="middle" fill="#5E6782">${esc(f.periodo.split(' · ')[0].replace(' Período','P'))} ${esc((f.periodo.split('Época ')[1]||'').trim())}</text>`});
+  FPF.forEach(c=>{const pts=lista.map((f,i)=>[xs(i),mediaFPF(f.niveis,c.k)]).filter(p=>p[1]!=null);
+    if(pts.length>1)s+=`<polyline fill="none" stroke="${c.c}" stroke-width="2.5" stroke-linejoin="round" points="${pts.map(p=>p[0]+','+ys(p[1])).join(' ')}"/>`;
+    pts.forEach(p=>{s+=`<circle cx="${p[0]}" cy="${ys(p[1])}" r="4" fill="${c.c}"><title>${c.t}: ${fmt1(p[1])}</title></circle>`})});
+  return s+'</svg>';
+}
+function tabelaFPF(lista){
+  const ult=lista.slice(-4);
+  return `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px"><tr><th style="text-align:left;padding:6px 4px">Parâmetro</th>${ult.map(f=>`<th style="padding:6px 4px;color:var(--soft);white-space:nowrap">${esc(f.periodo.split(' · ')[0].replace(' Período','P'))}<br>${esc((f.periodo.split('Época ')[1]||'').trim())}</th>`).join('')}</tr>
+  ${FPF.map(c=>`<tr><td colspan="${ult.length+1}" style="padding:8px 4px 4px;font-weight:700;color:${c.c}">${c.k}. ${c.t}</td></tr>${c.p.map((p,i)=>`<tr style="border-top:1px solid var(--line)"><td style="padding:5px 4px">${p}</td>${ult.map((f,k)=>{const v=f.niveis?.[campoFPF(c.k,i)],a=k?ult[k-1].niveis?.[campoFPF(c.k,i)]:null;return `<td style="text-align:center;font-weight:600">${v||'–'}${v&&a?(v>a?' <span style="color:var(--mint)">▲</span>':v<a?' <span style="color:var(--red)">▼</span>':''):''}</td>`}).join('')}</tr>`).join('')}
+  <tr style="border-top:2px solid var(--line)"><td style="padding:5px 4px;font-weight:700">Média ${c.k}</td>${ult.map(f=>`<td style="text-align:center;font-weight:700;color:${c.c}">${fmt1(mediaFPF(f.niveis,c.k))}</td>`).join('')}</tr>`).join('')}
+  <tr style="border-top:2px solid var(--navy)"><td style="padding:6px 4px;font-weight:800">MÉDIA GERAL</td>${ult.map(f=>`<td style="text-align:center;font-weight:800">${fmt1(mediaGeralFPF(f.niveis))}</td>`).join('')}</tr></table></div>`;
+}
+let PDFLIB_P=null;
+function carregarPdfLib(){if(window.PDFLib)return Promise.resolve(window.PDFLib);if(!PDFLIB_P)PDFLIB_P=new Promise((ok,ko)=>{const s=document.createElement('script');s.src='pdf-lib.min.js';s.onload=()=>ok(window.PDFLib);s.onerror=ko;document.head.appendChild(s)});return PDFLIB_P}
+async function fpPDF(id){
+  const f=(S.fpfLista||[]).find(x=>x.id===id);const j=S.jogadores.find(x=>x.id===S.jog);if(!f||!j)return;
+  openSheet('<h2>A preparar o PDF…</h2>');
+  try{
+    const [L,bytes]=await Promise.all([carregarPdfLib(),fetch('ficha-fpf.pdf').then(r=>r.arrayBuffer())]);
+    const doc=await L.PDFDocument.load(bytes);const form=doc.getForm();
+    const limpa=t=>String(t||'').replace(/[^\x0A\x0D\x20-\x7E -ÿ€]/g,'').replace(/•/g,'-');
+    const tx=(n,v)=>{try{form.getTextField(n).setText(limpa(v))}catch(e){}};
+    tx('nome',j.nome);tx('escalao',S.eq.escalao||'');tx('nascimento',S.fpfNasc?new Date(S.fpfNasc+'T12:00').toLocaleDateString('pt-PT'):'');tx('periodo',f.periodo);tx('equipa',`${CLUBE} · ${S.eq.nome}`);
+    FPF.forEach(c=>c.p.forEach((_,i)=>{const n=campoFPF(c.k,i);const v=f.niveis?.[n];try{form.getDropdown(n).select(v?String(v):'-')}catch(e){}}));
+    tx('sugestoes_tecnicas',(f.sugestoes_tecnicas||'').replace(/•/g,'-'));tx('sugestoes_comportamentais',(f.sugestoes_comportamentais||'').replace(/•/g,'-'));tx('objetivos_treinador',(f.objetivos_treinador||'').replace(/•/g,'-'));tx('recomendacoes_pais',(f.recomendacoes_pais||'').replace(/•/g,'-'));
+    tx('assinatura_treinador',f.treinador_nome||'');tx('assinatura_coordenador',f.coordenador_nome||'');
+    const font=await doc.embedFont(L.StandardFonts.Helvetica);form.updateFieldAppearances(font);
+    const out=await doc.save({useObjectStreams:false});
+    REL=new File([out],`Ficha_FPF_${primeiro(j.nome)}_${f.periodo.replace(/[^A-Za-z0-9º]+/g,'_')}.pdf`,{type:'application/pdf'});
+    openSheet(`<div style="text-align:center;font-size:44px">📄</div><h2 style="text-align:center">Ficha FPF pronta</h2><p class="muted" style="text-align:center">${esc(REL.name)}</p>
+      <button class="btn gold full" style="margin-top:12px" onclick="partilharRelatorio()">Enviar (WhatsApp, email…)</button>
+      <button class="btn ghost full" style="margin-top:8px" onclick="descarregarRelatorio()">Descarregar</button>
+      <p class="faint" style="margin-top:12px">É o PDF oficial do clube, já preenchido e ainda editável.</p>`);
+  }catch(e){console.error(e);openSheet('<h2>Não foi possível criar o PDF</h2><p class="muted">Verifique a ligação e tente outra vez.</p>')}
+}
+
 /* ---------- mensagens ---------- */
 async function vMensagens(){
   const m=$('#main');
