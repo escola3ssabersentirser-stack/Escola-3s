@@ -158,6 +158,7 @@ const iniciais=n=>String(n||'?').trim().split(/\s+/).map(p=>p[0]).slice(0,2).joi
 const primeiro=n=>String(n||'').split(' ')[0];
 const isCoach=()=>!!(S.eq && (S.eq.treinador_id===S.me || (S.admin && S.modo!=='familia')));
 const isAdminModo=()=>!!(S.admin && S.modo!=='familia');
+const horaEv=e=>(e.hora||'')+(e.hora_fim?'–'+e.hora_fim:'');
 const isAtleta=()=>!isCoach()&&S.perfil&&S.perfil.papel==='atleta';
 const nomeDe=uid=>S.perfis[uid]?.nome||'Alguém';
 const anoLetivoAtual=()=>{const d=new Date();const y=d.getFullYear();return d.getMonth()>=8?`${y}/${String(y+1).slice(2)}`:`${y-1}/${String(y).slice(2)}`};
@@ -390,7 +391,7 @@ function vInicio(){
     h+=`<div class="card">${isAtleta()?'<h2>Ainda não estás ligado a um jogador</h2><p class="muted">Pede o código de atleta aos teus pais ou ao treinador.</p><button class="btn gold full" onclick="ecraSemEquipa()">Tenho um código</button>':'<h2>Falta registar o seu filho</h2><p class="muted">Registe-o para receber convocatórias e acompanhar a evolução.</p><button class="btn gold full" onclick="adicionarFilho()">+ Registar filho(a)</button>'}</div>`;
   }
   if(ev){
-    h+=`<div class="card"><div class="row between"><h2>${ev.tipo==='jogo'?'Próximo jogo':'Próximo treino'}</h2><span class="chip ${ev.tipo==='jogo'?'gold':''}">${dataCurta(ev.data)} · ${esc(ev.hora||'')}</span></div>
+    h+=`<div class="card"><div class="row between"><h2>${ev.tipo==='jogo'?'Próximo jogo':'Próximo treino'}</h2><span class="chip ${ev.tipo==='jogo'?'gold':''}">${dataCurta(ev.data)} · ${esc(horaEv(ev))}</span></div>
       <p style="margin:0 0 4px;font-weight:600">${ev.tipo==='jogo'?'vs '+esc(ev.adversario||'adversário a definir'):esc(ev.local||'Treino')}</p>
       <p class="muted" style="margin:0">${diaSemana(ev.data)} ${ev.hora_chegada?'· chegar às '+esc(ev.hora_chegada):''} ${ev.local&&ev.tipo==='jogo'?'· '+esc(ev.local):''}</p>
       ${!isCoach()?S.meus.map(j=>linhaResposta(ev,j)).join(''):resumoRespostas(ev)}
@@ -453,7 +454,7 @@ async function vAgenda(){
   if(S.agTab==='reunioes'){$('#main').innerHTML=segA+await vReunioes();return}
   const prox=proximos(),pass=S.eventos.filter(e=>e.data<hoje()).reverse().slice(0,10);
   const linha=e=>`<button class="item" onclick="abrirEvento('${e.id}')"><div class="date ${e.tipo}"><b>${new Date(e.data+'T12:00').getDate()}</b><small>${MESES[new Date(e.data+'T12:00').getMonth()]}</small></div>
-    <div class="grow"><b>${e.tipo==='jogo'?'⚽ Jogo vs '+esc(e.adversario||'?'):'🏃 Treino'}</b><div class="muted">${diaSemana(e.data)} · ${esc(e.hora||'')} ${e.local?'· '+esc(e.local):''}</div></div>
+    <div class="grow"><b>${e.tipo==='jogo'?'⚽ Jogo vs '+esc(e.adversario||'?'):'🏃 Treino'}</b><div class="muted">${diaSemana(e.data)} · ${esc(horaEv(e))} ${e.local?'· '+esc(e.local):''}</div></div>
     ${e.resultado?`<span class="chip gold">${esc(e.resultado)}</span>`:''}</button>`;
   $('#main').innerHTML=(isAtleta()?'':segA)+`${isCoach()?'<div class="card"><button class="btn full" onclick="novoEvento()">+ Marcar treino ou jogo</button></div>':''}
   <div class="card"><h2>Próximos</h2>${prox.length?`<div class="list">${prox.map(linha).join('')}</div>`:'<p class="empty">Nada marcado.</p>'}</div>
@@ -464,7 +465,7 @@ function novoEvento(e){
   openSheet(`<h2>${e.id?'Editar':'Marcar'} treino ou jogo</h2>
     <label class="f">Tipo</label><select id="evTipo" class="in" onchange="document.getElementById('evAdvW').hidden=this.value!=='jogo'"><option value="treino" ${e.tipo==='treino'?'selected':''}>Treino</option><option value="jogo" ${e.tipo==='jogo'?'selected':''}>Jogo</option></select>
     <div id="evAdvW" ${e.tipo==='jogo'?'':'hidden'}><label class="f" for="evAdv">Adversário</label><input id="evAdv" class="in" value="${esc(e.adversario||'')}"></div>
-    <div class="row"><div class="grow"><label class="f" for="evData">Dia</label><input id="evData" type="date" class="in" value="${e.data||addDias(1)}"></div><div class="grow"><label class="f" for="evHora">Hora</label><input id="evHora" type="time" class="in" value="${esc(e.hora||'18:30')}"></div></div>
+    <div class="row"><div class="grow"><label class="f" for="evData">Dia</label><input id="evData" type="date" class="in" value="${e.data||addDias(1)}"></div><div class="grow"><label class="f" for="evHora">Início</label><input id="evHora" type="time" class="in" value="${esc(e.hora||'18:30')}"></div><div class="grow"><label class="f" for="evFim">Fim</label><input id="evFim" type="time" class="in" value="${esc(e.hora_fim||'20:00')}"></div></div>
     <label class="f" for="evCheg">Hora de chegada</label><input id="evCheg" type="time" class="in" value="${esc(e.hora_chegada||'')}">
     <label class="f" for="evLocal">Local</label><input id="evLocal" class="in" value="${esc(e.local||'')}" placeholder="Pavilhão…">
     <label class="f" for="evLevar">O que levar</label><textarea id="evLevar" class="in">${esc(e.levar||LEVAR_PADRAO)}</textarea>
@@ -475,7 +476,7 @@ function novoEvento(e){
 }
 async function guardarEvento(id){
   const tipo=g('evTipo');
-  const r={equipa_id:S.eq.id,tipo,data:g('evData'),hora:g('evHora'),hora_chegada:g('evCheg')||null,local:g('evLocal')||null,adversario:tipo==='jogo'?g('evAdv')||null:null,levar:g('evLevar')||null,notas:g('evNotas')||null};
+  const r={equipa_id:S.eq.id,tipo,data:g('evData'),hora:g('evHora'),hora_fim:g('evFim')||null,hora_chegada:g('evCheg')||null,local:g('evLocal')||null,adversario:tipo==='jogo'?g('evAdv')||null:null,levar:g('evLevar')||null,notas:g('evNotas')||null};
   if(!r.data){toast('Escolha o dia');return}
   if(id){await q(sb.from('fut_eventos').update(r).eq('id',id))}
   else{
@@ -501,7 +502,7 @@ async function abrirEvento(id){
   const passado=e.data<hoje();
   let h=`<div class="row between"><span class="chip ${e.tipo==='jogo'?'gold':''}">${e.tipo==='jogo'?'⚽ Jogo':'🏃 Treino'}</span>${isCoach()?`<button class="btn ghost sm" onclick='novoEvento(${JSON.stringify(e).replace(/'/g,"&#39;")})'>Editar</button>`:''}</div>
   <h2 style="margin-top:8px">${e.tipo==='jogo'?'vs '+esc(e.adversario||'?'):'Treino'}</h2>
-  <p class="muted">${diaSemana(e.data)}, ${dataCurta(e.data)} · ${esc(e.hora||'')}${e.hora_chegada?' · chegar às '+esc(e.hora_chegada):''}${e.local?'<br>📍 '+esc(e.local):''}</p>
+  <p class="muted">${diaSemana(e.data)}, ${dataCurta(e.data)} · ${esc(horaEv(e))}${e.hora_chegada?' · chegar às '+esc(e.hora_chegada):''}${e.local?'<br>📍 '+esc(e.local):''}</p>
   ${e.resultado?`<p><span class="chip gold">Resultado: ${esc(e.resultado)}</span></p>`:''}
   ${e.notas?`<div class="card" style="margin:10px 0"><b>Notas</b><p style="margin:4px 0 0">${esc(e.notas)}</p></div>`:''}
   ${e.levar?`<div class="card" style="margin:10px 0"><b>🎒 O que levar</b><p style="margin:4px 0 0">${esc(e.levar)}</p></div>`:''}`;
