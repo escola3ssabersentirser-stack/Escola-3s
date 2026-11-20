@@ -20,6 +20,27 @@
           "value": "no-cache"
         }
       ]
+    },
+    {
+      "source": "/futsal/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/futsal",
+      "destination": "/futsal/",
+      "permanent": false
+    },
+    {
+      "source": "/movimento",
+      "destination": "/movimento/",
+      "permanent": false
     }
   ]
 }
