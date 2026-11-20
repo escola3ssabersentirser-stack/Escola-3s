@@ -340,16 +340,30 @@ async function carregar(){
   }
 }
 
+/* ---------- voltar atrás ---------- */
+S.hist=[];let _ultNav=null,_aVoltar=false;
+const snapNav=()=>JSON.stringify({tab:S.tab,jog:S.jog,jogTab:S.jogTab,agTab:S.agTab,msgTab:S.msgTab});
+function marcarNav(){if(isAtleta()&&S.tab==='jogadores'&&!S.jog){mostrarVoltar();return}const s=snapNav();if(_ultNav&&_ultNav!==s&&!_aVoltar){S.hist.push(_ultNav);if(S.hist.length>40)S.hist.shift();try{history.pushState({fut:1},'')}catch(_){}}_ultNav=s;_aVoltar=false;mostrarVoltar()}
+const podeVoltar=()=>S.hist.length>0||S.tab!=='inicio';
+function mostrarVoltar(){const b=document.getElementById('btnVoltar');if(b)b.hidden=!podeVoltar()}
+function voltar(){
+  if($('.sheet')){closeSheet();return}
+  if(S.hist.length){_aVoltar=true;Object.assign(S,JSON.parse(S.hist.pop()));render();window.scrollTo(0,0);return}
+  if(S.tab!=='inicio'){_aVoltar=true;S.tab='inicio';S.jog=null;render();window.scrollTo(0,0)}
+}
+function botaoVoltar(){if(S.hist.length){try{history.back();return}catch(_){}}voltar()}
+window.addEventListener('popstate',()=>{if($('.sheet')){closeSheet();try{history.pushState({fut:1},'')}catch(_){}return}if(S.perfil&&S.eq)voltar()});
 /* ---------- estrutura ---------- */
 const TABS=[['inicio','🏠','Início'],['agenda','📅','Agenda'],['jogadores','⚽','Jogadores'],['mensagens','💬','Mensagens'],['guia','🌱','Guia 3S']];
 const rotuloTab=k=>k==='jogadores'?(isCoach()?'Jogadores':isAtleta()?'Eu':'Filhos'):k==='mensagens'&&isAtleta()?'Avisos':(TABS.find(t=>t[0]===k)||[])[2];
 function render(){
+  marcarNav();
   const t=TABS.find(x=>x[0]===S.tab);
   const titulo=S.tab==='inicio'?`Olá, ${esc(primeiro(S.perfil.nome))}`:t[2];
   const jogLabel=isCoach()?'Jogadores':isAtleta()?'O meu perfil':(S.meus.length>1?'Filhos':'Filho(a)');
   $('#screen').innerHTML=`
   <header class="top">
-    <div class="row" style="gap:12px;position:relative"><div style="flex:none">${ESCUDO(36)}</div><div class="grow"><div class="sub">${isAdminModo()?'Administradora':isCoach()?'Treinador(a)':isAtleta()?'Atleta':'Pai / Mãe'} · Futsal 3S</div>
+    <div class="row" style="gap:12px;position:relative"><button id="btnVoltar" ${podeVoltar()?'':'hidden'} onclick="botaoVoltar()" aria-label="Voltar atrás" style="flex:none;border:0;background:rgba(255,255,255,.15);color:#fff;border-radius:12px;height:40px;padding:0 12px;font-weight:600;font-size:15px">‹ Voltar</button><div style="flex:none">${ESCUDO(36)}</div><div class="grow"><div class="sub">${isAdminModo()?'Administradora':isCoach()?'Treinador(a)':isAtleta()?'Atleta':'Pai / Mãe'} · Futsal 3S</div>
     <h1>${S.tab==='jogadores'?jogLabel:S.tab==='mensagens'&&isAtleta()?'Avisos':titulo}</h1></div></div>
     <button class="team" onclick="abrirConta()">⚽ ${esc(S.eq.nome)} · ${esc(S.eq.escalao||'')} ▾</button>
   </header>
@@ -607,9 +621,10 @@ function abrirJogador(id,tab){S.tab='jogadores';S.jog=id;S.jogTab=tab||'resumo';
 
 const JTABS=[['resumo','Resumo'],['avaliacao','Avaliação 3S'],['ficha','Ficha'],['presencas','Presenças'],['pagamentos','Pagamentos'],['melhorar','A melhorar'],['escola','Escola'],['evolucao','Evolução'],['objetivos','Objetivos'],['desafios','Desafios'],['emocoes','Emoções'],['rotina','Rotina'],['conversa','Conversa']];
 async function vJogador(){
+  marcarNav();
   const j=S.jogadores.find(x=>x.id===S.jog);if(!j){S.jog=null;return vJogadores()}
   const m=$('#main');
-  m.innerHTML=`<div class="card"><div class="row">${isAtleta()?'':`<button class="btn ghost sm" onclick="S.jog=null;render()">‹</button>`}<button style="border:0;background:none;padding:0;position:relative" aria-label="Fotografia do atleta" onclick="${isAtleta()?'':`menuFoto('${j.id}')`}">${avatar(j,56)}${isAtleta()?'':'<span style="position:absolute;right:-4px;bottom:-4px;background:var(--gold);color:#fff;border-radius:99px;width:22px;height:22px;display:grid;place-items:center;font-size:12px">📷</span>'}</button><div class="grow"><h2 style="margin:0">${esc(j.nome)}</h2><div class="muted">${[j.posicao,(S.pes||{})[j.id]?'pé '+(S.pes||{})[j.id].toLowerCase():'',j.ano_escolar].filter(Boolean).map(esc).join(' · ')}</div></div>${isAtleta()?'':`<button class="btn ghost sm" aria-label="Definições" onclick="editarJogador()">⚙</button>`}</div></div>
+  m.innerHTML=`<div class="card"><div class="row">${isAtleta()?'':`<button class="btn ghost sm" aria-label="Voltar atrás" onclick="botaoVoltar()">‹</button>`}<button style="border:0;background:none;padding:0;position:relative" aria-label="Fotografia do atleta" onclick="${isAtleta()?'':`menuFoto('${j.id}')`}">${avatar(j,56)}${isAtleta()?'':'<span style="position:absolute;right:-4px;bottom:-4px;background:var(--gold);color:#fff;border-radius:99px;width:22px;height:22px;display:grid;place-items:center;font-size:12px">📷</span>'}</button><div class="grow"><h2 style="margin:0">${esc(j.nome)}</h2><div class="muted">${[j.posicao,(S.pes||{})[j.id]?'pé '+(S.pes||{})[j.id].toLowerCase():'',j.ano_escolar].filter(Boolean).map(esc).join(' · ')}</div></div>${isAtleta()?'':`<button class="btn ghost sm" aria-label="Definições" onclick="editarJogador()">⚙</button>`}</div></div>
   ${(()=>{const A=areasPerfil();const area=areaDe(S.jogTab);const sub=area?A.find(a=>a[0]===area)[3]:[];return `<div class="kpis" style="grid-template-columns:repeat(${A.length},1fr);gap:8px;margin-bottom:12px">${A.map(([k,ic,l,s])=>`<button class="kpi" style="border:0;cursor:pointer;padding:10px 4px;${area===k?'background:var(--navy);color:#fff':''}" onclick="S.jogTab='${s[0][0]}';vJogador()"><span style="font-size:22px;display:block">${ic}</span><small style="${area===k?'color:#fff':''};font-weight:600">${l}</small></button>`).join('')}</div>${area?`<div class="seg">${sub.map(([k,l])=>`<button class="${S.jogTab===k?'on':''}" onclick="S.jogTab='${k}';vJogador()">${l}</button>`).join('')}</div>`:''}`})()}
   <div id="jBody"><div class="card"><p class="empty">A carregar…</p></div></div>`;
   const f={resumo:jResumo,avaliacao:jAvaliacao,fpf:jFPF,ficha:jFicha,presencas:jPresencas,pagamentos:jPagamentos,melhorar:jMelhorar,escola:jEscola,evolucao:jEvolucao,objetivos:jObjetivos,desafios:jDesafios,emocoes:jEmocoes,rotina:jRotina,conversa:jConversa}[S.jogTab];
