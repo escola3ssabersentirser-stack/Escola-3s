@@ -196,6 +196,7 @@ async function criarConta(){
   if(!email||pass.length<6){$('#lMsg').textContent='Preencha o email e uma palavra-passe com 6 ou mais caracteres.';return}
   const {data,error}=await sb.auth.signUp({email,password:pass,options:{emailRedirectTo:location.origin+location.pathname}});
   if(error){$('#lMsg').textContent=error.message.includes('registered')?'Este email já tem conta. Toque em «Entrar».':'Não foi possível criar a conta: '+error.message;return}
+  if(data.user&&Array.isArray(data.user.identities)&&data.user.identities.length===0){ecraLogin('entrar');$('#lEmail').value=email;$('#lMsg').innerHTML='<b>Este email já tem conta.</b> Escreva a palavra-passe e toque em «Entrar». Se não se lembrar, toque em «Esqueci-me da palavra-passe».';return}
   if(!data.session){$('#lMsg').innerHTML='<b>Conta criada.</b> Abra o email que lhe enviámos e confirme a conta. Depois volte aqui e toque em «Entrar».';return}
   await depoisLogin(data.user);
 }
