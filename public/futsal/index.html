@@ -387,10 +387,10 @@ function botaoVoltar(){if(S.hist.length){try{history.back();return}catch(_){}}vo
 window.addEventListener('popstate',()=>{if($('.sheet')){closeSheet();try{history.pushState({fut:1},'')}catch(_){}return}if(S.perfil&&S.eq)voltar()});
 /* ---------- estrutura ---------- */
 const TABS=[['inicio','🏠','Início'],['agenda','📅','Agenda'],['jogadores','⚽','Jogadores'],['mensagens','💬','Mensagens'],['guia','🌱','Guia 3S']];
-const rotuloTab=k=>k==='ajuda'?'Ajuda aos pais':k==='podios'?'Pódios':k==='jogadores'?(isCoach()?'Jogadores':isAtleta()?'Eu':'Filhos'):k==='mensagens'&&isAtleta()?'Avisos':(TABS.find(t=>t[0]===k)||[])[2];
+const rotuloTab=k=>k==='ajuda'?'Ajuda aos pais':k==='podios'?'Pódios':k==='equipa'?'Ficha de Equipa':k==='jogadores'?(isCoach()?'Jogadores':isAtleta()?'Eu':'Filhos'):k==='mensagens'&&isAtleta()?'Avisos':(TABS.find(t=>t[0]===k)||[])[2];
 function render(){
   marcarNav();
-  const t=TABS.find(x=>x[0]===S.tab)||({ajuda:['ajuda','🤝','Ajuda aos pais'],podios:['podios','🏆','Pódios']}[S.tab]);
+  const t=TABS.find(x=>x[0]===S.tab)||({ajuda:['ajuda','🤝','Ajuda aos pais'],podios:['podios','🏆','Pódios'],equipa:['equipa','🛡️','Ficha de Equipa']}[S.tab]);
   const titulo=S.tab==='inicio'?`Olá, ${esc(primeiro(emPrevia()&&modoVer()==='atleta'&&S.meus[0]?S.meus[0].nome:emPrevia()&&modoVer()==='treinador'?nomeDe(S.eq.treinador_id):S.perfil.nome))}`:t[2];
   const jogLabel=isCoach()?'Jogadores':isAtleta()?'O meu perfil':(S.meus.length>1?'Filhos':'Filho(a)');
   $('#screen').innerHTML=`
@@ -402,7 +402,7 @@ function render(){
   </header>
   <main id="main"></main>
   <nav class="bottom">${TABS.map(([k,i,l])=>`<button class="${S.tab===k?'on':''}" onclick="irPara('${k}')"><span>${i}</span>${rotuloTab(k)}</button>`).join('')}</nav>`;
-  ({inicio:vInicio,agenda:vAgenda,jogadores:vJogadores,mensagens:vMensagens,guia:vGuia,ajuda:vAjuda,podios:vPodios})[S.tab]();
+  ({inicio:vInicio,agenda:vAgenda,jogadores:vJogadores,mensagens:vMensagens,guia:vGuia,ajuda:vAjuda,podios:vPodios,equipa:vEquipa})[S.tab]();
 }
 function irPara(t){S.tab=t;S.jog=null;render();window.scrollTo(0,0)}
 
@@ -454,7 +454,7 @@ function vInicio(){
   const d=S.desafios[0];
   if(d) h+=`<div class="card"><h2>🎯 Desafio em casa</h2><p style="margin:0 0 4px;font-weight:600">${esc(d.titulo)}</p><p class="muted" style="margin:0 0 10px">${esc(d.descricao||'')}</p><span class="chip gold">${d.minutos} min · ${d.pontos} pontos</span>
     ${!isCoach()&&S.meus.length?`<div style="margin-top:12px">${S.meus.map(j=>`<button class="btn sm" style="margin:4px 4px 0 0" onclick="feitoDesafio('${d.id}','${j.id}')">✔ ${esc(primeiro(j.nome))} fez</button>`).join('')}</div>`:''}</div>`;
-  h+=`<button class="btn gold full" style="margin-bottom:14px;padding:14px" onclick="irPodios()">🏆 Pódios da equipa</button>`;
+  h+=`<div class="row" style="gap:10px;margin-bottom:14px"><button class="btn full grow" style="padding:14px" onclick="irEquipa()">🛡️ Ficha de Equipa</button><button class="btn gold full grow" style="padding:14px" onclick="irPodios()">🏆 Pódios</button></div>`;
   setTimeout(()=>{if(isCoach())painelEquipa();else if(isAtleta()&&filho)painelAtleta(filho);else if(filho)painelFilho(filho)},0);
   if(isCoach()) h+=`<div class="card"><h2>Código da equipa</h2><p class="muted" style="margin-top:0">Envie aos pais para entrarem na app.</p><span class="code">${esc(S.eq.codigo)}</span></div>`;
   m.innerHTML=h;
@@ -497,12 +497,13 @@ async function vAgenda(){
 function novoEvento(e){
   e=e||{};
   openSheet(`<h2>${e.id?'Editar':'Marcar'} treino ou jogo</h2>
-    <label class="f">Tipo</label><select id="evTipo" class="in" onchange="document.getElementById('evAdvW').hidden=this.value!=='jogo'"><option value="treino" ${e.tipo==='treino'?'selected':''}>Treino</option><option value="jogo" ${e.tipo==='jogo'?'selected':''}>Jogo</option></select>
+    <label class="f">Tipo</label><select id="evTipo" class="in" onchange="document.getElementById('evAdvW').hidden=this.value!=='jogo';document.getElementById('evResW').hidden=this.value!=='jogo'"><option value="treino" ${e.tipo==='treino'?'selected':''}>Treino</option><option value="jogo" ${e.tipo==='jogo'?'selected':''}>Jogo</option></select>
     <div id="evAdvW" ${e.tipo==='jogo'?'':'hidden'}><label class="f" for="evAdv">Adversário</label><input id="evAdv" class="in" value="${esc(e.adversario||'')}"></div>
     <div class="row"><div class="grow"><label class="f" for="evData">Dia</label><input id="evData" type="date" class="in" value="${e.data||addDias(1)}"></div><div class="grow"><label class="f" for="evHora">Início</label><input id="evHora" type="time" class="in" value="${esc(e.hora||'18:30')}"></div><div class="grow"><label class="f" for="evFim">Fim</label><input id="evFim" type="time" class="in" value="${esc(e.hora_fim||'20:00')}"></div></div>
     <label class="f" for="evCheg">Hora de chegada</label><input id="evCheg" type="time" class="in" value="${esc(e.hora_chegada||'')}">
     <label class="f" for="evLocal">Local</label><input id="evLocal" class="in" value="${esc(e.local||'')}" placeholder="Pavilhão…">
     <label class="f" for="evLevar">O que levar</label><textarea id="evLevar" class="in">${esc(e.levar||LEVAR_PADRAO)}</textarea>
+    <div id="evResW" ${e.tipo==='jogo'?'':'hidden'}><label class="f" for="evRes">Resultado (se já foi jogado), nós–eles</label><input id="evRes" class="in" placeholder="3-2" value="${esc(e.resultado||'')}"></div>
     <label class="f" for="evNotas">Notas para os pais</label><textarea id="evNotas" class="in">${esc(e.notas||'')}</textarea>
     ${!e.id?`<label class="check"><input type="checkbox" id="evRep"> Repetir todas as semanas durante 8 semanas</label>`:''}
     <button class="btn full" style="margin-top:14px" onclick="guardarEvento('${e.id||''}')">Guardar</button>
@@ -510,7 +511,7 @@ function novoEvento(e){
 }
 async function guardarEvento(id){
   const tipo=g('evTipo');
-  const r={equipa_id:S.eq.id,tipo,data:g('evData'),hora:g('evHora'),hora_fim:g('evFim')||null,hora_chegada:g('evCheg')||null,local:g('evLocal')||null,adversario:tipo==='jogo'?g('evAdv')||null:null,levar:g('evLevar')||null,notas:g('evNotas')||null};
+  const r={equipa_id:S.eq.id,tipo,data:g('evData'),hora:g('evHora'),hora_fim:g('evFim')||null,hora_chegada:g('evCheg')||null,local:g('evLocal')||null,adversario:tipo==='jogo'?g('evAdv')||null:null,resultado:tipo==='jogo'?(g('evRes')||null):null,levar:g('evLevar')||null,notas:g('evNotas')||null};
   if(!r.data){toast('Escolha o dia');return}
   if(id){await q(sb.from('fut_eventos').update(r).eq('id',id))}
   else{
@@ -627,7 +628,7 @@ async function vJogadores(){
     if(evJ.length){const ps=await q(sb.from('fut_presencas').select('jogador_id,minutos').in('evento_id',evJ));(ps||[]).forEach(p=>mins[p.jogador_id]=(mins[p.jogador_id]||0)+(p.minutos||0))}
   }
   const maxMin=Math.max(1,...Object.values(mins));
-  m.innerHTML=`${isCoach()&&lista.length?`<div class="row" style="margin-bottom:14px;gap:8px"><button class="btn ghost grow" style="background:var(--card);box-shadow:0 6px 20px var(--shadow)" onclick="mapaPresencas()">📋 Presenças</button><button class="btn ghost grow" style="background:var(--card);box-shadow:0 6px 20px var(--shadow)" onclick="painelPagamentos()">💶 Pagamentos</button><button class="btn ghost grow" style="background:var(--card);box-shadow:0 6px 20px var(--shadow)" onclick="painelRelatorios()">📄 Relatórios</button></div><button class="btn full" style="margin:-4px 0 10px;background:var(--mint);padding:14px" onclick="grelhaBemEstar()">💚 Grelha de bem-estar e plano de ação</button><button class="btn gold full" style="margin:0 0 14px;padding:14px" onclick="irPodios()">🏆 Pódios: performance e melhor marcador</button>`:''}<div class="card">${lista.length?`<div class="list">${lista.map(j=>`<button class="item" onclick="abrirJogador('${j.id}')">${avatar(j)}<div class="grow"><b>${esc(j.nome)}</b><div class="muted">${[j.posicao,(S.pes||{})[j.id]?'pé '+(S.pes||{})[j.id].toLowerCase():'',j.ano_escolar].filter(Boolean).map(esc).join(' · ')}</div>
+  m.innerHTML=`${isCoach()&&lista.length?`<div class="row" style="margin-bottom:14px;gap:8px"><button class="btn ghost grow" style="background:var(--card);box-shadow:0 6px 20px var(--shadow)" onclick="mapaPresencas()">📋 Presenças</button><button class="btn ghost grow" style="background:var(--card);box-shadow:0 6px 20px var(--shadow)" onclick="painelPagamentos()">💶 Pagamentos</button><button class="btn ghost grow" style="background:var(--card);box-shadow:0 6px 20px var(--shadow)" onclick="painelRelatorios()">📄 Relatórios</button></div><button class="btn full" style="margin:-4px 0 10px;background:var(--mint);padding:14px" onclick="grelhaBemEstar()">💚 Grelha de bem-estar e plano de ação</button><div class="row" style="gap:10px;margin:0 0 14px"><button class="btn full grow" style="padding:14px" onclick="irEquipa()">🛡️ Ficha de Equipa</button><button class="btn gold full grow" style="padding:14px" onclick="irPodios()">🏆 Pódios</button></div>`:''}<div class="card">${lista.length?`<div class="list">${lista.map(j=>`<button class="item" onclick="abrirJogador('${j.id}')">${avatar(j)}<div class="grow"><b>${esc(j.nome)}</b><div class="muted">${[j.posicao,(S.pes||{})[j.id]?'pé '+(S.pes||{})[j.id].toLowerCase():'',j.ano_escolar].filter(Boolean).map(esc).join(' · ')}</div>
     ${isCoach()?`<div class="bar mint" style="margin-top:6px" title="minutos"><i style="width:${Math.round((mins[j.id]||0)/maxMin*100)}%"></i></div><div class="faint">${mins[j.id]||0} min jogados nos últimos 60 dias</div>`:''}</div><span class="faint">›</span></button>`).join('')}</div>`
     :`<p class="empty">${isCoach()?'Ainda não há jogadores. Os pais registam os filhos quando entram com o código da equipa, ou pode registá-los aqui.':'Ainda não registou o seu filho.'}</p>`}
     <button class="btn gold full" style="margin-top:12px" onclick="adicionarFilho()">+ ${isCoach()?'Registar jogador':'Registar filho(a)'}</button>
@@ -2505,6 +2506,64 @@ async function jCartoes(j){
       at?'':tile('💬','Abrir','conversa com o treinador','',go('conversa'))
     ])}`;
 }
+
+/* ---------- ficha de equipa: plantel, classificação, jogos, estatísticas ---------- */
+function irEquipa(){closeSheet();S.tab='equipa';S.jog=null;render();window.scrollTo(0,0)}
+async function dadosEquipa(){
+  const ep=epocaAtual();const [de]=(()=>{const h=new Date();return [new Date(h.getMonth()>=7?h.getFullYear():h.getFullYear()-1,7,1).toISOString().slice(0,10)]})();
+  const ids=S.jogadores.map(j=>j.id);
+  const [base,pod]=await Promise.all([
+    ids.length?q(sb.from('fut_estat_base').select('*').eq('epoca',ep).in('jogador_id',ids)):[],
+    sb.rpc('fut_podio',{p_equipa:S.eq.id,p_desde:de,p_ate:hoje()}).then(r=>r.data||[])
+  ]);
+  return S.jogadores.map(j=>{const b=(base||[]).find(x=>x.jogador_id===j.id)||{};const p=pod.find(x=>x.jogador_id===j.id)||{};
+    return {j,jj:(b.jogos||0)+(p.jogos||0),gm:(b.golos||0)+(p.golos||0),as:(b.assistencias||0)+(p.assistencias||0),am:b.amarelos||0,vm:b.vermelhos||0,pj:Number(p.pts_jogo||0),pt:Number(p.pts_treino||0),base:b}});
+}
+async function vEquipa(){
+  const tab=S.eqTab||'plantel';
+  const cab=`<div class="h3s-card" style="padding:14px;text-align:center;border-bottom:4px solid var(--gold)"><div class="row" style="gap:8px;justify-content:center;flex-wrap:wrap"><span class="chip" style="background:var(--mint-soft);color:var(--mint);font-size:14px;padding:6px 12px">Futsal</span><span class="chip" style="font-size:14px;padding:6px 12px">${esc((S.eq.escalao||'').split(' (')[0]||S.eq.nome)}</span><span class="chip" style="font-size:14px;padding:6px 12px">${esc(S.eq.nome)}</span></div></div>
+  <div class="row" style="gap:0;margin:14px 0 10px;border-bottom:1px solid var(--line);overflow-x:auto">${[['plantel','Plantel'],['classificacao','Classificação'],['jogos','Jogos'],['estatisticas','Estatísticas']].map(([k,l])=>`<button onclick="S.eqTab='${k}';vEquipa()" style="border:0;background:none;padding:10px 12px;font-weight:700;font-size:16px;white-space:nowrap;color:${tab===k?'var(--navy)':'var(--soft)'};border-bottom:3px solid ${tab===k?'var(--gold)':'transparent'}">${l}</button>`).join('')}</div>`;
+  let corpo='';
+  if(tab==='plantel'){const L=await dadosEquipa();const maxG=Math.max(0,...L.map(x=>x.gm));
+    corpo=`<div class="h3s-card" style="padding:8px 14px"><div class="row between faint" style="padding:8px 0;border-bottom:1px solid var(--line)"><span>Jogadores</span><span style="display:flex;gap:18px;padding-right:34px"><b title="Jogos jogados">JJ</b><b title="Golos marcados">GM</b></span></div>
+    ${L.sort((a,b)=>(a.j.numero??99)-(b.j.numero??99)).map(x=>`<button class="item" style="padding:10px 0;border-bottom:1px solid var(--line)" onclick="abrirJogador('${x.j.id}')">${avatar(x.j,46)}<div class="grow"><b style="font-size:16px">${esc(x.j.nome)}</b><div class="faint">${x.j.numero!=null?'n.º '+x.j.numero:''}${x.j.posicao?' · '+esc(x.j.posicao):''}</div></div><span style="display:flex;gap:18px;font-size:17px;font-weight:700;min-width:58px;justify-content:flex-end"><span style="width:20px;text-align:center">${x.jj||'–'}</span><span style="width:20px;text-align:center">${x.gm||'–'}</span></span><span style="font-size:20px;width:26px;text-align:center" title="${x.gm===maxG&&maxG?'Melhor marcador':''}">${x.gm===maxG&&maxG?'⭐':'☆'}</span></button>`).join('')||'<p class="empty">Sem jogadores.</p>'}
+    <p class="faint" style="margin:10px 0 4px">JJ = jogos jogados · GM = golos marcados · ⭐ melhor marcador. Época ${epocaAtual()}: números de outras apps somados aos registados na checklist.</p></div>
+    ${isCoach()?`<button class="btn ghost full" style="margin-top:12px" onclick="editarBase()">✏️ Acertar números (de outras apps)</button>`:''}`}
+  if(tab==='classificacao'){const cl=await q(sb.from('fut_classificacao').select('*').eq('equipa_id',S.eq.id).eq('epoca',epocaAtual()).order('posicao'))||[];
+    corpo=`<div class="h3s-card" style="padding:8px">${cl.length?`<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:13.5px"><tr class="faint"><th style="text-align:left;padding:8px 4px">#</th><th style="text-align:left">Equipa</th><th>J</th><th>V</th><th>E</th><th>D</th><th>GM-GS</th><th>Pts</th></tr>
+      ${cl.map(c=>`<tr style="border-top:1px solid var(--line);${c.nosso?'background:var(--gold-soft);font-weight:700':''}"><td style="padding:8px 4px">${c.posicao??''}</td><td>${esc(c.clube)}</td><td style="text-align:center">${c.j}</td><td style="text-align:center">${c.v}</td><td style="text-align:center">${c.e}</td><td style="text-align:center">${c.d}</td><td style="text-align:center">${c.gm}-${c.gs}</td><td style="text-align:center;font-weight:800">${c.pts}</td></tr>`).join('')}</table></div>`:'<p class="empty">A classificação ainda não foi inserida.</p>'}</div>
+    ${isCoach()?`<button class="btn ghost full" style="margin-top:12px" onclick="editarClassif()">✏️ ${cl.length?'Atualizar':'Inserir'} classificação</button>`:''}`}
+  if(tab==='jogos'){const js=await q(sb.from('fut_eventos').select('*').eq('equipa_id',S.eq.id).eq('tipo','jogo').order('data',{ascending:false}))||[];
+    const vit=js.filter(e=>{const m=String(e.resultado||'').match(/(\d+)\s*-\s*(\d+)/);return m&&+m[1]>+m[2]}).length,emp=js.filter(e=>{const m=String(e.resultado||'').match(/(\d+)\s*-\s*(\d+)/);return m&&+m[1]===+m[2]}).length,der=js.filter(e=>{const m=String(e.resultado||'').match(/(\d+)\s*-\s*(\d+)/);return m&&+m[1]<+m[2]}).length;
+    corpo=`<div class="h3s-card h3s-stats"><div class="h3s-stat"><div class="h3s-stat-tit">Vitórias</div><div class="h3s-stat-num pos">${vit}</div></div><div class="h3s-stat"><div class="h3s-stat-tit">Empates</div><div class="h3s-stat-num">${emp}</div></div><div class="h3s-stat"><div class="h3s-stat-tit">Derrotas</div><div class="h3s-stat-num neg">${der}</div></div></div>
+    <div class="h3s-card" style="margin-top:12px">${js.length?`<div class="list">${js.map(e=>{const m=String(e.resultado||'').match(/(\d+)\s*-\s*(\d+)/);const c=m?(+m[1]>+m[2]?'mint':+m[1]<+m[2]?'red':'gold'):'';return `<button class="item" onclick="abrirEvento('${e.id}')"><div class="date jogo"><b>${new Date(e.data+'T12:00').getDate()}</b><small>${MESES[new Date(e.data+'T12:00').getMonth()]}</small></div><div class="grow"><b>vs ${esc(e.adversario||'?')}</b><div class="faint">${e.data>hoje()?diaSemana(e.data)+' · '+esc(horaEv(e)):'jogado'}${e.local?' · '+esc(e.local):''}</div></div>${e.resultado?`<span class="chip ${c}" style="font-size:15px">${esc(e.resultado)}</span>`:''}</button>`}).join('')}</div>`:'<p class="empty">Sem jogos registados.</p>'}</div>
+    ${isCoach()?`<button class="btn ghost full" style="margin-top:12px" onclick="novoEvento({tipo:'jogo'})">+ Acrescentar jogo (também jogos já feitos)</button>`:''}`}
+  if(tab==='estatisticas'){const L=await dadosEquipa();const jj=Math.max(0,...L.map(x=>x.jj));const gm=L.reduce((s,x)=>s+x.gm,0),as=L.reduce((s,x)=>s+x.as,0);
+    const top=[...L].sort((a,b)=>b.gm-a.gm).filter(x=>x.gm>0).slice(0,5);const mx=top[0]?.gm||1;const ta=[...L].sort((a,b)=>b.as-a.as).filter(x=>x.as>0).slice(0,3);
+    corpo=`<div class="h3s-card h3s-stats"><div class="h3s-stat"><div class="h3s-stat-tit">Jogos</div><div class="h3s-stat-num">${jj}</div></div><div class="h3s-stat"><div class="h3s-stat-tit">Golos marcados</div><div class="h3s-stat-num pos">${gm}</div></div><div class="h3s-stat"><div class="h3s-stat-tit">Golos por jogo</div><div class="h3s-stat-num">${jj?fmt1(gm/jj):'–'}</div></div></div>
+    <div class="h3s-card" style="margin-top:12px"><b>⚽ Marcadores</b>${top.map((x,i)=>`<div style="margin:10px 0"><div class="row between"><span>${MEDALHA[i]||(i+1)+'.'} ${esc(x.j.nome)}</span><b>${x.gm}</b></div><div class="bar"><i style="width:${x.gm/mx*100}%;background:${i<3?CORPOD[i]:'var(--gold)'}"></i></div></div>`).join('')||'<p class="empty">Sem golos registados.</p>'}</div>
+    ${ta.length?`<div class="h3s-card" style="margin-top:12px"><b>🎯 Assistências</b>${ta.map((x,i)=>`<div class="row between" style="padding:6px 0;border-top:1px solid var(--line)"><span>${MEDALHA[i]} ${esc(x.j.nome)}</span><b>${x.as}</b></div>`).join('')}</div>`:''}
+    <button class="btn gold full" style="margin-top:12px" onclick="irPodios()">🏆 Ver pódios e criar imagens</button>`}
+  $('#main').innerHTML=cab+corpo;
+}
+async function editarBase(){const L=await dadosEquipa();
+  openSheet(`<h2>Acertar números</h2><p class="muted">Jogos e golos que vêm de outras apps (por exemplo, a da federação) nesta época. A app soma-lhes o que for registado na checklist.</p>
+  <div class="row between faint" style="margin-top:8px"><span>Jogador</span><span style="display:flex;gap:8px"><b style="width:56px;text-align:center">JJ</b><b style="width:56px;text-align:center">GM</b></span></div>
+  ${L.map(x=>`<div class="row between" style="padding:6px 0;border-top:1px solid var(--line)"><span style="font-size:14px">${esc(x.j.nome)}</span><span style="display:flex;gap:8px"><input class="in" style="width:56px;padding:8px;text-align:center" inputmode="numeric" data-b="${x.j.id}" data-k="jogos" value="${x.base.jogos??''}"><input class="in" style="width:56px;padding:8px;text-align:center" inputmode="numeric" data-b="${x.j.id}" data-k="golos" value="${x.base.golos??''}"></span></div>`).join('')}
+  <button class="btn gold full" style="margin-top:14px" onclick="guardarBase()">Guardar</button>`)}
+async function guardarBase(){const rows={};document.querySelectorAll('[data-b]').forEach(i=>{const id=i.dataset.b;rows[id]=rows[id]||{jogador_id:id,epoca:epocaAtual(),origem:'Acertado na app',updated_at:new Date().toISOString()};rows[id][i.dataset.k]=parseInt(i.value)||0});
+  const r=await q(sb.from('fut_estat_base').upsert(Object.values(rows),{onConflict:'jogador_id,epoca'}));if(r===null)return;closeSheet();vEquipa();toast('Números guardados')}
+async function editarClassif(){const cl=await q(sb.from('fut_classificacao').select('*').eq('equipa_id',S.eq.id).eq('epoca',epocaAtual()).order('posicao'))||[];
+  const linhas=cl.length?cl:[{clube:CLUBE,nosso:true}];S._cl=linhas.length;
+  const L=(c,i)=>`<div class="card" style="margin:8px 0;padding:10px" data-cl="${i}"><div class="row" style="gap:6px"><input class="in" style="width:52px;padding:8px" inputmode="numeric" placeholder="#" data-f="posicao" value="${c.posicao??i+1}"><input class="in grow" style="padding:8px" placeholder="Clube" data-f="clube" value="${esc(c.clube||'')}"><label class="check" style="margin:0;font-size:12px"><input type="checkbox" data-f="nosso" ${c.nosso?'checked':''}>nós</label></div>
+    <div class="row" style="gap:4px;margin-top:6px">${['j','v','e','d','gm','gs','pts'].map(k=>`<input class="in" style="padding:6px;text-align:center;font-size:14px" inputmode="numeric" placeholder="${k.toUpperCase()}" aria-label="${k}" data-f="${k}" value="${c[k]??''}">`).join('')}</div></div>`;
+  openSheet(`<h2>Classificação</h2><p class="muted">Copie da app da federação. J jogos · V vitórias · E empates · D derrotas · GM golos marcados · GS golos sofridos · Pts pontos.</p>
+  <div id="clL">${linhas.map(L).join('')}</div>
+  <button class="btn ghost full sm" onclick="document.getElementById('clL').insertAdjacentHTML('beforeend',(${L.toString()})({},S._cl++))">+ Linha</button>
+  <button class="btn gold full" style="margin-top:12px" onclick="guardarClassif()">Guardar</button>`)}
+async function guardarClassif(){const rows=[...document.querySelectorAll('[data-cl]')].map(d=>{const r={equipa_id:S.eq.id,epoca:epocaAtual()};d.querySelectorAll('[data-f]').forEach(i=>{const k=i.dataset.f;r[k]=k==='clube'?i.value.trim():k==='nosso'?i.checked:(parseInt(i.value)||0)});return r}).filter(r=>r.clube);
+  await q(sb.from('fut_classificacao').delete().eq('equipa_id',S.eq.id).eq('epoca',epocaAtual()));
+  if(rows.length)await q(sb.from('fut_classificacao').insert(rows));closeSheet();vEquipa();toast('Classificação guardada')}
 
 /* ---------- mensagens ---------- */
 async function vMensagens(){
