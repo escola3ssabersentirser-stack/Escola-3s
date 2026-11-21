@@ -2632,7 +2632,7 @@ async function jPerfil4(j){
   const gl=((base||{}).golos||0)+soma('golos');
   const go=t=>`S.jogTab='${t}';vJogador();window.scrollTo(0,0)`;
   const seta=(a,b)=>a!=null&&b!=null?(a>b+0.05?' <span style="color:var(--mint)">▲</span>':a<b-0.05?' <span style="color:var(--red)">▼</span>':''):'';
-  const mini=(ic,t,v,s,acao)=>`<button class="h3s-tile" style="min-height:84px" onclick="${acao}"><span class="h3s-ic">${ic}</span><span class="h3s-tile-tit">${t}</span><span class="h3s-tile-sub">${s||''}</span></button>`;
+  const mini=(ic,t,s,acao)=>`<button class="h3s-tile" style="min-height:84px" onclick="${acao}"><span class="h3s-ic">${ic}</span><span class="h3s-tile-tit">${t}</span><span class="h3s-tile-sub">${s||''}</span></button>`;
   return `${grelha4([
     tile4('🧭',hm!=null?fmt1(hm)+'<small style="font-size:14px;color:var(--soft)"> /5</small>':'–','Perfil holístico',prio[0]?`💪 ${prio[prio.length-1].n.toLowerCase()} · 🎯 ${prio[0].n.toLowerCase()}`:'relações, emoções, consistência…',hm!=null&&hm>=3.5?'var(--mint)':hm!=null&&hm<2.5?'var(--red)':'',go('holistico')),
     tile4('⚽',tM!=null?fmt1(tM)+'<small style="font-size:14px;color:var(--soft)"> /4</small>'+seta(tM,tA):'–','Competências técnicas',fracoT?'a trabalhar: '+fracoT.t.split(/[,(]/)[0].trim().toLowerCase():'ficha FPF por preencher',tM!=null&&tM>=3?'var(--mint)':tM!=null&&tM<2?'var(--red)':'',go('fpf')),
