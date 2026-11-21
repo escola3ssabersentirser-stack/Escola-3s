@@ -182,10 +182,12 @@ const dataCurta=d=>{const x=new Date(d+'T12:00');return x.getDate()+' '+MESES[x.
 const diaSemana=d=>DIAS[new Date(d+'T12:00').getDay()];
 const iniciais=n=>String(n||'?').trim().split(/\s+/).map(p=>p[0]).slice(0,2).join('').toUpperCase();
 const primeiro=n=>String(n||'').split(' ')[0];
-const isCoach=()=>!!(S.eq && (S.eq.treinador_id===S.me || (S.admin && S.modo!=='familia')));
-const isAdminModo=()=>!!(S.admin && S.modo!=='familia');
+const modoVer=()=>S.admin?(S.modo==='familia'?'pai':(S.modo||'admin')):null;
+const emPrevia=()=>S.admin&&['treinador','pai','atleta'].includes(modoVer());
+const isCoach=()=>!!(S.eq && ((S.eq.treinador_id===S.me && !(S.admin&&['pai','atleta'].includes(modoVer()))) || (S.admin && ['admin','treinador'].includes(modoVer()))));
+const isAdminModo=()=>!!(S.admin && modoVer()==='admin');
 const horaEv=e=>(e.hora||'')+(e.hora_fim?'–'+e.hora_fim:'');
-const isAtleta=()=>!isCoach()&&S.perfil&&S.perfil.papel==='atleta';
+const isAtleta=()=>(S.admin&&modoVer()==='atleta')||(!S.admin&&!isCoach()&&S.perfil&&S.perfil.papel==='atleta');
 const nomeDe=uid=>S.perfis[uid]?.nome||'Alguém';
 const anoLetivoAtual=()=>{const d=new Date();const y=d.getFullYear();return d.getMonth()>=8?`${y}/${String(y+1).slice(2)}`:`${y-1}/${String(y).slice(2)}`};
 
@@ -323,7 +325,7 @@ async function juntarAtleta(){const c=g('cAt');if(!c){toast('Escreve o código')
 /* ---------- carregar dados ---------- */
 async function carregarEquipas(){
   const ad=await q(sb.from('fut_admins').select('user_id').eq('user_id',S.me));S.admin=!!(ad&&ad.length);
-  try{S.modo=localStorage.getItem('fut_modo')||'admin'}catch(_){S.modo='admin'}
+  try{S.modo=localStorage.getItem('fut_modo')||'admin';S.verJog=localStorage.getItem('fut_verjog')||null}catch(_){S.modo='admin'}
   S.equipas=await q(sb.from('fut_equipas').select('*').order('created_at'))||[];
   if(!S.equipas.length){ecraSemEquipa();return}
   let guardada=null;try{guardada=localStorage.getItem('fut_eq')}catch(_){}
@@ -345,7 +347,10 @@ async function carregar(){
   ]);
   S.jogadores=jog||[];S.familia=fam||[];S.eventos=evs||[];S.avisos=av||[];S.desafios=des||[];
   const minhas=new Set((fam||[]).filter(f=>f.user_id===S.me).map(f=>f.jogador_id));
-  if(isAtleta()){const at=await q(sb.from('fut_atletas').select('jogador_id').eq('user_id',S.me))||[];const ids=new Set(at.map(a=>a.jogador_id));S.meus=S.jogadores.filter(j=>ids.has(j.id))}
+  const verJ=S.admin&&['pai','atleta'].includes(modoVer())&&S.verJog?S.jogadores.find(j=>j.id===S.verJog):null;
+  if(verJ){S.meus=[verJ];S.todosMeus=[verJ]}
+  else if(isAtleta()&&S.admin){S.meus=S.jogadores.slice(0,1);S.todosMeus=S.meus}
+  else if(isAtleta()){const at=await q(sb.from('fut_atletas').select('jogador_id').eq('user_id',S.me))||[];const ids=new Set(at.map(a=>a.jogador_id));S.meus=S.jogadores.filter(j=>ids.has(j.id))}
   else S.meus=isCoach()?S.jogadores:S.jogadores.filter(j=>minhas.has(j.id));
   const ids=[...new Set([S.eq.treinador_id,...(mem||[]).map(m=>m.user_id),...(fam||[]).map(f=>f.user_id)])];
   if(ids.length){const ps=await q(sb.from('fut_perfis').select('user_id,nome,papel,telefone').in('user_id',ids));(ps||[]).forEach(p=>S.perfis[p.user_id]=p)}
@@ -386,13 +391,14 @@ const rotuloTab=k=>k==='ajuda'?'Ajuda aos pais':k==='podios'?'Pódios':k==='joga
 function render(){
   marcarNav();
   const t=TABS.find(x=>x[0]===S.tab)||({ajuda:['ajuda','🤝','Ajuda aos pais'],podios:['podios','🏆','Pódios']}[S.tab]);
-  const titulo=S.tab==='inicio'?`Olá, ${esc(primeiro(S.perfil.nome))}`:t[2];
+  const titulo=S.tab==='inicio'?`Olá, ${esc(primeiro(emPrevia()&&modoVer()==='atleta'&&S.meus[0]?S.meus[0].nome:emPrevia()&&modoVer()==='treinador'?nomeDe(S.eq.treinador_id):S.perfil.nome))}`:t[2];
   const jogLabel=isCoach()?'Jogadores':isAtleta()?'O meu perfil':(S.meus.length>1?'Filhos':'Filho(a)');
   $('#screen').innerHTML=`
   <header class="top">
     <div class="row" style="gap:12px;position:relative"><button id="btnVoltar" ${podeVoltar()?'':'hidden'} onclick="botaoVoltar()" aria-label="Voltar atrás" style="flex:none;border:0;background:rgba(255,255,255,.15);color:#fff;border-radius:12px;height:40px;padding:0 12px;font-weight:600;font-size:15px">‹ Voltar</button><div style="flex:none">${ESCUDO(36)}</div><div class="grow"><div class="sub">${isAdminModo()?'Administradora':isCoach()?'Treinador(a)':isAtleta()?'Atleta':'Pai / Mãe'} · Futsal 3S</div>
     <h1>${S.tab==='jogadores'?jogLabel:S.tab==='mensagens'&&isAtleta()?'Avisos':titulo}</h1></div></div>
-    <button class="team" onclick="abrirConta()">⚽ ${esc(S.eq.nome)} · ${esc(S.eq.escalao||'')} ▾</button>
+    <div class="row wrap" style="gap:6px;margin-top:8px"><button class="team" style="margin-top:0" onclick="abrirConta()">⚽ ${esc(S.eq.nome)} · ${esc(S.eq.escalao||'')} ▾</button>${S.admin?`<button class="team" style="margin-top:0;background:var(--gold)" onclick="escolherVista()">👁️ ${{admin:'Administradora',treinador:'Treinador',pai:'Pais',atleta:'Atleta'}[modoVer()]} ▾</button>`:''}</div>
+    ${emPrevia()?`<div style="margin-top:8px;font-size:12px;background:rgba(255,255,255,.12);border-radius:10px;padding:6px 10px">👁️ Pré-visualização como <b>${{treinador:'treinador',pai:'pais',atleta:'atleta'}[modoVer()]}</b>${S.meus[0]&&modoVer()!=='treinador'?' de '+esc(primeiro(S.meus[0].nome)):''}. O que gravar fica em seu nome. <button style="border:0;background:none;color:var(--gold);font-weight:700;padding:0" onclick="mudarModo('admin')">Sair</button></div>`:''}
   </header>
   <main id="main"></main>
   <nav class="bottom">${TABS.map(([k,i,l])=>`<button class="${S.tab===k?'on':''}" onclick="irPara('${k}')"><span>${i}</span>${rotuloTab(k)}</button>`).join('')}</nav>`;
@@ -2476,7 +2482,7 @@ function abrirConta(){
   openSheet(`<h2>${esc(S.perfil.nome)}</h2><p class="muted">${isAdminModo()?'Administradora':isCoach()?'Treinador(a)':isAtleta()?'Atleta':'Pai / Mãe'}</p>
   ${S.equipas.length>1?`<label class="f">Equipa</label><select id="cEqSel" class="in" onchange="mudarEquipa(this.value)">${S.equipas.map(e=>`<option value="${e.id}" ${e.id===S.eq.id?'selected':''}>${esc(e.nome)}</option>`).join('')}</select>`:''}
   ${isCoach()?`<div class="card" style="margin-top:14px"><b>Código da equipa</b><p class="muted" style="margin:4px 0 8px">Os pais usam-no para entrar.</p><span class="code">${esc(S.eq.codigo)}</span></div>`:''}
-  ${S.admin?`<label class="f">Ver a app como</label><div class="opts"><button class="${S.modo!=='familia'?'on':''}" onclick="mudarModo('admin')">🛡️ Administradora</button><button class="${S.modo==='familia'?'on':''}" onclick="mudarModo('familia')">👨‍👩‍👦 Mãe</button></div><p class="faint" style="margin:6px 0 0">Como administradora vê e edita tudo, em todas as equipas.</p>`:''}
+  ${S.admin?`<button class="btn gold full" style="margin-top:8px" onclick="escolherVista()">👁️ Ver a app como treinador, pais ou atleta</button>`:''}
   <label class="f" for="cNome">Nome</label><input id="cNome" class="in" value="${esc(S.perfil.nome)}">
   <label class="f" for="cTel">Telemóvel (para boleias)</label><input id="cTel" class="in" type="tel" value="${esc(S.perfil.telefone||'')}">
   <button class="btn full" style="margin-top:12px" onclick="guardarConta()">Guardar</button>
@@ -2484,7 +2490,18 @@ function abrirConta(){
   <button class="btn ghost full" style="margin-top:8px" onclick="novaPass()">Mudar palavra-passe</button>
   <button class="btn red full" style="margin-top:8px" onclick="sair()">Sair</button>`)}
 async function guardarConta(){const r={nome:g('cNome')||S.perfil.nome,telefone:g('cTel')||null};await q(sb.from('fut_perfis').update(r).eq('user_id',S.me));Object.assign(S.perfil,r);closeSheet();render();toast('Guardado')}
-async function mudarModo(m){S.modo=m;try{localStorage.setItem('fut_modo',m)}catch(_){}S.jog=null;S.tab='inicio';closeSheet();await carregar();render()}
+function escolherVista(){
+  const js=S.jogadores;const m=modoVer();
+  openSheet(`<h2>👁️ Ver a app como</h2><p class="muted">Veja exatamente o que cada pessoa vê. Pode voltar a Administradora quando quiser.</p>
+  <div class="list">
+    <button class="item" onclick="mudarModo('admin')"><div class="av navy">🛡️</div><div class="grow"><b>Administradora</b><div class="muted">Tudo, em todas as equipas</div></div>${m==='admin'?'<span class="chip mint">✔</span>':''}</button>
+    <button class="item" onclick="mudarModo('treinador')"><div class="av navy">🧢</div><div class="grow"><b>Treinador</b><div class="muted">${esc(S.eq.nome)}: equipa, checklist, pódios, grelha, plano de ação</div></div>${m==='treinador'?'<span class="chip mint">✔</span>':''}</button>
+  </div>
+  <label class="f" for="vjSel">Atleta para ver como pais ou como atleta</label>
+  <select id="vjSel" class="in">${js.map(j=>`<option value="${j.id}" ${S.verJog===j.id?'selected':''}>${esc(j.nome)}</option>`).join('')||'<option value="">Sem jogadores nesta equipa</option>'}</select>
+  <div class="row" style="gap:8px;margin-top:10px"><button class="btn grow ${m==='pai'?'gold':''}" ${js.length?'':'disabled'} onclick="mudarModo('pai',document.getElementById('vjSel').value)">👨‍👩‍👦 Ver como pais</button><button class="btn grow ${m==='atleta'?'gold':''}" ${js.length?'':'disabled'} onclick="mudarModo('atleta',document.getElementById('vjSel').value)">⚽ Ver como atleta</button></div>
+  <button class="btn ghost full sm" style="margin-top:10px" onclick="mudarModo('pai',null)">👨‍👩‍👦 Ver como mãe dos meus filhos</button>`)}
+async function mudarModo(m,jid){S.modo=m;if(jid!==undefined){S.verJog=jid;try{localStorage.setItem('fut_verjog',jid||'')}catch(_){}}try{localStorage.setItem('fut_modo',m)}catch(_){}S.jog=null;S.tab='inicio';closeSheet();await carregar();render()}
 async function mudarEquipa(id){try{localStorage.setItem('fut_eq',id)}catch(_){}S.eq=S.equipas.find(e=>e.id===id);S.jog=null;closeSheet();await carregar();render();if(S._abrir){const [a,b]=S._abrir;S._abrir=null;abrirJogador(a,b)}}
 
 /* ---------- arranque ---------- */
