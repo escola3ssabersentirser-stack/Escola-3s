@@ -1334,6 +1334,7 @@ async function jFicha(j){
     ${linha('Pé dominante',esc(f.pe_dominante||''))}
     ${linha('Tamanho do equipamento',esc(f.tamanho_equip||''))}
     ${linha('Ano escolar',esc(j.ano_escolar||''))}
+    ${linha('Telemóvel do atleta',esc(f.atleta_tel||''))}
     ${linha('Localidade',esc(f.localidade||''))}
     ${linha('Encarregado de educação',esc(f.encarregado_nome||''))}
     ${linha('Telemóvel do encarregado',esc(f.encarregado_tel||''))}
@@ -1364,6 +1365,7 @@ async function editarFicha(){
   <div class="row"><div class="grow"><label class="f" for="fPe">Pé dominante</label><select id="fPe" class="in"><option value="">—</option>${['Direito','Esquerdo','Ambos'].map(p=>`<option ${f.pe_dominante===p?'selected':''}>${p}</option>`).join('')}</select></div>
   <div class="grow"><label class="f" for="fTam">Equipamento</label><select id="fTam" class="in"><option value="">—</option>${['4 anos','6 anos','8 anos','10 anos','12 anos','14 anos','XS','S','M','L','XL'].map(p=>`<option ${f.tamanho_equip===p?'selected':''}>${p}</option>`).join('')}</select></div></div>
   <label class="f" for="fAno">Ano escolar</label><input id="fAno" class="in" value="${esc(j.ano_escolar||'')}">
+  <label class="f" for="fAtT">Telemóvel do atleta (opcional)</label><input id="fAtT" type="tel" class="in" value="${esc(f.atleta_tel||'')}">
   <label class="f" for="fLoc">Localidade</label><input id="fLoc" class="in" value="${esc(f.localidade||'')}">
   <h3 style="margin:18px 0 0">Encarregado de educação</h3>
   <label class="f" for="fEnN">Nome</label><input id="fEnN" class="in" value="${esc(f.encarregado_nome||'')}">
@@ -1380,7 +1382,7 @@ async function editarFicha(){
 async function guardarFicha(){
   if(!g('fNome')){toast('Escreva o nome');return}
   await q(sb.from('fut_jogadores').update({nome:g('fNome'),numero:g('fNum')?parseInt(g('fNum')):null,posicao:g('fPos')||null,ano_escolar:g('fAno')||null}).eq('id',S.jog));
-  await q(sb.from('fut_fichas').upsert({jogador_id:S.jog,data_nascimento:g('fNasc')||null,pe_dominante:g('fPe')||null,tamanho_equip:g('fTam')||null,contacto_emergencia:g('fEme')||null,saude_notas:g('fSau')||null,localidade:g('fLoc')||null,encarregado_nome:g('fEnN')||null,encarregado_tel:g('fEnT')||null,encarregado_email:g('fEnE')||null,escola:g('fEsc')||null,turma:g('fTur')||null,diretor_turma:g('fDT')||null,num_federado:g('fFed')||null,seguro_validade:g('fSeg')||null,updated_at:new Date().toISOString()},{onConflict:'jogador_id'}));
+  await q(sb.from('fut_fichas').upsert({jogador_id:S.jog,data_nascimento:g('fNasc')||null,pe_dominante:g('fPe')||null,tamanho_equip:g('fTam')||null,contacto_emergencia:g('fEme')||null,saude_notas:g('fSau')||null,localidade:g('fLoc')||null,atleta_tel:g('fAtT')||null,encarregado_nome:g('fEnN')||null,encarregado_tel:g('fEnT')||null,encarregado_email:g('fEnE')||null,escola:g('fEsc')||null,turma:g('fTur')||null,diretor_turma:g('fDT')||null,num_federado:g('fFed')||null,seguro_validade:g('fSeg')||null,updated_at:new Date().toISOString()},{onConflict:'jogador_id'}));
   closeSheet();await carregar();vJogador();toast('Ficha guardada');
 }
 function novaMedida(){openSheet(`<h2>Peso e altura</h2>
@@ -2594,13 +2596,13 @@ async function vAcessos(){
     <div class="h3s-hero-row"><div><div class="h3s-mini-tit">Famílias ligadas</div><div class="h3s-mini-num ${fam===L.length&&L.length?'pos':''}">${fam}/${L.length}</div></div><div><div class="h3s-mini-tit">Atletas com conta</div><div class="h3s-mini-num">${atl}/${L.length}</div></div></div>
     <p class="faint" style="margin:12px 0 0">Cada pessoa cria a sua própria palavra-passe. Aqui só envia o link e o código, que ligam a conta ao atleta certo.</p></div>
   <div class="h3s-card" style="margin-top:12px"><div class="row between"><div><b>Código da equipa</b><div class="faint">Para pais que ainda vão registar o filho</div></div><span class="code" style="font-size:22px">${esc(S.eq.codigo)}</span></div></div>
-  ${L.map((x,i)=>`<div class="h3s-card" style="margin-top:12px"><div class="row between"><div class="row" style="gap:10px">${avatar(S.jogadores.find(j=>j.id===x.jogador_id)||{id:x.jogador_id,nome:x.nome,numero:x.numero},44)}<div><b>${esc(x.nome)}</b><div class="faint">${x.encarregado_nome?esc(x.encarregado_nome)+' · ':''}${x.encarregado_tel?'📞 '+esc(x.encarregado_tel):'sem telemóvel na ficha'}</div></div></div></div>
+  ${L.map((x,i)=>`<div class="h3s-card" style="margin-top:12px"><div class="row between"><div class="row" style="gap:10px">${avatar(S.jogadores.find(j=>j.id===x.jogador_id)||{id:x.jogador_id,nome:x.nome,numero:x.numero},44)}<div><b>${esc(x.nome)}</b><div class="faint">${x.encarregado_nome?esc(x.encarregado_nome)+' · ':''}${x.encarregado_tel?'👨‍👩‍👦 '+esc(x.encarregado_tel):'pais sem telemóvel'}${x.atleta_tel?' · ⚽ '+esc(x.atleta_tel):''}</div></div></div></div>
     <div class="row" style="gap:8px;margin-top:12px">
       <div class="kpi grow" style="text-align:left;padding:10px"><small>👨‍👩‍👦 Família ${x.n_familia?`<span class="chip mint">✔ ${x.n_familia}</span>`:''}</small><b style="font-size:20px;letter-spacing:2px">${esc(x.codigo_familia)}</b></div>
       <div class="kpi grow" style="text-align:left;padding:10px"><small>⚽ Atleta ${x.n_atleta?'<span class="chip mint">✔</span>':''}</small><b style="font-size:20px;letter-spacing:2px">${esc(x.codigo_atleta)}</b></div></div>
     <div class="row" style="gap:8px;margin-top:10px">
       <a class="btn sm grow" style="text-align:center;text-decoration:none;background:#25D366" href="https://wa.me/${telWa(x.encarregado_tel)}?text=${encodeURIComponent(msgPais(x))}" target="_blank" rel="noopener">WhatsApp aos pais</a>
-      <a class="btn sm grow" style="text-align:center;text-decoration:none;background:#128C7E" href="https://wa.me/?text=${encodeURIComponent(msgAtleta(x))}" target="_blank" rel="noopener">WhatsApp ao atleta</a></div>
+      <a class="btn sm grow" style="text-align:center;text-decoration:none;background:#128C7E" href="https://wa.me/${telWa(x.atleta_tel)}?text=${encodeURIComponent(msgAtleta(x))}" target="_blank" rel="noopener">WhatsApp ao atleta</a></div>
     <div class="row" style="gap:8px;margin-top:6px"><button class="btn ghost sm grow" onclick="copiar(msgPais(S._acessos[${i}]))">Copiar mensagem (pais)</button><button class="btn ghost sm grow" onclick="copiar(msgAtleta(S._acessos[${i}]))">Copiar (atleta)</button></div>
   </div>`).join('')||'<div class="card"><p class="empty">Sem jogadores nesta equipa.</p></div>'}
   <p class="faint" style="margin:12px 4px">${L.some(x=>!x.encarregado_tel)?'Para o botão abrir logo a conversa certa, ponha o telemóvel do encarregado de educação na ficha do atleta (botão ⚙ ou Ficha). Sem número, o WhatsApp pede para escolher o contacto.':'O WhatsApp abre com a mensagem escrita. Só sai quando carregar em enviar.'}</p>`;
