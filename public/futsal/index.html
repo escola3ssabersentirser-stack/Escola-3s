@@ -382,10 +382,10 @@ function botaoVoltar(){if(S.hist.length){try{history.back();return}catch(_){}}vo
 window.addEventListener('popstate',()=>{if($('.sheet')){closeSheet();try{history.pushState({fut:1},'')}catch(_){}return}if(S.perfil&&S.eq)voltar()});
 /* ---------- estrutura ---------- */
 const TABS=[['inicio','🏠','Início'],['agenda','📅','Agenda'],['jogadores','⚽','Jogadores'],['mensagens','💬','Mensagens'],['guia','🌱','Guia 3S']];
-const rotuloTab=k=>k==='jogadores'?(isCoach()?'Jogadores':isAtleta()?'Eu':'Filhos'):k==='mensagens'&&isAtleta()?'Avisos':(TABS.find(t=>t[0]===k)||[])[2];
+const rotuloTab=k=>k==='ajuda'?'Ajuda aos pais':k==='jogadores'?(isCoach()?'Jogadores':isAtleta()?'Eu':'Filhos'):k==='mensagens'&&isAtleta()?'Avisos':(TABS.find(t=>t[0]===k)||[])[2];
 function render(){
   marcarNav();
-  const t=TABS.find(x=>x[0]===S.tab);
+  const t=TABS.find(x=>x[0]===S.tab)||['ajuda','🤝','Ajuda aos pais'];
   const titulo=S.tab==='inicio'?`Olá, ${esc(primeiro(S.perfil.nome))}`:t[2];
   const jogLabel=isCoach()?'Jogadores':isAtleta()?'O meu perfil':(S.meus.length>1?'Filhos':'Filho(a)');
   $('#screen').innerHTML=`
@@ -396,7 +396,7 @@ function render(){
   </header>
   <main id="main"></main>
   <nav class="bottom">${TABS.map(([k,i,l])=>`<button class="${S.tab===k?'on':''}" onclick="irPara('${k}')"><span>${i}</span>${rotuloTab(k)}</button>`).join('')}</nav>`;
-  ({inicio:vInicio,agenda:vAgenda,jogadores:vJogadores,mensagens:vMensagens,guia:vGuia})[S.tab]();
+  ({inicio:vInicio,agenda:vAgenda,jogadores:vJogadores,mensagens:vMensagens,guia:vGuia,ajuda:vAjuda})[S.tab]();
 }
 function irPara(t){S.tab=t;S.jog=null;render();window.scrollTo(0,0)}
 
@@ -411,6 +411,7 @@ function vInicio(){
     h+=`${S.todosMeus.length>1?`<div class="seg">${S.todosMeus.map(j=>`<button class="${filho&&filho.id===j.id?'on':''}" onclick="escolherFilho('${j.id}')">${esc(primeiro(j.nome))}</button>`).join('')}</div>`:''}`;
     if(filho)h+=`<div class="card"><div class="row between" style="margin-bottom:10px"><div><h2 style="margin:0">${esc(primeiro(filho.nome))} · ${MESES_L[new Date().getMonth()]}</h2><div class="muted">${esc(S.eq.nome)}${filho.numero!=null?' · n.º '+filho.numero:''}</div></div><button class="btn ghost sm" onclick="abrirJogador('${filho.id}')">Abrir ›</button></div><div id="painel"><p class="muted">A carregar…</p></div></div>`;
   }
+  if(!isCoach()&&!isAtleta())h+=`<button class="btn ghost full" style="background:var(--card);box-shadow:0 6px 20px var(--shadow);margin-bottom:14px;padding:14px" onclick="irPara('ajuda')">🤝 Ajuda aos pais</button>`;
   if(isAtleta()&&S.meus[0]){filho=S.meus[0];h+=`<div class="card"><h2 style="margin-bottom:10px">O meu mês · ${MESES_L[new Date().getMonth()]}</h2><div id="painel"><p class="muted">A carregar…</p></div></div>`}
   if(isCoach())h+=`<div class="card"><h2 style="margin-bottom:10px">${isAdminModo()?'Administração · '+esc(S.eq.nome):'Equipa'} · ${MESES_L[new Date().getMonth()]}</h2><div id="painel"><p class="muted">A carregar…</p></div></div>`;
   if(!isCoach()&&!S.meus.length){
@@ -1955,6 +1956,47 @@ async function assinarComp(jid,quem){
   if(r===null)return;toast(quem==='atleta'?'Compromisso assinado 💪':'Assinado pela família');vJogador();
 }
 
+/* ---------- ajuda aos pais ---------- */
+const AJUDA_PAIS=[
+ ['app','📱','Usar a app',[
+  ['Responder a um treino ou jogo','No Início ou na Agenda, toque em ✅ Vai, 🤔 Talvez ou ❌ Não vai. O treinador vê logo a resposta.'],
+  ['Boleias','Abra o treino ou jogo na Agenda e toque em «Ofereço boleia» ou «Preciso de boleia». Ponha o telemóvel no seu perfil para os outros pais o contactarem.'],
+  ['Notas da escola','Abra o seu filho → 📚 Escola → «+ Registar notas». Escolha o período e escreva só as disciplinas que tem.'],
+  ['Avaliação de 3 em 3 meses','Quando aparecer o aviso no Início, toque em «Avaliar». São 4 minutos. Pode também convidar um professor e pôr o seu filho a fazer a autoavaliação.'],
+  ['Pagamentos','Abra o seu filho → 💶 Conta corrente. Depois de pagar, toque em «Já paguei» e o treinador confirma.'],
+  ['O outro pai ou mãe','Na ficha do seu filho, no botão ⚙, está o código de família. Dê-o ao outro pai ou mãe para entrar ligado ao mesmo filho. É útil na guarda partilhada.'],
+  ['Conta do seu filho','No mesmo botão ⚙ está o código de atleta. O seu filho cria conta, escolhe «Sou atleta» e escreve o código. Ele não vê pagamentos, saúde nem as conversas dos adultos.'],
+  ['Pôr a app no ecrã do telemóvel','iPhone: abra no Safari → Partilhar → «Adicionar ao ecrã principal». Android: Chrome → menu ⋮ → «Adicionar ao ecrã principal».']]],
+ ['jogo','⚽','Antes, durante e depois do jogo',[
+  ['Antes','Mochila feita na véspera, refeição leve 2 a 3 horas antes, chegar à hora marcada. Uma frase chega: «Diverte-te e dá o teu melhor.»'],
+  ['Durante','Apoie todos, também os adversários e o árbitro. As instruções são do treinador: duas vozes ao mesmo tempo confundem.'],
+  ['No carro, depois','Deixe-o falar primeiro. Pergunte «O que gostaste mais?» e guarde a análise do jogo para o treinador.'],
+  ['Pouco tempo de jogo','Ouça sem criticar o treinador à frente do filho. Se a dúvida continuar, peça uma reunião na app.'],
+  ['Quer desistir','Pergunte o que mudou: amigos, cansaço, escola, treinador. Às vezes basta uma pausa ou uma conversa. Fale com o treinador antes de decidir.']]],
+ ['voce','🫶','Cuidar de quem cuida',[
+  ['Não precisa de ser perfeito','Ser presente vale mais do que ter sempre a resposta certa. Pedir desculpa a um filho também ensina.'],
+  ['Partilhe a carga','Use as boleias, divida tarefas com o outro pai ou mãe e com a família. Ninguém consegue tudo sozinho.'],
+  ['O seu descanso conta','Pais cansados têm menos paciência. Reserve tempo para si sem culpa, porque também é um exemplo para os seus filhos.'],
+  ['Quando é demais','Se se sentir em baixo, ansioso ou sem forças durante semanas, fale com o médico de família ou ligue para o aconselhamento psicológico do SNS 24.']]]
+];
+const FAQ_PAIS=[
+ ['Quem vê os dados do meu filho?','Só a família ligada a ele, o treinador da equipa e a administradora do clube. Os outros pais veem apenas o nome e o número da camisola.'],
+ ['Posso apagar os dados?','Sim. Na ficha do seu filho, no botão ⚙, existe «Apagar o registo e todos os dados».'],
+ ['Esqueci-me da palavra-passe','No ecrã de entrada, escreva o email e toque em «Esqueci-me da palavra-passe». O email pode ir parar ao Spam.'],
+ ['Tenho dois filhos em equipas diferentes','Os dois aparecem no Início, com botões para escolher. A equipa muda sozinha.']
+];
+function vAjuda(){
+  const sec=S.ajSec&&AJUDA_PAIS.some(a=>a[0]===S.ajSec)?S.ajSec:'app';const b=AJUDA_PAIS.find(a=>a[0]===sec);
+  const f=S.meus[0];
+  $('#main').innerHTML=`<div class="h3s-card h3s-hero"><div class="h3s-hero-tit">🤝 Ajuda aos pais</div><div class="h3s-hero-sub" style="margin-top:6px">Tudo o que precisa para acompanhar o seu filho, na app e fora dela.</div>
+    <div class="h3s-pills" style="justify-content:center;margin-top:14px">${f?`<button class="h3s-pill" onclick="S.agTab='reunioes';irPara('agenda');setTimeout(()=>novaReuniao(),300)">🤝 Pedir reunião</button><button class="h3s-pill claro" style="background:#fff;color:var(--navy);border:2px solid var(--navy)" onclick="abrirJogador('${f.id}','conversa')">💬 Falar com o treinador</button>`:''}</div></div>
+  <div class="seg" style="margin-top:14px">${AJUDA_PAIS.map(([k,i,t])=>`<button class="${k===sec?'on':''}" onclick="S.ajSec='${k}';vAjuda()">${i} ${t}</button>`).join('')}</div>
+  <div class="h3s-card">${b[3].map(([t,x])=>`<div class="tip"><b>${t}</b><span class="muted" style="font-size:14px">${x}</span></div>`).join('')}</div>
+  <div class="h3s-card" style="margin-top:14px"><b>❓ Perguntas frequentes</b>${FAQ_PAIS.map(([p,r])=>`<details style="border-top:1px solid var(--line);padding:10px 0"><summary style="font-weight:600;cursor:pointer">${p}</summary><p class="muted" style="margin:6px 0 0;font-size:14px">${r}</p></details>`).join('')}</div>
+  ${f?`<div class="h3s-card" style="margin-top:14px;background:var(--mint-soft)"><b>💚 Crescer bem</b><p class="muted" style="margin:4px 0 10px">Adolescência, saúde mental e prevenção de consumos.</p><button class="btn full" style="background:var(--mint)" onclick="abrirJogador('${f.id}','bem')">Abrir</button></div>`:''}
+  ${cartaoAjuda().replace('Precisas de falar? Há quem ajude','Linhas de apoio para pais e filhos').replace('Também podes falar com os pais, o treinador ou um professor.','A Linha 1414 também apoia famílias. O SNS 24 (opção 4) é para todos, pais incluídos.')}`;
+}
+
 /* ---------- mensagens ---------- */
 async function vMensagens(){
   const m=$('#main');
@@ -1993,6 +2035,7 @@ const GUIA=[
 function vGuia(){
   const G=isCoach()?GUIA_TREINADOR:isAtleta()?GUIA_ATLETA:GUIA;
   $('#main').innerHTML=`<div class="card"><h2>${isCoach()?'Guia do Treinador 3S':isAtleta()?'Guia do Atleta 3S':'Guia Pai 3S'}</h2><p class="muted" style="margin:0">${isCoach()?'Ideias para treinar crianças e jovens com o método Saber, Sentir, Ser da Escola 3S.':isAtleta()?'Dicas para cresceres no futsal e fora dele, com o método Saber, Sentir, Ser.':'Pequenas ideias para acompanhar o seu filho no futsal com o método Saber, Sentir, Ser da Escola 3S.'}</p></div>
+  ${!isCoach()&&!isAtleta()?`<div class="card" style="border:2px solid var(--gold)"><h2>🤝 Ajuda aos pais</h2><p class="muted" style="margin-top:0">Como usar a app, o jogo visto da bancada e cuidar de quem cuida.</p><button class="btn gold full" onclick="irPara('ajuda')">Abrir</button></div>`:''}
   ${S.meus[0]?`<div class="card" style="background:var(--mint-soft)"><h2>💚 Crescer bem</h2><p class="muted" style="margin-top:0">Adolescência, saúde mental e prevenção do tabaco, álcool e drogas.</p><button class="btn full" style="background:var(--mint)" onclick="abrirJogador('${S.meus[0].id}','bem')">Abrir</button></div>`:''}
   ${G.map(s=>`<div class="card"><h2>${s.i} ${s.t}</h2>${s.c.map(([a,b])=>`<div class="tip"><b>${a}</b><span class="muted" style="font-size:14px">${b}</span></div>`).join('')}</div>`).join('')}
   <div class="card"><h2>🎒 Mochila do jogo</h2>${['Equipamento completo','Caneleiras','Sapatilhas de pavilhão','Garrafa de água','Toalha e muda de roupa','Lanche para depois'].map(x=>`<label class="check"><input type="checkbox"> ${x}</label>`).join('')}</div>`;
