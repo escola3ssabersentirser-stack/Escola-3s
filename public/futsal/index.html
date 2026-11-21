@@ -387,10 +387,10 @@ function botaoVoltar(){if(S.hist.length){try{history.back();return}catch(_){}}vo
 window.addEventListener('popstate',()=>{if($('.sheet')){closeSheet();try{history.pushState({fut:1},'')}catch(_){}return}if(S.perfil&&S.eq)voltar()});
 /* ---------- estrutura ---------- */
 const TABS=[['inicio','🏠','Início'],['agenda','📅','Agenda'],['jogadores','⚽','Jogadores'],['mensagens','💬','Mensagens'],['guia','🌱','Guia 3S']];
-const rotuloTab=k=>k==='ajuda'?'Ajuda aos pais':k==='podios'?'Pódios':k==='equipa'?'Ficha de Equipa':k==='jogadores'?(isCoach()?'Jogadores':isAtleta()?'Eu':'Filhos'):k==='mensagens'&&isAtleta()?'Avisos':(TABS.find(t=>t[0]===k)||[])[2];
+const rotuloTab=k=>k==='acessos'?'Acessos':k==='ajuda'?'Ajuda aos pais':k==='podios'?'Pódios':k==='equipa'?'Ficha de Equipa':k==='jogadores'?(isCoach()?'Jogadores':isAtleta()?'Eu':'Filhos'):k==='mensagens'&&isAtleta()?'Avisos':(TABS.find(t=>t[0]===k)||[])[2];
 function render(){
   marcarNav();
-  const t=TABS.find(x=>x[0]===S.tab)||({ajuda:['ajuda','🤝','Ajuda aos pais'],podios:['podios','🏆','Pódios'],equipa:['equipa','🛡️','Ficha de Equipa']}[S.tab]);
+  const t=TABS.find(x=>x[0]===S.tab)||({ajuda:['ajuda','🤝','Ajuda aos pais'],podios:['podios','🏆','Pódios'],equipa:['equipa','🛡️','Ficha de Equipa'],acessos:['acessos','🔑','Acessos']}[S.tab]);
   const titulo=S.tab==='inicio'?`Olá, ${esc(primeiro(emPrevia()&&modoVer()==='atleta'&&S.meus[0]?S.meus[0].nome:emPrevia()&&modoVer()==='treinador'?nomeDe(S.eq.treinador_id):S.perfil.nome))}`:t[2];
   const jogLabel=isCoach()?'Jogadores':isAtleta()?'O meu perfil':(S.meus.length>1?'Filhos':'Filho(a)');
   $('#screen').innerHTML=`
@@ -402,7 +402,7 @@ function render(){
   </header>
   <main id="main"></main>
   <nav class="bottom">${TABS.map(([k,i,l])=>`<button class="${S.tab===k?'on':''}" onclick="irPara('${k}')"><span>${i}</span>${rotuloTab(k)}</button>`).join('')}</nav>`;
-  ({inicio:vInicio,agenda:vAgenda,jogadores:vJogadores,mensagens:vMensagens,guia:vGuia,ajuda:vAjuda,podios:vPodios,equipa:vEquipa})[S.tab]();
+  ({inicio:vInicio,agenda:vAgenda,jogadores:vJogadores,mensagens:vMensagens,guia:vGuia,ajuda:vAjuda,podios:vPodios,equipa:vEquipa,acessos:vAcessos})[S.tab]();
 }
 function irPara(t){S.tab=t;S.jog=null;render();window.scrollTo(0,0)}
 
@@ -628,7 +628,7 @@ async function vJogadores(){
     if(evJ.length){const ps=await q(sb.from('fut_presencas').select('jogador_id,minutos').in('evento_id',evJ));(ps||[]).forEach(p=>mins[p.jogador_id]=(mins[p.jogador_id]||0)+(p.minutos||0))}
   }
   const maxMin=Math.max(1,...Object.values(mins));
-  m.innerHTML=`${isCoach()&&lista.length?`<div class="row" style="margin-bottom:14px;gap:8px"><button class="btn ghost grow" style="background:var(--card);box-shadow:0 6px 20px var(--shadow)" onclick="mapaPresencas()">📋 Presenças</button><button class="btn ghost grow" style="background:var(--card);box-shadow:0 6px 20px var(--shadow)" onclick="painelPagamentos()">💶 Pagamentos</button><button class="btn ghost grow" style="background:var(--card);box-shadow:0 6px 20px var(--shadow)" onclick="painelRelatorios()">📄 Relatórios</button></div><button class="btn full" style="margin:-4px 0 10px;background:var(--mint);padding:14px" onclick="grelhaBemEstar()">💚 Grelha de bem-estar e plano de ação</button><div class="row" style="gap:10px;margin:0 0 14px"><button class="btn full grow" style="padding:14px" onclick="irEquipa()">🛡️ Ficha de Equipa</button><button class="btn gold full grow" style="padding:14px" onclick="irPodios()">🏆 Pódios</button></div>`:''}<div class="card">${lista.length?`<div class="list">${lista.map(j=>`<button class="item" onclick="abrirJogador('${j.id}')">${avatar(j)}<div class="grow"><b>${esc(j.nome)}</b><div class="muted">${[j.posicao,(S.pes||{})[j.id]?'pé '+(S.pes||{})[j.id].toLowerCase():'',j.ano_escolar].filter(Boolean).map(esc).join(' · ')}</div>
+  m.innerHTML=`${isCoach()&&lista.length?`<div class="row" style="margin-bottom:14px;gap:8px"><button class="btn ghost grow" style="background:var(--card);box-shadow:0 6px 20px var(--shadow)" onclick="mapaPresencas()">📋 Presenças</button><button class="btn ghost grow" style="background:var(--card);box-shadow:0 6px 20px var(--shadow)" onclick="painelPagamentos()">💶 Pagamentos</button><button class="btn ghost grow" style="background:var(--card);box-shadow:0 6px 20px var(--shadow)" onclick="painelRelatorios()">📄 Relatórios</button></div><button class="btn full" style="margin:-4px 0 10px;background:var(--mint);padding:14px" onclick="grelhaBemEstar()">💚 Grelha de bem-estar e plano de ação</button><button class="btn full" style="margin:0 0 10px;padding:14px;background:#25D366" onclick="irAcessos()">🔑 Acessos: códigos por WhatsApp</button><div class="row" style="gap:10px;margin:0 0 14px"><button class="btn full grow" style="padding:14px" onclick="irEquipa()">🛡️ Ficha de Equipa</button><button class="btn gold full grow" style="padding:14px" onclick="irPodios()">🏆 Pódios</button></div>`:''}<div class="card">${lista.length?`<div class="list">${lista.map(j=>`<button class="item" onclick="abrirJogador('${j.id}')">${avatar(j)}<div class="grow"><b>${esc(j.nome)}</b><div class="muted">${[j.posicao,(S.pes||{})[j.id]?'pé '+(S.pes||{})[j.id].toLowerCase():'',j.ano_escolar].filter(Boolean).map(esc).join(' · ')}</div>
     ${isCoach()?`<div class="bar mint" style="margin-top:6px" title="minutos"><i style="width:${Math.round((mins[j.id]||0)/maxMin*100)}%"></i></div><div class="faint">${mins[j.id]||0} min jogados nos últimos 60 dias</div>`:''}</div><span class="faint">›</span></button>`).join('')}</div>`
     :`<p class="empty">${isCoach()?'Ainda não há jogadores. Os pais registam os filhos quando entram com o código da equipa, ou pode registá-los aqui.':'Ainda não registou o seu filho.'}</p>`}
     <button class="btn gold full" style="margin-top:12px" onclick="adicionarFilho()">+ ${isCoach()?'Registar jogador':'Registar filho(a)'}</button>
@@ -2565,6 +2565,47 @@ async function guardarClassif(){const rows=[...document.querySelectorAll('[data-
   await q(sb.from('fut_classificacao').delete().eq('equipa_id',S.eq.id).eq('epoca',epocaAtual()));
   if(rows.length)await q(sb.from('fut_classificacao').insert(rows));closeSheet();vEquipa();toast('Classificação guardada')}
 
+/* ---------- acessos: códigos para pais e atletas, enviados por WhatsApp ---------- */
+function irAcessos(){closeSheet();S.tab='acessos';S.jog=null;render();window.scrollTo(0,0)}
+const telWa=t=>{let d=String(t||'').replace(/\D/g,'');if(d.length===9)d='351'+d;return d};
+function msgPais(x){return `Olá! O ${primeiro(x.nome)} já está na app Futsal 3S do ${CLUBE} (${S.eq.nome}).
+Lá pode ver treinos, convocatórias, boleias, a evolução do seu filho e falar com o treinador.
+
+1) Abra: https://escola-3s.pt/futsal
+2) Toque em «Criar conta», escreva o seu email e crie uma palavra-passe só sua
+3) Escolha «Sou pai / mãe»
+4) Em «Código de família», escreva: ${x.codigo_familia}
+
+Este código é só para a família do ${primeiro(x.nome)}. Não o partilhe com outras pessoas.`}
+function msgAtleta(x){return `Olá ${primeiro(x.nome)}! Já podes entrar na app Futsal 3S do ${CLUBE}.
+Vês os treinos, os desafios, os teus objetivos e a tua evolução.
+
+1) Abre: https://escola-3s.pt/futsal
+2) Toca em «Criar conta», escreve o teu email e cria uma palavra-passe só tua
+3) Escolhe «Sou atleta»
+4) Escreve o teu código de atleta: ${x.codigo_atleta}
+
+Não partilhes o código com ninguém.`}
+async function vAcessos(){
+  if(!isCoach()){$('#main').innerHTML='<div class="card"><p class="empty">Só o treinador e a administradora veem os acessos.</p></div>';return}
+  const {data}=await sb.rpc('fut_codigos_equipa',{p_equipa:S.eq.id});const L=data||[];S._acessos=L;
+  const fam=L.filter(x=>x.n_familia>0).length,atl=L.filter(x=>x.n_atleta>0).length;
+  $('#main').innerHTML=`<div class="h3s-card h3s-hero"><div class="h3s-hero-tit">🔑 Acessos · ${esc(S.eq.nome)}</div>
+    <div class="h3s-hero-row"><div><div class="h3s-mini-tit">Famílias ligadas</div><div class="h3s-mini-num ${fam===L.length&&L.length?'pos':''}">${fam}/${L.length}</div></div><div><div class="h3s-mini-tit">Atletas com conta</div><div class="h3s-mini-num">${atl}/${L.length}</div></div></div>
+    <p class="faint" style="margin:12px 0 0">Cada pessoa cria a sua própria palavra-passe. Aqui só envia o link e o código, que ligam a conta ao atleta certo.</p></div>
+  <div class="h3s-card" style="margin-top:12px"><div class="row between"><div><b>Código da equipa</b><div class="faint">Para pais que ainda vão registar o filho</div></div><span class="code" style="font-size:22px">${esc(S.eq.codigo)}</span></div></div>
+  ${L.map((x,i)=>`<div class="h3s-card" style="margin-top:12px"><div class="row between"><div class="row" style="gap:10px">${avatar(S.jogadores.find(j=>j.id===x.jogador_id)||{id:x.jogador_id,nome:x.nome,numero:x.numero},44)}<div><b>${esc(x.nome)}</b><div class="faint">${x.encarregado_nome?esc(x.encarregado_nome)+' · ':''}${x.encarregado_tel?'📞 '+esc(x.encarregado_tel):'sem telemóvel na ficha'}</div></div></div></div>
+    <div class="row" style="gap:8px;margin-top:12px">
+      <div class="kpi grow" style="text-align:left;padding:10px"><small>👨‍👩‍👦 Família ${x.n_familia?`<span class="chip mint">✔ ${x.n_familia}</span>`:''}</small><b style="font-size:20px;letter-spacing:2px">${esc(x.codigo_familia)}</b></div>
+      <div class="kpi grow" style="text-align:left;padding:10px"><small>⚽ Atleta ${x.n_atleta?'<span class="chip mint">✔</span>':''}</small><b style="font-size:20px;letter-spacing:2px">${esc(x.codigo_atleta)}</b></div></div>
+    <div class="row" style="gap:8px;margin-top:10px">
+      <a class="btn sm grow" style="text-align:center;text-decoration:none;background:#25D366" href="https://wa.me/${telWa(x.encarregado_tel)}?text=${encodeURIComponent(msgPais(x))}" target="_blank" rel="noopener">WhatsApp aos pais</a>
+      <a class="btn sm grow" style="text-align:center;text-decoration:none;background:#128C7E" href="https://wa.me/?text=${encodeURIComponent(msgAtleta(x))}" target="_blank" rel="noopener">WhatsApp ao atleta</a></div>
+    <div class="row" style="gap:8px;margin-top:6px"><button class="btn ghost sm grow" onclick="copiar(msgPais(S._acessos[${i}]))">Copiar mensagem (pais)</button><button class="btn ghost sm grow" onclick="copiar(msgAtleta(S._acessos[${i}]))">Copiar (atleta)</button></div>
+  </div>`).join('')||'<div class="card"><p class="empty">Sem jogadores nesta equipa.</p></div>'}
+  <p class="faint" style="margin:12px 4px">${L.some(x=>!x.encarregado_tel)?'Para o botão abrir logo a conversa certa, ponha o telemóvel do encarregado de educação na ficha do atleta (botão ⚙ ou Ficha). Sem número, o WhatsApp pede para escolher o contacto.':'O WhatsApp abre com a mensagem escrita. Só sai quando carregar em enviar.'}</p>`;
+}
+
 /* ---------- mensagens ---------- */
 async function vMensagens(){
   const m=$('#main');
@@ -2613,6 +2654,7 @@ function vGuia(){
 function abrirConta(){
   openSheet(`<h2>${esc(S.perfil.nome)}</h2><p class="muted">${isAdminModo()?'Administradora':isCoach()?'Treinador(a)':isAtleta()?'Atleta':'Pai / Mãe'}</p>
   ${S.equipas.length>1?`<label class="f">Equipa</label><select id="cEqSel" class="in" onchange="mudarEquipa(this.value)">${S.equipas.map(e=>`<option value="${e.id}" ${e.id===S.eq.id?'selected':''}>${esc(e.nome)}</option>`).join('')}</select>`:''}
+  ${isCoach()?`<button class="btn full" style="margin-top:10px;background:#25D366" onclick="irAcessos()">🔑 Acessos de pais e atletas</button>`:''}
   ${isCoach()?`<div class="card" style="margin-top:14px"><b>Código da equipa</b><p class="muted" style="margin:4px 0 8px">Os pais usam-no para entrar.</p><span class="code">${esc(S.eq.codigo)}</span></div>`:''}
   ${S.admin?`<button class="btn gold full" style="margin-top:8px" onclick="escolherVista()">👁️ Ver a app como treinador, pais ou atleta</button>`:''}
   <label class="f" for="cNome">Nome</label><input id="cNome" class="in" value="${esc(S.perfil.nome)}">
