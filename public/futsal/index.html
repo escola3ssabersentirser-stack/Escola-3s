@@ -417,7 +417,6 @@ function vInicio(){
     h+=`${S.todosMeus.length>1?`<div class="seg">${S.todosMeus.map(j=>`<button class="${filho&&filho.id===j.id?'on':''}" onclick="escolherFilho('${j.id}')">${esc(primeiro(j.nome))}</button>`).join('')}</div>`:''}`;
     if(filho)h+=`<div class="card"><div class="row between" style="margin-bottom:10px"><div><h2 style="margin:0">${esc(primeiro(filho.nome))} · ${MESES_L[new Date().getMonth()]}</h2><div class="muted">${esc(S.eq.nome)}${filho.numero!=null?' · n.º '+filho.numero:''}</div></div><button class="btn ghost sm" onclick="abrirJogador('${filho.id}')">Abrir ›</button></div><div id="painel"><p class="muted">A carregar…</p></div></div>`;
   }
-  if(!isCoach()&&!isAtleta())h+=`<button class="btn ghost full" style="background:var(--card);box-shadow:0 6px 20px var(--shadow);margin-bottom:14px;padding:14px" onclick="irPara('ajuda')">🤝 Ajuda aos pais</button>`;
   if(isAtleta()&&S.meus[0]){filho=S.meus[0];h+=`<div class="card"><h2 style="margin-bottom:10px">O meu mês · ${MESES_L[new Date().getMonth()]}</h2><div id="painel"><p class="muted">A carregar…</p></div></div>`}
   if(isCoach())h+=`<div class="card"><h2 style="margin-bottom:10px">${isAdminModo()?'Administração · '+esc(S.eq.nome):'Equipa'} · ${MESES_L[new Date().getMonth()]}</h2><div id="painel"><p class="muted">A carregar…</p></div></div>`;
   if(!isCoach()&&!S.meus.length){
@@ -454,7 +453,7 @@ function vInicio(){
   const d=S.desafios[0];
   if(d) h+=`<div class="card"><h2>🎯 Desafio em casa</h2><p style="margin:0 0 4px;font-weight:600">${esc(d.titulo)}</p><p class="muted" style="margin:0 0 10px">${esc(d.descricao||'')}</p><span class="chip gold">${d.minutos} min · ${d.pontos} pontos</span>
     ${!isCoach()&&S.meus.length?`<div style="margin-top:12px">${S.meus.map(j=>`<button class="btn sm" style="margin:4px 4px 0 0" onclick="feitoDesafio('${d.id}','${j.id}')">✔ ${esc(primeiro(j.nome))} fez</button>`).join('')}</div>`:''}</div>`;
-  h+=`<div class="row" style="gap:10px;margin-bottom:14px"><button class="btn full grow" style="padding:14px" onclick="irEquipa()">🛡️ Ficha de Equipa</button><button class="btn gold full grow" style="padding:14px" onclick="irPodios()">🏆 Pódios</button></div>`;
+
   setTimeout(()=>{if(isCoach())painelEquipa();else if(isAtleta()&&filho)painelAtleta(filho);else if(filho)painelFilho(filho)},0);
   if(isCoach()) h+=`<div class="card"><h2>Código da equipa</h2><p class="muted" style="margin-top:0">Envie aos pais para entrarem na app.</p><span class="code">${esc(S.eq.codigo)}</span></div>`;
   m.innerHTML=h;
@@ -1490,54 +1489,7 @@ async function gerarQuotas(){
 
 /* ---------- painel resumo (ecrã inicial) ---------- */
 function tile(ic,val,rot,cor,acao){return `<button class="kpi" style="border:0;text-align:left;padding:12px;display:flex;flex-direction:column;gap:2px;cursor:pointer" onclick="${acao}"><span style="font-size:18px">${ic}</span><b style="font-size:21px;color:${cor||'var(--ink)'}">${val}</b><small>${rot}</small></button>`}
-async function painelFilho(j){
-  const el=$('#painel');if(!el)return;
-  const evs=await q(sb.from('fut_eventos').select('id,tipo,data').eq('equipa_id',j.equipa_id).lte('data',hoje()).gte('data',addDias(-90)))||[];
-  const tre=evs.filter(e=>e.tipo==='treino');
-  const [pres,notas,av,obs]=await Promise.all([
-    tre.length?q(sb.from('fut_presencas').select('evento_id,presente').eq('jogador_id',j.id).in('evento_id',tre.map(e=>e.id))):[],
-    q(sb.from('fut_notas_escola').select('*').eq('jogador_id',j.id)),
-    q(sb.from('fut_avaliacoes_360').select('respondente_tipo').eq('jogador_id',j.id).eq('trimestre',trimAtual())),
-    q(sb.from('fut_observacoes').select('id').eq('jogador_id',j.id).eq('tipo','melhorar').eq('resolvido',false))
-  ]);
-  const pt=(pres||[]).filter(p=>p.presente===true).length;const pct=tre.length?Math.round(pt/tre.length*100):null;
-  const ult=ultimasNotas(notas||[]);const sub=ult.filter(u=>u.ant&&pct_(u)>0).length,desc=ult.filter(u=>u.ant&&pct_(u)<0).length;
-  const ex=estadoExame((S.exames||[]).find(e=>e.jogador_id===j.id));
-  const dev=(S.pagPend||[]).filter(p=>p.jogador_id===j.id&&p.estado==='pendente').reduce((s,p)=>s+Number(p.valor),0);
-  const tipos=new Set((av||[]).map(a=>a.respondente_tipo));const faltaEu=!tipos.has('pai');
-  const go=(t)=>`abrirJogadorEm('${j.id}','${t}')`;
-  el.innerHTML=`<div class="kpis" style="grid-template-columns:repeat(2,1fr);gap:10px">
-    ${tile('📋',pct==null?'–':pct+'%','presenças nos treinos',pct==null?'':pct>=80?'var(--mint)':pct>=60?'var(--gold)':'var(--red)',go('presencas'))}
-    ${tile('💚','Abrir','crescer bem','',go('bem'))}
-    ${tile('📚',ult.length?`<span style="color:var(--mint)">▲${sub}</span> <span style="color:var(--red)">▼${desc}</span>`:'–',ult.length?`notas em ${ult.length} disciplinas`:'sem notas registadas','',go('escola'))}
-    ${tile('💶',dev?euro(dev):'0 €',dev?'por pagar':'pagamentos em dia',dev?'var(--red)':'var(--mint)',go('pagamentos'))}
-    ${tile('💛',`${tipos.size}/4`,faltaEu?'avaliação 3S: falta a sua':'avaliação 3S do trimestre','',go('avaliacao'))}
-    ${tile('🎯',(obs||[]).length,'aspetos a melhorar','',go('melhorar'))}
-  </div>`;
-}
 const pct_=u=>pct(u.ult)-pct(u.ant);
-async function painelEquipa(){
-  const el=$('#painel');if(!el)return;
-  const ids=S.jogadores.map(j=>j.id);
-  const tre=S.eventos.filter(e=>e.tipo==='treino'&&e.data<=hoje()&&e.data>=addDias(-30));
-  const [pres,av,reun]=await Promise.all([
-    tre.length&&ids.length?q(sb.from('fut_presencas').select('presente').in('evento_id',tre.map(e=>e.id))):[],
-    ids.length?q(sb.from('fut_avaliacoes_360').select('jogador_id').eq('respondente_tipo','treinador').eq('trimestre',trimAtual()).in('jogador_id',ids)):[],
-    Promise.resolve((S.reunioes||[]).filter(r=>r.estado==='pedida'))
-  ]);
-  const pt=(pres||[]).filter(p=>p.presente===true).length;const pct=tre.length&&ids.length?Math.round(pt/(tre.length*ids.length)*100):null;
-  const exProb=S.jogadores.filter(j=>estadoExame((S.exames||[]).find(e=>e.jogador_id===j.id))[1]!=='mint').length;
-  const dev=(S.pagPend||[]).reduce((s,p)=>s+Number(p.valor),0);const avis=(S.pagPend||[]).filter(p=>p.estado==='avisado').length;
-  const feitas=new Set((av||[]).map(a=>a.jogador_id)).size;
-  el.innerHTML=`<div class="kpis" style="grid-template-columns:repeat(2,1fr);gap:10px">
-    ${tile('👥',S.jogadores.length,'jogadores','',"irPara('jogadores')")}
-    ${tile('📋',pct==null?'–':pct+'%','presença média (30 dias)',pct==null?'':pct>=80?'var(--mint)':pct>=60?'var(--gold)':'var(--red)','mapaPresencas()')}
-    ${tile('💚','Grelha','bem-estar e plano de ação','var(--mint)','grelhaBemEstar()')}
-    ${tile('💶',euro(dev),avis?`por receber · ${avis} a confirmar`:'por receber',dev?'var(--red)':'var(--mint)','painelPagamentos()')}
-    ${tile('💛',`${feitas}/${S.jogadores.length}`,'avaliações 3S feitas','',"irPara('jogadores')")}
-    ${tile('🤝',reun.length,reun.length?'pedidos de reunião':'sem pedidos de reunião',reun.length?'var(--gold)':'',"S.agTab='reunioes';irPara('agenda')")}
-  </div>`;
-}
 function escolherFilho(id){S.filhoSel=id;try{localStorage.setItem('fut_filho',id)}catch(_){};const j=S.todosMeus.find(x=>x.id===id);if(j&&j.equipa_id!==S.eq.id){mudarEquipa(j.equipa_id)}else render()}
 function abrirJogadorEm(id,tab){const j=(S.todosMeus||[]).find(x=>x.id===id)||S.jogadores.find(x=>x.id===id);if(j&&j.equipa_id!==S.eq.id){S._abrir=[id,tab];mudarEquipa(j.equipa_id);return}abrirJogador(id,tab)}
 
@@ -1570,26 +1522,6 @@ async function jAvaliacaoAtleta(j){
   return `<div class="card"><h3>A minha autoavaliação</h3><p class="muted" style="margin-top:0">De 3 em 3 meses pensas em como te correram as coisas: na escola, no futsal, com os outros e contigo.</p>
   ${desta?`<p><span class="chip mint">✔ Já fizeste a de ${trimLabel(t)}</span></p>`:`<button class="btn gold full" onclick="autoavaliacao('${j.id}')">Fazer a autoavaliação de ${trimLabel(t)}</button>`}</div>
   ${av.length?`<div class="card"><h3>Como te vês</h3>${av.slice(0,4).map(a=>`<div style="margin-bottom:12px"><b style="font-size:14px">${trimLabel(a.trimestre)}</b>${DIMS.map(([d,i])=>{const m=mediaDim([a],d);return m==null?'':`<div style="margin:6px 0"><div class="row between"><span style="font-size:14px">${i} ${d}</span><span class="faint">${fmt1(m)}</span></div><div class="bar"><i style="width:${m/4*100}%"></i></div></div>`}).join('')}${a.melhorar?`<p class="muted" style="margin:4px 0 0">🎯 ${esc(a.melhorar)}</p>`:''}</div>`).join('')}</div>`:''}`;
-}
-async function painelAtleta(j){
-  const el=$('#painel');if(!el)return;
-  const evs=await q(sb.from('fut_eventos').select('id,tipo,data').eq('equipa_id',j.equipa_id).lte('data',hoje()).gte('data',addDias(-90)))||[];
-  const tre=evs.filter(e=>e.tipo==='treino');
-  const [pres,feitos,obj,av]=await Promise.all([
-    tre.length?q(sb.from('fut_presencas').select('presente').eq('jogador_id',j.id).in('evento_id',tre.map(e=>e.id))):[],
-    q(sb.from('fut_desafios_feitos').select('*').eq('jogador_id',j.id)),
-    q(sb.from('fut_objetivos').select('*').eq('jogador_id',j.id).eq('cumprido',false)),
-    q(sb.from('fut_avaliacoes_360').select('id').eq('jogador_id',j.id).eq('trimestre',trimAtual()).eq('respondente_tipo','aluno').eq('autor_id',S.me))
-  ]);
-  const pt=(pres||[]).filter(p=>p.presente===true).length;const pc=tre.length?Math.round(pt/tre.length*100):null;
-  const pts=(feitos||[]).reduce((s,f)=>s+(S.desafios.find(d=>d.id===f.desafio_id)?.pontos||0),0);
-  const go=t=>`S.tab='jogadores';S.jog='${j.id}';S.jogTab='${t}';render()`;
-  el.innerHTML=`<div class="kpis" style="grid-template-columns:repeat(2,1fr);gap:10px">
-   ${tile('📋',pc==null?'–':pc+'%','presenças nos treinos',pc==null?'':pc>=80?'var(--mint)':'var(--gold)',go('presencas'))}
-   ${tile('🏆',pts,pts>=200?'pontos · medalha de ouro':pts>=100?'pontos · medalha de prata':pts>=40?'pontos · medalha de bronze':'pontos dos desafios','var(--gold)',go('desafios'))}
-   ${tile('🎯',(obj||[]).length,'objetivos em curso','',go('objetivos'))}
-   ${tile('💛',(av||[]).length?'✔':'!',(av||[]).length?'autoavaliação feita':'falta a tua autoavaliação',(av||[]).length?'var(--mint)':'var(--gold)',go('avaliacao'))}
-  </div>`;
 }
 const GUIA_TREINADOR=[
  {t:'Saber',i:'🧠',c:[['Um objetivo por treino','Escolha uma competência por sessão e registe-a na app. Os miúdos aprendem mais quando sabem o que estão a treinar.'],['Medir para ajustar','Use as presenças, o esforço e as avaliações para ver quem precisa de mais atenção, e não só para classificar.'],['Tempo de jogo justo','Veja a barra de minutos de cada jogador. Até aos 13 anos, todos devem ter oportunidades reais em jogo.']]},
@@ -2609,6 +2541,59 @@ async function vAcessos(){
     <div class="row" style="gap:8px;margin-top:6px"><button class="btn ghost sm grow" onclick="copiar(msgPais(S._acessos[${i}]))">Copiar mensagem (pais)</button><button class="btn ghost sm grow" onclick="copiar(msgAtleta(S._acessos[${i}]))">Copiar (atleta)</button></div>
   </div>`).join('')||'<div class="card"><p class="empty">Sem jogadores nesta equipa.</p></div>'}
   <p class="faint" style="margin:12px 4px">${L.some(x=>!x.encarregado_tel)?'Para o botão abrir logo a conversa certa, ponha o telemóvel do encarregado de educação na ficha do atleta (botão ⚙ ou Ficha). Sem número, o WhatsApp pede para escolher o contacto.':'O WhatsApp abre com a mensagem escrita. Só sai quando carregar em enviar.'}</p>`;
+}
+
+/* ---------- 4 cartões ao abrir cada perfil ---------- */
+function tile4(ic,val,rot,sub,cor,acao){return `<button class="kpi" style="border:0;text-align:left;padding:16px 14px;display:flex;flex-direction:column;gap:4px;cursor:pointer;min-height:150px" onclick="${acao}"><span style="font-size:28px">${ic}</span><b style="font-size:26px;line-height:1.1;color:${cor||'var(--ink)'};font-family:'Baloo 2',sans-serif">${val}</b><span style="font-weight:700;font-size:14px;color:var(--ink)">${rot}</span><small style="font-size:12px">${sub||''}</small></button>`}
+const grelha4=ts=>`<div class="kpis" style="grid-template-columns:repeat(2,1fr);gap:12px">${ts.join('')}</div>`;
+function proxEvTxt(){const e=proximos()[0];if(!e)return ['–','sem treinos marcados'];return [dataCurta(e.data),`${e.tipo==='jogo'?'jogo vs '+(e.adversario||'?'):'treino'} · ${horaEv(e)}`]}
+async function painelFilho(j){
+  const el=$('#painel');if(!el)return;
+  const [D,pags,ck]=await Promise.all([dadosHolisticos(j),q(sb.from('fut_pagamentos').select('valor,estado').eq('jogador_id',j.id)),q(sb.from('fut_familia_reg').select('id').eq('jogador_id',j.id).eq('autor_id',S.me).eq('tipo','checkin').eq('semana',semanaISO()))]);
+  const hm=mediaN(PILARES.map(p=>D.final[p.k]));const prio=PILARES.filter(p=>D.final[p.k]!=null).sort((a,b)=>D.final[a.k]-D.final[b.k])[0];
+  const dev=(pags||[]).filter(p=>p.estado==='pendente').reduce((s,p)=>s+Number(p.valor),0);
+  const ev=proximos()[0];const r=ev&&respostaDe(ev.id,j.id);const [pd,ps]=proxEvTxt();
+  el.innerHTML=grelha4([
+    tile4('🧭',hm!=null?fmt1(hm)+'<small style="font-size:14px;color:var(--soft)"> /5</small>':'–','Perfil de '+esc(primeiro(j.nome)),prio?'prioridade: '+prio.n.toLowerCase():'toque para ver',hm!=null&&hm>=3.5?'var(--mint)':'',`abrirJogadorEm('${j.id}','resumo')`),
+    tile4('📅',pd,'Próximo',`${ps}${r?.resposta?' · '+({vai:'✅ vai',talvez:'🤔 talvez',nao_vai:'❌ não vai'}[r.resposta]):ev?' · falta responder':''}`,ev&&!r?.resposta?'var(--gold)':'',ev?`abrirEvento('${ev.id}')`:"irPara('agenda')"),
+    tile4('💶',euro(dev),'Conta corrente',dev?'por pagar':'tudo pago',dev?'var(--red)':'var(--mint)',`abrirJogadorEm('${j.id}','conta')`),
+    tile4('🤝',(ck||[]).length?'✔':'1 min','Ajuda aos pais',(ck||[]).length?'check-in da semana feito':'faça o check-in da semana',(ck||[]).length?'var(--mint)':'var(--gold)',"irPara('ajuda')")
+  ]);
+}
+async function painelEquipa(){
+  const el=$('#painel');if(!el)return;
+  const ids=S.jogadores.map(j=>j.id);
+  const tre=S.eventos.filter(e=>e.tipo==='treino'&&e.data<=hoje()&&e.data>=addDias(-30));
+  const [pres,L,reg,cods]=await Promise.all([
+    tre.length&&ids.length?q(sb.from('fut_presencas').select('presente').in('evento_id',tre.map(e=>e.id))):[],
+    dadosEquipa(),
+    ids.length?q(sb.from('fut_familia_reg').select('jogador_id,dados,tipo').in('jogador_id',ids).in('tipo',['checkin','checkin_atleta']).eq('semana',semanaISO())):[],
+    isAdminModo()?sb.rpc('fut_codigos_equipa',{p_equipa:S.eq.id}).then(r=>r.data||[]):Promise.resolve([])
+  ]);
+  const pt=(pres||[]).filter(p=>p.presente===true).length;const pc=tre.length&&ids.length?Math.round(pt/(tre.length*ids.length)*100):null;
+  const top=[...L].sort((a,b)=>b.gm-a.gm)[0];
+  const alertas=new Set((reg||[]).filter(r=>Object.values(r.dados||{}).some(v=>v<=1)||((r.dados||{}).humor<=2)).map(r=>r.jogador_id)).size;
+  const fam=(cods||[]).filter(x=>x.n_familia>0).length;
+  el.innerHTML=grelha4([
+    tile4('👥',S.jogadores.length,'Plantel',`${esc(S.eq.nome)} · ficha de equipa`,'','irEquipa()'),
+    tile4('📋',pc!=null?pc+'%':'–','Presenças','média dos treinos (30 dias)',pc==null?'':pc>=80?'var(--mint)':pc>=60?'var(--gold)':'var(--red)','mapaPresencas()'),
+    tile4('🏆',top&&top.gm?top.gm:'–','Melhor marcador',top&&top.gm?esc(top.j.nome):'ainda sem golos','var(--gold)','irPodios()'),
+    isAdminModo()?tile4('🔑',`${fam}/${(cods||[]).length}`,'Acessos','famílias já ligadas à app',fam===(cods||[]).length&&fam?'var(--mint)':'var(--gold)','irAcessos()')
+      :tile4('💚',alertas,'Bem-estar',alertas?'atletas a precisar de atenção':'grelha e plano de ação',alertas?'var(--red)':'var(--mint)','grelhaBemEstar()')
+  ]);
+}
+async function painelAtleta(j){
+  const el=$('#painel');if(!el)return;
+  const [D,feitos,L]=await Promise.all([dadosHolisticos(j),q(sb.from('fut_desafios_feitos').select('desafio_id').eq('jogador_id',j.id)),dadosEquipa()]);
+  const hm=mediaN(PILARES.map(p=>D.final[p.k]));const forte=PILARES.filter(p=>D.final[p.k]!=null).sort((a,b)=>D.final[b.k]-D.final[a.k])[0];
+  const pts=(feitos||[]).reduce((s,f)=>s+(S.desafios.find(d=>d.id===f.desafio_id)?.pontos||0),0);
+  const eu=L.find(x=>x.j.id===j.id)||{gm:0,jj:0};const [pd,ps]=proxEvTxt();const ev=proximos()[0];
+  el.innerHTML=grelha4([
+    tile4('🧭',hm!=null?fmt1(hm)+'<small style="font-size:14px;color:var(--soft)"> /5</small>':'–','O meu perfil',forte?'ponto forte: '+forte.n.toLowerCase():'faz a tua autoavaliação',hm!=null&&hm>=3.5?'var(--mint)':'',`S.tab='jogadores';S.jog='${j.id}';S.jogTab='resumo';render()`),
+    tile4('📅',pd,'Próximo treino',ps,'',ev?`abrirEvento('${ev.id}')`:"irPara('agenda')"),
+    tile4('🏆',pts,'Desafios',pts>=200?'medalha de ouro':pts>=100?'medalha de prata':pts>=40?'medalha de bronze':'pontos: faz mais um!','var(--gold)',`S.tab='jogadores';S.jog='${j.id}';S.jogTab='desafios';render()`),
+    tile4('⚽',eu.gm,'Os meus golos',`${eu.jj} jogos esta época`,'var(--mint)','irEquipa()')
+  ]);
 }
 
 /* ---------- mensagens ---------- */
