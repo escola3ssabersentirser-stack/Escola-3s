@@ -664,7 +664,7 @@ async function vJogador(){
   m.innerHTML=`<div class="card"><div class="row">${isAtleta()?'':`<button class="btn ghost sm" aria-label="Voltar atrás" onclick="botaoVoltar()">‹</button>`}<button style="border:0;background:none;padding:0;position:relative" aria-label="Fotografia do atleta" onclick="${isAtleta()?'':`menuFoto('${j.id}')`}">${avatar(j,56)}${isAtleta()?'':'<span style="position:absolute;right:-4px;bottom:-4px;background:var(--gold);color:#fff;border-radius:99px;width:22px;height:22px;display:grid;place-items:center;font-size:12px">📷</span>'}</button><div class="grow"><h2 style="margin:0">${esc(j.nome)}</h2><div class="muted">${[j.posicao,(S.pes||{})[j.id]?'pé '+(S.pes||{})[j.id].toLowerCase():'',j.ano_escolar].filter(Boolean).map(esc).join(' · ')}</div></div>${isAtleta()?'':`<button class="btn ghost sm" aria-label="Definições" onclick="editarJogador()">⚙</button>`}</div></div>
   ${S.jogTab&&S.jogTab!=='resumo'?`<div class="h3s-bloco-tit" style="margin-top:2px">${(VISTAS[S.jogTab]||['',''])[0]} ${(VISTAS[S.jogTab]||['',''])[1]}</div>`:''}
   <div id="jBody"><div class="card"><p class="empty">A carregar…</p></div></div>`;
-  const f={resumo:jCartoes,holistico:jHolistico,bem:jBem,evolucaoGeral:jEvolucaoGeral,plano:jPlano,conta:jContaCorrente,clube:jClube,avaliacao:jAvaliacao,fpf:jFPF,ficha:jFicha,presencas:jPresencas,pagamentos:jPagamentos,melhorar:jMelhorar,escola:jEscola,evolucao:jEvolucao,objetivos:jObjetivos,desafios:jDesafios,emocoes:jEmocoes,rotina:jRotina,conversa:jConversa}[S.jogTab];
+  const f={resumo:jPerfil4,dadosjogo:jDadosJogo,holistico:jHolistico,bem:jBem,evolucaoGeral:jEvolucaoGeral,plano:jPlano,conta:jContaCorrente,clube:jClube,avaliacao:jAvaliacao,fpf:jFPF,ficha:jFicha,presencas:jPresencas,pagamentos:jPagamentos,melhorar:jMelhorar,escola:jEscola,evolucao:jEvolucao,objetivos:jObjetivos,desafios:jDesafios,emocoes:jEmocoes,rotina:jRotina,conversa:jConversa}[S.jogTab];
   $('#jBody').innerHTML=await f(j);
   if(S.jogTab==='conversa'){const b=$('#chatEnd');if(b)b.scrollIntoView()}
 }
@@ -1667,7 +1667,7 @@ async function fpPDF(id){
 
 /* ---------- página do atleta em cartões (estilo Gestor de Loja) ---------- */
 const VISTAS={
-  evolucaoGeral:['📈','Evolução do atleta'],holistico:['🧭','Perfil holístico'],bem:['💚','Crescer bem'],fpf:['📋','Ficha FPF'],plano:['🎯','Plano de ação'],conta:['💶','Conta corrente'],clube:['🛡️','Arcas'],
+  evolucaoGeral:['📈','Evolução do atleta'],holistico:['🧭','Perfil holístico'],dadosjogo:['📊','Presenças e dados de jogo'],bem:['💚','Crescer bem'],fpf:['📋','Ficha FPF'],plano:['🎯','Plano de ação'],conta:['💶','Conta corrente'],clube:['🛡️','Arcas'],
   ficha:['📇','Ficha do atleta'],presencas:['✅','Presenças'],escola:['📚','Escola'],melhorar:['🔎','A melhorar'],avaliacao:['💛','Avaliação 3S'],
   objetivos:['🏁','Objetivos'],desafios:['🏆','Desafios'],emocoes:['😀','Emoções'],rotina:['🌙','Rotina'],conversa:['💬','Conversa'],evolucao:['⚽','Competências'],pagamentos:['💶','Pagamentos']
 };
@@ -2594,6 +2594,59 @@ async function painelAtleta(j){
     tile4('🏆',pts,'Desafios',pts>=200?'medalha de ouro':pts>=100?'medalha de prata':pts>=40?'medalha de bronze':'pontos: faz mais um!','var(--gold)',`S.tab='jogadores';S.jog='${j.id}';S.jogTab='desafios';render()`),
     tile4('⚽',eu.gm,'Os meus golos',`${eu.jj} jogos esta época`,'var(--mint)','irEquipa()')
   ]);
+}
+
+/* ---------- perfil do jogador: 4 cartões ---------- */
+async function jDadosJogo(j){
+  const D=S._hol&&S._holJ===j.id?S._hol:await dadosHolisticos(j);
+  const P=D.P,jogos=D.evs.filter(e=>e.tipo==='jogo').map(e=>e.id),tre=D.evs.filter(e=>e.tipo==='treino').map(e=>e.id);
+  const PJ=P.filter(p=>jogos.includes(p.evento_id));const soma=k=>PJ.reduce((s,p)=>s+(p[k]||0),0);
+  const base=await q(sb.from('fut_estat_base').select('*').eq('jogador_id',j.id).eq('epoca',epocaAtual()).maybeSingle())||{};
+  const presT=tre.length?Math.round(P.filter(p=>tre.includes(p.evento_id)&&p.presente===true).length/tre.length*100):null;
+  const jogou=PJ.filter(p=>p.presente===true||p.minutos).length;
+  const cel=(t,v,c)=>`<div class="h3s-stat"><div class="h3s-stat-tit" style="min-height:30px">${t}</div><div class="h3s-stat-num ${c||''}">${v}</div></div>`;
+  return `<div class="h3s-card h3s-stats" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+    ${cel('Presença<br>treinos',presT!=null?presT+'%':'–',presT!=null&&presT<70?'neg':'')}${cel('Jogos<br>na época',(base.jogos||0)+jogou)}${cel('Minutos<br>(app)',soma('minutos'))}
+    ${cel('⚽<br>Golos',(base.golos||0)+soma('golos'),'pos')}${cel('🎯<br>Assistências',(base.assistencias||0)+soma('assistencias'))}${cel('🔁<br>Passes',soma('passes'))}
+    ${cel('🟨<br>Amarelos',(base.amarelos||0)+soma('amarelos'),soma('amarelos')?'neg':'')}${cel('🟥<br>Vermelhos',(base.vermelhos||0)+soma('vermelhos'),soma('vermelhos')?'neg':'')}${cel('⭐<br>Performance',fmt1(mediaN(P.map(p=>p.nota_perf).filter(Boolean))))}
+  </div><p class="faint" style="margin:6px 4px 14px">Jogos e golos somam os números da época (outras apps) com o que o treinador regista na checklist de cada jogo.</p>
+  ${await jPresencas(j)}`;
+}
+async function jPerfil4(j){
+  const at=isAtleta();
+  const D=await dadosHolisticos(j);S._hol=D;S._holJ=j.id;
+  const [fpf,plano,base]=await Promise.all([
+    q(sb.from('fut_fichas_fpf').select('niveis').eq('jogador_id',j.id).order('created_at',{ascending:false}).limit(2)),
+    q(sb.from('fut_plano_acao').select('estado,melhorar').eq('jogador_id',j.id)),
+    q(sb.from('fut_estat_base').select('*').eq('jogador_id',j.id).eq('epoca',epocaAtual()).maybeSingle())
+  ]);
+  const F=(fpf||[])[0],FA=(fpf||[])[1];
+  const tec=n=>n?mediaN(FPF.filter(c=>c.k==='1'||c.k==='2').flatMap(c=>c.p.map((_,i)=>n[campoFPF(c.k,i)]))):null;
+  const tM=tec(F?.niveis),tA=tec(FA?.niveis);
+  const fracoT=F?FPF.filter(c=>c.k==='1'||c.k==='2').flatMap(c=>c.p.map((t,i)=>({t,v:F.niveis?.[campoFPF(c.k,i)]}))).filter(x=>x.v).sort((a,b)=>a.v-b.v)[0]:null;
+  const hm=mediaN(PILARES.map(p=>D.final[p.k]));const prio=PILARES.filter(p=>D.final[p.k]!=null).sort((a,b)=>D.final[a.k]-D.final[b.k]);
+  const abertos=(plano||[]).filter(x=>x.estado!=='feito');
+  const P=D.P,jogos=D.evs.filter(e=>e.tipo==='jogo').map(e=>e.id),tre=D.evs.filter(e=>e.tipo==='treino').map(e=>e.id);
+  const PJ=P.filter(p=>jogos.includes(p.evento_id));const soma=k=>PJ.reduce((s,p)=>s+(p[k]||0),0);
+  const presT=tre.length?Math.round(P.filter(p=>tre.includes(p.evento_id)&&p.presente===true).length/tre.length*100):null;
+  const gl=((base||{}).golos||0)+soma('golos');
+  const go=t=>`S.jogTab='${t}';vJogador();window.scrollTo(0,0)`;
+  const seta=(a,b)=>a!=null&&b!=null?(a>b+0.05?' <span style="color:var(--mint)">▲</span>':a<b-0.05?' <span style="color:var(--red)">▼</span>':''):'';
+  const mini=(ic,t,v,s,acao)=>`<button class="h3s-tile" style="min-height:84px" onclick="${acao}"><span class="h3s-ic">${ic}</span><span class="h3s-tile-tit">${t}</span><span class="h3s-tile-sub">${s||''}</span></button>`;
+  return `${grelha4([
+    tile4('🧭',hm!=null?fmt1(hm)+'<small style="font-size:14px;color:var(--soft)"> /5</small>':'–','Perfil holístico',prio[0]?`💪 ${prio[prio.length-1].n.toLowerCase()} · 🎯 ${prio[0].n.toLowerCase()}`:'relações, emoções, consistência…',hm!=null&&hm>=3.5?'var(--mint)':hm!=null&&hm<2.5?'var(--red)':'',go('holistico')),
+    tile4('⚽',tM!=null?fmt1(tM)+'<small style="font-size:14px;color:var(--soft)"> /4</small>'+seta(tM,tA):'–','Competências técnicas',fracoT?'a trabalhar: '+fracoT.t.split(/[,(]/)[0].trim().toLowerCase():'ficha FPF por preencher',tM!=null&&tM>=3?'var(--mint)':tM!=null&&tM<2?'var(--red)':'',go('fpf')),
+    tile4('🎯',abertos.length,'A desenvolver e plano de ação',abertos[0]?esc(abertos[0].melhorar):prio[0]?'sugestão: '+prio[0].n.toLowerCase():'sem pontos abertos',abertos.length?'var(--gold)':'var(--mint)',go('plano')),
+    tile4('📊',presT!=null?presT+'%':'–','Presenças e jogo',`⚽ ${gl} golos · 🔁 ${soma('passes')} passes · 🟨 ${soma('amarelos')}`,presT!=null&&presT<70?'var(--red)':presT!=null?'var(--mint)':'',go('dadosjogo'))
+  ])}
+  <details class="h3s-card" style="margin-top:14px;padding:14px"><summary style="font-weight:700;cursor:pointer;font-size:15px">➕ Mais: evolução, escola, crescer bem, clube…</summary>
+    <div class="h3s-tiles" style="padding:10px 0 0">
+      ${mini('📈','Evolução','gráficos',go('evolucaoGeral'))}${mini('📋','Ficha FPF','Arcas',go('fpf'))}${mini('🏁','Objetivos','',go('objetivos'))}
+      ${mini('🏆','Desafios','em casa',go('desafios'))}${mini('🥇','Pódios','equipa','irPodios()')}${mini('📚','Escola','notas',go('escola'))}
+      ${mini('💛',at?'Autoavaliação':'Avaliação 3S','trimestral',go('avaliacao'))}${mini('😀','Emoções','',go('emocoes'))}${mini('💚','Crescer bem','',go('bem'))}
+      ${mini('🌙','Rotina','',go('rotina'))}${mini('🛡️','Arcas','clube',go('clube'))}${at?'':mini('🔎','A melhorar','',go('melhorar'))}
+      ${at?'':mini('💶','Conta corrente','',go('conta'))}${at?'':mini('📇','Ficha','dados',go('ficha'))}${at?'':mini('💬','Conversa','treinador',go('conversa'))}
+    </div></details>`;
 }
 
 /* ---------- mensagens ---------- */
