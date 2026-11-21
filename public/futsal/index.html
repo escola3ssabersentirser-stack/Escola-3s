@@ -1942,7 +1942,8 @@ async function jBem(j){
     ${perfil==='atleta'&&!c.atleta_em?`<button class="btn gold full" style="margin-top:12px" onclick="assinarComp('${j.id}','atleta')">✍️ Assinar o meu compromisso</button>`:''}
     ${perfil==='pai'&&!c.pais_em?`<button class="btn gold full" style="margin-top:12px" onclick="assinarComp('${j.id}','pai')">✍️ Assinar como família</button>`:''}
     ${perfil==='pai'&&!c.atleta_em?`<button class="btn ghost full sm" style="margin-top:8px;background:rgba(255,255,255,.15);color:#fff" onclick="assinarComp('${j.id}','atleta')">O ${esc(primeiro(j.nome))} assina neste telemóvel</button>`:''}</div>`;
-  return `<div class="h3s-card h3s-hero" onclick="respiracao()" style="background:var(--mint-soft)"><div class="h3s-hero-tit">💚 Crescer bem</div><div class="h3s-hero-sub" style="margin-top:6px">${perfil==='atleta'?'Corpo, mente e escolhas: o treino que não se vê.':perfil==='pai'?'Acompanhar a adolescência com calma e informação.':'Treinar pessoas, não só jogadores.'}</div>
+  const inter=perfil==='atleta'?await blocoInterativo(j.id,true):'';
+  return `${inter}<div class="h3s-card h3s-hero" onclick="respiracao()" style="background:var(--mint-soft);${inter?'margin-top:14px':''}"><div class="h3s-hero-tit">💚 Crescer bem</div><div class="h3s-hero-sub" style="margin-top:6px">${perfil==='atleta'?'Corpo, mente e escolhas: o treino que não se vê.':perfil==='pai'?'Acompanhar a adolescência com calma e informação.':'Treinar pessoas, não só jogadores.'}</div>
     <div class="h3s-pills" style="justify-content:center;margin-top:14px"><button class="h3s-pill" style="background:var(--mint)">🌬️ Exercício de respiração</button></div></div>
   <div class="seg" style="margin-top:14px">${blocos.map(([k,ic,t])=>`<button class="${k===sec?'on':''}" onclick="S.bemSec='${k}';vJogador()">${ic} ${t}</button>`).join('')}</div>
   <div class="h3s-card">${b[3].map(([t,x])=>`<div class="tip"><b>${t}</b><span class="muted" style="font-size:14px">${x}</span></div>`).join('')}</div>
@@ -1985,17 +1986,119 @@ const FAQ_PAIS=[
  ['Esqueci-me da palavra-passe','No ecrã de entrada, escreva o email e toque em «Esqueci-me da palavra-passe». O email pode ir parar ao Spam.'],
  ['Tenho dois filhos em equipas diferentes','Os dois aparecem no Início, com botões para escolher. A equipa muda sozinha.']
 ];
-function vAjuda(){
+async function vAjuda(){
   const sec=S.ajSec&&AJUDA_PAIS.some(a=>a[0]===S.ajSec)?S.ajSec:'app';const b=AJUDA_PAIS.find(a=>a[0]===sec);
-  const f=S.meus[0];
-  $('#main').innerHTML=`<div class="h3s-card h3s-hero"><div class="h3s-hero-tit">🤝 Ajuda aos pais</div><div class="h3s-hero-sub" style="margin-top:6px">Tudo o que precisa para acompanhar o seu filho, na app e fora dela.</div>
+  const f=S.meus.find(x=>x.id===S.ajFilho)||S.meus[0];
+  const inter=f?await blocoInterativo(f.id,false):'';
+  $('#main').innerHTML=`${S.meus.length>1?`<div class="seg">${S.meus.map(x=>`<button class="${f&&x.id===f.id?'on':''}" onclick="S.ajFilho='${x.id}';vAjuda()">${esc(primeiro(x.nome))}</button>`).join('')}</div>`:''}${inter}<div class="h3s-card h3s-hero" style="margin-top:14px"><div class="h3s-hero-tit">🤝 Ajuda aos pais</div><div class="h3s-hero-sub" style="margin-top:6px">Tudo o que precisa para acompanhar o seu filho, na app e fora dela.</div>
     <div class="h3s-pills" style="justify-content:center;margin-top:14px">${f?`<button class="h3s-pill" onclick="S.agTab='reunioes';irPara('agenda');setTimeout(()=>novaReuniao(),300)">🤝 Pedir reunião</button><button class="h3s-pill claro" style="background:#fff;color:var(--navy);border:2px solid var(--navy)" onclick="abrirJogador('${f.id}','conversa')">💬 Falar com o treinador</button>`:''}</div></div>
   <div class="seg" style="margin-top:14px">${AJUDA_PAIS.map(([k,i,t])=>`<button class="${k===sec?'on':''}" onclick="S.ajSec='${k}';vAjuda()">${i} ${t}</button>`).join('')}</div>
   <div class="h3s-card">${b[3].map(([t,x])=>`<div class="tip"><b>${t}</b><span class="muted" style="font-size:14px">${x}</span></div>`).join('')}</div>
   <div class="h3s-card" style="margin-top:14px"><b>❓ Perguntas frequentes</b>${FAQ_PAIS.map(([p,r])=>`<details style="border-top:1px solid var(--line);padding:10px 0"><summary style="font-weight:600;cursor:pointer">${p}</summary><p class="muted" style="margin:6px 0 0;font-size:14px">${r}</p></details>`).join('')}</div>
   ${f?`<div class="h3s-card" style="margin-top:14px;background:var(--mint-soft)"><b>💚 Crescer bem</b><p class="muted" style="margin:4px 0 10px">Adolescência, saúde mental e prevenção de consumos.</p><button class="btn full" style="background:var(--mint)" onclick="abrirJogador('${f.id}','bem')">Abrir</button></div>`:''}
+  ${cartaoCoach3S()}
   ${cartaoAjuda().replace('Precisas de falar? Há quem ajude','Linhas de apoio para pais e filhos').replace('Também podes falar com os pais, o treinador ou um professor.','A Linha 1414 também apoia famílias. O SNS 24 (opção 4) é para todos, pais incluídos.')}`;
 }
+
+/* ---------- ajuda interativa: check-in semanal, pergunta da semana, desafio de família ---------- */
+const semanaISO=(d)=>{d=d?new Date(d):new Date();const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const dn=t.getUTCDay()||7;t.setUTCDate(t.getUTCDate()+4-dn);const y0=new Date(Date.UTC(t.getUTCFullYear(),0,1));return t.getUTCFullYear()+'-S'+String(Math.ceil(((t-y0)/864e5+1)/7)).padStart(2,'0')};
+const nSemana=()=>parseInt(semanaISO().split('-S')[1]);
+const CHK_PAIS=[
+ {k:'sono',q:'Como dormiu esta semana?',o:['Muito mal','Mal','Bem','Muito bem'],dica:'Combine uma hora fixa para desligar ecrãs (por exemplo, 30 minutos antes de deitar) e deixe o telemóvel a carregar fora do quarto.'},
+ {k:'humor',q:'Como andou de humor?',o:['Muito em baixo','Irritado ou triste','Normal','Bem-disposto'],dica:'Esteja disponível sem pressionar: um passeio, uma volta de carro ou cozinhar juntos abrem mais conversas do que perguntas diretas.'},
+ {k:'escola',q:'Como correu a escola?',o:['Muito mal','Com dificuldades','Normal','Muito bem'],dica:'Pergunte o que está mais difícil e combine um pequeno plano de estudo. Avise o treinador: ele pode ajudar a motivar.'},
+ {k:'amigos',q:'Como está com os amigos e colegas?',o:['Isolado ou em conflito','Algumas tensões','Normal','Muito bem'],dica:'Pergunte por nomes e situações concretas, sem julgar. Se houver sinais de exclusão ou bullying, fale com a escola e o treinador.'},
+ {k:'ecras',q:'O tempo de ecrã foi equilibrado?',o:['Demasiado','Bastante','Razoável','Equilibrado'],dica:'Experimente o desafio de família desta semana e definam juntos uma regra simples, com os adultos a cumprirem também.'},
+ {k:'conversa',q:'Conseguiram conversar a sério?',o:['Nada','Pouco','Algumas vezes','Muitas vezes'],dica:'Use a pergunta da semana: 5 minutos, sem telemóveis, a ouvir mais do que falar.'},
+ {k:'futsal',q:'Está motivado para o futsal?',o:['Quer desistir','Pouco','Normal','Muito'],dica:'Pergunte o que mudou: amigos, cansaço, escola ou tempo de jogo. Peça uma reunião ao treinador na app.'}
+];
+const CHK_ATLETA=[
+ {k:'sono',q:'Como dormiste esta semana?',o:['😫','😕','🙂','😴'],l:['Muito mal','Mal','Bem','Muito bem']},
+ {k:'humor',q:'Como te sentiste?',o:['😢','😕','🙂','😀'],l:['Muito em baixo','Em baixo','Bem','Muito bem']},
+ {k:'escola',q:'Como correu a escola?',o:['😫','😕','🙂','🤩'],l:['Muito mal','Difícil','Bem','Muito bem']},
+ {k:'amigos',q:'Como estás com os amigos?',o:['😞','😕','🙂','🤗'],l:['Mal','Mais ou menos','Bem','Muito bem']},
+ {k:'futsal',q:'Como estão os treinos?',o:['😩','😕','🙂','🔥'],l:['Sem vontade','Mais ou menos','Bem','Adoro']}
+];
+const PERGUNTAS=[
+ 'O que te fez rir esta semana?','Qual foi o melhor momento do último treino?','Se pudesses mudar uma coisa na escola, o que mudavas?','Quem é a pessoa da equipa com quem te dás melhor? Porquê?',
+ 'O que é que te deixa nervoso antes de um jogo?','Há alguma coisa que te esteja a preocupar e que ainda não contaste?','Qual é a coisa de que mais te orgulhas este mês?','Se fosses treinador, o que fazias diferente?',
+ 'Que aplicação ou jogo usas mais? Mostras-me como funciona?','O que é um bom amigo para ti?','Quando te sentes em baixo, o que te ajuda?','Que coisa nova querias aprender este ano?',
+ 'Alguém já te pressionou para fazer algo que não querias? Como reagiste?','Qual é o jogador ou a pessoa que mais admiras? Porquê?','O que achas que eu devia saber sobre a tua semana?','O que gostavas que fizéssemos juntos no fim de semana?',
+ 'Qual foi o erro que mais te ensinou ultimamente?','Há alguma disciplina em que precises de ajuda?','Como te sentes quando jogas pouco tempo?','Se pudesses dar um conselho a ti próprio há um ano, qual seria?'
+];
+const DESAFIOS_FAM=[
+ ['🍽️','Jantar sem ecrãs','Todos os jantares desta semana sem telemóveis nem televisão. Os adultos também!'],
+ ['⚽','15 minutos de bola juntos','Joguem juntos no quintal, no parque ou no corredor, pelo menos duas vezes esta semana.'],
+ ['🌙','Telemóveis a dormir fora do quarto','Esta semana todos os telemóveis da casa carregam na sala durante a noite.'],
+ ['🥗','Cozinhar juntos','Escolham e cozinhem juntos uma refeição saudável antes de um treino.'],
+ ['🚶','Caminhada e conversa','Uma caminhada de 20 minutos só os dois, sem pressa nem telemóvel.'],
+ ['💌','Bilhete de incentivo','Deixe um bilhete na mochila do treino a dizer o que admira nele.'],
+ ['📚','Hora de estudo em família','Uma hora em que todos leem ou estudam juntos à mesa: pais com um livro, filho com os TPC.'],
+ ['🎬','Noite de cinema escolhida por ele','Ele escolhe o filme e vocês veem juntos, sem telemóveis, e no fim cada um diz o que mais gostou.'],
+ ['🙌','Elogio pelo esforço','Todos os dias desta semana, elogie um esforço concreto (não o resultado).'],
+ ['💧','Garrafa de água sempre cheia','Cada um tem a sua garrafa e enche-a de manhã e antes do treino. Quem se esquecer menos ganha.'],
+ ['🧘','Respirar juntos','Antes de dormir, façam juntos o exercício de respiração da app (1 minuto).'],
+ ['📵','Uma tarde sem ecrãs','Um sábado ou domingo à tarde inteira sem ecrãs: jogos de tabuleiro, rua, amigos.']
+];
+let CK=null;
+function abrirCheckin(jid,atleta){
+  const j=S.jogadores.find(x=>x.id===jid);CK={jid,atleta:!!atleta,qs:atleta?CHK_ATLETA:CHK_PAIS,r:{},p:0,nome:primeiro(j.nome)};ckRender();
+}
+function ckRender(){
+  const t=CK.qs.length;if(CK.p<t){const qq=CK.qs[CK.p];
+    openSheet(`<div class="bar" style="margin:4px 0 14px"><i style="width:${Math.round(CK.p/t*100)}%"></i></div><div class="faint">${CK.atleta?'A tua semana':'A semana de '+esc(CK.nome)} · ${CK.p+1} de ${t}</div>
+    <h2 style="margin:12px 0 16px;font-size:23px">${qq.q}</h2>
+    <div class="opts" style="gap:8px">${qq.o.map((o,i)=>`<button class="${CK.r[qq.k]===i+1?'on':''}" style="flex:1 1 45%;padding:14px 6px;${CK.atleta?'display:flex;flex-direction:column;align-items:center;gap:4px':''}" onclick="CK.r['${qq.k}']=${i+1};CK.p++;setTimeout(ckRender,150)">${CK.atleta?`<span style="font-size:30px">${o}</span><span style="font-size:12px">${qq.l[i]}</span>`:o}</button>`).join('')}</div>
+    ${CK.p?'<button class="btn ghost sm" style="margin-top:16px" onclick="CK.p--;ckRender()">‹ Voltar</button>':''}`);return}
+  ckGuardar();
+}
+async function ckGuardar(){
+  const r=await q(sb.from('fut_familia_reg').insert({jogador_id:CK.jid,tipo:CK.atleta?'checkin_atleta':'checkin',semana:semanaISO(),dados:CK.r}));if(r===null)return;
+  const hist=await q(sb.from('fut_familia_reg').select('semana,dados,created_at').eq('jogador_id',CK.jid).eq('tipo',CK.atleta?'checkin_atleta':'checkin').eq('autor_id',S.me).order('created_at'))||[];
+  const baixos=CK.qs.filter(x=>CK.r[x.k]<=2).sort((a,b)=>CK.r[a.k]-CK.r[b.k]);
+  const med=Object.values(CK.r).reduce((a,b)=>a+b,0)/Object.values(CK.r).length;
+  const ant=hist.length>1?hist[hist.length-2]:null;const mAnt=ant?Object.values(ant.dados).reduce((a,b)=>a+b,0)/Object.values(ant.dados).length:null;
+  const alerta=(CK.r.humor<=1)||(ant&&CK.r.humor<=2&&ant.dados.humor<=2)||(CK.r.futsal<=1&&CK.r.humor<=2);
+  openSheet(`<div style="text-align:center;font-size:46px">${med>=3.2?'🌟':med>=2.5?'🙂':'💛'}</div>
+  <h2 style="text-align:center">${CK.atleta?(med>=3?'Boa semana!':'Obrigado por partilhares'):'Check-in guardado'}</h2>
+  <p class="muted" style="text-align:center">${CK.atleta?'Só tu vês estas respostas.':'Só quem respondeu vê estas respostas.'}${mAnt!=null?` ${med>mAnt+0.1?'Melhor do que a semana passada ▲':med<mAnt-0.1?'Um pouco pior do que a semana passada ▼':'Parecido com a semana passada'}.`:''}</p>
+  ${alerta?`<div class="card" style="border:2px solid var(--red);margin-top:10px"><b>💛 ${CK.atleta?'Parece que a semana foi pesada':'Vale a pena dar atenção'}</b><p class="muted" style="margin:6px 0 10px">${CK.atleta?'Falar ajuda. Conta a alguém de confiança: os teus pais, o treinador ou um professor. Também podes ligar para uma linha de apoio, é confidencial.':'O humor em baixo há mais do que uma semana merece uma conversa calma e, se continuar, ajuda profissional: médico de família, psicólogo escolar ou o SNS 24 (opção 4).'}</p>
+    <a class="btn full" style="display:block;text-align:center;text-decoration:none" href="tel:808242424">📞 SNS 24 · 808 24 24 24 (opção 4)</a>${CK.atleta?'<a class="btn ghost full" style="display:block;text-align:center;text-decoration:none;margin-top:8px" href="tel:116111">📞 Linha da Criança · 116 111</a>':''}</div>`:''}
+  ${!CK.atleta&&baixos.length?`<div class="card" style="margin-top:10px"><b>👉 O que pode fazer esta semana</b>${baixos.slice(0,3).map(x=>`<div class="tip"><b>${x.q.replace('?','')}</b><span class="muted" style="font-size:14px">${x.dica}</span></div>`).join('')}</div>`:''}
+  ${CK.atleta&&baixos.length?`<div class="card" style="margin-top:10px"><b>💡 Para esta semana</b><p class="muted" style="margin:6px 0 0">${baixos[0].k==='sono'?'Tenta deixar o telemóvel fora do quarto e deitar-te à mesma hora.':baixos[0].k==='escola'?'Escolhe uma disciplina e pede ajuda a alguém: pais, professor ou colega.':baixos[0].k==='amigos'?'Fala com alguém em quem confias sobre o que se passa. Não tens de resolver sozinho.':baixos[0].k==='futsal'?'Conta ao treinador como te sentes. Ele quer saber.':'Experimenta o exercício de respiração e conta a alguém como te sentes.'}</p><button class="btn ghost full sm" style="margin-top:8px" onclick="respiracao()">🌬️ Exercício de respiração</button></div>`:''}
+  ${hist.length>1?`<div class="card" style="margin-top:10px"><b>📈 Últimas semanas</b>${graficoCheckin(hist.slice(-8))}</div>`:''}
+  <button class="btn full" style="margin-top:12px" onclick="closeSheet();if(S.tab==='ajuda')vAjuda();else vJogador()">Fechar</button>`);
+}
+function graficoCheckin(h){const W=300,H=110,L=20,R=10,T=10,B=22,n=h.length;const xs=i=>L+i*(W-L-R)/Math.max(1,n-1);const ys=v=>T+(4-v)/3*(H-T-B);
+  const m=h.map(x=>{const v=Object.values(x.dados);return v.reduce((a,b)=>a+b,0)/v.length});
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto" role="img" aria-label="Evolução semanal">${[1,2,3,4].map(v=>`<line x1="${L}" x2="${W-R}" y1="${ys(v)}" y2="${ys(v)}" stroke="#E8DDCF"/>`).join('')}
+  <polyline fill="none" stroke="var(--mint)" stroke-width="3" stroke-linejoin="round" points="${m.map((v,i)=>xs(i)+','+ys(v)).join(' ')}"/>${m.map((v,i)=>`<circle cx="${xs(i)}" cy="${ys(v)}" r="4" fill="var(--navy)"/><text x="${xs(i)}" y="${H-6}" font-size="9" text-anchor="middle" fill="#5E6782">${h[i].semana.split('-S')[1]}</text>`).join('')}</svg><p class="faint" style="margin:0">Média de cada semana (1 a 4). Números em baixo: semana do ano.</p>`}
+async function blocoInterativo(jid,atleta){
+  const sem=semanaISO();
+  const reg=await q(sb.from('fut_familia_reg').select('tipo,semana,chave').eq('jogador_id',jid).eq('autor_id',S.me).eq('semana',sem))||[];
+  const fezCk=reg.some(r=>r.tipo===(atleta?'checkin_atleta':'checkin'));
+  const iP=nSemana()%PERGUNTAS.length,iD=nSemana()%DESAFIOS_FAM.length;const d=DESAFIOS_FAM[iD];
+  const fezP=reg.some(r=>r.tipo==='conversa'),fezD=reg.some(r=>r.tipo==='desafio');
+  const total=await q(sb.from('fut_familia_reg').select('tipo').eq('jogador_id',jid).eq('autor_id',S.me).in('tipo',['conversa','desafio']))||[];
+  const j=S.jogadores.find(x=>x.id===jid);
+  return `<div class="h3s-card h3s-hero" style="${fezCk?'':'border:2px solid var(--gold)'}" onclick="abrirCheckin('${jid}',${!!atleta})">
+      <div class="h3s-hero-tit">📋 ${atleta?'Como foi a tua semana?':'Check-in da semana'}</div>
+      <div class="h3s-hero-sub" style="margin-top:6px">${atleta?'5 perguntas rápidas, só para ti.':`7 perguntas rápidas sobre ${esc(primeiro(j.nome))}. Recebe dicas e vê a evolução.`}</div>
+      <div class="h3s-pills" style="justify-content:center;margin-top:14px"><button class="h3s-pill" style="${fezCk?'background:var(--mint)':''}">${fezCk?'✔ Feito esta semana · repetir':'Começar (1 minuto)'}</button></div></div>
+    ${atleta?'':`<div class="h3s-card" style="margin-top:14px"><div class="row between"><b>💬 Pergunta da semana</b><span class="faint">${total.filter(x=>x.tipo==='conversa').length} feitas</span></div>
+      <p style="font-family:'Baloo 2';font-size:22px;line-height:1.25;margin:12px 0" id="pgTxt">«${PERGUNTAS[iP]}»</p>
+      <p class="faint" style="margin:0 0 10px">Faça-a ao ${esc(primeiro(j.nome))} num momento calmo: no carro, ao jantar, a caminho do treino. Ouça sem corrigir.</p>
+      <div class="row" style="gap:8px"><button class="btn ghost sm grow" onclick="outraPergunta()">🔄 Outra</button><button class="btn sm grow ${fezP?'':'gold'}" onclick="marcarFam('${jid}','conversa',document.getElementById('pgTxt').textContent)">${fezP?'✔ Já conversámos':'Já conversámos'}</button></div></div>
+    <div class="h3s-card" style="margin-top:14px;background:var(--gold-soft)"><div class="row between"><b>🏅 Desafio da família</b><span class="faint">${total.filter(x=>x.tipo==='desafio').length} cumpridos</span></div>
+      <div class="row" style="gap:12px;margin-top:10px"><span style="font-size:40px">${d[0]}</span><div><b style="font-size:16px">${d[1]}</b><p class="muted" style="margin:4px 0 0;font-size:14px">${d[2]}</p></div></div>
+      <button class="btn full" style="margin-top:12px;${fezD?'background:var(--mint)':''}" onclick="marcarFam('${jid}','desafio','${iD}')">${fezD?'✔ Cumprido esta semana!':'Cumprimos o desafio'}</button></div>`}`;
+}
+function outraPergunta(){const e=$('#pgTxt');if(e)e.textContent='«'+PERGUNTAS[Math.floor(Math.random()*PERGUNTAS.length)]+'»'}
+async function marcarFam(jid,tipo,chave){const r=await q(sb.from('fut_familia_reg').insert({jogador_id:jid,tipo,semana:semanaISO(),chave:String(chave).slice(0,300)}));if(r===null)return;toast(tipo==='desafio'?'🏅 Desafio cumprido! Parabéns à família':'💬 Boa conversa!');if(S.tab==='ajuda')vAjuda();else vJogador()}
+function cartaoCoach3S(){const txt=encodeURIComponent('Olá! Sou pai/mãe de um atleta do '+CLUBE+' e gostava de falar com uma coach da Escola 3S.');
+  return `<div class="h3s-card" style="margin-top:14px;background:var(--navy);color:#fff"><div class="row" style="gap:12px">${ESCUDO(40)}<div><b style="font-size:16px">Falar com uma coach da Escola 3S</b><div style="font-size:13px;opacity:.85">Sessões de apoio à parentalidade com o método Saber, Sentir, Ser.</div></div></div>
+  <a class="btn full" style="display:block;text-align:center;text-decoration:none;background:#25D366;margin-top:12px" href="https://wa.me/351938870440?text=${txt}" target="_blank" rel="noopener">WhatsApp · 938 870 440</a>
+  <a class="btn full" style="display:block;text-align:center;text-decoration:none;background:rgba(255,255,255,.15);margin-top:8px" href="mailto:escola3s.saber.sentir.ser@gmail.com?subject=${encodeURIComponent('Apoio a pais – '+CLUBE)}">escola3s.saber.sentir.ser@gmail.com</a></div>`}
 
 /* ---------- mensagens ---------- */
 async function vMensagens(){
