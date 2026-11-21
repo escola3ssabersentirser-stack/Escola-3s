@@ -658,7 +658,7 @@ async function vJogador(){
   m.innerHTML=`<div class="card"><div class="row">${isAtleta()?'':`<button class="btn ghost sm" aria-label="Voltar atrás" onclick="botaoVoltar()">‹</button>`}<button style="border:0;background:none;padding:0;position:relative" aria-label="Fotografia do atleta" onclick="${isAtleta()?'':`menuFoto('${j.id}')`}">${avatar(j,56)}${isAtleta()?'':'<span style="position:absolute;right:-4px;bottom:-4px;background:var(--gold);color:#fff;border-radius:99px;width:22px;height:22px;display:grid;place-items:center;font-size:12px">📷</span>'}</button><div class="grow"><h2 style="margin:0">${esc(j.nome)}</h2><div class="muted">${[j.posicao,(S.pes||{})[j.id]?'pé '+(S.pes||{})[j.id].toLowerCase():'',j.ano_escolar].filter(Boolean).map(esc).join(' · ')}</div></div>${isAtleta()?'':`<button class="btn ghost sm" aria-label="Definições" onclick="editarJogador()">⚙</button>`}</div></div>
   ${S.jogTab&&S.jogTab!=='resumo'?`<div class="h3s-bloco-tit" style="margin-top:2px">${(VISTAS[S.jogTab]||['',''])[0]} ${(VISTAS[S.jogTab]||['',''])[1]}</div>`:''}
   <div id="jBody"><div class="card"><p class="empty">A carregar…</p></div></div>`;
-  const f={resumo:jPainel,bem:jBem,evolucaoGeral:jEvolucaoGeral,plano:jPlano,conta:jContaCorrente,clube:jClube,avaliacao:jAvaliacao,fpf:jFPF,ficha:jFicha,presencas:jPresencas,pagamentos:jPagamentos,melhorar:jMelhorar,escola:jEscola,evolucao:jEvolucao,objetivos:jObjetivos,desafios:jDesafios,emocoes:jEmocoes,rotina:jRotina,conversa:jConversa}[S.jogTab];
+  const f={resumo:jPainel,holistico:jHolistico,bem:jBem,evolucaoGeral:jEvolucaoGeral,plano:jPlano,conta:jContaCorrente,clube:jClube,avaliacao:jAvaliacao,fpf:jFPF,ficha:jFicha,presencas:jPresencas,pagamentos:jPagamentos,melhorar:jMelhorar,escola:jEscola,evolucao:jEvolucao,objetivos:jObjetivos,desafios:jDesafios,emocoes:jEmocoes,rotina:jRotina,conversa:jConversa}[S.jogTab];
   $('#jBody').innerHTML=await f(j);
   if(S.jogTab==='conversa'){const b=$('#chatEnd');if(b)b.scrollIntoView()}
 }
@@ -1145,9 +1145,10 @@ async function gerarRelatorio(jid,t){
     const fpf=await q(sb.from('fut_fichas_fpf').select('*').eq('jogador_id',jid).order('created_at',{ascending:false}).limit(2))||[];
     const plano=await q(sb.from('fut_plano_acao').select('*').eq('jogador_id',jid).order('created_at'))||[];
     const fichaJ=await q(sb.from('fut_fichas').select('*').eq('jogador_id',jid).maybeSingle());
+    let hol=null;try{hol=await dadosHolisticos(j)}catch(_){}
     const evIds=(evs||[]).map(e=>e.id);
     const pres=evIds.length?(await q(sb.from('fut_presencas').select('*').eq('jogador_id',jid).in('evento_id',evIds))||[]):[];
-    const blob=await montarDocx(D,{j,t,av:av||[],avAnt:avAnt||[],notas:notas||[],comp:comp||[],obs:(obs||[]).filter(o=>!o.resolvido||(o.created_at.slice(0,10)>=ini&&o.created_at.slice(0,10)<=fim)),objs:objs||[],evs:evs||[],pres,reun:(reun||[]).filter(r=>!r.jogador_id||r.jogador_id===jid),fpf:fpf[0]||null,fpfAnt:fpf[1]||null,plano,fichaJ:fichaJ||{}});
+    const blob=await montarDocx(D,{j,t,av:av||[],avAnt:avAnt||[],notas:notas||[],comp:comp||[],obs:(obs||[]).filter(o=>!o.resolvido||(o.created_at.slice(0,10)>=ini&&o.created_at.slice(0,10)<=fim)),objs:objs||[],evs:evs||[],pres,reun:(reun||[]).filter(r=>!r.jogador_id||r.jogador_id===jid),fpf:fpf[0]||null,fpfAnt:fpf[1]||null,plano,fichaJ:fichaJ||{},hol});
     const nome=`Relatorio_${primeiro(j.nome)}_${trimLabel(t).replace(/[–\s]/g,'_')}.docx`;
     REL=new File([blob],nome,{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
     openSheet(`<div style="text-align:center;font-size:44px">📄</div><h2 style="text-align:center">Relatório pronto</h2><p class="muted" style="text-align:center">${esc(nome)}</p>
@@ -1202,6 +1203,12 @@ async function montarDocx(D,R){
   filhos.push(new Table({width:{size:9068,type:WidthType.DXA},columnWidths:[2267,2267,2267,2267],rows:[0,1].map(r=>new TableRow({children:nums.slice(r*4,r*4+4).map(([v,l])=>celN(v,l))}))}));
   filhos.push(P(`Este relatório junta o olhar da família, do treinador, dos professores e do próprio ${primeiro(nome)} sobre os últimos três meses. O objetivo é perceber em conjunto o que está a correr bem e onde podemos ajudar, sempre com o foco no crescimento e não na comparação.`,{spacing:{before:240}}));
 
+  if(R.hol){filhos.push(H1('Perfil holístico'));filhos.push(P('Seis pilares do desenvolvimento, de 1 a 5: avaliação do treinador, da família e do atleta, e sinais que vêm dos dados da app.',{run:{color:CINZA}}));
+    let holPng=null;try{holPng=await svgPng(radarHol([{v:R.hol.final,c:'#1B2A4A',f:'rgba(27,42,74,.12)',w:3},{v:R.hol.dados,c:'#B3843F',dash:true,w:2}],320).replace('style="width:100%;max-width:320px;display:block;margin:0 auto"','width="320" height="320"'),320,320)}catch(_){}
+    if(holPng)filhos.push(new Paragraph({alignment:AlignmentType.CENTER,children:[new ImageRun({type:'png',data:holPng,transformation:{width:260,height:260}})]}));
+    const a=R.hol.aval;filhos.push(tabela(['Pilar','Treinador','Família','Atleta','Dados','Geral'],PILARES.map(p=>[p.n,a.treinador?.valores?.[p.k]??'–',a.pai?.valores?.[p.k]??'–',a.atleta?.valores?.[p.k]??'–',fmt1(R.hol.dados[p.k]),fmt1(R.hol.final[p.k])]),[2770,1200,1200,1200,1200,1500]));
+    const pr=PILARES.filter(p=>R.hol.final[p.k]!=null).sort((x,y)=>R.hol.final[x.k]-R.hol.final[y.k]);
+    if(pr.length){filhos.push(BL('Ponto forte',pr[pr.length-1].n));filhos.push(BL('Prioridade',pr[0].n));filhos.push(BL('No treino',pr[0].treino));filhos.push(BL('Em casa',pr[0].casa));}}
   // 1. Desporto
   filhos.push(H1('1. No futsal'));
   const treinos=R.evs.filter(e=>e.tipo==='treino'&&e.data<=hoje()),jogos=R.evs.filter(e=>e.tipo==='jogo'&&e.data<=hoje());
@@ -1223,7 +1230,8 @@ async function montarDocx(D,R){
     const rotP=f=>f.periodo.split(' · ')[0].replace(' Período','P')+' '+((f.periodo.split('Época ')[1]||'').trim());
     filhos.push(tabela(['Parâmetro',R.fpfAnt?rotP(R.fpfAnt):'Anterior',rotP(R.fpf)],linhasF,[5870,1600,1600]));
     [['Técnico-táticos e físicos a potenciar',R.fpf.sugestoes_tecnicas],['Comportamentais e escolares',R.fpf.sugestoes_comportamentais],['Objetivos do treinador',R.fpf.objetivos_treinador],['Recomendações aos pais',R.fpf.recomendacoes_pais]].forEach(([r,v])=>{if(v)filhos.push(BL(r,String(v).replace(/•\s?/g,'').replace(/\n+/g,'; ')))});}
-  if(gl||asi||perf.length){filhos.push(H2('Jogos e treinos'));filhos.push(BL('Golos / assistências',`${gl} / ${asi}`));filhos.push(BL('Performance média na checklist do treinador (1 a 5)',mPerf))}
+  const pss=R.pres.reduce((s,p)=>s+(p.passes||0),0),am=R.pres.reduce((s,p)=>s+(p.amarelos||0),0),vm=R.pres.reduce((s,p)=>s+(p.vermelhos||0),0);
+  if(gl||asi||perf.length){filhos.push(H2('Jogos e treinos'));filhos.push(BL('Golos / assistências / passes',`${gl} / ${asi} / ${pss}`));filhos.push(BL('Cartões amarelos / vermelhos',`${am} / ${vm}`));filhos.push(BL('Performance média na checklist do treinador (1 a 5)',mPerf))}
   // 2. Escola
   filhos.push(H1('2. Na escola'));
   const ult=ultimasNotas(R.notas);
@@ -1716,7 +1724,7 @@ async function fpPDF(id){
 
 /* ---------- página do atleta em cartões (estilo Gestor de Loja) ---------- */
 const VISTAS={
-  evolucaoGeral:['📈','Evolução do atleta'],bem:['💚','Crescer bem'],fpf:['📋','Ficha FPF'],plano:['🎯','Plano de ação'],conta:['💶','Conta corrente'],clube:['🛡️','Arcas'],
+  evolucaoGeral:['📈','Evolução do atleta'],holistico:['🧭','Perfil holístico'],bem:['💚','Crescer bem'],fpf:['📋','Ficha FPF'],plano:['🎯','Plano de ação'],conta:['💶','Conta corrente'],clube:['🛡️','Arcas'],
   ficha:['📇','Ficha do atleta'],presencas:['✅','Presenças'],escola:['📚','Escola'],melhorar:['🔎','A melhorar'],avaliacao:['💛','Avaliação 3S'],
   objetivos:['🏁','Objetivos'],desafios:['🏆','Desafios'],emocoes:['😀','Emoções'],rotina:['🌙','Rotina'],conversa:['💬','Conversa'],evolucao:['⚽','Competências'],pagamentos:['💶','Pagamentos']
 };
@@ -1748,20 +1756,9 @@ async function jPainel(j){
   const ex=estadoExame((S.exames||[]).find(e=>e.jogador_id===j.id));
   const ob=(objs||[]).filter(o=>!o.cumprido).length;const em=emo&&emo[0];
   const seta=(a,b)=>a!=null&&b!=null?(a>b+0.05?'<span style="color:var(--mint)">▲</span>':a<b-0.05?'<span style="color:var(--red)">▼</span>':''):'';
-  return `<div class="h3s-card h3s-hero" onclick="S.jogTab='evolucaoGeral';vJogador()">
-      <div class="h3s-hero-tit">📈 Evolução do atleta</div>
-      <div class="h3s-hero-num">${mG!=null?fmt1(mG):'–'}<span style="font-size:.4em;color:var(--soft);font-weight:600"> / 4</span> ${seta(mG,mA)}</div>
-      <div class="h3s-hero-sub">${ult?'Ficha FPF · '+esc(ult.periodo):'Ainda sem ficha FPF'}</div>
-      ${F.length>1?`<div style="max-width:320px;margin:10px auto 0">${sparkFPF(F)}</div>`:''}
-      <div class="h3s-hero-row"><div><div class="h3s-mini-tit">Avaliação 3S</div><div class="h3s-mini-num">${m3s!=null?fmt1(m3s):'–'}</div></div><div><div class="h3s-mini-tit">Plano de ação</div><div class="h3s-mini-num ${pa?'neg':'pos'}">${pa}</div></div></div>
-    </div>
-    <div class="h3s-card h3s-stats" style="margin-top:14px">
-      <div class="h3s-stat" onclick="S.jogTab='presencas';vJogador()"><div class="h3s-stat-tit">Presenças<br>treinos</div><div class="h3s-stat-num ${pctT!=null&&pctT<70?'neg':''}">${pctT!=null?pctT+'%':'–'}</div></div>
-      <div class="h3s-stat" onclick="S.jogTab='evolucao';vJogador()"><div class="h3s-stat-tit">Minutos<br>em jogo</div><div class="h3s-stat-num">${mins}</div></div>
-      <div class="h3s-stat" onclick="S.jogTab='desafios';vJogador()"><div class="h3s-stat-tit">Pontos<br>desafios</div><div class="h3s-stat-num">${pts}</div></div>
-    </div>
-    <div class="h3s-bloco-tit">⚽ Desporto</div>
+  return `${await jFichaJogador(j)}
     <div class="h3s-card h3s-tiles">
+      ${tileC('evolucaoGeral','📈','Evolução',mG!=null?fmt1(mG):'Abrir ›','gráficos e tabelas',mG==null?'h3s-abrir':'')}
       ${tileC('fpf','📋','Ficha FPF',mG!=null?fmt1(mG):'Abrir ›',ult?esc(ult.periodo.split(' · ')[0]):'Arcas · Critério 7',mG==null?'h3s-abrir':'')}
       ${tileC('plano','🎯','Plano de ação',pa,pa?'a melhorar':'tudo em dia',pa?'neg':'')}
       ${tileC('presencas','✅','Presenças',pctT!=null?pctT+'%':'–','últimos 3 meses',pctT!=null&&pctT<70?'neg':'')}
@@ -1769,8 +1766,7 @@ async function jPainel(j){
       ${tileC('objetivos','🏁','Objetivos',ob,'em curso')}
       ${tileC('desafios','🏆','Desafios',pts,'pontos')}
     </div>
-    <div class="h3s-bloco-tit">📚 Escola e crescer</div>
-    <div class="h3s-card h3s-tiles">
+    <div class="h3s-card h3s-tiles" style="margin-top:10px">
       ${tileC('escola','📚','Escola',un.length?`<span style="color:var(--mint)">▲${sub_}</span> <span style="color:var(--red)">▼${des}</span>`:'–',un.length?un.length+' disciplinas':'sem notas')}
       ${tileC('avaliacao','💛',at?'Autoavaliação':'Avaliação 3S',m3s!=null?fmt1(m3s):'–',trimLabel(trimAtual()))}
       ${tileC('emocoes','😀','Emoções',em?(EMOCOES.find(x=>x[1]===em.emocao)||['–'])[0]:'–',em?esc(em.emocao):'sem registo')}
@@ -1779,8 +1775,7 @@ async function jPainel(j){
       ${at?'':tileC('melhorar','🔎','A melhorar','Abrir ›','jogo, treino, escola','h3s-abrir')}
       ${at?'':tileC('conversa','💬','Conversa','Abrir ›','família e treinador','h3s-abrir')}
     </div>
-    <div class="h3s-bloco-tit">🛡️ Clube e ficha</div>
-    <div class="h3s-card h3s-tiles">
+    <div class="h3s-card h3s-tiles" style="margin-top:10px">
       ${tileC('clube','🛡️','Arcas',esc(S.eq.escalao?S.eq.escalao.split(' (')[0]:S.eq.nome),'clube e horários')}
       ${at?'':tileC('conta','💶','Conta corrente',euro(dev),dev?'por pagar':'em dia',dev?'neg':'')}
       ${at?'':tileC('ficha','📇','Ficha','Abrir ›','dados e medidas','h3s-abrir')}
@@ -2186,7 +2181,7 @@ async function abrirChecklist(evId){
   const e=S.eventos.find(x=>x.id===evId);
   const pres=await q(sb.from('fut_presencas').select('*').eq('evento_id',evId))||[];
   CL={ev:evId,tipo:e.tipo,d:{}};
-  S.jogadores.forEach(j=>{const p=pres.find(x=>x.jogador_id===j.id)||{};CL.d[j.id]={presente:p.presente??(p.resposta==='nao_vai'?false:null),nota_perf:p.nota_perf??null,golos:p.golos??0,assistencias:p.assistencias??0,checklist:{...(p.checklist||{})}}});
+  S.jogadores.forEach(j=>{const p=pres.find(x=>x.jogador_id===j.id)||{};CL.d[j.id]={presente:p.presente??(p.resposta==='nao_vai'?false:null),nota_perf:p.nota_perf??null,golos:p.golos??0,assistencias:p.assistencias??0,passes:p.passes??0,amarelos:p.amarelos??0,vermelhos:p.vermelhos??0,checklist:{...(p.checklist||{})}}});
   clRender();
 }
 function clRender(){
@@ -2196,7 +2191,7 @@ function clRender(){
       <div class="row" style="gap:6px"><button class="btn sm ${r.presente===true?'':'ghost'}" aria-label="Presente" onclick="clSet('${j.id}','presente',true)">✔</button><button class="btn sm ${aus?'red':'ghost'}" aria-label="Faltou" onclick="clSet('${j.id}','presente',false)">✖</button></div></div>
       ${aus?'':`<div class="faint" style="margin:10px 0 4px">Performance (1 a 5)</div><div class="opts" style="gap:6px">${[1,2,3,4,5].map(n=>`<button class="${r.nota_perf===n?'on':''}" style="flex:1;padding:8px 0" onclick="clSet('${j.id}','nota_perf',${n})">${n}</button>`).join('')}</div>
       <div class="row wrap" style="gap:6px;margin-top:10px">${CHECK_ITENS.map(([k,l])=>`<button class="chip" style="border:0;cursor:pointer;padding:8px 10px;${r.checklist[k]?'background:var(--mint);color:#fff':''}" onclick="clChk('${j.id}','${k}')">${r.checklist[k]?'✔ ':''}${l}</button>`).join('')}</div>
-      ${jogo?`<div class="row" style="gap:16px;margin-top:12px">${[['golos','⚽ Golos'],['assistencias','🎯 Assist.']].map(([k,l])=>`<div class="row" style="gap:6px"><span style="font-size:14px">${l}</span><button class="btn ghost sm" aria-label="Menos" onclick="clSet('${j.id}','${k}',Math.max(0,${r[k]}-1))">−</button><b style="min-width:18px;text-align:center">${r[k]}</b><button class="btn ghost sm" aria-label="Mais" onclick="clSet('${j.id}','${k}',${r[k]}+1)">+</button></div>`).join('')}</div>`:''}
+      ${jogo?`<div class="row wrap" style="gap:10px 16px;margin-top:12px">${[['golos','⚽ Golos'],['assistencias','🎯 Assist.'],['passes','🔁 Passes'],['amarelos','🟨'],['vermelhos','🟥']].map(([k,l])=>`<div class="row" style="gap:6px"><span style="font-size:14px">${l}</span><button class="btn ghost sm" aria-label="Menos" onclick="clSet('${j.id}','${k}',Math.max(0,${r[k]}-1))">−</button><b style="min-width:18px;text-align:center">${r[k]}</b><button class="btn ghost sm" aria-label="Mais" onclick="clSet('${j.id}','${k}',${r[k]}+1)">+</button></div>`).join('')}</div>`:''}
       <div class="faint" style="text-align:right;margin-top:6px">${ptsEvento(r,CL.tipo)} pontos</div>`}</div>`};
   const y=$('.sheet')?$('.sheet').scrollTop:0;
   openSheet(`<h2>📋 Checklist do ${jogo?'jogo':'treino'}</h2><p class="muted">${jogo?'vs '+esc(e.adversario||'')+' · ':''}${diaSemana(e.data)}, ${dataCurta(e.data)}. Pontos = performance + itens cumpridos${jogo?' + golos + assistências':''}.</p>
@@ -2207,7 +2202,7 @@ function clRender(){
 function clSet(j,k,v){CL.d[j][k]=v;if(k==='presente'&&v===true&&CL.d[j].nota_perf==null)CL.d[j].nota_perf=3;clRender()}
 function clChk(j,k){CL.d[j].checklist[k]=!CL.d[j].checklist[k];clRender()}
 async function clGuardar(){
-  const rows=Object.entries(CL.d).filter(([,r])=>r.presente!=null||r.nota_perf!=null).map(([jid,r])=>({evento_id:CL.ev,jogador_id:jid,presente:r.presente,nota_perf:r.presente===false?null:r.nota_perf,golos:CL.tipo==='jogo'&&r.presente!==false?r.golos:null,assistencias:CL.tipo==='jogo'&&r.presente!==false?r.assistencias:null,checklist:r.presente===false?null:r.checklist}));
+  const rows=Object.entries(CL.d).filter(([,r])=>r.presente!=null||r.nota_perf!=null).map(([jid,r])=>({evento_id:CL.ev,jogador_id:jid,presente:r.presente,nota_perf:r.presente===false?null:r.nota_perf,golos:CL.tipo==='jogo'&&r.presente!==false?r.golos:null,assistencias:CL.tipo==='jogo'&&r.presente!==false?r.assistencias:null,passes:CL.tipo==='jogo'&&r.presente!==false?r.passes:null,amarelos:CL.tipo==='jogo'&&r.presente!==false?r.amarelos:null,vermelhos:CL.tipo==='jogo'&&r.presente!==false?r.vermelhos:null,checklist:r.presente===false?null:r.checklist}));
   if(!rows.length){toast('Marque pelo menos um jogador');return}
   const r=await q(sb.from('fut_presencas').upsert(rows,{onConflict:'evento_id,jogador_id'}));if(r===null)return;
   rows.forEach(x=>{const p=respostaDe(x.evento_id,x.jogador_id);if(p)Object.assign(p,x);else S.presencas.push(x)});
@@ -2293,6 +2288,145 @@ async function imagemPodio(){
 
 async function svgPng(svg,w,hh){const im=await svgParaImg(svg.replace('<svg ','<svg xmlns="http://www.w3.org/2000/svg" '));const c=document.createElement('canvas');c.width=w*2;c.height=hh*2;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);const b=await new Promise(ok=>c.toBlob(ok,'image/png'));return new Uint8Array(await b.arrayBuffer())}
 async function dataUrlPng(src,s){const im=await srcParaImg(src);if(!im)return null;const c=document.createElement('canvas');c.width=c.height=s;c.getContext('2d').drawImage(im,0,0,s,s);const b=await new Promise(ok=>c.toBlob(ok,'image/png'));return new Uint8Array(await b.arrayBuffer())}
+/* ---------- perfil holístico ---------- */
+const PILARES=[
+ {k:'relacoes',ic:'🤝',n:'Relações humanas',d:'Como se relaciona com colegas, treinadores, adversários e família: respeito, cooperação, comunicação.',
+  treino:'Dar-lhe um papel de ligação na equipa (ajudar um colega mais novo, liderar o aquecimento). Elogiar em público cada gesto de ajuda.',
+  casa:'Perguntar «quem ajudaste hoje?» e «quem te ajudou?». Valorizar a forma como trata os outros, não só os resultados.'},
+ {k:'emocoes',ic:'🧘',n:'Controlo de emoções',d:'Como reage ao erro, à derrota, à crítica e à pressão.',
+  treino:'Combinar um «gesto de reset» depois de um erro (respirar e bater palmas duas vezes). Jogos com pontuação injusta de propósito, para treinar a frustração.',
+  casa:'Dar nome às emoções («estás frustrado, faz sentido»). Fazer juntos o exercício de respiração antes dos jogos e dos testes.'},
+ {k:'consistencia',ic:'📆',n:'Consistência',d:'Manter o nível e os hábitos ao longo do tempo: presença, pontualidade, rotinas, rendimento estável.',
+  treino:'Um objetivo pequeno e igual em todos os treinos durante 4 semanas. Registar a presença e celebrar as sequências.',
+  casa:'Rotina fixa de sono e mochila feita na véspera. Usar a «Rotina» da app todos os dias durante um mês.'},
+ {k:'persistencia',ic:'💪',n:'Persistência',d:'Continuar a tentar quando é difícil: não desistir depois de falhar, insistir no treino.',
+  treino:'Exercícios com dificuldade crescente e elogio ao esforço, não ao talento. Mostrar a evolução dele próprio nos dados.',
+  casa:'Desafios em casa todos os dias (10 minutos). Contar histórias de quem falhou muitas vezes antes de conseguir.'},
+ {k:'estrategia',ic:'🧠',n:'Estratégia',d:'Ler o jogo, perceber o plano da equipa, antecipar e escolher a melhor opção.',
+  treino:'Perguntas em vez de ordens: «o que viste?», «que outra opção tinhas?». Ver pequenos vídeos de jogadas e desenhar no quadro.',
+  casa:'Jogos de estratégia (xadrez, damas, cartas). Ver um jogo de futsal juntos e conversar sobre as decisões.'},
+ {k:'resolucao',ic:'🧩',n:'Resolução de problemas',d:'Encontrar soluções sozinho ou em equipa quando algo não corre como previsto.',
+  treino:'Situações de jogo em inferioridade numérica e o atleta propõe a solução. Deixar a equipa decidir uma regra do exercício.',
+  casa:'Quando houver um problema, perguntar «que opções tens?» antes de dar a solução. Deixá-lo organizar uma tarefa sozinho.'}
+];
+const R5=v=>v==null?null:Math.max(1,Math.min(5,v));
+const de4=v=>v==null?null:1+(v-1)*4/3;          // escala 1-4 -> 1-5
+const deTaxa=t=>t==null?null:1+4*t;              // 0-1 -> 1-5
+const mediaN=a=>{const v=a.filter(x=>x!=null&&!isNaN(x));return v.length?v.reduce((s,x)=>s+x,0)/v.length:null};
+async function dadosHolisticos(j){
+  const evs=await q(sb.from('fut_eventos').select('id,tipo,data').eq('equipa_id',j.equipa_id||S.eq.id).lte('data',hoje()).gte('data',addDias(-120)))||[];
+  const [pres,av,emo,fpf,feitos,hol]=await Promise.all([
+    evs.length?q(sb.from('fut_presencas').select('*').eq('jogador_id',j.id).in('evento_id',evs.map(e=>e.id))):[],
+    q(sb.from('fut_avaliacoes_360').select('respostas,trimestre').eq('jogador_id',j.id).order('created_at',{ascending:false}).limit(8)),
+    q(sb.from('fut_emocoes').select('emocao').eq('jogador_id',j.id).gte('created_at',addDias(-45))),
+    q(sb.from('fut_fichas_fpf').select('niveis,periodo').eq('jogador_id',j.id).order('created_at',{ascending:false}).limit(1)),
+    q(sb.from('fut_desafios_feitos').select('data').eq('jogador_id',j.id).gte('data',addDias(-30))),
+    q(sb.from('fut_holistico').select('*').eq('jogador_id',j.id).order('created_at',{ascending:false}))
+  ]);
+  const P=pres||[],A=(av||[]).filter(a=>a.trimestre===(av[0]||{}).trimestre),F=(fpf||[])[0]?.niveis||{};
+  const q360=k=>de4(mediaN(A.map(a=>a.respostas?.[k])));
+  const comPerf=P.filter(p=>p.presente!==false&&p.checklist);
+  const taxa=k=>comPerf.length?comPerf.filter(p=>p.checklist[k]).length/comPerf.length:null;
+  const tre=evs.filter(e=>e.tipo==='treino');const presT=tre.length?P.filter(p=>tre.some(e=>e.id===p.evento_id)&&p.presente===true).length/tre.length:null;
+  const notas=P.map(p=>p.nota_perf).filter(Boolean);const m=mediaN(notas);const dp=notas.length>2?Math.sqrt(notas.reduce((s,x)=>s+(x-m)**2,0)/notas.length):null;
+  const E=emo||[];const neg=E.length?E.filter(e=>['Frustrado','Triste'].includes(e.emocao)).length/E.length:null;
+  const fpf_=k=>F[k]?de4(F[k]):null;
+  const nd=(feitos||[]).length;
+  const sinais={
+    relacoes:[[q360('v1'),'respeito (avaliação 3S)'],[q360('v2'),'cooperação (avaliação 3S)'],[deTaxa(taxa('equipa')),'espírito de equipa (checklist)'],[deTaxa(taxa('comunicacao')),'comunicação em campo'],[fpf_('r_3._2'),'interajuda e liderança (FPF)']],
+    emocoes:[[q360('e1'),'lida com erros e derrotas (3S)'],[q360('e4'),'exprime o que sente com calma (3S)'],[deTaxa(taxa('fairplay')),'fair-play (checklist)'],[neg!=null?5-4*neg:null,`emoções registadas (${E.length?Math.round((neg||0)*100)+'% negativas':'sem registos'})`]],
+    consistencia:[[deTaxa(presT),`presença nos treinos (${presT!=null?Math.round(presT*100)+'%':'–'})`],[dp!=null?R5(5-dp*2):null,'rendimento estável de treino para treino'],[q360('v3'),'pontualidade e compromisso (3S)'],[fpf_('r_3._0'),'assiduidade (FPF)']],
+    persistencia:[[q360('s2'),'esforça-se para aprender (3S)'],[deTaxa(taxa('esforco')),'esforço máximo (checklist)'],[nd?R5(1+nd/2):null,`desafios em casa (${nd} em 30 dias)`],[fpf_('r_2._1'),'resistência e capacidade de esforço (FPF)']],
+    estrategia:[[fpf_('r_1._2'),'dinâmicas defensivas (FPF)'],[fpf_('r_1._3'),'jogo ofensivo (FPF)'],[deTaxa(taxa('tarefas')),'cumpre as tarefas táticas (checklist)'],[q360('s1'),'atenção e concentração (3S)']],
+    resolucao:[[fpf_('r_1._4'),'decisão sob pressão (FPF)'],[fpf_('r_3._3'),'recetividade à correção (FPF)'],[deTaxa(taxa('concentracao')),'concentração (checklist)'],[q360('e1'),'recomeça depois de errar (3S)']]
+  };
+  const dados={};PILARES.forEach(p=>dados[p.k]=mediaN(sinais[p.k].map(s=>s[0])));
+  const H=hol||[];const ult=papel=>H.find(h=>h.papel===papel);
+  const aval={treinador:ult('treinador'),pai:ult('pai'),atleta:ult('atleta')};
+  const ant=H.find(h=>h.papel==='treinador'&&h.id!==aval.treinador?.id);
+  const final={};PILARES.forEach(p=>{final[p.k]=mediaN([aval.treinador?.valores?.[p.k],aval.pai?.valores?.[p.k],aval.atleta?.valores?.[p.k],dados[p.k]])});
+  return {sinais,dados,aval,ant,final,P,evs};
+}
+function radarHol(series,tam){
+  tam=tam||300;const c=tam/2,R=tam/2-58,n=PILARES.length;const CURTO={relacoes:'Relações',emocoes:'Emoções',consistencia:'Consistência',persistencia:'Persistência',estrategia:'Estratégia',resolucao:'Problemas'};const pt=(i,v)=>{const a=-Math.PI/2+i*2*Math.PI/n;const r=R*(v-0)/5;return [c+r*Math.cos(a),c+r*Math.sin(a)]};
+  let s=`<svg viewBox="0 0 ${tam} ${tam}" style="width:100%;max-width:${tam}px;display:block;margin:0 auto" role="img" aria-label="Perfil holístico em 6 pilares">`;
+  [1,2,3,4,5].forEach(l=>{s+=`<polygon points="${PILARES.map((_,i)=>pt(i,l).join(',')).join(' ')}" fill="none" stroke="#E8DDCF" stroke-width="1"/>`});
+  PILARES.forEach((p,i)=>{const [x,y]=pt(i,5);const [lx,ly]=pt(i,6.0);s+=`<line x1="${c}" y1="${c}" x2="${x}" y2="${y}" stroke="#E8DDCF"/><text x="${lx}" y="${ly}" font-size="${tam<260?10:12}" text-anchor="middle" dominant-baseline="middle" fill="#1B2A4A" font-weight="600">${p.ic} ${CURTO[p.k]}</text>`});
+  series.forEach(se=>{const vs=PILARES.map(p=>se.v[p.k]);if(vs.every(v=>v==null))return;
+    s+=`<polygon points="${PILARES.map((p,i)=>pt(i,se.v[p.k]??0).join(',')).join(' ')}" fill="${se.f||'none'}" stroke="${se.c}" stroke-width="${se.w||2.5}" ${se.dash?'stroke-dasharray="5 4"':''} stroke-linejoin="round"/>`});
+  return s+'</svg>';
+}
+async function jHolistico(j){
+  const D=await dadosHolisticos(j);S._hol=D;
+  const prio=PILARES.filter(p=>D.final[p.k]!=null).sort((a,b)=>D.final[a.k]-D.final[b.k]);
+  const forte=prio[prio.length-1],fraco=prio[0];
+  const series=[{v:D.final,c:'#1B2A4A',f:'rgba(27,42,74,.12)',w:3},{v:D.dados,c:'#B3843F',dash:true,w:2}];
+  const pap=isCoach()?'treinador':isAtleta()?'atleta':'pai';
+  return `<div class="h3s-card"><div class="h3s-hero-tit" style="text-align:center">🧭 Perfil holístico</div><div class="faint" style="text-align:center;margin-bottom:6px">Avaliações de treinador, família e atleta, mais os sinais que vêm dos dados da app (de 1 a 5).</div>
+    ${radarHol(series,320)}
+    <div class="row wrap" style="gap:12px;justify-content:center;font-size:12px;margin-top:4px"><span><i style="display:inline-block;width:14px;height:3px;background:#1B2A4A;vertical-align:middle"></i> perfil geral</span><span><i style="display:inline-block;width:14px;border-top:2px dashed #B3843F;vertical-align:middle"></i> sinais dos dados</span></div>
+    ${fraco?`<div class="h3s-hero-row"><div><div class="h3s-mini-tit">Ponto forte</div><div style="font-weight:800;margin-top:4px">${forte.ic} ${forte.n}</div></div><div><div class="h3s-mini-tit">Prioridade</div><div style="font-weight:800;margin-top:4px;color:var(--red)">${fraco.ic} ${fraco.n}</div></div></div>`:''}
+    <button class="btn gold full" style="margin-top:14px" onclick="avaliarHol('${j.id}')">${{treinador:'Avaliar como treinador',pai:'Avaliar como família',atleta:'Fazer a minha autoavaliação'}[pap]}</button></div>
+  ${PILARES.map(p=>{const f=D.final[p.k],an=D.ant?.valores?.[p.k],tr=D.aval.treinador?.valores?.[p.k];
+    return `<details class="h3s-card" style="margin-top:12px" ${fraco&&p.k===fraco.k?'open':''}><summary style="list-style:none;cursor:pointer"><div class="row between"><b style="font-size:15px">${p.ic} ${p.n}</b><span class="chip ${f==null?'':f>=4?'mint':f>=3?'':f>=2?'gold':'red'}" style="font-size:14px">${f!=null?fmt1(f):'–'}${tr!=null&&an!=null?(tr>an?' ▲':tr<an?' ▼':''):''}</span></div>
+      <div class="bar" style="margin-top:8px"><i style="width:${(f||0)*20}%"></i></div></summary>
+      <p class="muted" style="font-size:13px;margin:10px 0 6px">${p.d}</p>
+      <div class="row wrap" style="gap:6px;font-size:12px">${[['treinador','🧢'],['pai','👨‍👩‍👦'],['atleta','🧒']].map(([k,i])=>`<span class="chip">${i} ${D.aval[k]?.valores?.[p.k]??'–'}</span>`).join('')}<span class="chip gold">📊 ${fmt1(D.dados[p.k])}</span></div>
+      <div style="margin-top:10px"><b style="font-size:13px">📊 Sinais nos dados</b>${D.sinais[p.k].filter(s=>s[0]!=null).map(s=>`<div class="row between faint" style="padding:3px 0"><span>${s[1]}</span><b>${fmt1(s[0])}</b></div>`).join('')||'<div class="faint">Ainda sem dados suficientes.</div>'}</div>
+      ${isAtleta()?'':`<div class="tip"><b>⚽ No treino</b><span class="muted" style="font-size:13px">${p.treino}</span></div><div class="tip"><b>🏠 Em casa</b><span class="muted" style="font-size:13px">${p.casa}</span></div>
+      <button class="btn ghost full sm" onclick="planoHol('${j.id}','${p.k}')">🎯 Acrescentar ao plano de ação</button>`}</details>`}).join('')}`;
+}
+let HV=null;
+function avaliarHol(jid){
+  const pap=isCoach()?'treinador':isAtleta()?'atleta':'pai';const prev=S._hol?.aval?.[pap]?.valores||{};HV={jid,pap,v:{...prev}};
+  const eu=pap==='atleta';
+  openSheet(`<h2>${eu?'Como te vês?':'Avaliação holística'}</h2><p class="muted">${eu?'De 1 (ainda a começar) a 5 (muito forte).':'De 1 (a começar) a 5 (muito forte), pense nos últimos 2 a 3 meses.'}</p>
+  ${PILARES.map(p=>`<div style="margin:14px 0"><b style="font-size:14px">${p.ic} ${p.n}</b><div class="faint" style="margin:2px 0 6px">${p.d}</div><div class="opts" id="hv_${p.k}" style="gap:6px">${[1,2,3,4,5].map(n=>`<button class="${prev[p.k]===n?'on':''}" style="flex:1;padding:9px 0" onclick="HV.v['${p.k}']=${n};document.querySelectorAll('#hv_${p.k} button').forEach((b,i)=>b.classList.toggle('on',i+1===${n}))">${n}</button>`).join('')}</div></div>`).join('')}
+  <label class="f" for="hvN">${eu?'Queres acrescentar alguma coisa? (opcional)':'Nota (opcional)'}</label><textarea id="hvN" class="in"></textarea>
+  <button class="btn gold full" style="margin-top:12px" onclick="guardarHol()">Guardar</button>`)}
+async function guardarHol(){if(Object.keys(HV.v).length<PILARES.length){toast('Avalie os 6 pilares');return}
+  const r=await q(sb.from('fut_holistico').insert({jogador_id:HV.jid,papel:HV.pap,valores:HV.v,nota:g('hvN')||null}));if(r===null)return;closeSheet();toast('Perfil atualizado');vJogador()}
+function planoHol(jid,k){S.jog=jid;const p=PILARES.find(x=>x.k===k);editarPA({acao:'No treino: '+p.treino+' Em casa: '+p.casa,responsavel:'Treinador'},{area:k==='consistencia'||k==='persistencia'?'atitude':k==='estrategia'||k==='resolucao'?'futsal':'atitude',melhorar:p.n,origem:'Perfil holístico',resp:'Treinador'})}
+
+/* ---------- ficha do jogador: vista concentrada ---------- */
+async function jFichaJogador(j){
+  const at=isAtleta();
+  const D=await dadosHolisticos(j);S._hol=D;
+  const [fpf,comp,plano]=await Promise.all([
+    q(sb.from('fut_fichas_fpf').select('*').eq('jogador_id',j.id).order('created_at',{ascending:false}).limit(2)),
+    q(sb.from('fut_avaliacoes').select('*').eq('jogador_id',j.id)),
+    q(sb.from('fut_plano_acao').select('*').eq('jogador_id',j.id).order('created_at'))
+  ]);
+  const F=(fpf||[])[0],FA=(fpf||[])[1];
+  const prio=PILARES.filter(p=>D.final[p.k]!=null).sort((a,b)=>D.final[a.k]-D.final[b.k]);
+  const P=D.P,jogos=D.evs.filter(e=>e.tipo==='jogo').map(e=>e.id),tre=D.evs.filter(e=>e.tipo==='treino').map(e=>e.id);
+  const PJ=P.filter(p=>jogos.includes(p.evento_id));
+  const soma=k=>PJ.reduce((s,p)=>s+(p[k]||0),0);
+  const presT=tre.length?Math.round(P.filter(p=>tre.includes(p.evento_id)&&p.presente===true).length/tre.length*100):null;
+  const jogou=PJ.filter(p=>p.presente===true||p.minutos).length;
+  const tecnicos=F?FPF.filter(c=>c.k==='1'||c.k==='2').flatMap(c=>c.p.map((t,i)=>({t,v:F.niveis?.[campoFPF(c.k,i)],a:FA?.niveis?.[campoFPF(c.k,i)]}))):[];
+  const compL=resumoComp(comp||[]).filter(c=>!['Atitude','Espírito de equipa','Concentração'].includes(c.competencia));
+  const abertos=(plano||[]).filter(x=>x.estado!=='feito');
+  const sec=(n,ic,t,acao)=>`<div class="h3s-bloco-tit row between" style="margin-top:22px"><span>${n}. ${ic} ${t}</span>${acao||''}</div>`;
+  return `
+  ${sec(1,'🧭','Perfil holístico',`<button class="btn ghost sm" onclick="S.jogTab='holistico';vJogador()">Ver tudo ›</button>`)}
+  <div class="h3s-card" onclick="S.jogTab='holistico';vJogador()" style="cursor:pointer">${radarHol([{v:D.final,c:'#1B2A4A',f:'rgba(27,42,74,.12)',w:3},{v:D.dados,c:'#B3843F',dash:true,w:2}],280)}
+    <div class="kpis" style="grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px">${PILARES.map(p=>{const f=D.final[p.k];return `<div class="kpi" style="padding:8px 4px"><b style="font-size:18px;color:${f==null?'var(--faint)':f>=4?'var(--mint)':f>=3?'var(--ink)':f>=2?'var(--gold)':'var(--red)'}">${f!=null?fmt1(f):'–'}</b><small>${p.ic} ${p.n}</small></div>`}).join('')}</div>
+    ${prio[0]?`<p style="margin:10px 0 0;text-align:center;font-size:14px">Prioridade: <b style="color:var(--red)">${prio[0].ic} ${prio[0].n}</b></p>`:''}</div>
+  ${sec(2,'⚽','Competências técnicas',`<button class="btn ghost sm" onclick="S.jogTab='fpf';vJogador()">Ficha FPF ›</button>`)}
+  <div class="h3s-card">${tecnicos.length?tecnicos.map(x=>`<div style="margin:6px 0"><div class="row between"><span style="font-size:13.5px">${x.t}</span><b>${x.v||'–'}${x.v&&x.a?(x.v>x.a?' <span style="color:var(--mint)">▲</span>':x.v<x.a?' <span style="color:var(--red)">▼</span>':''):''}</b></div><div class="bar"><i style="width:${(x.v||0)*25}%"></i></div></div>`).join('')+`<p class="faint" style="margin:8px 0 0">Ficha FPF · ${esc(F.periodo)} · escala 1 a 4</p>`:'<p class="muted" style="margin:0">Ainda sem Ficha FPF.</p>'}
+    ${compL.length?`<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--line)"><b style="font-size:13px">Competências avaliadas pelo treinador</b><div class="row wrap" style="gap:6px;margin-top:6px">${compL.map(c=>`<span class="chip ${c.nivel>=3?'mint':c.nivel<=1?'gold':''}">${esc(c.competencia)} · ${NIVEIS[c.nivel]}</span>`).join('')}</div></div>`:''}</div>
+  ${sec(3,'🎯','A desenvolver e plano de ação',`<button class="btn ghost sm" onclick="S.jogTab='plano';vJogador()">Plano ›</button>`)}
+  <div class="h3s-card">${prio.slice(0,2).map(p=>`<div class="obs melhorar"><b>${p.ic} ${p.n}</b> <span class="faint">(${fmt1(D.final[p.k])})</span>${at?'':`<p class="muted" style="margin:4px 0 0;font-size:13px">⚽ ${p.treino}</p>`}</div>`).join('')}
+    ${tecnicos.filter(x=>x.v&&x.v<=2).slice(0,3).map(x=>`<div class="obs melhorar"><b>⚽ ${x.t}</b> <span class="faint">(FPF ${x.v})</span></div>`).join('')}
+    <div style="margin-top:10px"><b style="font-size:13px">Plano de ação em curso (${abertos.length})</b>${abertos.length?abertos.slice(0,5).map(x=>`<div class="row between" style="padding:6px 0;border-top:1px solid var(--line)"><span style="font-size:13.5px">${esc(x.melhorar)}${x.acao?`<br><span class="faint">👉 ${esc(x.acao.slice(0,90))}${x.acao.length>90?'…':''}</span>`:''}</span><span class="chip ${x.estado==='em_curso'?'gold':''}">${x.estado==='em_curso'?'Em curso':'Por começar'}</span></div>`).join(''):'<p class="faint" style="margin:4px 0 0">Nenhum ponto ainda.</p>'}</div></div>
+  ${sec(4,'📊','Presenças e dados de jogo',`<button class="btn ghost sm" onclick="S.jogTab='presencas';vJogador()">Presenças ›</button>`)}
+  <div class="h3s-card h3s-stats" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+    ${[['Presença<br>treinos',presT!=null?presT+'%':'–',presT!=null&&presT<70?'neg':''],['Jogos',String(jogou),''],['Minutos',String(soma('minutos')),''],['⚽ Golos',String(soma('golos')),'pos'],['🎯 Assist.',String(soma('assistencias')),''],['🔁 Passes',String(soma('passes')),''],['🟨 Amarelos',String(soma('amarelos')),soma('amarelos')?'neg':''],['🟥 Vermelhos',String(soma('vermelhos')),soma('vermelhos')?'neg':''],['⭐ Perform.',fmt1(mediaN(P.map(p=>p.nota_perf).filter(Boolean))),'']].map(([t,v,c])=>`<div class="h3s-stat"><div class="h3s-stat-tit" style="min-height:30px">${t}</div><div class="h3s-stat-num ${c}">${v}</div></div>`).join('')}
+  </div><p class="faint" style="margin:6px 4px 0">Últimos 4 meses. Os dados vêm da checklist que o treinador preenche em cada jogo.</p>
+  <div class="h3s-bloco-tit" style="margin-top:22px">Mais</div>`;
+}
+
 /* ---------- mensagens ---------- */
 async function vMensagens(){
   const m=$('#main');
