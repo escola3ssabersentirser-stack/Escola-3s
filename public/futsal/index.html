@@ -428,7 +428,7 @@ function vInicio(){
   const reu=(S.reunioes||[]).find(r=>r.data>=hoje()&&r.estado!=='cancelada'&&(isCoach()||!r.jogador_id||S.meus.some(m=>m.id===r.jogador_id)));
   if(reu){const jr=reu.jogador_id&&S.jogadores.find(x=>x.id===reu.jogador_id);h+=`<div class="card"><div class="row between"><h2>🤝 Próxima reunião</h2><span class="chip ${ESTADOS_REUNIAO[reu.estado][1]}">${ESTADOS_REUNIAO[reu.estado][0]}</span></div><p style="margin:0;font-weight:600">${TIPOS_REUNIAO[reu.tipo]}${jr?' · '+esc(primeiro(jr.nome)):''}</p><p class="muted" style="margin:2px 0 10px">${diaSemana(reu.data)}, ${dataCurta(reu.data)} · ${esc(reu.hora||'')}${reu.assunto?' · '+esc(reu.assunto):''}</p><button class="btn ghost full sm" onclick="S.agTab='reunioes';irPara('agenda')">Ver reuniões</button></div>`}
   if(isCoach()){const ultEx=j=>S.exames.find(e=>e.jogador_id===j.id);
-   const probEx=S.meus.map(j=>[j,estadoExame(ultEx(j))]).filter(([,e])=>e[1]!=='mint');
+   const probEx=[];
    if(probEx.length)h+=`<div class="card"><h2>🩺 Exames médicos</h2><div class="list">${probEx.slice(0,6).map(([j,e])=>`<button class="item" onclick="abrirJogador('${j.id}','ficha')"><div class="av">${iniciais(j.nome)}</div><div class="grow"><b>${esc(j.nome)}</b><div><span class="chip ${e[1]}">${e[0]}</span></div></div></button>`).join('')}</div>${probEx.length>6?`<p class="faint">e mais ${probEx.length-6}.</p>`:''}</div>`;
    const pend=S.pagPend||[];
    if(pend.length){const tot=pend.filter(p=>p.estado==='pendente').reduce((s,p)=>s+Number(p.valor),0);const av=pend.filter(p=>p.estado==='avisado').length;
@@ -654,7 +654,7 @@ async function vJogador(){
   m.innerHTML=`<div class="card"><div class="row">${isAtleta()?'':`<button class="btn ghost sm" aria-label="Voltar atrás" onclick="botaoVoltar()">‹</button>`}<button style="border:0;background:none;padding:0;position:relative" aria-label="Fotografia do atleta" onclick="${isAtleta()?'':`menuFoto('${j.id}')`}">${avatar(j,56)}${isAtleta()?'':'<span style="position:absolute;right:-4px;bottom:-4px;background:var(--gold);color:#fff;border-radius:99px;width:22px;height:22px;display:grid;place-items:center;font-size:12px">📷</span>'}</button><div class="grow"><h2 style="margin:0">${esc(j.nome)}</h2><div class="muted">${[j.posicao,(S.pes||{})[j.id]?'pé '+(S.pes||{})[j.id].toLowerCase():'',j.ano_escolar].filter(Boolean).map(esc).join(' · ')}</div></div>${isAtleta()?'':`<button class="btn ghost sm" aria-label="Definições" onclick="editarJogador()">⚙</button>`}</div></div>
   ${S.jogTab&&S.jogTab!=='resumo'?`<div class="h3s-bloco-tit" style="margin-top:2px">${(VISTAS[S.jogTab]||['',''])[0]} ${(VISTAS[S.jogTab]||['',''])[1]}</div>`:''}
   <div id="jBody"><div class="card"><p class="empty">A carregar…</p></div></div>`;
-  const f={resumo:jPainel,evolucaoGeral:jEvolucaoGeral,plano:jPlano,conta:jContaCorrente,clube:jClube,avaliacao:jAvaliacao,fpf:jFPF,ficha:jFicha,presencas:jPresencas,pagamentos:jPagamentos,melhorar:jMelhorar,escola:jEscola,evolucao:jEvolucao,objetivos:jObjetivos,desafios:jDesafios,emocoes:jEmocoes,rotina:jRotina,conversa:jConversa}[S.jogTab];
+  const f={resumo:jPainel,bem:jBem,evolucaoGeral:jEvolucaoGeral,plano:jPlano,conta:jContaCorrente,clube:jClube,avaliacao:jAvaliacao,fpf:jFPF,ficha:jFicha,presencas:jPresencas,pagamentos:jPagamentos,melhorar:jMelhorar,escola:jEscola,evolucao:jEvolucao,objetivos:jObjetivos,desafios:jDesafios,emocoes:jEmocoes,rotina:jRotina,conversa:jConversa}[S.jogTab];
   $('#jBody').innerHTML=await f(j);
   if(S.jogTab==='conversa'){const b=$('#chatEnd');if(b)b.scrollIntoView()}
 }
@@ -1309,10 +1309,7 @@ async function jFicha(j){
     <p class="faint" style="margin:6px 0 0">Última medição: ${new Date(ult.data+'T12:00').toLocaleDateString('pt-PT')}</p>
     ${alt.length>1?`<p class="muted" style="margin:8px 0 0">Cresceu ${String(Math.round((alt[alt.length-1].altura-alt[0].altura)*10)/10).replace('.',',')} cm desde ${new Date(alt[0].data+'T12:00').toLocaleDateString('pt-PT')}.</p>`:''}
     <div class="list" style="margin-top:8px">${[...m].reverse().slice(0,6).map(x=>`<div class="row between"><span class="muted">${new Date(x.data+'T12:00').toLocaleDateString('pt-PT')}</span><span>${x.peso!=null?String(x.peso).replace('.',',')+' kg':''} ${x.altura!=null?'· '+String(x.altura).replace('.',',')+' cm':''}</span><button class="btn red sm" aria-label="Apagar medição" onclick="apagarMedida('${x.id}')">✕</button></div>`).join('')}</div>`
-    :'<p class="empty">Ainda sem medições.</p>'}</div>
-  <div class="card"><div class="row between"><h3 style="margin:0">🩺 Exame médico desportivo</h3><button class="btn ghost sm" onclick="novoExame()">+ Registar</button></div>
-    <p style="margin:10px 0"><span class="chip ${est[1]}">${est[0]}</span></p>
-    ${exs.length?`<div class="list">${exs.map(e=>`<div><div class="row between"><b style="font-size:14px">${new Date(e.data+'T12:00').toLocaleDateString('pt-PT')}</b><span class="chip ${RESULT_EXAME[e.resultado][1]}">${RESULT_EXAME[e.resultado][0]}</span></div><div class="muted">${e.valido_ate?'Válido até '+new Date(e.valido_ate+'T12:00').toLocaleDateString('pt-PT'):''}${e.medico?' · '+esc(e.medico):''}${e.notas?'<br>'+esc(e.notas):''}</div><button class="btn red sm" style="margin-top:4px" onclick="apagarExame('${e.id}')">Apagar</button></div>`).join('')}</div>`:'<p class="muted" style="margin:0">Registe a data do exame e até quando é válido. O treinador recebe um aviso quando estiver a caducar.</p>'}</div>`;
+    :'<p class="empty">Ainda sem medições.</p>'}</div>`;
 }
 async function editarFicha(){
   const j=S.jogadores.find(x=>x.id===S.jog);
@@ -1465,7 +1462,7 @@ async function painelFilho(j){
   const go=(t)=>`abrirJogadorEm('${j.id}','${t}')`;
   el.innerHTML=`<div class="kpis" style="grid-template-columns:repeat(2,1fr);gap:10px">
     ${tile('📋',pct==null?'–':pct+'%','presenças nos treinos',pct==null?'':pct>=80?'var(--mint)':pct>=60?'var(--gold)':'var(--red)',go('presencas'))}
-    ${tile('🩺',ex[1]==='mint'?'✔':ex[1]==='gold'?'!':'✖',ex[0],ex[1]==='mint'?'var(--mint)':ex[1]==='gold'?'var(--gold)':'var(--red)',go('ficha'))}
+    ${tile('💚','Abrir','crescer bem','',go('bem'))}
     ${tile('📚',ult.length?`<span style="color:var(--mint)">▲${sub}</span> <span style="color:var(--red)">▼${desc}</span>`:'–',ult.length?`notas em ${ult.length} disciplinas`:'sem notas registadas','',go('escola'))}
     ${tile('💶',dev?euro(dev):'0 €',dev?'por pagar':'pagamentos em dia',dev?'var(--red)':'var(--mint)',go('pagamentos'))}
     ${tile('💛',`${tipos.size}/4`,faltaEu?'avaliação 3S: falta a sua':'avaliação 3S do trimestre','',go('avaliacao'))}
@@ -1489,7 +1486,7 @@ async function painelEquipa(){
   el.innerHTML=`<div class="kpis" style="grid-template-columns:repeat(2,1fr);gap:10px">
     ${tile('👥',S.jogadores.length,'jogadores','',"irPara('jogadores')")}
     ${tile('📋',pct==null?'–':pct+'%','presença média (30 dias)',pct==null?'':pct>=80?'var(--mint)':pct>=60?'var(--gold)':'var(--red)','mapaPresencas()')}
-    ${tile('🩺',exProb,exProb?'exames em falta ou a caducar':'exames em dia',exProb?'var(--red)':'var(--mint)',"irPara('jogadores')")}
+    ${tile('💚','Abrir','crescer bem','',S.jogadores[0]?`abrirJogador('${S.jogadores[0].id}','bem')`:"irPara('jogadores')")}
     ${tile('💶',euro(dev),avis?`por receber · ${avis} a confirmar`:'por receber',dev?'var(--red)':'var(--mint)','painelPagamentos()')}
     ${tile('💛',`${feitas}/${S.jogadores.length}`,'avaliações 3S feitas','',"irPara('jogadores')")}
     ${tile('🤝',reun.length,reun.length?'pedidos de reunião':'sem pedidos de reunião',reun.length?'var(--gold)':'',"S.agTab='reunioes';irPara('agenda')")}
@@ -1692,8 +1689,8 @@ async function fpPDF(id){
 
 /* ---------- página do atleta em cartões (estilo Gestor de Loja) ---------- */
 const VISTAS={
-  evolucaoGeral:['📈','Evolução do atleta'],fpf:['📋','Ficha FPF'],plano:['🎯','Plano de ação'],conta:['💶','Conta corrente'],clube:['🛡️','Arcas'],
-  ficha:['📇','Ficha e saúde'],presencas:['✅','Presenças'],escola:['📚','Escola'],melhorar:['🔎','A melhorar'],avaliacao:['💛','Avaliação 3S'],
+  evolucaoGeral:['📈','Evolução do atleta'],bem:['💚','Crescer bem'],fpf:['📋','Ficha FPF'],plano:['🎯','Plano de ação'],conta:['💶','Conta corrente'],clube:['🛡️','Arcas'],
+  ficha:['📇','Ficha do atleta'],presencas:['✅','Presenças'],escola:['📚','Escola'],melhorar:['🔎','A melhorar'],avaliacao:['💛','Avaliação 3S'],
   objetivos:['🏁','Objetivos'],desafios:['🏆','Desafios'],emocoes:['😀','Emoções'],rotina:['🌙','Rotina'],conversa:['💬','Conversa'],evolucao:['⚽','Competências'],pagamentos:['💶','Pagamentos']
 };
 function tileC(id,ic,tit,num,sub,cls){return `<button class="h3s-tile" onclick="S.jogTab='${id}';vJogador();window.scrollTo(0,0)"><span class="h3s-ic">${ic}</span><span class="h3s-tile-tit">${tit}</span><span class="h3s-tile-num ${cls||''}">${num}</span><span class="h3s-tile-sub">${sub}</span></button>`}
@@ -1750,6 +1747,7 @@ async function jPainel(j){
       ${tileC('escola','📚','Escola',un.length?`<span style="color:var(--mint)">▲${sub_}</span> <span style="color:var(--red)">▼${des}</span>`:'–',un.length?un.length+' disciplinas':'sem notas')}
       ${tileC('avaliacao','💛',at?'Autoavaliação':'Avaliação 3S',m3s!=null?fmt1(m3s):'–',trimLabel(trimAtual()))}
       ${tileC('emocoes','😀','Emoções',em?(EMOCOES.find(x=>x[1]===em.emocao)||['–'])[0]:'–',em?esc(em.emocao):'sem registo')}
+      ${tileC('bem','💚','Crescer bem','Abrir ›','mente, adolescência, escolhas','h3s-abrir')}
       ${tileC('rotina','🌙','Rotina','Abrir ›','sono, água, estudo','h3s-abrir')}
       ${at?'':tileC('melhorar','🔎','A melhorar','Abrir ›','jogo, treino, escola','h3s-abrir')}
       ${at?'':tileC('conversa','💬','Conversa','Abrir ›','família e treinador','h3s-abrir')}
@@ -1758,7 +1756,7 @@ async function jPainel(j){
     <div class="h3s-card h3s-tiles">
       ${tileC('clube','🛡️','Arcas',esc(S.eq.escalao?S.eq.escalao.split(' (')[0]:S.eq.nome),'clube e horários')}
       ${at?'':tileC('conta','💶','Conta corrente',euro(dev),dev?'por pagar':'em dia',dev?'neg':'')}
-      ${at?'':tileC('ficha','📇','Ficha e saúde',ex[1]==='mint'?'✔':'!',ex[0],ex[1]==='mint'?'':'neg')}
+      ${at?'':tileC('ficha','📇','Ficha','Abrir ›','dados e medidas','h3s-abrir')}
     </div>`;
 }
 function sparkFPF(F){const W=300,H=50,P=6;const v=F.map(f=>mediaGeralFPF(f.niveis)).map(x=>x??0);const n=v.length;const xs=i=>P+i*(W-2*P)/(n-1);const ys=x=>H-P-(x-1)/3*(H-2*P);
@@ -1859,6 +1857,104 @@ async function guardarPA(id,origem){if(!g('paM')){toast('Escreva onde tem de mel
 async function estadoPA(id,e){await q(sb.from('fut_plano_acao').update({estado:e}).eq('id',id));if(e==='feito')toast('🎉 Conquista registada');vJogador()}
 async function apagarPA(id){await q(sb.from('fut_plano_acao').delete().eq('id',id));vJogador()}
 
+/* ---------- Crescer bem: adolescência, saúde mental, prevenção ---------- */
+const AJUDA=[
+  ['1411','Linha Nacional de Prevenção do Suicídio e Apoio Psicológico','24 horas, gratuita e confidencial'],
+  ['808 24 24 24','SNS 24 – opção 4: aconselhamento psicológico','24 horas, psicólogos'],
+  ['116 111','Linha da Criança','24 horas, para crianças e jovens'],
+  ['1414','Linha SOS Droga','dependências: jovens, famílias e amigos'],
+  ['112','Emergência','se houver perigo imediato']
+];
+const BEM={
+ atleta:[
+  ['crescer','🌱','Estou a crescer',[
+    ['O teu corpo está a mudar','Cresces aos saltos, ganhas força e às vezes ficas mais desajeitado com a bola. É normal: o cérebro demora umas semanas a habituar-se ao corpo novo.'],
+    ['Emoções em montanha-russa','Num dia estás feliz, no outro irritado sem saber porquê. As hormonas e o cérebro em mudança explicam muito. Não estás sozinho nisto.'],
+    ['Precisas de mais sono','Na adolescência o corpo pede 8 a 10 horas. Dormir bem faz-te jogar melhor, aprender melhor e estar mais calmo.'],
+    ['Quem és tu?','É a idade de experimentar estilos, amigos e gostos. Tudo bem mudar de ideias. O que conta é seres fiel aos teus valores.']]],
+  ['mente','🧠','A minha mente',[
+    ['Quando a cabeça aperta','Para, respira fundo 3 vezes (usa o exercício abaixo), dá nome ao que sentes («estou frustrado») e pensa num passo pequeno a seguir.'],
+    ['Fala contigo como falarias a um amigo','Em vez de «sou péssimo», experimenta «hoje não correu bem, amanhã treino isto». O teu treinador interior também conta.'],
+    ['Redes sociais','As fotos perfeitas não são a vida real. Se te sentes pior depois de ver o telemóvel, faz uma pausa. Nada de telemóvel na cama.'],
+    ['Pedir ajuda é coragem','Os melhores atletas têm treinadores, psicólogos e amigos. Falar com um adulto de confiança é um sinal de força, não de fraqueza.']]],
+  ['livre','🚭','Atleta livre',[
+    ['Tabaco e vape','A nicotina vicia muito depressa, sobretudo em jovens, e reduz o fôlego. Num jogo de futsal, o fôlego é tudo.'],
+    ['Álcool','Atrasa a recuperação dos músculos, estraga o sono e afeta as decisões. No cérebro em crescimento, os efeitos são maiores.'],
+    ['Canábis e outras drogas','Afetam a memória, a concentração e a coordenação: aquilo de que precisas para estudar e para jogar.'],
+    ['Como dizer não','«Não, obrigado, tenho treino amanhã.» «Não é a minha cena.» «Bora antes jogar à bola.» Dizer não com calma e mudar de assunto funciona, e os amigos verdadeiros respeitam.']]]
+ ],
+ pai:[
+  ['crescer','🌱','Adolescência',[
+    ['O que é normal','Mais sono, mais irritação, mais privacidade, mais importância dos amigos e menos dos pais. É a fase de construir independência.'],
+    ['Sinais para estar atento','Isolamento durante semanas, deixar de gostar do que gostava (incluindo o futsal), mudanças grandes no sono, no apetite ou nas notas, tristeza ou irritação que não passa, falar em não valer a pena. Nesses casos, procure ajuda: médico de família, psicólogo escolar ou as linhas abaixo.'],
+    ['Como conversar','Escolha momentos laterais: no carro, a caminho do treino. Ouça mais do que fala. «Conta-me mais» abre portas; o sermão fecha-as.'],
+    ['Ecrãs e sono','Combine regras em família: telemóveis fora do quarto à noite e refeições sem ecrãs. Funciona melhor se os adultos também cumprirem.']]],
+  ['livre','🚭','Prevenção de consumos',[
+    ['Fale cedo e com factos','Converse sobre tabaco, vape, álcool e drogas antes de aparecerem. Pergunte o que ele já sabe e o que se diz na escola.'],
+    ['Regras claras e coerentes','Diga com calma o que espera e porquê. Os jovens com regras claras em casa começam mais tarde e consomem menos.'],
+    ['O desporto protege','Treinos regulares, objetivos e um grupo saudável são dos melhores fatores de proteção. Valorize o compromisso com a equipa.'],
+    ['Se suspeitar de consumos','Mantenha a calma e evite acusar. Fale num momento tranquilo, mostre preocupação e procure ajuda especializada: a Linha 1414 também apoia famílias.']]]
+ ],
+ treinador:[
+  ['crescer','🌱','Treinar adolescentes',[
+    ['O estirão','No pico de crescimento a coordenação piora temporariamente e há mais risco de dores e lesões. Ajuste cargas e explique ao atleta que é passageiro.'],
+    ['Comparações','Atletas da mesma idade podem estar 2 a 3 anos à frente ou atrás na maturação. Avalie a evolução de cada um, não só o rendimento de hoje.'],
+    ['Pertença','Um adolescente que se sente parte da equipa protege-se de muitos riscos. Dê papéis a todos e celebre o esforço.']]],
+  ['mente','🧠','Saúde mental',[
+    ['Sinais de alerta','Desmotivação prolongada, isolamento, irritabilidade fora do normal, faltas sem explicação, emoções «triste» ou «frustrado» repetidas na app.'],
+    ['Como abordar','À parte e sem pressa: «Tenho reparado que andas mais em baixo. Está tudo bem?». Ouça e não prometa segredo absoluto se houver risco.'],
+    ['Encaminhar','Fale com os pais e indique ajuda profissional. Em situação de risco imediato, ligue 112.']]],
+  ['livre','🚭','Conversas de balneário',[
+    ['Um tema por mês','5 minutos no fim do treino: fôlego e tabaco, vape, álcool e recuperação, sono, redes sociais, pressão dos amigos, gerir a frustração, respeito.'],
+    ['Exemplo','Os atletas reparam no que o treinador faz. Zero tabaco e álcool junto da equipa.'],
+    ['Compromisso Atleta Livre','No início da época, cada atleta e a família assinam o compromisso na app. Acompanhe na lista abaixo.']]]
+ ]
+};
+const epocaAtual=()=>{const d=new Date();const y=d.getFullYear();return d.getMonth()>=7?`${y}/${String(y+1).slice(2)}`:`${y-1}/${String(y).slice(2)}`};
+function respiracao(){
+  openSheet(`<h2 style="text-align:center">Respirar para acalmar</h2><p class="muted" style="text-align:center">Segue o círculo: inspira, segura, expira devagar.</p>
+  <div style="display:grid;place-items:center;height:240px"><div id="respC" style="width:90px;height:90px;border-radius:50%;background:var(--mint-soft);border:4px solid var(--mint);display:grid;place-items:center;transition:all 4s ease-in-out"><b id="respT" style="color:var(--mint)">Pronto?</b></div></div>
+  <p id="respN" class="faint" style="text-align:center">5 respirações · cerca de 1 minuto</p>
+  <button class="btn full" id="respB" onclick="respIniciar()">Começar</button>`)}
+let RESP=null;
+function respIniciar(){clearTimeout(RESP);let n=0;const c=$('#respC'),t=$('#respT'),b=$('#respB');if(b)b.hidden=true;
+  const ciclo=()=>{if(!$('#respC'))return;if(n>=5){t.textContent='Muito bem 💚';c.style.width=c.style.height='120px';$('#respN').textContent='Repara como te sentes agora.';if(b){b.hidden=false;b.textContent='Outra vez'}return}
+    n++;$('#respN').textContent=`Respiração ${n} de 5`;t.textContent='Inspira';c.style.transitionDuration='4s';c.style.width=c.style.height='200px';
+    RESP=setTimeout(()=>{if(!$('#respC'))return;t.textContent='Segura';RESP=setTimeout(()=>{if(!$('#respC'))return;t.textContent='Expira';c.style.transitionDuration='6s';c.style.width=c.style.height='90px';RESP=setTimeout(ciclo,6000)},4000)},4000)};
+  ciclo()}
+function cartaoAjuda(){return `<div class="h3s-card" style="margin-top:14px;border:2px solid var(--mint)"><b>💬 Precisas de falar? Há quem ajude</b><p class="faint" style="margin:4px 0 8px">Chamadas confidenciais. Também podes falar com os pais, o treinador ou um professor.</p>
+  ${AJUDA.map(([n,t,s])=>`<div class="row between" style="padding:8px 0;border-top:1px solid var(--line)"><div class="grow"><b style="font-size:14px">${t}</b><div class="faint">${s}</div></div><a class="btn sm" style="text-decoration:none;white-space:nowrap" href="tel:${n.replace(/\s/g,'')}">📞 ${n}</a></div>`).join('')}</div>`}
+async function jBem(j){
+  const perfil=isAtleta()?'atleta':isCoach()?'treinador':'pai';
+  const blocos=BEM[perfil];const sec=S.bemSec&&blocos.some(b=>b[0]===S.bemSec)?S.bemSec:blocos[0][0];
+  const b=blocos.find(x=>x[0]===sec);
+  const comp=await q(sb.from('fut_compromissos').select('*').eq('jogador_id',j.id).eq('epoca',epocaAtual()).maybeSingle());
+  let equipa='';
+  if(isCoach()){const cs=await q(sb.from('fut_compromissos').select('jogador_id,atleta_em,pais_em').eq('epoca',epocaAtual()).in('jogador_id',S.jogadores.map(x=>x.id)))||[];
+    const ok=S.jogadores.filter(x=>{const c=cs.find(y=>y.jogador_id===x.id);return c&&c.atleta_em&&c.pais_em}).length;
+    equipa=`<div class="h3s-card" style="margin-top:14px"><b>🚭 Compromisso Atleta Livre · equipa</b><p class="muted" style="margin:4px 0 8px">${ok} de ${S.jogadores.length} assinados (atleta e família) na época ${epocaAtual()}.</p>
+      ${S.jogadores.map(x=>{const c=cs.find(y=>y.jogador_id===x.id)||{};return `<div class="row between" style="padding:6px 0;border-top:1px solid var(--line)"><span style="font-size:14px">${esc(x.nome)}</span><span><span class="chip ${c.atleta_em?'mint':''}">Atleta ${c.atleta_em?'✔':'–'}</span> <span class="chip ${c.pais_em?'mint':''}">Família ${c.pais_em?'✔':'–'}</span></span></div>`}).join('')}</div>`}
+  const c=comp||{};
+  const compromisso=`<div class="h3s-card" style="margin-top:14px;background:var(--navy);color:#fff"><div class="row between"><b>🚭 Compromisso Atleta Livre</b><span style="font-size:12px;opacity:.8">Época ${epocaAtual()}</span></div>
+    <p style="margin:10px 0;font-size:14px;line-height:1.6">Eu, <b>${esc(j.nome)}</b>, comprometo-me a cuidar do meu corpo e da minha mente: digo <b>não</b> ao tabaco, ao vape, ao álcool e às drogas, durmo bem, respeito os outros e peço ajuda quando preciso. A minha família e o meu treinador apoiam-me.</p>
+    <div class="row" style="gap:8px;flex-wrap:wrap"><span class="chip ${c.atleta_em?'mint':''}" style="${c.atleta_em?'':'background:rgba(255,255,255,.15);color:#fff'}">Atleta ${c.atleta_em?'✔ assinou':'por assinar'}</span><span class="chip ${c.pais_em?'mint':''}" style="${c.pais_em?'':'background:rgba(255,255,255,.15);color:#fff'}">Família ${c.pais_em?'✔ '+esc(c.pais_nome||''):'por assinar'}</span></div>
+    ${perfil==='atleta'&&!c.atleta_em?`<button class="btn gold full" style="margin-top:12px" onclick="assinarComp('${j.id}','atleta')">✍️ Assinar o meu compromisso</button>`:''}
+    ${perfil==='pai'&&!c.pais_em?`<button class="btn gold full" style="margin-top:12px" onclick="assinarComp('${j.id}','pai')">✍️ Assinar como família</button>`:''}
+    ${perfil==='pai'&&!c.atleta_em?`<button class="btn ghost full sm" style="margin-top:8px;background:rgba(255,255,255,.15);color:#fff" onclick="assinarComp('${j.id}','atleta')">O ${esc(primeiro(j.nome))} assina neste telemóvel</button>`:''}</div>`;
+  return `<div class="h3s-card h3s-hero" onclick="respiracao()" style="background:var(--mint-soft)"><div class="h3s-hero-tit">💚 Crescer bem</div><div class="h3s-hero-sub" style="margin-top:6px">${perfil==='atleta'?'Corpo, mente e escolhas: o treino que não se vê.':perfil==='pai'?'Acompanhar a adolescência com calma e informação.':'Treinar pessoas, não só jogadores.'}</div>
+    <div class="h3s-pills" style="justify-content:center;margin-top:14px"><button class="h3s-pill" style="background:var(--mint)">🌬️ Exercício de respiração</button></div></div>
+  <div class="seg" style="margin-top:14px">${blocos.map(([k,ic,t])=>`<button class="${k===sec?'on':''}" onclick="S.bemSec='${k}';vJogador()">${ic} ${t}</button>`).join('')}</div>
+  <div class="h3s-card">${b[3].map(([t,x])=>`<div class="tip"><b>${t}</b><span class="muted" style="font-size:14px">${x}</span></div>`).join('')}</div>
+  ${compromisso}${equipa}${cartaoAjuda()}`;
+}
+async function assinarComp(jid,quem){
+  const row={jogador_id:jid,epoca:epocaAtual()};
+  if(quem==='atleta')row.atleta_em=new Date().toISOString();else{row.pais_em=new Date().toISOString();row.pais_nome=S.perfil.nome}
+  const ex=await q(sb.from('fut_compromissos').select('*').eq('jogador_id',jid).eq('epoca',epocaAtual()).maybeSingle());
+  const r=ex?await q(sb.from('fut_compromissos').update(row).eq('jogador_id',jid).eq('epoca',epocaAtual())):await q(sb.from('fut_compromissos').insert(row));
+  if(r===null)return;toast(quem==='atleta'?'Compromisso assinado 💪':'Assinado pela família');vJogador();
+}
+
 /* ---------- mensagens ---------- */
 async function vMensagens(){
   const m=$('#main');
@@ -1897,6 +1993,7 @@ const GUIA=[
 function vGuia(){
   const G=isCoach()?GUIA_TREINADOR:isAtleta()?GUIA_ATLETA:GUIA;
   $('#main').innerHTML=`<div class="card"><h2>${isCoach()?'Guia do Treinador 3S':isAtleta()?'Guia do Atleta 3S':'Guia Pai 3S'}</h2><p class="muted" style="margin:0">${isCoach()?'Ideias para treinar crianças e jovens com o método Saber, Sentir, Ser da Escola 3S.':isAtleta()?'Dicas para cresceres no futsal e fora dele, com o método Saber, Sentir, Ser.':'Pequenas ideias para acompanhar o seu filho no futsal com o método Saber, Sentir, Ser da Escola 3S.'}</p></div>
+  ${S.meus[0]?`<div class="card" style="background:var(--mint-soft)"><h2>💚 Crescer bem</h2><p class="muted" style="margin-top:0">Adolescência, saúde mental e prevenção do tabaco, álcool e drogas.</p><button class="btn full" style="background:var(--mint)" onclick="abrirJogador('${S.meus[0].id}','bem')">Abrir</button></div>`:''}
   ${G.map(s=>`<div class="card"><h2>${s.i} ${s.t}</h2>${s.c.map(([a,b])=>`<div class="tip"><b>${a}</b><span class="muted" style="font-size:14px">${b}</span></div>`).join('')}</div>`).join('')}
   <div class="card"><h2>🎒 Mochila do jogo</h2>${['Equipamento completo','Caneleiras','Sapatilhas de pavilhão','Garrafa de água','Toalha e muda de roupa','Lanche para depois'].map(x=>`<label class="check"><input type="checkbox"> ${x}</label>`).join('')}</div>`;
 }
