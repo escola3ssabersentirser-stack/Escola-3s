@@ -8782,14 +8782,14 @@ EVENTOS_PUBLICOS.outubro = {
   descricao: "Um encontro ao vivo, à distância, para refletir, partilhar e crescer em conjunto com a Escola 3S.",
 };
 EVENTOS_PUBLICOS.novembro = {
-  nome: "Encontro à distância — O que somos, afinal? (26 nov, 21h)",
-  titulo: "O que somos, afinal?",
+  nome: "Encontro à distância — Quem sou eu? (26 nov, 21h)",
+  titulo: "Quem sou eu?",
   subtitulo: "Encontro gratuito à distância",
   data: "Quinta-feira, 26 de novembro · 21h00",
   inicio: "2026-11-26T21:00:00+00:00",
-  chamada: "O que somos, afinal?",
+  chamada: "Quem sou eu?",
   quandoCurto: "Quinta, 26 nov · 21h",
-  descricao: "Para lá dos papéis que desempenhamos, do que fazemos e do que os outros esperam de nós, quem somos realmente? Um encontro de reflexão e partilha sobre identidade, emoções e liberdade interior, com o método 3S: Saber, Sentir e Ser.",
+  descricao: "Se te tirassem o nome, a profissão, os papéis de mãe, de pai, de filho ou de chefe, o que ficava? Quantas das tuas certezas escolheste tu, e quantas herdaste sem perguntar? Um encontro para parar, questionar e escutar o que há por baixo do que mostramos aos outros, com o método 3S: Saber, Sentir e Ser.",
 };
 EVENTOS_PUBLICOS.dezembro = {
   nome: "Encontro à distância da Escola 3S — 18 de dezembro (21h)",
