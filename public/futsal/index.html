@@ -2531,7 +2531,7 @@ async function vAcessos(){
   const fam=L.filter(x=>x.n_familia>0).length,atl=L.filter(x=>x.n_atleta>0).length;
   $('#main').innerHTML=`<div class="h3s-card h3s-hero"><div class="h3s-hero-tit">🔑 Acessos · ${esc(S.eq.nome)}</div>
     <div class="h3s-hero-row"><div><div class="h3s-mini-tit">Famílias ligadas</div><div class="h3s-mini-num ${fam===L.length&&L.length?'pos':''}">${fam}/${L.length}</div></div><div><div class="h3s-mini-tit">Atletas com conta</div><div class="h3s-mini-num">${atl}/${L.length}</div></div></div>
-    <p class="faint" style="margin:12px 0 0">Cada pessoa cria a sua própria palavra-passe. Aqui só envia o link e o código, que ligam a conta ao atleta certo.</p></div>
+    <p class="faint" style="margin:12px 0 0">Cada pessoa cria a sua própria palavra-passe. Aqui só envia o link e o código, que ligam a conta ao atleta certo.</p><button class="btn full" style="margin-top:12px;background:#25D366" onclick="envioUmAUm()">📤 Enviar a cada pessoa, um a um</button></div>
   <div class="h3s-card" style="margin-top:12px"><div class="row between"><div><b>Código da equipa</b><div class="faint">Para pais que ainda vão registar o filho</div></div><span class="code" style="font-size:22px">${esc(S.eq.codigo)}</span></div></div>
   ${L.map((x,i)=>`<div class="h3s-card" style="margin-top:12px"><div class="row between"><div class="row" style="gap:10px">${avatar(S.jogadores.find(j=>j.id===x.jogador_id)||{id:x.jogador_id,nome:x.nome,numero:x.numero},44)}<div><b>${esc(x.nome)}</b><div class="faint">${x.encarregado_nome?esc(x.encarregado_nome)+' · ':''}${x.encarregado_tel?'👨‍👩‍👦 '+esc(x.encarregado_tel):'pais sem telemóvel'}${x.encarregado2_tel?' · '+esc(x.encarregado2_nome||'')+' '+esc(x.encarregado2_tel):''}${x.atleta_tel?' · ⚽ '+esc(x.atleta_tel):''}</div></div></div></div>
     <div class="row" style="gap:8px;margin-top:12px">
@@ -2754,6 +2754,23 @@ function editarRegras(){openSheet(`<h2>📜 Regras da equipa</h2><p class="muted
   <textarea id="rgTxt" class="in" style="min-height:320px">${esc(S.eq.regras||REGRAS_BASE)}</textarea>
   <button class="btn full" style="margin-top:12px" onclick="guardarRegras()">Guardar</button>`)}
 async function guardarRegras(){const t=g('rgTxt');const r=await q(sb.from('fut_equipas').update({regras:t||null}).eq('id',S.eq.id));if(r===null)return;S.eq.regras=t||null;closeSheet();render();toast('Regras guardadas')}
+
+
+/* ---------- envio individual, um a um ---------- */
+const envKey=(id,t)=>'fut_env_'+id+'_'+t;
+const foiEnv=(id,t)=>{try{return localStorage.getItem(envKey(id,t))}catch(_){return null}};
+function filaEnvio(){const L=S._acessos||[];const f=[];
+  L.forEach(x=>{if(x.encarregado_tel)f.push({x,t:'p1',quem:x.encarregado_nome||'Encarregado(a)',tel:x.encarregado_tel,msg:msgPais(x),tipo:'👨‍👩‍👦 pais'});
+    if(x.encarregado2_tel)f.push({x,t:'p2',quem:x.encarregado2_nome||'Encarregado(a) 2',tel:x.encarregado2_tel,msg:msgPais(x),tipo:'👨‍👩‍👦 pais'});
+    if(x.atleta_tel)f.push({x,t:'at',quem:x.nome,tel:x.atleta_tel,msg:msgAtleta(x),tipo:'⚽ atleta'})});return f}
+function envioUmAUm(){const f=filaEnvio();S._fila=f;const feitos=f.filter(e=>foiEnv(e.x.jogador_id,e.t)).length;
+  const sem=(S._acessos||[]).filter(x=>!x.encarregado_tel).map(x=>x.nome);
+  openSheet(`<h2>📤 Enviar códigos um a um</h2><p class="muted" style="margin-top:0">Cada botão abre o WhatsApp dessa pessoa com a mensagem e o código pessoal já escritos. Carregue em enviar no WhatsApp e volte aqui para o seguinte.</p>
+  <div class="row between" style="margin:6px 0 10px"><b>${feitos} de ${f.length} enviados</b>${feitos?`<button class="btn ghost sm" onclick="limparEnvios()">Recomeçar</button>`:''}</div>
+  <div class="list">${f.map((e,i)=>{const ok=foiEnv(e.x.jogador_id,e.t);return `<a class="item" style="text-decoration:none;color:inherit;${ok?'opacity:.55':''}" href="https://wa.me/${telWa(e.tel)}?text=${encodeURIComponent(e.msg)}" target="_blank" rel="noopener" onclick="marcarEnv(${i})"><div class="av ${ok?'':'navy'}">${ok?'✔':i+1}</div><div class="grow"><b>${esc(e.quem)}</b><div class="muted" style="font-size:12px">${e.tipo} · ${esc(e.x.nome)} · ${esc(e.tel)}</div></div><span class="chip ${ok?'mint':''}" style="${ok?'':'background:#25D366;color:#fff'}">${ok?'Enviado':'Enviar'}</span></a>`}).join('')||'<p class="empty">Ainda não há números guardados.</p>'}</div>
+  ${sem.length?`<p class="faint" style="margin-top:10px">Sem telemóvel dos pais: ${sem.map(esc).join(', ')}. Ponha o número na ficha do atleta para aparecerem aqui.</p>`:''}`)}
+function marcarEnv(i){const e=S._fila[i];try{localStorage.setItem(envKey(e.x.jogador_id,e.t),new Date().toISOString())}catch(_){}setTimeout(envioUmAUm,600)}
+function limparEnvios(){(S._fila||[]).forEach(e=>{try{localStorage.removeItem(envKey(e.x.jogador_id,e.t))}catch(_){}});envioUmAUm()}
 
 /* ---------- mensagens ---------- */
 async function vMensagens(){
