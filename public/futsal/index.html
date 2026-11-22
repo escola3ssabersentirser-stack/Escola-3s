@@ -187,6 +187,7 @@ const modoVer=()=>S.admin?(S.modo==='familia'?'pai':(S.modo||'admin')):null;
 const emPrevia=()=>S.admin&&['treinador','pai','atleta'].includes(modoVer());
 const isCoach=()=>!!(S.eq && ((S.eq.treinador_id===S.me && !(S.admin&&['pai','atleta'].includes(modoVer()))) || (S.admin && ['admin','treinador'].includes(modoVer()))));
 const ePais=()=>!isCoach()&&!isAtleta();
+const podeEditar=()=>!isAtleta();
 const isAdminModo=()=>!!(S.admin && modoVer()==='admin');
 const horaEv=e=>(e.hora||'')+(e.hora_fim?'–'+e.hora_fim:'');
 const isAtleta=()=>(S.admin&&modoVer()==='atleta')||(!S.admin&&!isCoach()&&S.perfil&&S.perfil.papel==='atleta');
@@ -781,16 +782,16 @@ async function jEscola(j){
   const ult=ultimasNotas(ns);
   const subir=ult.filter(u=>u.ant&&pct(u.ult)>pct(u.ant)).length,descer=ult.filter(u=>u.ant&&pct(u.ult)<pct(u.ant)).length;
   const obsE=await q(sb.from('fut_observacoes').select('*').eq('jogador_id',j.id).eq('contexto','escola').eq('resolvido',false).order('created_at',{ascending:false}).limit(3))||[];
-  return `<div class="card"><p class="muted" style="margin-top:0">Notas por disciplina, ao longo dos períodos. Os pais registam e o treinador acompanha a mesma evolução: o esforço na escola também conta.</p>
-    ${ePais()?'<button class="btn gold full" onclick="novaNota()">+ Registar notas</button>':'<p class="faint" style="margin:0">🔒 Só os pais registam as notas da escola.</p>'}</div>
+  return `<div class="card"><p class="muted" style="margin-top:0">Notas por disciplina, ao longo dos períodos. Pais e treinador registam e acompanham a mesma evolução: o esforço na escola também conta.</p>
+    ${podeEditar()?'<button class="btn gold full" onclick="novaNota()">+ Registar notas</button>':''}</div>
     ${ult.length?`<div class="card"><div class="kpis"><div class="kpi"><b>${ult.length}</b><small>disciplinas</small></div><div class="kpi"><b style="color:var(--mint)">${subir}</b><small>subiram</small></div><div class="kpi"><b style="color:var(--red)">${descer}</b><small>desceram</small></div></div></div>`:''}
     ${ult.map(u=>`<div class="card"><div class="row between"><h3 style="margin:0">${esc(u.disciplina)}</h3><span>${setaTend(u)} <b style="font-family:'Baloo 2';font-size:20px">${fmtNota(u.ult)}</b></span></div>
       ${spark(u.arr)}
-      <div class="row wrap" style="gap:5px">${u.arr.map(n=>`<button class="chip" style="border:0" onclick="${ePais()?`editarNota('${n.id}')`:''}">${esc(n.periodo.replace(' Período','P').replace(' Semestre','S'))} ${esc(n.ano_letivo)}: ${fmtNota(n)}</button>`).join('')}</div></div>`).join('')||'<div class="card"><p class="empty">Ainda sem notas. Registe as do último período para começar a ver a evolução.</p></div>'}
+      <div class="row wrap" style="gap:5px">${u.arr.map(n=>`<button class="chip" style="border:0" onclick="${podeEditar()?`editarNota('${n.id}')`:''}">${esc(n.periodo.replace(' Período','P').replace(' Semestre','S'))} ${esc(n.ano_letivo)}: ${fmtNota(n)}</button>`).join('')}</div></div>`).join('')||'<div class="card"><p class="empty">Ainda sem notas. Registe as do último período para começar a ver a evolução.</p></div>'}
     <div class="card"><div class="row between"><h3>Na escola, a melhorar</h3><button class="btn ghost sm" onclick="S.obsFiltro='escola';S.jogTab='melhorar';vJogador()">Ver</button></div>${obsE.length?obsE.map(o=>`<div class="obs melhorar">${esc(o.texto)}</div>`).join(''):'<p class="muted">Nada registado.</p>'}</div>`;
 }
 function novaNota(){
-  if(!ePais()){toast('Só os pais registam as notas da escola.');return}
+  if(!podeEditar())return;
   const anos=[anoLetivoAtual()];const y=parseInt(anoLetivoAtual());for(let i=1;i<4;i++)anos.push(`${y-i}/${String(y-i+1).slice(2)}`);
   openSheet(`<h2>Registar notas</h2>
   <div class="row"><div class="grow"><label class="f" for="nAno">Ano letivo</label><select id="nAno" class="in">${anos.map(a=>`<option>${a}</option>`).join('')}</select></div>
@@ -1350,9 +1351,9 @@ async function jFicha(j){
   const linha=(r,v)=>`<div class="row between" style="padding:7px 0;border-top:1px solid var(--line)"><span class="muted">${r}</span><b style="font-size:14px;text-align:right">${v||'<span class="faint">—</span>'}</b></div>`;
   const alt=m.filter(x=>x.altura);
   const campos=[f.data_nascimento,j.numero,j.posicao,f.pe_dominante,f.tamanho_equip,j.ano_escolar,f.localidade,f.encarregado_nome,f.encarregado_tel,f.encarregado_email,f.escola,f.turma,f.num_federado,f.seguro_validade,f.contacto_emergencia];
-  const pctF=Math.round(campos.filter(v=>v!=null&&v!=='').length/campos.length*100);const podeEd=ePais();
+  const pctF=Math.round(campos.filter(v=>v!=null&&v!=='').length/campos.length*100);const podeEd=podeEditar();
   const _cc=await blocoCC(j);
-  return `${podeEd&&pctF<100?`<div class="h3s-card" style="border:2px solid var(--gold);margin-bottom:12px"><div class="row between"><b>📇 Ficha ${pctF}% preenchida</b><span class="faint">${campos.length-campos.filter(v=>v!=null&&v!=='').length} campos em falta</span></div><div class="bar" style="margin:8px 0 12px"><i style="width:${pctF}%"></i></div><button class="btn gold full" style="padding:14px;font-size:16px" onclick="editarFicha()">✏️ Preencher a ficha</button></div>`:''}${!podeEd&&!isAtleta()?'<p class="faint" style="margin:0 4px 10px">🔒 Os dados pessoais são preenchidos só pelos pais.</p>':''}<div class="card"><div class="row between"><h3 style="margin:0">Dados do jogador</h3>${podeEd?`<button class="btn sm" onclick="editarFicha()">✏️ Editar</button>`:''}</div>
+  return `${podeEd&&pctF<100?`<div class="h3s-card" style="border:2px solid var(--gold);margin-bottom:12px"><div class="row between"><b>📇 Ficha ${pctF}% preenchida</b><span class="faint">${campos.length-campos.filter(v=>v!=null&&v!=='').length} campos em falta</span></div><div class="bar" style="margin:8px 0 12px"><i style="width:${pctF}%"></i></div><button class="btn gold full" style="padding:14px;font-size:16px" onclick="editarFicha()">✏️ Preencher a ficha</button></div>`:''}<div class="card"><div class="row between"><h3 style="margin:0">Dados do jogador</h3>${podeEd?`<button class="btn sm" onclick="editarFicha()">✏️ Editar</button>`:''}</div>
     <div style="margin-top:8px">
     ${linha('Nome',esc(j.nome))}
     ${linha('Data de nascimento',f.data_nascimento?`${new Date(f.data_nascimento+'T12:00').toLocaleDateString('pt-PT')} (${idade(f.data_nascimento)} anos)`:'')}
@@ -1385,7 +1386,7 @@ async function jFicha(j){
     :'<p class="empty">Ainda sem medições.</p>'}</div>${_cc}`;
 }
 async function editarFicha(){
-  if(!ePais()){toast('Os dados pessoais são preenchidos só pelos pais.');return}
+  if(!podeEditar())return;
   const j=S.jogadores.find(x=>x.id===S.jog);
   const f=await q(sb.from('fut_fichas').select('*').eq('jogador_id',j.id).maybeSingle())||{};
   openSheet(`<h2>Dados de ${esc(primeiro(j.nome))}</h2>
@@ -2760,7 +2761,7 @@ async function cartaoAniv(){
   const parabens=a=>encodeURIComponent(`🎂 Parabéns, ${primeiro(a.nome)}! Hoje fazes ${a.faz} anos. Toda a equipa do ${CLUBE} deseja-te um dia fantástico! ⚽💛`);
   el.innerHTML=`${hojeL.map(a=>`<div style="background:linear-gradient(135deg,#F6EEE4,#FFF6E0);border:2px solid var(--gold);border-radius:16px;padding:14px;margin-bottom:10px;text-align:center"><div style="font-size:34px">🎉🎂🎉</div><b style="font-size:18px">Hoje é dia de ${esc(primeiro(a.nome))}!</b><div class="muted">Faz ${a.faz} anos</div><a class="btn full sm" style="display:block;text-decoration:none;background:#25D366;margin-top:10px" href="https://wa.me/?text=${parabens(a)}" target="_blank" rel="noopener">Enviar parabéns pelo WhatsApp</a></div>`).join('')}
   ${prox.length?`<div class="list">${prox.map(a=>`<div class="item"><div class="date"><b>${a.dia}</b><small>${MESES[a.mes-1]}</small></div><div class="grow"><b>${esc(a.nome)}</b><div class="muted">faz ${a.faz} anos · ${a.d===1?'amanhã':'daqui a '+a.d+' dias'}</div></div></div>`).join('')}</div>`:hojeL.length?'':`<p class="empty">Sem aniversários nos próximos 30 dias.</p>`}
-  <div class="row" style="gap:6px;margin-top:10px">${L.length?`<button class="btn ghost sm grow" onclick="todosAniv()">📅 Ver todos</button>`:''}${ePais()&&S.meus.length?`<button class="btn ghost sm grow" onclick="abrirJogador('${S.meus[0].id}','ficha')">✏️ Data de nascimento</button>`:isCoach()&&sem>0?`<span class="faint" style="align-self:center">${sem} por preencher pelos pais</span>`:''}</div>`;
+  <div class="row" style="gap:6px;margin-top:10px">${L.length?`<button class="btn ghost sm grow" onclick="todosAniv()">📅 Ver todos</button>`:''}${isCoach()?`<button class="btn ghost sm grow" onclick="registarAniv()">✏️ Datas${sem>0?' ('+sem+' em falta)':''}</button>`:ePais()&&S.meus.length?`<button class="btn ghost sm grow" onclick="abrirJogador('${S.meus[0].id}','ficha')">✏️ Data de nascimento</button>`:''}</div>`;
 }
 function todosAniv(){const L=[...(S.aniv||[])].sort((a,b)=>a.mes-b.mes||a.dia-b.dia);
   openSheet(`<h2>🎂 Aniversários · ${esc(S.eq.nome)}</h2>${MESES_L.map((m,i)=>{const x=L.filter(a=>a.mes===i+1);return x.length?`<h3 style="margin:12px 0 4px;font-size:15px">${m[0].toUpperCase()+m.slice(1)}</h3>${x.map(a=>`<div class="row between" style="padding:4px 0;border-bottom:1px solid #F0E7DB"><span>${esc(a.nome)}</span><b>${a.dia}</b></div>`).join('')}`:''}).join('')}<button class="btn full" style="margin-top:14px" onclick="closeSheet()">Fechar</button>`)}
@@ -3077,7 +3078,7 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden){_escondido
 
 /* ---------- dados pessoais de pais e atletas (treinador e administradora) ---------- */
 function irDados(){closeSheet();S.tab='dados';S.jog=null;render();window.scrollTo(0,0)}
-function anivLinha(dn,j){if(!dn)return `<span class="chip red" style="font-size:11px;margin-top:4px">🎂 data por preencher pelos pais</span>`;
+function anivLinha(dn,j){if(!dn)return `<button class="chip red" style="border:0;cursor:pointer;font-size:11px;margin-top:4px" onclick="registarAniv()">🎂 Pôr data de nascimento</button>`;
   const d=new Date(dn+'T12:00:00'),h0=new Date();h0.setHours(12,0,0,0);let p=new Date(h0.getFullYear(),d.getMonth(),d.getDate(),12);if(p<h0)p=new Date(h0.getFullYear()+1,d.getMonth(),d.getDate(),12);
   const dias=Math.round((p-h0)/864e5),faz=p.getFullYear()-d.getFullYear();const dt=d.toLocaleDateString('pt-PT',{day:'numeric',month:'long'});
   if(dias===0)return `<div style="margin-top:4px"><b style="color:var(--gold)">🎉 Faz hoje ${faz} anos!</b> <a class="chip" style="text-decoration:none;background:#25D366;color:#fff" href="https://wa.me/?text=${encodeURIComponent(`🎂 Parabéns, ${primeiro(j.nome)}! Hoje fazes ${faz} anos. Toda a equipa do ${CLUBE} deseja-te um dia fantástico! ⚽💛`)}" target="_blank" rel="noopener">Parabéns</a></div>`;
@@ -3094,7 +3095,7 @@ async function vDados(){
   <input class="in" style="margin-top:12px" placeholder="🔎 Procurar nome, telemóvel ou escola" value="${esc(S._dq||'')}" oninput="S._dq=this.value;const v=this.value.toLowerCase();document.querySelectorAll('[data-busca]').forEach(c=>c.style.display=c.dataset.busca.includes(v)?'':'none')">
   <p class="faint" style="margin:8px 4px">Dados confidenciais: só o treinador e a administradora os veem. Usar apenas para assuntos da equipa.</p>
   ${L.map(j=>{const f=F.find(x=>x.jogador_id===j.id)||{};const idade=f.data_nascimento?Math.floor((Date.now()-new Date(f.data_nascimento))/31557600000):null;
-    return `<div class="h3s-card" style="margin-top:12px" data-busca="${esc((j.nome+' '+Object.values(f).join(' ')).toLowerCase())}"><div class="row between"><div class="row" style="gap:10px">${avatar(j,44)}<div><b style="font-size:16px">${esc(j.nome)}</b><div class="faint">${j.numero?'#'+j.numero+' · ':''}${idade!=null?idade+' anos':'sem data de nascimento'}</div>${anivLinha(f.data_nascimento,j)}</div></div><div class="row" style="gap:6px"><button class="btn ghost sm" onclick="verCC('${j.id}')">🪪 CC</button><button class="btn ghost sm" onclick="abrirJogador('${j.id}','ficha')">Ficha ›</button></div></div>
+    return `<div class="h3s-card" style="margin-top:12px" data-busca="${esc((j.nome+' '+Object.values(f).join(' ')).toLowerCase())}"><div class="row between"><div class="row" style="gap:10px">${avatar(j,44)}<div><b style="font-size:16px">${esc(j.nome)}</b><div class="faint">${j.numero?'#'+j.numero+' · ':''}${idade!=null?idade+' anos':'sem data de nascimento'}</div>${anivLinha(f.data_nascimento,j)}</div></div><div class="row" style="gap:6px"><button class="btn ghost sm" onclick="verCC('${j.id}')">🪪 CC</button><button class="btn ghost sm" onclick="S.jog='${j.id}';S.tab='jogadores';S.jogTab='ficha';render();setTimeout(editarFicha,500)">✏️ Editar</button></div></div>
     <div class="faint" style="margin-top:8px">${[f.escola&&('🏫 '+esc(f.escola)+(f.turma?' · '+esc(f.turma):'')),f.localidade&&('📍 '+esc(f.localidade)),f.num_federado&&('🪪 Federado n.º '+esc(f.num_federado)),f.seguro_validade&&('🛡️ Seguro até '+new Date(f.seguro_validade).toLocaleDateString('pt-PT'))].filter(Boolean).join(' · ')}</div>
     <div class="row wrap" style="gap:6px;margin-top:8px"><span class="chip">👕 ${f.tamanho_equip?esc(f.tamanho_equip):'tamanho –'}</span>${f.alergias?`<span class="chip red">⚠️ Alergias: ${esc(f.alergias)}</span>`:''}${f.doencas?`<span class="chip red">🩺 ${esc(f.doencas)}</span>`:''}${!f.alergias&&!f.doencas?'<span class="chip">🩺 sem doenças nem alergias registadas</span>':''}${f.saude_notas?`<span class="chip gold">💊 ${esc(f.saude_notas)}</span>`:''}</div>
     ${(()=>{const u=ultimasNotas(NE.filter(n=>n.jogador_id===j.id));if(!u.length)return '<div class="faint" style="margin-top:8px">📚 Notas da escola: ainda não registadas pelos pais</div>';const dn=u.filter(x=>x.ant&&pct(x.ult)<pct(x.ant)).length;return `<div style="margin-top:8px"><b style="font-size:13px">📚 Notas da escola</b>${dn?` <span class="chip red" style="font-size:11px">▼ ${dn} desceram</span>`:''}<div class="row wrap" style="gap:4px;margin-top:4px">${u.map(x=>`<span class="chip" style="font-size:11px">${esc(x.disciplina)} ${fmtNota(x.ult)}${setaTend(x)}</span>`).join('')}</div></div>`})()}
@@ -3113,10 +3114,10 @@ async function blocoCC(j){
   if(!podeVerCC(j.id))return '';
   const u=await ccUrls(j.id);
   return `<div class="card" id="ccBox"><div class="row between"><h3 style="margin:0">🪪 Cartão de Cidadão</h3><span class="chip ${u.frente&&u.verso?'mint':'red'}">${u.frente&&u.verso?'✔ completo':'em falta'}</span></div>
-  <p class="faint" style="margin:6px 0 10px">Para a inscrição na federação. Obrigatório em todos os jogos. Documento confidencial: só os pais, o treinador e a administradora o veem.</p>
+  <p class="faint" style="margin:6px 0 10px">Para a inscrição na federação. Obrigatório em todos os jogos. Documento confidencial: só os pais, o treinador e a administradora o veem e carregam.</p>
   <div class="row" style="gap:10px">${CC_LADOS.map(([k,l])=>`<div style="flex:1;text-align:center"><div class="faint" style="margin-bottom:4px">${l}</div>
     ${u[k]?`<a href="${u[k]}" target="_blank" rel="noopener"><img src="${u[k]}" alt="Cartão de Cidadão, ${l.toLowerCase()}" style="width:100%;aspect-ratio:1.58;object-fit:cover;border-radius:10px;border:1px solid var(--line)"></a>`:`<div style="width:100%;aspect-ratio:1.58;border-radius:10px;border:2px dashed var(--line);display:grid;place-items:center;font-size:28px">🪪</div>`}
-    ${ePais()?`<label class="btn ghost sm full" style="margin-top:6px;cursor:pointer">📷 ${u[k]?'Trocar':'Fotografar'}<input type="file" accept="image/*" capture="environment" hidden onchange="carregarCC('${j.id}','${k}',this.files[0])"></label>${u[k]?`<button class="btn ghost sm full" style="margin-top:4px;color:var(--red)" onclick="apagarCC('${j.id}','${k}')">Apagar</button>`:''}`:''}</div>`).join('')}</div></div>`}
+    ${podeEditar()?`<label class="btn ghost sm full" style="margin-top:6px;cursor:pointer">📷 ${u[k]?'Trocar':'Fotografar'}<input type="file" accept="image/*" capture="environment" hidden onchange="carregarCC('${j.id}','${k}',this.files[0])"></label>${u[k]?`<button class="btn ghost sm full" style="margin-top:4px;color:var(--red)" onclick="apagarCC('${j.id}','${k}')">Apagar</button>`:''}`:''}</div>`).join('')}</div></div>`}
 async function carregarCC(jid,lado,file){if(!file)return;toast('A carregar…');
   const img=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=URL.createObjectURL(file)});
   const s=Math.min(1,1600/Math.max(img.width,img.height));const c=document.createElement('canvas');c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);c.getContext('2d').drawImage(img,0,0,c.width,c.height);
