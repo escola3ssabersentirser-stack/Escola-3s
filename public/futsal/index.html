@@ -3039,6 +3039,11 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden){_escondido
 
 /* ---------- dados pessoais de pais e atletas (treinador e administradora) ---------- */
 function irDados(){closeSheet();S.tab='dados';S.jog=null;render();window.scrollTo(0,0)}
+function anivLinha(dn,j){if(!dn)return `<button class="chip red" style="border:0;cursor:pointer;font-size:11px;margin-top:4px" onclick="registarAniv()">🎂 Pôr data de nascimento</button>`;
+  const d=new Date(dn+'T12:00:00'),h0=new Date();h0.setHours(12,0,0,0);let p=new Date(h0.getFullYear(),d.getMonth(),d.getDate(),12);if(p<h0)p=new Date(h0.getFullYear()+1,d.getMonth(),d.getDate(),12);
+  const dias=Math.round((p-h0)/864e5),faz=p.getFullYear()-d.getFullYear();const dt=d.toLocaleDateString('pt-PT',{day:'numeric',month:'long'});
+  if(dias===0)return `<div style="margin-top:4px"><b style="color:var(--gold)">🎉 Faz hoje ${faz} anos!</b> <a class="chip" style="text-decoration:none;background:#25D366;color:#fff" href="https://wa.me/?text=${encodeURIComponent(`🎂 Parabéns, ${primeiro(j.nome)}! Hoje fazes ${faz} anos. Toda a equipa do ${CLUBE} deseja-te um dia fantástico! ⚽💛`)}" target="_blank" rel="noopener">Parabéns</a></div>`;
+  return `<div class="faint" style="margin-top:2px">🎂 ${dt} · faz ${faz} anos ${dias===1?'amanhã':dias<=30?'daqui a '+dias+' dias':'em '+MESES_L[p.getMonth()]}</div>`}
 async function vDados(){
   if(!isCoach()){$('#main').innerHTML='<div class="card"><p class="empty">Só o treinador e a administradora veem esta página.</p></div>';return}
   $('#main').innerHTML='<div class="card"><p class="muted">A carregar…</p></div>';
@@ -3051,7 +3056,7 @@ async function vDados(){
   <input class="in" style="margin-top:12px" placeholder="🔎 Procurar nome, telemóvel ou escola" value="${esc(S._dq||'')}" oninput="S._dq=this.value;const v=this.value.toLowerCase();document.querySelectorAll('[data-busca]').forEach(c=>c.style.display=c.dataset.busca.includes(v)?'':'none')">
   <p class="faint" style="margin:8px 4px">Dados confidenciais: só o treinador e a administradora os veem. Usar apenas para assuntos da equipa.</p>
   ${L.map(j=>{const f=F.find(x=>x.jogador_id===j.id)||{};const idade=f.data_nascimento?Math.floor((Date.now()-new Date(f.data_nascimento))/31557600000):null;
-    return `<div class="h3s-card" style="margin-top:12px" data-busca="${esc((j.nome+' '+Object.values(f).join(' ')).toLowerCase())}"><div class="row between"><div class="row" style="gap:10px">${avatar(j,44)}<div><b style="font-size:16px">${esc(j.nome)}</b><div class="faint">${j.numero?'#'+j.numero+' · ':''}${idade!=null?idade+' anos · ':''}${f.data_nascimento?new Date(f.data_nascimento).toLocaleDateString('pt-PT'):'sem data de nascimento'}</div></div></div><button class="btn ghost sm" onclick="S.jog='${j.id}';S.tab='jogadores';S.jogTab='ficha';render();setTimeout(editarFicha,400)">✏️</button></div>
+    return `<div class="h3s-card" style="margin-top:12px" data-busca="${esc((j.nome+' '+Object.values(f).join(' ')).toLowerCase())}"><div class="row between"><div class="row" style="gap:10px">${avatar(j,44)}<div><b style="font-size:16px">${esc(j.nome)}</b><div class="faint">${j.numero?'#'+j.numero+' · ':''}${idade!=null?idade+' anos':'sem data de nascimento'}</div>${anivLinha(f.data_nascimento,j)}</div></div><button class="btn ghost sm" onclick="S.jog='${j.id}';S.tab='jogadores';S.jogTab='ficha';render();setTimeout(editarFicha,400)">✏️</button></div>
     <div class="faint" style="margin-top:8px">${[f.escola&&('🏫 '+esc(f.escola)+(f.turma?' · '+esc(f.turma):'')),f.localidade&&('📍 '+esc(f.localidade)),f.num_federado&&('🪪 Federado n.º '+esc(f.num_federado)),f.seguro_validade&&('🛡️ Seguro até '+new Date(f.seguro_validade).toLocaleDateString('pt-PT')),f.tamanho_equip&&('👕 '+esc(f.tamanho_equip))].filter(Boolean).join(' · ')||'Ficha por preencher'}</div>
     ${linha('⚽',j.nome+' (atleta)',f.atleta_tel,null)}
     ${linha('👤',f.encarregado_nome?f.encarregado_nome+' (encarregado/a)':'Encarregado(a) de educação',f.encarregado_tel,f.encarregado_email)}
