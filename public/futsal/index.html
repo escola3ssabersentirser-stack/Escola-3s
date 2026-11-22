@@ -2714,6 +2714,7 @@ async function guardarAniv(){
 
 /* ---------- podcasts ---------- */
 const PODCASTS=[
+ {ic:'🪑',t:'Banco de Suplentes',de:'o podcast do Futsal 3S',s:'Conversas de bancada entre pais, treinadores e atletas do Arcas: crescer, perder, ganhar e voltar a tentar.',breve:true,par:['pai','atleta','treinador']},
  {ic:'🏁',t:'Ponto Final',de:'zerozero',s:'Jogadores que marcaram gerações contam como foi pendurar as chuteiras. Histórias de carreira, escolhas e vida depois do jogo.',q:'Ponto Final zerozero',par:['pai','atleta','treinador']},
  {ic:'⚽',t:'5 para 4 · Um Podcast de Futsal',de:'zerozero',s:'Futsal nacional e internacional, masculino e feminino, com humor. Novos episódios às segundas-feiras.',q:'5 para 4 Um Podcast de Futsal',par:['pai','atleta','treinador']},
  {ic:'🌱',t:'Podcast Escola 3S',de:'Conceição Alves',s:'Reconhecimento, comparação com os outros, identidade: temas que mexem com os adolescentes e com os pais.',url:'https://open.spotify.com/show/033SaQNUYttLiOHc7Wyc2X',par:['pai','atleta','treinador']},
@@ -2721,7 +2722,7 @@ const PODCASTS=[
 ];
 function cartaoPodcasts(){const papel=isCoach()?'treinador':isAtleta()?'atleta':'pai';
   const sp=p=>p.url||'https://open.spotify.com/search/'+encodeURIComponent(p.q);
-  return `<div class="card"><h2>🎧 Podcasts</h2><p class="muted" style="margin-top:0">Para ouvir no carro, a caminho do treino.</p><div class="list">${PODCASTS.filter(p=>p.par.includes(papel)).map(p=>`<a class="item" style="text-decoration:none;color:inherit" href="${sp(p)}" target="_blank" rel="noopener"><div class="av navy" style="font-size:20px">${p.ic}</div><div class="grow"><b>${p.t}</b><div class="muted" style="font-size:12px">${p.de} · ${p.s}</div></div><span class="chip mint">▶ Ouvir</span></a>`).join('')}</div></div>`}
+  return `<div class="card"><h2>🎧 Podcasts</h2><p class="muted" style="margin-top:0">Para ouvir no carro, a caminho do treino.</p><div class="list">${PODCASTS.filter(p=>p.par.includes(papel)).map(p=>p.breve?`<div class="item" style="border:2px solid var(--gold);border-radius:14px"><div class="av navy" style="font-size:20px">${p.ic}</div><div class="grow"><b>${p.t}</b><div class="muted" style="font-size:12px">${p.de} · ${p.s}</div></div><span class="chip gold">Em breve</span></div>`:`<a class="item" style="text-decoration:none;color:inherit" href="${sp(p)}" target="_blank" rel="noopener"><div class="av navy" style="font-size:20px">${p.ic}</div><div class="grow"><b>${p.t}</b><div class="muted" style="font-size:12px">${p.de} · ${p.s}</div></div><span class="chip mint">▶ Ouvir</span></a>`).join('')}</div></div>`}
 
 /* ---------- mensagens ---------- */
 async function vMensagens(){
