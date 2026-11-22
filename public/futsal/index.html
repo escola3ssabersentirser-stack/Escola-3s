@@ -936,7 +936,7 @@ const QUEST=[
  {dim:'Hábitos',id:'h3',o:'Alimenta-se de forma saudável (poucos doces e refrigerantes)',e:'Como bem e bebo poucos refrigerantes'},
  {dim:'Hábitos',id:'h4',o:'Mantém-se afastado de tabaco, vape e álcool',e:'Fico longe do tabaco, do vape e do álcool',velhos:true}
 ];
-const DIMS=[['Saber','🧠','Aprender'],['Sentir','💛','Emoções'],['Ser','🌱','Valores e relações'],['Hábitos','🌙','Saúde e hábitos']];
+const DIMS=[['Saber','🧠','Aprender'],['Sentir','💛','Emoções'],['Ser','🌱','Valores e relações'],['Hábitos','🏅','Para ser atleta']];
 const ESC4=['','Raramente','Às vezes','Muitas vezes','Quase sempre'];
 const ESC4K=[['',''],['😟','Quase nunca'],['🙂','Às vezes'],['😀','Muitas vezes'],['🤩','Sempre']];
 const TIPOS360=[['pai','Pais'],['treinador','Treinador'],['professor','Professores'],['aluno','Aluno']];
@@ -1788,7 +1788,7 @@ async function sugestoesPlano(j){
   resumoComp(comp||[]).filter(c=>c.nivel<=1).forEach(c=>s.push({area:'futsal',melhorar:c.competencia,origem:'Competências (a começar)',resp:'Treinador'}));
   return s;
 }
-const AREA_PA={futsal:'⚽ Futsal',atitude:'🤝 Atitude',escola:'📚 Escola',saude:'🌙 Saúde e hábitos'};
+const AREA_PA={futsal:'⚽ Futsal',atitude:'🤝 Atitude',escola:'📚 Escola',saude:'🏅 Para ser atleta'};
 async function jPlano(j){
   const [pl,sug]=await Promise.all([q(sb.from('fut_plano_acao').select('*').eq('jogador_id',j.id).order('created_at')),sugestoesPlano(j)]);
   const P=pl||[];const jaTem=new Set(P.map(p=>p.melhorar));const novas=sug.filter(x=>!jaTem.has(x.melhorar));S._sugPA=novas;
@@ -1798,7 +1798,7 @@ async function jPlano(j){
     <p style="margin:8px 0 4px;font-weight:600">${esc(p.melhorar)}</p>${p.acao?`<p style="margin:0 0 4px">👉 ${esc(p.acao)}</p>`:''}
     <div class="faint">${p.responsavel?'Responsável: '+esc(p.responsavel):''}${p.prazo?' · até '+new Date(p.prazo+'T12:00').toLocaleDateString('pt-PT'):''}${p.origem?' · '+esc(p.origem):''}</div>
     ${edita?`<div class="row" style="gap:6px;margin-top:8px">${p.estado!=='em_curso'&&p.estado!=='feito'?`<button class="btn ghost sm" onclick="estadoPA('${p.id}','em_curso')">Começar</button>`:''}${p.estado!=='feito'?`<button class="btn sm" onclick="estadoPA('${p.id}','feito')">✔ Feito</button>`:`<button class="btn ghost sm" onclick="estadoPA('${p.id}','aberto')">Reabrir</button>`}<button class="btn ghost sm" onclick='editarPA(${JSON.stringify(p).replace(/'/g,"&#39;")})'>Editar</button><button class="btn red sm" onclick="apagarPA('${p.id}')">✕</button></div>`:''}</div>`;
-  return `<div class="h3s-card h3s-hero"><div class="h3s-hero-tit">🎯 Plano de ação</div><div class="h3s-hero-num">${ab.length}</div><div class="h3s-hero-sub">${ab.length===1?'ponto a melhorar':'pontos a melhorar'}</div>
+  return `${cartaoSerAtleta()}<div class="h3s-card h3s-hero"><div class="h3s-hero-tit">🎯 Plano de ação</div><div class="h3s-hero-num">${ab.length}</div><div class="h3s-hero-sub">${ab.length===1?'ponto a melhorar':'pontos a melhorar'}</div>
     <div class="h3s-hero-row"><div><div class="h3s-mini-tit">Em curso</div><div class="h3s-mini-num">${P.filter(p=>p.estado==='em_curso').length}</div></div><div><div class="h3s-mini-tit">Já melhorou</div><div class="h3s-mini-num pos">${fe.length}</div></div></div></div>
   ${edita?`<div class="h3s-pills" style="margin:14px 0"><button class="h3s-pill" onclick="editarPA()">+ Novo ponto</button></div>`:''}
   ${edita&&novas.length?`<div class="h3s-card" style="margin-bottom:14px"><b>💡 A app sugere (${novas.length})</b><p class="faint" style="margin:4px 0 8px">A partir da ficha FPF, da avaliação 3S, das notas, das competências e das observações.</p>${novas.slice(0,10).map((x,i)=>`<div class="row between" style="padding:8px 0;border-top:1px solid var(--line)"><div class="grow"><b style="font-size:14px">${esc(x.melhorar)}</b><div class="faint">${AREA_PA[x.area]} · ${esc(x.origem)}</div></div><button class="btn gold sm" onclick="adicionarSugPA(${i})">+ Plano</button></div>`).join('')}</div>`:''}
@@ -1907,7 +1907,7 @@ async function jBem(j){
     ${perfil==='pai'&&!c.pais_em?`<button class="btn gold full" style="margin-top:12px" onclick="assinarComp('${j.id}','pai')">✍️ Assinar como família</button>`:''}
     ${perfil==='pai'&&!c.atleta_em?`<button class="btn ghost full sm" style="margin-top:8px;background:rgba(255,255,255,.15);color:#fff" onclick="assinarComp('${j.id}','atleta')">O ${esc(primeiro(j.nome))} assina neste telemóvel</button>`:''}</div>`;
   const inter=perfil==='atleta'?await blocoInterativo(j.id,true):'';
-  return `${inter}<div class="h3s-card h3s-hero" onclick="respiracao()" style="background:var(--mint-soft);${inter?'margin-top:14px':''}"><div class="h3s-hero-tit">💚 Crescer bem</div><div class="h3s-hero-sub" style="margin-top:6px">${perfil==='atleta'?'Corpo, mente e escolhas: o treino que não se vê.':perfil==='pai'?'Acompanhar a adolescência com calma e informação.':'Treinar pessoas, não só jogadores.'}</div>
+  return `${cartaoSerAtleta()}${inter}<div class="h3s-card h3s-hero" onclick="respiracao()" style="background:var(--mint-soft);${inter?'margin-top:14px':''}"><div class="h3s-hero-tit">💚 Crescer bem</div><div class="h3s-hero-sub" style="margin-top:6px">${perfil==='atleta'?'Corpo, mente e escolhas: o treino que não se vê.':perfil==='pai'?'Acompanhar a adolescência com calma e informação.':'Treinar pessoas, não só jogadores.'}</div>
     <div class="h3s-pills" style="justify-content:center;margin-top:14px"><button class="h3s-pill" style="background:var(--mint)">🌬️ Exercício de respiração</button></div></div>
   <div class="seg" style="margin-top:14px">${blocos.map(([k,ic,t])=>`<button class="${k===sec?'on':''}" onclick="S.bemSec='${k}';vJogador()">${ic} ${t}</button>`).join('')}</div>
   <div class="h3s-card">${b[3].map(([t,x])=>`<div class="tip"><b>${t}</b><span class="muted" style="font-size:14px">${x}</span></div>`).join('')}</div>
@@ -2720,6 +2720,18 @@ const PODCASTS=[
 function cartaoPodcasts(){const papel=isCoach()?'treinador':isAtleta()?'atleta':'pai';
   const sp=p=>p.url||'https://open.spotify.com/search/'+encodeURIComponent(p.q);
   return `<div class="card"><h2>🎧 Podcasts</h2><p class="muted" style="margin-top:0">Para ouvir no carro, a caminho do treino.</p><div class="list">${PODCASTS.filter(p=>p.par.includes(papel)).map(p=>p.breve?`<div class="item" style="border:2px solid var(--gold);border-radius:14px"><img src="banco-suplentes.jpg" alt="Logótipo Banco de Suplentes" style="width:56px;height:56px;border-radius:12px;flex:none"><div class="grow"><b>${p.t}</b><div class="muted" style="font-size:12px">${p.de} · ${p.s}</div></div><div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end"><span class="chip gold">Em breve</span><a class="chip" href="banco-suplentes.jpg" download="banco-de-suplentes.jpg" style="text-decoration:none">⬇ Logo</a></div></div>`:`<a class="item" style="text-decoration:none;color:inherit" href="${sp(p)}" target="_blank" rel="noopener"><div class="av navy" style="font-size:20px">${p.ic}</div><div class="grow"><b>${p.t}</b><div class="muted" style="font-size:12px">${p.de} · ${p.s}</div></div><span class="chip mint">▶ Ouvir</span></a>`).join('')}</div></div>`}
+
+
+/* ---------- Para ser atleta e jogador ---------- */
+const SER_ATLETA={
+ fazer:['Dormir 9 a 10 horas, sobretudo antes de treinos e jogos','Beber água ao longo do dia e levar garrafa para o treino','Comer fruta, legumes e um bom lanche antes de treinar','Chegar a horas e com o equipamento completo','Ouvir o treinador até ao fim e dar sempre o máximo','Respeitar colegas, adversários e árbitros','Cumprimentar no fim, ganhe ou perca','Estudar e cumprir os trabalhos da escola','Depois de errar: respirar e «próxima!»','Pedir ajuda quando alguma coisa não está bem'],
+ nao:['Não fumar: nem tabaco, nem vape, nem «só experimentar»','Não consumir drogas, nem as que «parecem inofensivas»','Não beber álcool nem bebidas energéticas','Não ficar com o telemóvel no quarto à noite','Não faltar ao respeito ao treinador, colegas ou árbitros','Não desistir depois de um erro ou de uma derrota','Não gozar nem excluir colegas, também nas redes','Não comer doces e refrigerantes antes do jogo']
+};
+function cartaoSerAtleta(){
+  const col=(t,c,l,ic)=>`<div style="flex:1;min-width:240px"><b style="color:${c}">${t}</b><ul style="list-style:none;padding:0;margin:8px 0 0">${l.map(x=>`<li style="display:flex;gap:8px;padding:6px 0;border-top:1px solid var(--line);font-size:14px;line-height:1.35"><span>${ic}</span><span>${x}</span></li>`).join('')}</ul></div>`;
+  return `<div class="h3s-card" style="margin-bottom:14px"><div class="h3s-hero-tit">🏅 Para ser atleta e jogador</div><p class="faint" style="margin:4px 0 10px">O que um atleta faz, e não faz, dentro e fora do pavilhão.</p>
+  <div style="display:flex;flex-wrap:wrap;gap:14px">${col('✅ A fazer','var(--mint)',SER_ATLETA.fazer,'✔')}${col('🚫 A não fazer','var(--red)',SER_ATLETA.nao,'✖')}</div></div>`;
+}
 
 /* ---------- mensagens ---------- */
 async function vMensagens(){
