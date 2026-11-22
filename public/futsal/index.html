@@ -3196,7 +3196,7 @@ function inicioTreinador(){
    ${areaCard('age','📅','Agenda',ev?`próximo: ${ev.tipo==='jogo'?'jogo vs '+esc(ev.adversario||'?'):'treino'} · ${dataCurta(ev.data)}`:'treinos, jogos e reuniões',"irPara('agenda')")}
   </div>
   <h3 style="margin:20px 4px 10px;color:var(--navy)">Mais</h3>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">${[['💬','Mensagens',"irPara('mensagens')"],['🌱','Guia 3S',"irPara('guia')"],['🏆','Pódios','irPodios()'],['📜','Regras de funcionamento','abrirRegras()'],['📊','Visão geral','abrirVisao()'],['🎂','Aniversários','abrirAnivSheet()'],['📋','Presenças','mapaPresencas()']].map(([i,l,a])=>`<button onclick="${a}" style="border:0;background:var(--card);border-radius:16px;padding:12px 4px;box-shadow:0 6px 20px var(--shadow);display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer"><span style="font-size:24px">${i}</span><b style="font-size:12px;color:var(--navy)">${l}</b></button>`).join('')}</div></div>`}
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">${[['💬','Mensagens',"irPara('mensagens')"],['🌱','Guia 3S',"irPara('guia')"],['🏆','Pódios','irPodios()'],['📜','Regras de funcionamento','abrirRegras()'],['📊','Visão geral','abrirVisao()'],['🎂','Aniversários','abrirAnivSheet()'],['📋','Presenças','mapaPresencas()'],['🎧','Podcasts','abrirPodcasts()']].map(([i,l,a])=>`<button onclick="${a}" style="border:0;background:var(--card);border-radius:16px;padding:12px 4px;box-shadow:0 6px 20px var(--shadow);display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer"><span style="font-size:24px">${i}</span><b style="font-size:12px;color:var(--navy)">${l}</b></button>`).join('')}</div></div>`}
 async function areasDinamicas(){
   const [auto,minhas,cods,av]=await Promise.all([tarefasAuto().catch(()=>[]),q(sb.from('fut_tarefas').select('id').eq('user_id',S.me).eq('feito',false)),sb.rpc('fut_codigos_equipa',{p_equipa:S.eq.id}).then(r=>r.data||[]),S.jogadores.length?q(sb.from('fut_avaliacoes_360').select('jogador_id').eq('trimestre',trimAtual()).eq('respondente_tipo','treinador').in('jogador_id',S.jogadores.map(j=>j.id))):[]]);
   const n=auto.length+(minhas||[]).length,urg=auto.filter(t=>t.urg).length;
@@ -3210,6 +3210,7 @@ async function areasDinamicas(){
   set('ava',`<b style="color:${feitas===S.jogadores.length&&feitas?'var(--mint)':'var(--gold)'}">${feitas}/${S.jogadores.length}</b> avaliados · ${trimLabel(trimAtual())}`);
 }
 function abrirRegras(){openSheet(cartaoRegras().replace('<div class="card">','<div>'))}
+function abrirPodcasts(){openSheet(cartaoPodcasts().replace('<div class="card">','<div>'))}
 function abrirTarefas(){openSheet(`<div id="tarefas"><p class="muted">A carregar…</p></div>`);cartaoTarefas()}
 
 /* ---------- Início dos pais: áreas em cartões ---------- */
@@ -3232,7 +3233,7 @@ function inicioPais(){
    ${areaCard('aju','🤝','Ajuda aos pais','check-in, pergunta e desafio da semana',"irPara('ajuda')")}
   </div>
   <h3 style="margin:20px 4px 10px;color:var(--navy)">Mais</h3>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">${[['💬','Mensagens',"irPara('mensagens')"],['🌱','Guia 3S',"irPara('guia')"],['📜','Regras de funcionamento','abrirRegras()'],['🛡️','Equipa','irEquipa()'],['🏆','Pódios','irPodios()'],['🎂','Aniversários','abrirAnivSheet()']].map(([i,l,a])=>`<button onclick="${a}" style="border:0;background:var(--card);border-radius:16px;padding:12px 4px;box-shadow:0 6px 20px var(--shadow);display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer"><span style="font-size:24px">${i}</span><b style="font-size:12px;color:var(--navy)">${l}</b></button>`).join('')}</div></div>`}
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">${[['💬','Mensagens',"irPara('mensagens')"],['🌱','Guia 3S',"irPara('guia')"],['📜','Regras de funcionamento','abrirRegras()'],['🛡️','Equipa','irEquipa()'],['🏆','Pódios','irPodios()'],['🎂','Aniversários','abrirAnivSheet()'],['🎧','Podcasts','abrirPodcasts()']].map(([i,l,a])=>`<button onclick="${a}" style="border:0;background:var(--card);border-radius:16px;padding:12px 4px;box-shadow:0 6px 20px var(--shadow);display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer"><span style="font-size:24px">${i}</span><b style="font-size:12px;color:var(--navy)">${l}</b></button>`).join('')}</div></div>`}
 async function areasPais(){const f=S.meus.find(j=>j.id===S.filhoSel)||S.meus[0];if(!f)return;
   const set=(id,t)=>{const e=$('#ar_'+id);if(e)e.innerHTML=t};
   const [auto,minhas]=await Promise.all([tarefasAuto().catch(()=>[]),q(sb.from('fut_tarefas').select('id').eq('user_id',S.me).eq('feito',false))]);
