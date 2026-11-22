@@ -1961,7 +1961,6 @@ async function vAjuda(){
   <div class="h3s-card">${b[3].map(([t,x])=>`<div class="tip"><b>${t}</b><span class="muted" style="font-size:14px">${x}</span></div>`).join('')}</div>
   <div class="h3s-card" style="margin-top:14px"><b>❓ Perguntas frequentes</b>${FAQ_PAIS.map(([p,r])=>`<details style="border-top:1px solid var(--line);padding:10px 0"><summary style="font-weight:600;cursor:pointer">${p}</summary><p class="muted" style="margin:6px 0 0;font-size:14px">${r}</p></details>`).join('')}</div>
   ${f?`<div class="h3s-card" style="margin-top:14px;background:var(--mint-soft)"><b>💚 Crescer bem</b><p class="muted" style="margin:4px 0 10px">Adolescência, saúde mental e prevenção de consumos.</p><button class="btn full" style="background:var(--mint)" onclick="abrirJogador('${f.id}','bem')">Abrir</button></div>`:''}
-  ${cartaoCoach3S()}
   ${cartaoAjuda().replace('Precisas de falar? Há quem ajude','Linhas de apoio para pais e filhos').replace('Também podes falar com os pais, o treinador ou um professor.','A Linha 1414 também apoia famílias. O SNS 24 (opção 4) é para todos, pais incluídos.')}`;
 }
 
