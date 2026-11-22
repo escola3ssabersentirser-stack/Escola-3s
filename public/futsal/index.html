@@ -240,7 +240,8 @@ async function criarConta(){
 }
 async function recuperar(){
   const email=g('lEmail');if(!email){$('#lMsg').textContent='Escreva primeiro o seu email.';return}
-  await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
+  try{localStorage.setItem('rec_app',JSON.stringify({p:'/futsal/',t:Date.now()}))}catch(_){}
+  await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+'/futsal/'});
   $('#lMsg').textContent='Enviámos um email com o link para criar uma nova palavra-passe.';
 }
 function novaPass(){

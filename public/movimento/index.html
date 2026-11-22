@@ -1992,6 +1992,7 @@ function authErr(e){
 async function forgotPass(){
   const email=document.getElementById('lgEmail').value.trim();
   if(!email){ toast('Escreve primeiro o teu correio eletrónico'); return; }
+  try{localStorage.setItem('rec_app',JSON.stringify({p:'/movimento/',t:Date.now()}))}catch(_){}
   const {error}=await sb.auth.resetPasswordForEmail(email, {redirectTo: location.origin+location.pathname});
   showAuthMsg(error? 'Não foi possível enviar: '+error.message : 'Se existir uma conta, recebes uma mensagem para mudar a palavra-passe.');
 }

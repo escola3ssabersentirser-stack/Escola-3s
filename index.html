@@ -18,6 +18,25 @@
       setTimeout(function(){if(document.getElementById("abertura")){reg("A app nao arrancou em 12 s");var a=document.getElementById("abertura");var d=document.createElement("div");d.setAttribute("style","position:absolute;bottom:calc(110px + env(safe-area-inset-bottom,0px));left:24px;right:24px;text-align:center;font:400 14px/1.5 -apple-system,sans-serif;color:#F7EEDD");d.innerHTML='A app está a demorar a abrir.<br><a href="/" style="color:#C6A253">Tocar aqui para tentar outra vez</a>';a.appendChild(d);}},12000);
     })();
     </script>
+    <script>
+    /* Recuperação de palavra-passe pedida no Futsal 3S ou no Movimento 3S: o email pode trazer a pessoa para aqui. Reencaminha para a app certa. */
+    (function(){try{
+      var h=location.hash||"",q=location.search||"";
+      if(location.pathname!=="/"||!/type=recovery/.test(h+q))return;
+      var r=null;try{r=JSON.parse(localStorage.getItem("rec_app")||"null")}catch(e){}
+      if(r&&r.p&&/^\/(futsal|movimento)\/$/.test(r.p)&&Date.now()-r.t<6*3600*1000){localStorage.removeItem("rec_app");location.replace(r.p+q+h);return}
+      document.addEventListener("DOMContentLoaded",function(){
+        var d=document.createElement("div");d.setAttribute("style","position:fixed;inset:0;z-index:99999;background:rgba(27,51,85,.96);display:flex;align-items:center;justify-content:center;padding:24px;font:400 16px/1.5 Inter,-apple-system,sans-serif");
+        var b="display:block;width:100%;margin-top:10px;padding:14px;border:0;border-radius:14px;font:600 16px Inter,-apple-system,sans-serif;cursor:pointer;";
+        d.innerHTML='<div style="background:#F7EEDD;border-radius:22px;padding:22px;max-width:360px;width:100%;color:#1B3355"><h2 style="margin:0 0 6px;font:600 24px/1.2 Georgia,serif">Nova palavra-passe</h2><p style="margin:0 0 8px">Em que app quer mudar a palavra-passe?</p>'+
+        '<button id="r_f" style="'+b+'background:#1B3355;color:#fff">⚽ Futsal 3S</button><button id="r_m" style="'+b+'background:#2E7D5B;color:#fff">🏃 Movimento 3S</button><button id="r_e" style="'+b+'background:#C6A253;color:#fff">Escola 3S</button></div>';
+        document.body.appendChild(d);
+        document.getElementById("r_f").onclick=function(){location.replace("/futsal/"+q+h)};
+        document.getElementById("r_m").onclick=function(){location.replace("/movimento/"+q+h)};
+        document.getElementById("r_e").onclick=function(){d.remove()};
+      });
+    }catch(e){}})();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
