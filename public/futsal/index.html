@@ -2711,6 +2711,18 @@ async function guardarAniv(){
   for(const i of mud){const r=await q(sb.from('fut_fichas').upsert({jogador_id:i.dataset.aniv,data_nascimento:i.value},{onConflict:'jogador_id'}));if(r===null)return}
   closeSheet();cartaoAniv();toast(mud.length?'Datas guardadas':'Sem alterações')}
 
+
+/* ---------- podcasts ---------- */
+const PODCASTS=[
+ {ic:'🏁',t:'Ponto Final',de:'zerozero',s:'Jogadores que marcaram gerações contam como foi pendurar as chuteiras. Histórias de carreira, escolhas e vida depois do jogo.',q:'Ponto Final zerozero',par:['pai','atleta','treinador']},
+ {ic:'⚽',t:'5 para 4 · Um Podcast de Futsal',de:'zerozero',s:'Futsal nacional e internacional, masculino e feminino, com humor. Novos episódios às segundas-feiras.',q:'5 para 4 Um Podcast de Futsal',par:['pai','atleta','treinador']},
+ {ic:'🌱',t:'Podcast Escola 3S',de:'Conceição Alves',s:'Reconhecimento, comparação com os outros, identidade: temas que mexem com os adolescentes e com os pais.',url:'https://open.spotify.com/show/033SaQNUYttLiOHc7Wyc2X',par:['pai','atleta','treinador']},
+ {ic:'🧭',t:'Na corda bamba da liderança',de:'Conceição Alves',s:'Liderança para quem lidera uma equipa (e uma família).',url:'https://open.spotify.com/show/3hHtV0o12Xi6RDmS1cG7uI',par:['pai','treinador']}
+];
+function cartaoPodcasts(){const papel=isCoach()?'treinador':isAtleta()?'atleta':'pai';
+  const sp=p=>p.url||'https://open.spotify.com/search/'+encodeURIComponent(p.q);
+  return `<div class="card"><h2>🎧 Podcasts</h2><p class="muted" style="margin-top:0">Para ouvir no carro, a caminho do treino.</p><div class="list">${PODCASTS.filter(p=>p.par.includes(papel)).map(p=>`<a class="item" style="text-decoration:none;color:inherit" href="${sp(p)}" target="_blank" rel="noopener"><div class="av navy" style="font-size:20px">${p.ic}</div><div class="grow"><b>${p.t}</b><div class="muted" style="font-size:12px">${p.de} · ${p.s}</div></div><span class="chip mint">▶ Ouvir</span></a>`).join('')}</div></div>`}
+
 /* ---------- mensagens ---------- */
 async function vMensagens(){
   const m=$('#main');
@@ -2749,7 +2761,7 @@ const GUIA=[
 function vGuia(){
   const G=isCoach()?GUIA_TREINADOR:isAtleta()?GUIA_ATLETA:GUIA;
   $('#main').innerHTML=`<div class="card"><h2>${isCoach()?'Guia do Treinador 3S':isAtleta()?'Guia do Atleta 3S':'Guia Pai 3S'}</h2><p class="muted" style="margin:0">${isCoach()?'Ideias para treinar crianças e jovens com o método Saber, Sentir, Ser da Escola 3S.':isAtleta()?'Dicas para cresceres no futsal e fora dele, com o método Saber, Sentir, Ser.':'Pequenas ideias para acompanhar o seu filho no futsal com o método Saber, Sentir, Ser da Escola 3S.'}</p></div>
-  ${!isCoach()&&!isAtleta()?`<div class="card" style="border:2px solid var(--gold)"><h2>🤝 Ajuda aos pais</h2><p class="muted" style="margin-top:0">Como usar a app, o jogo visto da bancada e cuidar de quem cuida.</p><button class="btn gold full" onclick="irPara('ajuda')">Abrir</button></div>`:''}
+  ${cartaoPodcasts()}${!isCoach()&&!isAtleta()?`<div class="card" style="border:2px solid var(--gold)"><h2>🤝 Ajuda aos pais</h2><p class="muted" style="margin-top:0">Como usar a app, o jogo visto da bancada e cuidar de quem cuida.</p><button class="btn gold full" onclick="irPara('ajuda')">Abrir</button></div>`:''}
   ${S.meus[0]?`<div class="card" style="background:var(--mint-soft)"><h2>💚 Crescer bem</h2><p class="muted" style="margin-top:0">Adolescência, saúde mental e prevenção do tabaco, álcool e drogas.</p><button class="btn full" style="background:var(--mint)" onclick="abrirJogador('${S.meus[0].id}','bem')">Abrir</button></div>`:''}
   ${G.map(s=>`<div class="card"><h2>${s.i} ${s.t}</h2>${s.c.map(([a,b])=>`<div class="tip"><b>${a}</b><span class="muted" style="font-size:14px">${b}</span></div>`).join('')}</div>`).join('')}
   <div class="card"><h2>🎒 Mochila do jogo</h2>${['Equipamento completo','Caneleiras','Sapatilhas de pavilhão','Garrafa de água','Toalha e muda de roupa','Lanche para depois'].map(x=>`<label class="check"><input type="checkbox"> ${x}</label>`).join('')}</div>`;
