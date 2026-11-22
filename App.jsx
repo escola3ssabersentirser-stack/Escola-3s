@@ -9247,186 +9247,65 @@ function LeitorLivroScreen({ livroId, capInicial, onBack }) {
 
 /* ---------- Montra pública (antes de entrar na app) ---------- */
 function MontraPublica({ onCriarConta, onEntrar, onEscolher, onDestino }) {
-  const irPara = (id) => { const el = document.getElementById(id); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); };
-  const coachNome = { lideranca: "Conceição Alves", desenvolvimento: "Conceição Alves", desporto: "Valter Canhita" };
   const marcar = (area) => onDestino(area ? `marcar:${area}` : "marcar");
-  const sec = (eyebrow, texto, sub) => (
-    <div className="mb-4">
-      <p className="text-[11px] tracking-[0.25em] font-semibold" style={{ color: palette.gold }}>{eyebrow}</p>
-      <p className="font-serif text-[26px] leading-tight mt-1" style={{ color: palette.navy }}>{texto}</p>
-      {sub && <p className="text-sm mt-1.5 leading-relaxed" style={{ color: palette.navySoft }}>{sub}</p>}
-    </div>
-  );
+  const chaveEnc = [ENCONTRO_DO_MES].find((k) => EVENTOS_PUBLICOS[k] && new Date(EVENTOS_PUBLICOS[k].inicio).getTime() + 2 * 3600e3 > Date.now());
+  const enc = chaveEnc ? EVENTOS_PUBLICOS[chaveEnc] : null;
+  const escolas = Object.entries(ESCOLAS_3S).filter(([k]) => !ESCOLAS_OCULTAS.includes(k));
   return (
     <div className="min-h-screen w-full flex justify-center" style={{ backgroundColor: palette.cream, fontFamily: "Inter, sans-serif" }}>
-      <div className="w-full max-w-md pb-32" style={{ backgroundColor: palette.creamSoft }}>
-        {/* HERÓI */}
-        <div className="relative overflow-hidden px-6 pt-6 pb-9" style={{ background: `linear-gradient(160deg, ${palette.navy} 0%, #24436E 100%)` }}>
-          <div className="absolute -right-16 -top-16 w-64 h-64 rounded-full" style={{ border: `1px solid ${palette.gold}33` }} />
-          <div className="absolute -right-6 top-24 w-40 h-40 rounded-full" style={{ border: `1px solid ${palette.gold}22` }} />
-          <div className="relative flex items-center justify-between">
+      <div className="w-full max-w-md pb-12" style={{ backgroundColor: palette.creamSoft }}>
+        {/* TOPO */}
+        <div className="px-6 pt-6 pb-8" style={{ backgroundColor: palette.navy }}>
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <img src="/marca-3s.png" alt="" className="w-9 h-auto" />
+              <img src="/marca-3s.png" alt="" className="w-8 h-auto" />
               <p className="font-serif text-xl" style={{ color: palette.creamSoft }}>Escola <span style={{ color: palette.gold }}>3S</span></p>
             </div>
             <button onClick={onEntrar} className="text-[13px] font-medium rounded-full px-4 py-2" style={{ border: `1px solid ${palette.goldSoft}88`, color: palette.creamSoft }}>Entrar</button>
           </div>
-          <p className="relative text-[11px] tracking-[0.3em] font-semibold mt-9" style={{ color: palette.gold }}>SABER · SENTIR · SER</p>
-          <h1 className="relative font-serif text-[40px] leading-[1.05] mt-3" style={{ color: palette.creamSoft }}>Uma filosofia.<br />Duas escolas.<br /><span style={{ color: palette.gold }}>A tua evolução.</span></h1>
-          <p className="relative text-[15px] mt-4 leading-relaxed" style={{ color: palette.creamSoft, opacity: 0.85 }}>Coaching e mentoria para quem quer liderar com impacto, viver com propósito e treinar com consistência. Descobre o teu perfil gratuitamente e dá o próximo passo com um coach ao teu lado.</p>
-          <div className="relative mt-6 space-y-2.5">
-            <button onClick={() => marcar(null)} className="w-full rounded-full py-4 text-[15px] font-semibold transition active:scale-[0.98]" style={{ backgroundColor: palette.gold, color: palette.navy, boxShadow: "0 10px 26px -10px rgba(198,162,83,0.9)" }}>Marcar sessão de coaching</button>
-            <button onClick={() => irPara("gratis")} className="w-full rounded-full py-3.5 text-sm font-medium" style={{ border: `1px solid ${palette.goldSoft}88`, color: palette.creamSoft }}>Descobrir o meu perfil, grátis</button>
-          </div>
-          <div className="relative flex flex-wrap gap-x-4 gap-y-1.5 mt-5">
-            {["Perfis e testes gratuitos", "Aula 1 grátis", "Sessões a 30€"].map((t) => (
-              <span key={t} className="text-[13px] flex items-center gap-1.5" style={{ color: palette.goldSoft }}><CheckCircle2 size={13} />{t}</span>
-            ))}
-          </div>
+          <h1 className="font-serif text-[34px] leading-[1.1] mt-8" style={{ color: palette.creamSoft }}>Uma filosofia.<br /><span style={{ color: palette.gold }}>Duas escolas.</span></h1>
+          <p className="text-[15px] mt-3 leading-relaxed" style={{ color: palette.creamSoft, opacity: 0.8 }}>Coaching e mentoria em liderança e vida, com o método Saber, Sentir, Ser.</p>
+          <button onClick={() => marcar(null)} className="w-full mt-6 rounded-full py-3.5 text-[15px] font-semibold" style={{ backgroundColor: palette.gold, color: palette.navy }}>Marcar sessão de coaching</button>
         </div>
 
-        {/* AS TRÊS ESCOLAS */}
-        <div className="px-6 pt-9" id="escolas">
-          {sec("DUAS ESCOLAS", "Escolhe o teu caminho", "Cada escola tem um curso, um livro e um coach dedicado para sessões de coaching e mentoria.")}
-          <div className="space-y-4">
-            {Object.entries(ESCOLAS_3S).filter(([k]) => !ESCOLAS_OCULTAS.includes(k)).map(([chave, e]) => {
-              const curso = (e.cursos || []).map((id) => TODOS_CURSOS.find((c) => c.id === id)).filter(Boolean)[0];
-              const livro = materiais.find((m) => m.id === e.livro);
-              const Icon = e.icon;
-              return (
-                <div key={chave} id={e.secao} className="rounded-3xl overflow-hidden" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}66`, boxShadow: "0 14px 30px -22px rgba(27,51,85,0.6)", scrollMarginTop: 16 }}>
-                  <div className="relative overflow-hidden px-5 py-4" style={{ background: e.fundo, borderBottom: e.borda ? `1.5px solid ${e.borda}` : "none" }}>
-                    <Icon size={90} strokeWidth={1} className="absolute -right-3 -bottom-5" style={{ color: e.texto, opacity: 0.1 }} />
-                    <p className="font-serif text-[26px] leading-tight relative" style={{ color: e.texto }}>{e.curto} <span style={{ color: e.acento, fontWeight: 600 }}>3S</span></p>
-                    <p className="text-sm mt-1 relative" style={{ color: e.texto, opacity: 0.85 }}>{e.frase}</p>
-                  </div>
-                  <div className="px-5 py-4 space-y-3">
-                    <div className="flex items-center gap-3">
-                      <span className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: `${palette.gold}22` }}><User size={16} style={{ color: palette.gold }} /></span>
-                      <div className="min-w-0"><p className="text-sm font-medium" style={{ color: palette.navy }}>{coachNome[chave]}</p><p className="text-xs" style={{ color: palette.navySoft }}>Coaching e mentoria · 50 min · 30€ por sessão</p></div>
-                    </div>
-                    {curso && (
-                      <div className="flex items-center gap-3">
-                        <span className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: `${palette.gold}22` }}><GraduationCap size={16} style={{ color: palette.gold }} /></span>
-                        <div className="min-w-0"><p className="text-sm font-medium" style={{ color: palette.navy }}>Curso {curso.titulo}</p><p className="text-xs" style={{ color: palette.navySoft }}>{curso.emBreve ? "Em breve" : curso.interativo ? `Aula 1 grátis · curso completo ${precoTexto(PRECO_CURSO)}` : precoTexto(PRECO_CURSO)}</p></div>
-                      </div>
-                    )}
-                    {livro && (
-                      <div className="flex items-center gap-3">
-                        {livro.capa ? <img src={livro.capa} alt="" className="w-16 rounded-md shrink-0 shadow-md" style={{ aspectRatio: "2 / 3", objectFit: "cover" }} /> : <span className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: `${palette.gold}22` }}><BookOpen size={16} style={{ color: palette.gold }} /></span>}
-                        <div className="min-w-0"><p className="text-sm font-medium" style={{ color: palette.navy }}>{livro.titulo}</p><p className="text-xs" style={{ color: palette.navySoft }}>{livro.emBreve ? `Em breve · ${livro.preco}` : livro.preco}</p></div>
-                      </div>
-                    )}
-                    {e.app && (
-                      <a href={e.app.url} className="flex items-center gap-3">
-                        <span className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: `${palette.gold}22` }}><Footprints size={16} style={{ color: palette.gold }} /></span>
-                        <div className="min-w-0 flex-1"><p className="text-sm font-medium" style={{ color: palette.navy }}>Aplicação {e.app.nome}</p><p className="text-xs" style={{ color: palette.navySoft }}>Treinos, tempos e plano · gratuita</p></div>
-                        <ChevronRight size={16} style={{ color: palette.navySoft }} />
-                      </a>
-                    )}
-                    <div className="grid grid-cols-2 gap-2 pt-1">
-                      <button onClick={() => marcar(chave)} className="rounded-full py-3 text-sm font-semibold" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Marcar sessão</button>
-                      {curso && !curso.emBreve ? (
-                        <button onClick={() => onDestino(`curso:${curso.id}`)} className="rounded-full py-3 text-sm font-semibold" style={{ border: `1.5px solid ${palette.navy}`, color: palette.navy }}>Aula 1 grátis</button>
-                      ) : (
-                        <button onClick={() => onDestino(e.secao)} className="rounded-full py-3 text-sm font-semibold" style={{ border: `1.5px solid ${palette.navy}`, color: palette.navy }}>Testes grátis</button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* GRÁTIS */}
-        <div className="px-6 pt-10" id="gratis" style={{ scrollMarginTop: 16 }}>
-          {sec("COMEÇA SEM PAGAR", "O que tens gratuitamente, já hoje")}
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              [Layers, "Perfil de Líder e de Vida", "Relatório completo enviado para o teu correio eletrónico."],
-              [GraduationCap, "Aula 1 de cada curso", "Texto, exercício, questionário e desafio."],
-              [Layers, "Laboratórios", "Testes de perfil, treinos e planos automáticos."],
-              [Footprints, "Movimento 3S", "Registo de treinos, tempos e provas."],
-            ].map(([Ico, t, d]) => (
-              <div key={t} className="rounded-2xl p-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
-                <Ico size={18} style={{ color: palette.gold }} />
-                <p className="font-serif text-[17px] leading-tight mt-2" style={{ color: palette.navy }}>{t}</p>
-                <p className="text-[13px] mt-1 leading-snug" style={{ color: palette.navySoft }}>{d}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* FIDELIZAÇÃO */}
-        <div className="px-6 pt-10">
-          <div className="rounded-3xl px-5 py-6" style={{ background: `linear-gradient(150deg, #E4C98C 0%, ${palette.gold} 100%)` }}>
-            <p className="text-[11px] tracking-[0.25em] font-semibold" style={{ color: palette.navy }}>PORQUÊ O COACHING 3S</p>
-            <p className="font-serif text-[26px] leading-tight mt-1" style={{ color: palette.navy }}>Uma conversa que transforma a forma como lideras e vives</p>
-            <div className="mt-4 space-y-2.5">
-              {[
-                ["Clareza", "Sais de cada sessão a saber exatamente qual é o teu próximo passo."],
-                ["Um método com base científica", "Saber, Sentir e Ser: conhecimento, gestão emocional e coerência, apoiados em investigação reconhecida."],
-                ["Um coach dedicado à tua área", "Liderança ou vida: acompanhamento por quem conhece o teu contexto."],
-              ].map(([t, d]) => (
-                <div key={t} className="flex gap-2.5">
-                  <CheckCircle2 size={18} className="shrink-0 mt-0.5" style={{ color: palette.navy }} />
-                  <div><p className="text-sm font-semibold" style={{ color: palette.navy }}>{t}</p><p className="text-[13.5px] leading-snug" style={{ color: palette.navy, opacity: 0.85 }}>{d}</p></div>
-                </div>
-              ))}
+        {/* ENCONTRO */}
+        {enc && (
+          <div className="px-6 pt-6">
+            <div className="rounded-2xl px-5 py-5 text-center" style={{ backgroundColor: palette.card, border: `1.5px solid ${palette.gold}` }}>
+              <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>ENCONTRO ONLINE GRATUITO</p>
+              <p className="font-serif text-[28px] leading-tight mt-1" style={{ color: palette.navy }}>{enc.titulo}</p>
+              <p className="text-sm mt-1" style={{ color: palette.navySoft }}>{enc.data}</p>
+              <a href={enc.link || "/encontro/"} target="_blank" rel="noopener noreferrer" className="block mt-4 rounded-full py-3 text-sm font-semibold" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Entrar no encontro</a>
+              <a href={`/?inscricao=${chaveEnc}`} className="inline-block mt-3 text-[13px] underline underline-offset-2" style={{ color: palette.navySoft }}>Mensagem para enviar</a>
             </div>
           </div>
-        </div>
+        )}
 
-        {/* MÉTODO */}
-        <div className="px-6 pt-10">
-          {sec("UMA FILOSOFIA", "O método 3S", "A mesma base nas duas escolas: conhecer, sentir e agir de acordo com quem és.")}
-          <div className="grid grid-cols-3 gap-2">
-            {[["Saber", "cabeça", "Método e conhecimento"], ["Sentir", "coração", "Emoções e relação"], ["Ser", "identidade", "Valores e hábitos"]].map(([n, s2, d]) => (
-              <div key={n} className="rounded-2xl px-3 py-4 text-center" style={{ backgroundColor: palette.navy }}>
-                <p className="font-serif text-xl" style={{ color: palette.gold }}>{n}</p>
-                <p className="text-[11px] tracking-[0.15em]" style={{ color: palette.goldSoft }}>{s2.toUpperCase()}</p>
-                <p className="text-xs mt-2 leading-snug" style={{ color: palette.creamSoft }}>{d}</p>
+        {/* ESCOLAS */}
+        <div className="px-6 pt-8 space-y-3" id="escolas">
+          {escolas.map(([chave, e]) => {
+            const curso = (e.cursos || []).map((id) => TODOS_CURSOS.find((c) => c.id === id)).filter(Boolean)[0];
+            return (
+              <div key={chave} id={e.secao} className="rounded-2xl px-5 py-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
+                <p className="font-serif text-[22px] leading-tight" style={{ color: palette.navy }}>{e.curto} <span style={{ color: palette.gold }}>3S</span></p>
+                <p className="text-[13px] mt-0.5" style={{ color: palette.navySoft }}>{e.frase}</p>
+                <div className="grid grid-cols-2 gap-2 mt-3">
+                  <button onClick={() => marcar(chave)} className="rounded-full py-2.5 text-[13px] font-semibold" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Marcar sessão</button>
+                  {curso && !curso.emBreve ? (
+                    <button onClick={() => onDestino(`curso:${curso.id}`)} className="rounded-full py-2.5 text-[13px] font-semibold" style={{ border: `1.5px solid ${palette.navy}`, color: palette.navy }}>Aula 1 grátis</button>
+                  ) : (
+                    <button onClick={() => onDestino(e.secao)} className="rounded-full py-2.5 text-[13px] font-semibold" style={{ border: `1.5px solid ${palette.navy}`, color: palette.navy }}>Testes grátis</button>
+                  )}
+                </div>
               </div>
-            ))}
-          </div>
+            );
+          })}
         </div>
 
-        {/* COMO FUNCIONA */}
-        <div className="px-6 pt-10">
-          {sec("COMO FUNCIONA", "Em três passos")}
-          <div className="space-y-3">
-            {[
-              ["1", "Cria a tua conta gratuita", "Só precisas de correio eletrónico e palavra-passe."],
-              ["2", "Escolhe a escola e marca a sessão", "Vês os dias e horas livres do coach e escolhes."],
-              ["3", "Continua ao teu ritmo", "Cursos, livros e sessões pagas por MB WAY, Multibanco ou Payshop."],
-            ].map(([n, t, d]) => (
-              <div key={n} className="flex gap-3">
-                <span className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 font-serif" style={{ backgroundColor: palette.navy, color: palette.gold }}>{n}</span>
-                <div><p className="text-sm font-medium" style={{ color: palette.navy }}>{t}</p><p className="text-[13px]" style={{ color: palette.navySoft }}>{d}</p></div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* FECHO */}
-        <div className="px-6 pt-10">
-          <div className="rounded-3xl px-5 py-7 text-center" style={{ background: `linear-gradient(160deg, ${palette.navy} 0%, #24436E 100%)` }}>
-            <p className="font-serif text-[26px] leading-tight" style={{ color: palette.creamSoft }}>O primeiro passo é uma conversa.</p>
-            <p className="text-sm mt-2" style={{ color: palette.goldSoft }}>50 minutos de foco total em ti, com um plano de ação no final. 30€ por sessão.</p>
-            <button onClick={() => marcar(null)} className="mt-5 w-full rounded-full py-3.5 text-sm font-semibold" style={{ backgroundColor: palette.gold, color: palette.navy }}>Marcar sessão de coaching</button>
-            <button onClick={onEntrar} className="mt-3 text-[13px] underline underline-offset-2" style={{ color: palette.goldSoft }}>Já tenho conta</button>
-          </div>
-          <p className="text-xs text-center mt-6" style={{ color: palette.navySoft }}>Escola 3S · Leadership e Life Coaching · Saber · Sentir · Ser</p>
-        </div>
-      </div>
-
-      {/* Barra fixa */}
-      <div className="fixed bottom-0 inset-x-0 flex justify-center z-40 pointer-events-none">
-        <div className="w-full max-w-md px-4 pb-[calc(12px+env(safe-area-inset-bottom))] pt-3 pointer-events-auto" style={{ background: `linear-gradient(to top, ${palette.creamSoft} 65%, ${palette.creamSoft}00)` }}>
-          <button onClick={() => marcar(null)} className="w-full rounded-full py-3.5 text-[15px] font-semibold flex items-center justify-center gap-2" style={{ backgroundColor: palette.navy, color: palette.creamSoft, boxShadow: "0 10px 24px -12px rgba(27,51,85,0.8)" }}>
-            <Calendar size={17} style={{ color: palette.gold }} /> Marcar sessão de coaching
-          </button>
+        {/* FIM */}
+        <div className="px-6 pt-8 text-center">
+          <p className="text-[13px]" style={{ color: palette.navySoft }}>Sessões de 50 minutos · 30€ · Perfis e aula 1 grátis</p>
+          <button onClick={onEntrar} className="mt-4 text-[13px] underline underline-offset-2" style={{ color: palette.navy }}>Já tenho conta</button>
         </div>
       </div>
     </div>
