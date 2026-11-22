@@ -222,7 +222,8 @@ function ecraLogin(modo='entrar'){
 async function entrar(){
   const {data,error}=await sb.auth.signInWithPassword({email:g('lEmail'),password:$('#lPass').value});
   if(error){$('#lMsg').textContent='Email ou palavra-passe errados.';return}
-  await depoisLogin(data.user);
+  localStorage.removeItem('fut_pin_err');
+  if(!pinGet(data.user.id)&&!localStorage.getItem('fut_pin_skip'))pinCriar(data.user.id,()=>depoisLogin(data.user));else await depoisLogin(data.user);
 }
 async function criarConta(){
   const email=g('lEmail'),pass=$('#lPass').value;
@@ -231,7 +232,7 @@ async function criarConta(){
   if(error){$('#lMsg').textContent=error.message.includes('registered')?'Este email já tem conta. Toque em «Entrar».':'Não foi possível criar a conta: '+error.message;return}
   if(data.user&&Array.isArray(data.user.identities)&&data.user.identities.length===0){ecraLogin('entrar');$('#lEmail').value=email;$('#lMsg').innerHTML='<b>Este email já tem conta.</b> Escreva a palavra-passe e toque em «Entrar». Se não se lembrar, toque em «Esqueci-me da palavra-passe».';return}
   if(!data.session){$('#lMsg').innerHTML='<b>Conta criada.</b> Abra o email que lhe enviámos e confirme a conta. Depois volte aqui e toque em «Entrar».';return}
-  await depoisLogin(data.user);
+  pinCriar(data.user.id,()=>depoisLogin(data.user));
 }
 async function recuperar(){
   const email=g('lEmail');if(!email){$('#lMsg').textContent='Escreva primeiro o seu email.';return}
@@ -2996,6 +2997,45 @@ async function vAvaliacoes(){
     ${l.quem.length?`<div class="faint" style="margin-top:6px">Responderam este trimestre: ${l.quem.map(x=>({treinador:'treinador',pai:'pais',professor:'professores',atleta:'atleta'}[x]||x)).join(', ')}</div>`:''}</div>`).join('')||'<div class="card"><p class="empty">Sem jogadores.</p></div>'}`;
 }
 
+/* ---------- PIN pessoal de 4 dígitos (neste telemóvel) ---------- */
+const pinK=uid=>'fut_pin_'+uid;
+const pinGet=uid=>{try{return JSON.parse(localStorage.getItem(pinK(uid))||'null')}catch(_){return null}};
+async function pinHash(pin,salt){const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(pin),'PBKDF2',false,['deriveBits']);
+  const b=await crypto.subtle.deriveBits({name:'PBKDF2',salt:new TextEncoder().encode(salt),iterations:150000,hash:'SHA-256'},k,256);
+  return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+let PIN={v:'',modo:'',uid:null,primeiro:'',depois:null};
+function pinTeclado(tit,sub,extra){
+  const dots=[0,1,2,3].map(i=>`<span style="width:18px;height:18px;border-radius:50%;border:2px solid var(--navy);${i<PIN.v.length?'background:var(--navy)':''}"></span>`).join('');
+  const k=n=>`<button style="width:72px;height:72px;border-radius:50%;border:0;background:var(--card);box-shadow:0 4px 14px var(--shadow);font-size:26px;font-weight:700;color:var(--navy);cursor:pointer" onclick="pinTecla('${n}')">${n}</button>`;
+  return `<div class="login" style="text-align:center"><div style="margin-bottom:10px">${ESCUDO(60)}</div><h1 style="font-size:24px">${tit}</h1><p class="muted" style="margin:4px 0 18px">${sub}</p>
+  <div class="row" style="gap:16px;justify-content:center;margin-bottom:24px">${dots}</div>
+  <div style="display:grid;grid-template-columns:repeat(3,72px);gap:16px;justify-content:center">${[1,2,3,4,5,6,7,8,9].map(k).join('')}<span></span>${k(0)}<button style="width:72px;height:72px;border:0;background:none;font-size:24px;cursor:pointer" onclick="pinTecla('⌫')" aria-label="Apagar">⌫</button></div>
+  ${extra||''}</div>`}
+function pinMostrar(){const sc=$('#screen');
+  if(PIN.modo==='abrir'){const t=+(localStorage.getItem('fut_pin_err')||0);sc.innerHTML=pinTeclado('Introduza o seu PIN',t?`PIN errado. Restam ${5-t} tentativas.`:'Para abrir o Futsal 3S neste telemóvel.',`<button class="btn ghost sm" style="margin-top:22px" onclick="pinEsqueci()">Esqueci-me do PIN</button>`)}
+  else if(PIN.modo==='criar')sc.innerHTML=pinTeclado('Crie o seu PIN','Escolha 4 números só seus. Não use a data de nascimento.',`<button class="btn ghost sm" style="margin-top:22px" onclick="pinSaltar()">Agora não</button>`);
+  else if(PIN.modo==='confirmar')sc.innerHTML=pinTeclado('Confirme o PIN','Escreva os mesmos 4 números.',`<button class="btn ghost sm" style="margin-top:22px" onclick="PIN.modo='criar';PIN.v='';pinMostrar()">Recomeçar</button>`)}
+async function pinTecla(n){if(n==='⌫'){PIN.v=PIN.v.slice(0,-1);pinMostrar();return}if(PIN.v.length>=4)return;PIN.v+=n;pinMostrar();if(PIN.v.length<4)return;
+  await new Promise(r=>setTimeout(r,150));
+  if(PIN.modo==='abrir'){const p=pinGet(PIN.uid);const ok=p&&await pinHash(PIN.v,p.s)===p.h;
+    if(ok){localStorage.removeItem('fut_pin_err');S._bloq=false;const d=PIN.depois;PIN.v='';PIN.depois=null;if(d)await d();return}
+    const t=+(localStorage.getItem('fut_pin_err')||0)+1;localStorage.setItem('fut_pin_err',t);PIN.v='';
+    if(t>=5){localStorage.removeItem(pinK(PIN.uid));localStorage.removeItem('fut_pin_err');toast('5 tentativas erradas. Entre com o email e a palavra-passe.');await sb.auth.signOut();setTimeout(()=>location.reload(),1200);return}
+    pinMostrar();return}
+  if(PIN.modo==='criar'){if(/^(\d)\1{3}$/.test(PIN.v)||['1234','4321','0123','9876'].includes(PIN.v)){toast('PIN demasiado fácil. Escolha outro.');PIN.v='';pinMostrar();return}PIN.primeiro=PIN.v;PIN.v='';PIN.modo='confirmar';pinMostrar();return}
+  if(PIN.modo==='confirmar'){if(PIN.v!==PIN.primeiro){toast('Os PIN não coincidem. Tente de novo.');PIN.v='';PIN.modo='criar';pinMostrar();return}
+    const s=crypto.getRandomValues(new Uint32Array(4)).join('-');localStorage.setItem(pinK(PIN.uid),JSON.stringify({s,h:await pinHash(PIN.v,s)}));localStorage.removeItem('fut_pin_skip');
+    PIN.v='';PIN.primeiro='';toast('PIN criado. Da próxima vez abre a app só com o PIN.');const d=PIN.depois;PIN.depois=null;if(d)await d()}}
+async function pinEsqueci(){if(!confirm('Para criar um PIN novo, tem de entrar outra vez com o email e a palavra-passe. Continuar?'))return;localStorage.removeItem(pinK(PIN.uid));localStorage.removeItem('fut_pin_err');await sb.auth.signOut();location.reload()}
+function pinSaltar(){try{localStorage.setItem('fut_pin_skip','1')}catch(_){}const d=PIN.depois;PIN.depois=null;PIN.v='';if(d)d()}
+function pinCriar(uid,depois){PIN={v:'',modo:'criar',uid,primeiro:'',depois};pinMostrar()}
+function pinPedir(uid,depois){PIN={v:'',modo:'abrir',uid,primeiro:'',depois};pinMostrar()}
+function pinConta(){closeSheet();pinCriar(S.me,async()=>{await carregarEquipas()})}
+function pinRemover(){if(!confirm('Remover o PIN deste telemóvel?'))return;localStorage.removeItem(pinK(S.me));closeSheet();toast('PIN removido')}
+let _escondido=0;
+document.addEventListener('visibilitychange',()=>{if(document.hidden){_escondido=Date.now();return}
+  if(S.me&&pinGet(S.me)&&_escondido&&Date.now()-_escondido>5*60*1000&&!S._bloq){S._bloq=true;pinPedir(S.me,async()=>{await carregarEquipas()})}});
+
 /* ---------- mensagens ---------- */
 async function vMensagens(){
   const m=$('#main');
@@ -3051,6 +3091,7 @@ function abrirConta(){
   <label class="f" for="cTel">Telemóvel (para boleias)</label><input id="cTel" class="in" type="tel" value="${esc(S.perfil.telefone||'')}">
   <button class="btn full" style="margin-top:12px" onclick="guardarConta()">Guardar</button>
   ${isCoach()?`<button class="btn ghost full" style="margin-top:8px" onclick="closeSheet();S.perfil.papel='treinador';ecraSemEquipa()">+ Criar outra equipa</button>`:`<button class="btn ghost full" style="margin-top:8px" onclick="closeSheet();ecraSemEquipa()">+ Entrar noutra equipa</button>`}
+  <button class="btn ghost full" style="margin-top:8px" onclick="pinConta()">🔢 ${pinGet(S.me)?'Mudar o PIN':'Criar PIN de 4 dígitos'}</button>${pinGet(S.me)?`<button class="btn ghost full sm" style="margin-top:6px" onclick="pinRemover()">Remover PIN deste telemóvel</button>`:''}
   <button class="btn ghost full" style="margin-top:8px" onclick="novaPass()">Mudar palavra-passe</button>
   <button class="btn red full" style="margin-top:8px" onclick="sair()">Sair</button>`)}
 async function guardarConta(){const r={nome:g('cNome')||S.perfil.nome,telefone:g('cTel')||null};await q(sb.from('fut_perfis').update(r).eq('user_id',S.me));Object.assign(S.perfil,r);closeSheet();render();toast('Guardado')}
@@ -3074,7 +3115,7 @@ async function mudarEquipa(id){try{localStorage.setItem('fut_eq',id)}catch(_){}S
   const tk=new URLSearchParams(location.search).get('q');
   if(tk&&/^[a-f0-9]{32}$/.test(tk)){ecraConvite(tk);return}
   const {data:{session}}=await sb.auth.getSession();
-  if(session?.user) await depoisLogin(session.user); else ecraLogin();
+  if(session?.user){if(pinGet(session.user.id)){S._bloq=true;pinPedir(session.user.id,()=>depoisLogin(session.user))}else await depoisLogin(session.user)} else ecraLogin();
 })();
 </script>
 </body>
