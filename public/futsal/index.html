@@ -387,10 +387,10 @@ function botaoVoltar(){if(S.hist.length){try{history.back();return}catch(_){}}vo
 window.addEventListener('popstate',()=>{if($('.sheet')){closeSheet();try{history.pushState({fut:1},'')}catch(_){}return}if(S.perfil&&S.eq)voltar()});
 /* ---------- estrutura ---------- */
 const TABS=[['inicio','🏠','Início'],['agenda','📅','Agenda'],['jogadores','⚽','Jogadores'],['mensagens','💬','Mensagens'],['guia','🌱','Guia 3S']];
-const rotuloTab=k=>k==='acessos'?'Acessos':k==='ajuda'?'Ajuda aos pais':k==='podios'?'Pódios':k==='equipa'?'Ficha de Equipa':k==='jogadores'?(isCoach()?'Jogadores':isAtleta()?'Eu':'Filhos'):k==='mensagens'&&isAtleta()?'Avisos':(TABS.find(t=>t[0]===k)||[])[2];
+const rotuloTab=k=>k==='avaliacoes'?'Avaliação dos jogadores':k==='acessos'?'Acessos':k==='ajuda'?'Ajuda aos pais':k==='podios'?'Pódios':k==='equipa'?'Ficha de Equipa':k==='jogadores'?(isCoach()?'Jogadores':isAtleta()?'Eu':'Filhos'):k==='mensagens'&&isAtleta()?'Avisos':(TABS.find(t=>t[0]===k)||[])[2];
 function render(){
   marcarNav();
-  const t=TABS.find(x=>x[0]===S.tab)||({ajuda:['ajuda','🤝','Ajuda aos pais'],podios:['podios','🏆','Pódios'],equipa:['equipa','🛡️','Ficha de Equipa'],acessos:['acessos','🔑','Acessos']}[S.tab]);
+  const t=TABS.find(x=>x[0]===S.tab)||({ajuda:['ajuda','🤝','Ajuda aos pais'],podios:['podios','🏆','Pódios'],equipa:['equipa','🛡️','Ficha de Equipa'],acessos:['acessos','🔑','Acessos'],avaliacoes:['avaliacoes','📋','Avaliação dos jogadores']}[S.tab]);
   const titulo=S.tab==='inicio'?`Olá, ${esc(primeiro(emPrevia()&&modoVer()==='atleta'&&S.meus[0]?S.meus[0].nome:emPrevia()&&modoVer()==='treinador'?nomeDe(S.eq.treinador_id):S.perfil.nome))}`:t[2];
   const jogLabel=isCoach()?'Jogadores':isAtleta()?'O meu perfil':(S.meus.length>1?'Filhos':'Filho(a)');
   $('#screen').innerHTML=`
@@ -402,7 +402,7 @@ function render(){
   </header>
   <main id="main"></main>
   <nav class="bottom">${TABS.filter(([k])=>!(k==='mensagens'&&isAtleta())).map(([k,i,l])=>`<button class="${S.tab===k?'on':''}" onclick="irPara('${k}')"><span>${i}</span>${rotuloTab(k)}</button>`).join('')}</nav>`;
-  ({inicio:vInicio,agenda:vAgenda,jogadores:vJogadores,mensagens:vMensagens,guia:vGuia,ajuda:vAjuda,podios:vPodios,equipa:vEquipa,acessos:vAcessos})[S.tab]();
+  ({inicio:vInicio,agenda:vAgenda,jogadores:vJogadores,mensagens:vMensagens,guia:vGuia,ajuda:vAjuda,podios:vPodios,equipa:vEquipa,acessos:vAcessos,avaliacoes:vAvaliacoes})[S.tab]();
 }
 function irPara(t){S.tab=t;S.jog=null;render();window.scrollTo(0,0)}
 
@@ -419,7 +419,7 @@ function vInicio(){
   }
   if(isAtleta()&&S.meus[0]){filho=S.meus[0];h+=`<div class="card"><h2 style="margin-bottom:10px">O meu mês · ${MESES_L[new Date().getMonth()]}</h2><div id="painel"><p class="muted">A carregar…</p></div></div>`}
   if(isCoach())h+=`<div class="card"><h2 style="margin-bottom:10px">✅ Obrigações do treinador</h2><div id="obrig"><p class="muted">A carregar…</p></div></div>`;
-  if(isCoach())h+=`<div class="card"><h2 style="margin-bottom:10px">${isAdminModo()?'Administração · '+esc(S.eq.nome):'Equipa'} · ${MESES_L[new Date().getMonth()]}</h2><div id="painel"><p class="muted">A carregar…</p></div></div>`;
+  if(isCoach())h+=`<div class="card"><h2 style="margin-bottom:10px">${isAdminModo()?'Administração · '+esc(S.eq.nome):'Equipa'} · ${MESES_L[new Date().getMonth()]}</h2><div id="painel"><p class="muted">A carregar…</p></div><button class="btn gold full" style="margin-top:12px;padding:14px;font-size:16px" onclick="irAvaliacoes()">📋 Avaliação dos jogadores</button></div>`;
   if(!isCoach()&&S.meus.length)h+=`<div id="iqHome"></div><div id="reflHome"></div>`;
   if(isCoach())h+=`<div class="card"><h2 style="margin-bottom:10px">📊 Visão geral</h2><div id="visao"><p class="muted">A carregar…</p></div></div>`;
   if(!isCoach()&&!S.meus.length){
@@ -624,7 +624,7 @@ async function vJogadores(){
     if(evJ.length){const ps=await q(sb.from('fut_presencas').select('jogador_id,minutos').in('evento_id',evJ));(ps||[]).forEach(p=>mins[p.jogador_id]=(mins[p.jogador_id]||0)+(p.minutos||0))}
   }
   const maxMin=Math.max(1,...Object.values(mins));
-  m.innerHTML=`${isCoach()&&lista.length?`<div class="row" style="margin-bottom:14px;gap:8px"><button class="btn ghost grow" style="background:var(--card);box-shadow:0 6px 20px var(--shadow)" onclick="mapaPresencas()">📋 Presenças</button><button class="btn ghost grow" style="background:var(--card);box-shadow:0 6px 20px var(--shadow)" onclick="painelPagamentos()">💶 Pagamentos</button><button class="btn ghost grow" style="background:var(--card);box-shadow:0 6px 20px var(--shadow)" onclick="painelRelatorios()">📄 Relatórios</button></div><button class="btn full" style="margin:-4px 0 10px;background:var(--mint);padding:14px" onclick="grelhaBemEstar()">💚 Grelha de bem-estar e plano de ação</button><button class="btn full" style="margin:0 0 10px;padding:14px;background:#25D366" onclick="irAcessos()">🔑 Acessos: códigos por WhatsApp</button><div class="row" style="gap:10px;margin:0 0 14px"><button class="btn full grow" style="padding:14px" onclick="irEquipa()">🛡️ Ficha de Equipa</button><button class="btn gold full grow" style="padding:14px" onclick="irPodios()">🏆 Pódios</button></div>`:''}<div class="card">${lista.length?`<div class="list">${lista.map(j=>`<button class="item" onclick="abrirJogador('${j.id}')">${avatar(j)}<div class="grow"><b>${esc(j.nome)}</b><div class="muted">${[j.posicao,(S.pes||{})[j.id]?'pé '+(S.pes||{})[j.id].toLowerCase():'',j.ano_escolar].filter(Boolean).map(esc).join(' · ')}</div>
+  m.innerHTML=`${isCoach()&&lista.length?`<div class="row" style="margin-bottom:14px;gap:8px"><button class="btn ghost grow" style="background:var(--card);box-shadow:0 6px 20px var(--shadow)" onclick="mapaPresencas()">📋 Presenças</button><button class="btn ghost grow" style="background:var(--card);box-shadow:0 6px 20px var(--shadow)" onclick="painelPagamentos()">💶 Pagamentos</button><button class="btn ghost grow" style="background:var(--card);box-shadow:0 6px 20px var(--shadow)" onclick="painelRelatorios()">📄 Relatórios</button></div><button class="btn gold full" style="margin:-4px 0 10px;padding:14px" onclick="irAvaliacoes()">📋 Avaliação dos jogadores</button><button class="btn full" style="margin:-4px 0 10px;background:var(--mint);padding:14px" onclick="grelhaBemEstar()">💚 Grelha de bem-estar e plano de ação</button><button class="btn full" style="margin:0 0 10px;padding:14px;background:#25D366" onclick="irAcessos()">🔑 Acessos: códigos por WhatsApp</button><div class="row" style="gap:10px;margin:0 0 14px"><button class="btn full grow" style="padding:14px" onclick="irEquipa()">🛡️ Ficha de Equipa</button><button class="btn gold full grow" style="padding:14px" onclick="irPodios()">🏆 Pódios</button></div>`:''}<div class="card">${lista.length?`<div class="list">${lista.map(j=>`<button class="item" onclick="abrirJogador('${j.id}')">${avatar(j)}<div class="grow"><b>${esc(j.nome)}</b><div class="muted">${[j.posicao,(S.pes||{})[j.id]?'pé '+(S.pes||{})[j.id].toLowerCase():'',j.ano_escolar].filter(Boolean).map(esc).join(' · ')}</div>
     ${isCoach()?`<div class="bar mint" style="margin-top:6px" title="minutos"><i style="width:${Math.round((mins[j.id]||0)/maxMin*100)}%"></i></div><div class="faint">${mins[j.id]||0} min jogados nos últimos 60 dias</div>`:''}</div><span class="faint">›</span></button>`).join('')}</div>`
     :`<p class="empty">${isCoach()?'Ainda não há jogadores. Os pais registam os filhos quando entram com o código da equipa, ou pode registá-los aqui.':'Ainda não registou o seu filho.'}</p>`}
     <button class="btn gold full" style="margin-top:12px" onclick="adicionarFilho()">+ ${isCoach()?'Registar jogador':'Registar filho(a)'}</button>
@@ -2944,6 +2944,30 @@ async function cartaoReflexao(){const el=$('#reflHome');if(!el)return;const j=is
   const ev=S.eventos.filter(e=>e.tipo==='jogo'&&e.data<=hoje()&&e.data>=addDias(-3)).pop();if(!ev){el.remove();return}
   const r=await q(sb.from('fut_coaching').select('id').eq('jogador_id',j.id).eq('evento_id',ev.id));if((r||[]).length){el.remove();return}
   el.innerHTML=`<div class="card" style="border:2px solid var(--navy)"><h2>🏟️ Reflexão do jogo</h2><p class="muted" style="margin-top:0">vs ${esc(ev.adversario||'adversário')} · ${dataCurta(ev.data)}. 8 perguntas rápidas para aprenderes com o jogo.</p><button class="btn full" onclick="abrirCoaching('${j.id}','jogo','${ev.id}')">Responder</button></div>`}
+
+/* ---------- avaliação dos jogadores (vista do treinador) ---------- */
+function irAvaliacoes(){closeSheet();S.tab='avaliacoes';S.jog=null;render();window.scrollTo(0,0)}
+async function vAvaliacoes(){
+  if(!isCoach()){$('#main').innerHTML='<div class="card"><p class="empty">Só o treinador e a administradora veem esta página.</p></div>';return}
+  const ids=S.jogadores.map(j=>j.id);$('#main').innerHTML='<div class="card"><p class="muted">A carregar…</p></div>';
+  const [av,fpf,co,hol]=ids.length?await Promise.all([
+    q(sb.from('fut_avaliacoes_360').select('jogador_id,respondente_tipo,trimestre,respostas').eq('trimestre',trimAtual()).in('jogador_id',ids)),
+    q(sb.from('fut_fichas_fpf').select('jogador_id,periodo,niveis,created_at').in('jogador_id',ids).order('created_at',{ascending:false})),
+    q(sb.from('fut_coaching').select('jogador_id,contexto,created_at').eq('contexto','trimestre').in('jogador_id',ids)),
+    q(sb.from('fut_holistico').select('jogador_id,valores,papel,created_at').eq('papel','treinador').in('jogador_id',ids).order('created_at',{ascending:false}))
+  ]):[[],[],[],[]];
+  const linhas=S.jogadores.map(j=>{const a=(av||[]).filter(x=>x.jogador_id===j.id);const t=a.find(x=>x.respondente_tipo==='treinador');
+    const m3=t?mediaN(Object.values(t.respostas||{})):null;const f=(fpf||[]).find(x=>x.jogador_id===j.id);const mf=f?mediaN(Object.values(f.niveis||{}).map(Number).filter(n=>!isNaN(n))):null;
+    const c=(co||[]).find(x=>x.jogador_id===j.id&&trimDe(x.created_at.slice(0,10))===trimAtual());const h=(hol||[]).find(x=>x.jogador_id===j.id);const mh=h?mediaN(Object.values(h.valores||{})):null;
+    return {j,t,m3,quem:[...new Set(a.map(x=>x.respondente_tipo))],f,mf,c,mh}});
+  const feitas=linhas.filter(l=>l.t).length;
+  const ok=(b,l,acao)=>`<button class="chip" style="border:0;cursor:pointer;font-size:11px;padding:4px 8px;${b?'background:var(--mint);color:#fff':'background:var(--red-soft,#F6D9D5);color:var(--red)'}" onclick="event.stopPropagation();${acao}">${b?'✔':'✖'} ${l}</button>`;
+  $('#main').innerHTML=`<div class="h3s-card h3s-hero"><div class="h3s-hero-tit">📋 Avaliação dos jogadores</div><div class="h3s-hero-num">${feitas}/${linhas.length}</div><div class="h3s-hero-sub">avaliações do treinador · ${trimLabel(trimAtual())}</div></div>
+  <p class="faint" style="margin:10px 4px">Toque num atleta para abrir o perfil. Toque numa etiqueta vermelha para fazer essa avaliação.</p>
+  ${linhas.map(l=>`<div class="h3s-card" style="margin-top:10px;cursor:pointer" onclick="abrirJogador('${l.j.id}')"><div class="row between"><div class="row" style="gap:10px">${avatar(l.j,42)}<div><b>${esc(l.j.nome)}</b><div class="faint">${l.j.posicao?esc(l.j.posicao)+' · ':''}3S ${l.m3!=null?fmt1(l.m3)+'/4':'–'} · FPF ${l.mf!=null?fmt1(l.mf)+'/4':'–'} · holístico ${l.mh!=null?fmt1(l.mh)+'/5':'–'}</div></div></div><span class="faint">›</span></div>
+    <div class="row wrap" style="gap:6px;margin-top:10px">${ok(l.t,'Avaliação 3S',`responder360('${l.j.id}')`)}${ok(l.f,'Ficha FPF'+(l.f?' · '+esc((l.f.periodo||'').split(' · ')[0]):''),`abrirJogador('${l.j.id}','fpf')`)}${ok(l.mh!=null,'Perfil holístico',`abrirJogador('${l.j.id}','holistico')`)}${ok(l.c,'Guião trimestral',`abrirCoaching('${l.j.id}','trimestre')`)}</div>
+    ${l.quem.length?`<div class="faint" style="margin-top:6px">Responderam este trimestre: ${l.quem.map(x=>({treinador:'treinador',pai:'pais',professor:'professores',atleta:'atleta'}[x]||x)).join(', ')}</div>`:''}</div>`).join('')||'<div class="card"><p class="empty">Sem jogadores.</p></div>'}`;
+}
 
 /* ---------- mensagens ---------- */
 async function vMensagens(){
