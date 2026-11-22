@@ -2640,7 +2640,7 @@ async function painelEquipa(){
     tile4('📋',pc!=null?pc+'%':'–','Presenças','média dos treinos (30 dias)',pc==null?'':pc>=80?'var(--mint)':pc>=60?'var(--gold)':'var(--red)','mapaPresencas()'),
     tile4('🏆',top&&top.gm?top.gm:'–','Melhor marcador',top&&top.gm?esc(top.j.nome):'ainda sem golos','var(--gold)','irPodios()'),
     isAdminModo()?tile4('🔑',`${fam}/${(cods||[]).length}`,'Acessos','famílias já ligadas à app',fam===(cods||[]).length&&fam?'var(--mint)':'var(--gold)','irAcessos()')
-      :tile4('💚',alertas,'Bem-estar',alertas?'atletas a precisar de atenção':'grelha e plano de ação',alertas?'var(--red)':'var(--mint)','grelhaBemEstar()')
+      :(()=>{const jg=S.eventos.filter(e=>e.tipo==='jogo');const prox=jg.filter(e=>e.data>=hoje()&&e.estado!=='cancelado').sort((a,b)=>a.data<b.data?-1:1)[0];const real=jg.filter(e=>e.data<hoje()&&e.estado!=='cancelado'&&e.estado!=='adiado').length;return tile4('🏟️',prox?dataCurta(prox.data):'–','Próximo jogo',prox?'vs '+esc(prox.adversario||'?')+(real?` · ${real} já jogados`:''):'sem jogos marcados','var(--navy)',"S.eqTab='jogos';irEquipa()")})()
   ]);
 }
 async function painelAtleta(j){
