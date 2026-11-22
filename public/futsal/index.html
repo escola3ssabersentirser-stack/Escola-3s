@@ -198,10 +198,12 @@ function toast(t){const e=document.createElement('div');e.className='toast';e.te
 async function q(p,erro){const {data,error}=await p;if(error){console.error(error);toast(erro||('Erro: '+error.message));return null}return data??[]}
 
 /* ---------- folha (janela de baixo) ---------- */
+let _shPush=false,_ignPop=false;
 function openSheet(html){
-  $('#sheetHost').innerHTML=`<div class="sheet-bg" onclick="if(event.target===this)closeSheet()"><div class="sheet" role="dialog"><div class="grab"></div>${html}</div></div>`;
+  if(!$('.sheet')){try{history.pushState({sheet:1},'');_shPush=true}catch(_){}}
+  $('#sheetHost').innerHTML=`<div class="sheet-bg" onclick="if(event.target===this)closeSheet()"><div class="sheet" role="dialog"><div class="grab"></div><button onclick="closeSheet()" aria-label="Fechar e voltar" style="position:sticky;top:0;float:right;z-index:5;border:0;background:var(--navy);color:#fff;border-radius:20px;padding:8px 14px;font-weight:700;font-size:14px;margin:-4px -4px 6px 8px;cursor:pointer">‹ Voltar</button>${html}</div></div>`;
 }
-function closeSheet(){$('#sheetHost').innerHTML=''}
+function closeSheet(doPop){const had=!!$('.sheet');$('#sheetHost').innerHTML='';if(had&&!doPop&&_shPush){_shPush=false;_ignPop=true;try{history.back()}catch(_){_ignPop=false}}else if(doPop)_shPush=false}
 
 /* ---------- entrada ---------- */
 function ecraLogin(modo='entrar'){
@@ -397,7 +399,7 @@ function voltar(){
   if(S.tab!=='inicio'){_aVoltar=true;S.tab='inicio';S.jog=null;render();window.scrollTo(0,0)}
 }
 function botaoVoltar(){if(S.hist.length){try{history.back();return}catch(_){}}voltar()}
-window.addEventListener('popstate',()=>{if($('.sheet')){closeSheet();try{history.pushState({fut:1},'')}catch(_){}return}if(S.perfil&&S.eq)voltar()});
+window.addEventListener('popstate',()=>{if(_ignPop){_ignPop=false;return}if($('.sheet')){closeSheet(true);return}if(S.perfil&&S.eq)voltar()});
 /* ---------- estrutura ---------- */
 const TABS=[['inicio','🏠','Início'],['agenda','📅','Agenda'],['jogadores','⚽','Jogadores'],['avaliacoes','📋','Avaliações'],['mensagens','💬','Mensagens']];
 const rotuloTab=k=>k==='dados'?'Dados pessoais':k==='avaliacoes'?'Avaliações':k==='acessos'?'Acessos':k==='ajuda'?'Ajuda aos pais':k==='podios'?'Pódios':k==='equipa'?'Ficha de Equipa':k==='jogadores'?(isCoach()?'Jogadores':isAtleta()?'Eu':'Filhos'):k==='mensagens'&&isAtleta()?'Avisos':(TABS.find(t=>t[0]===k)||[])[2];
@@ -3139,7 +3141,10 @@ async function verCC(jid){const j=S.jogadores.find(x=>x.id===jid);const u=await 
 function mostrarCodigoEquipa(){openSheet(`<h2>🔗 Código da equipa</h2><p class="muted">Só para treinadores adjuntos. Os pais e os atletas entram com o código pessoal (🔑 Acessos).</p><span class="code">${esc(S.eq.codigo)}</span>`)}
 function abrirObrig(){openSheet(`<h2>✅ Obrigações do treinador</h2><div id="obrig"><p class="muted">A carregar…</p></div>`);painelObrigacoes()}
 function abrirVisao(){openSheet(`<h2>📊 Visão geral</h2><div id="visao"><p class="muted">A carregar…</p></div>`);painelVisao()}
-function abrirAnivSheet(){openSheet(`<h2>🎂 Aniversários</h2><div id="aniv"><p class="muted">A carregar…</p></div>`);cartaoAniv()}
+async function abrirAnivSheet(){openSheet(`<h2>🎂 Aniversários</h2><div id="aniv"><p class="muted">A carregar…</p></div><div id="anivTodos"></div>`);await cartaoAniv();
+  const L=[...(S.aniv||[])].sort((a,b)=>a.mes-b.mes||a.dia-b.dia);const sem=S.jogadores.filter(j=>!L.some(a=>a.jogador_id===j.id));const el=$('#anivTodos');if(!el)return;
+  el.innerHTML=`${L.length?`<h3 style="margin:16px 0 4px">📅 Todos os aniversários</h3>${MESES_L.map((m,i)=>{const x=L.filter(a=>a.mes===i+1);return x.length?`<div class="faint" style="margin-top:8px;font-weight:700">${m[0].toUpperCase()+m.slice(1)}</div>${x.map(a=>`<div class="row between" style="padding:5px 0;border-bottom:1px solid var(--line)"><span>${esc(a.nome)}</span><b>${a.dia} · ${a.faz} anos</b></div>`).join('')}`:''}).join('')}`:''}
+  ${sem.length?`<h3 style="margin:16px 0 4px">❔ Sem data de nascimento (${sem.length})</h3><p class="faint" style="margin:0 0 6px">${sem.map(j=>esc(j.nome)).join(', ')}</p>${isCoach()?'<button class="btn gold full" onclick="registarAniv()">✏️ Pôr as datas de nascimento</button>':''}`:''}`}
 async function tarefasAuto(){const T=[];const add=(ic,t,sub,acao,urg)=>T.push({ic,t,sub,acao,urg});
   const ev=proximos()[0];const mes=hoje().slice(0,8)+'01';
   if(isCoach()){const D=await dadosObrigacoes();
