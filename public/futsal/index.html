@@ -2630,7 +2630,7 @@ async function painelEquipa(){
     tre.length&&ids.length?q(sb.from('fut_presencas').select('presente').in('evento_id',tre.map(e=>e.id))):[],
     dadosEquipa(),
     ids.length?q(sb.from('fut_familia_reg').select('jogador_id,dados,tipo').in('jogador_id',ids).in('tipo',['checkin','checkin_atleta']).eq('semana',semanaISO())):[],
-    isAdminModo()?sb.rpc('fut_codigos_equipa',{p_equipa:S.eq.id}).then(r=>r.data||[]):Promise.resolve([])
+    sb.rpc('fut_codigos_equipa',{p_equipa:S.eq.id}).then(r=>r.data||[])
   ]);
   const pt=(pres||[]).filter(p=>p.presente===true).length;const pc=tre.length&&ids.length?Math.round(pt/(tre.length*ids.length)*100):null;
   const top=[...L].sort((a,b)=>b.gm-a.gm)[0];
@@ -2642,8 +2642,9 @@ async function painelEquipa(){
     ...(()=>{const ev=proximos()[0];const ps=ev?S.presencas.filter(p=>p.evento_id===ev.id):[];const vao=ps.filter(p=>p.resposta==='vai').length,sem=S.jogadores.length-ps.filter(p=>p.resposta).length;
       const tp=ev?tile4(ev.tipo==='jogo'?'🏟️':'🏃',dataCurta(ev.data),ev.tipo==='jogo'?'Próximo jogo':'Próximo treino',`${esc(horaEv(ev)||'')}${ev.tipo==='jogo'?' · vs '+esc(ev.adversario||'?'):''} · ✅ ${vao} vão · ⏳ ${sem} sem resposta`,'var(--navy)',`abrirEvento('${ev.id}')`):tile4('📅','–','Próximo treino','nada marcado','',"irPara('agenda')");
       const mm=tile4('🏆',top&&top.gm?top.gm:'–','Melhor marcador',top&&top.gm?esc(top.j.nome):'ainda sem golos','var(--gold)','irPodios()');
-      return isAdminModo()?[tp,tile4('🔑',`${fam}/${(cods||[]).length}`,'Acessos','famílias já ligadas à app',fam===(cods||[]).length&&fam?'var(--mint)':'var(--gold)','irAcessos()')]:[mm,tp]})()
-  ]);
+      return [mm,tp]})()
+  ])+(()=>{const n=(cods||[]).length,atl=(cods||[]).filter(x=>x.n_atleta>0).length,ok=n&&fam===n;
+    return `<button onclick="irAcessos()" style="width:100%;margin-top:12px;border:0;border-radius:18px;padding:16px;background:${ok?'var(--mint)':'#25D366'};color:#fff;display:flex;align-items:center;gap:12px;text-align:left;cursor:pointer"><span style="font-size:32px">🔑</span><span style="flex:1"><b style="display:block;font-size:17px">Gerir acessos</b><span style="font-size:13px;opacity:.9">👨‍👩‍👦 ${fam}/${n} famílias · ⚽ ${atl}/${n} atletas ligados · enviar códigos por WhatsApp</span></span><span style="font-size:22px">›</span></button>`})();
 }
 async function painelAtleta(j){
   const el=$('#painel');if(!el)return;
