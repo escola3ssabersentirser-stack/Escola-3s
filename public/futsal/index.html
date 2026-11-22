@@ -574,6 +574,7 @@ function blocoTreinador(e){
       ${e.tipo==='jogo'&&!passado?`<button class="btn sm ${p.convocado?'gold':'ghost'}" onclick="convocar('${e.id}','${j.id}',${!p.convocado})">${p.convocado?'Convocado':'Convocar'}</button>`:''}
       ${passado?`<button class="btn sm ${p.presente===true?'':'ghost'}" aria-label="Presente" onclick="marcarPresente('${e.id}','${j.id}',true)">✔</button><button class="btn sm ${p.presente===false?'red':'ghost'}" aria-label="Faltou" onclick="marcarPresente('${e.id}','${j.id}',false)">✖</button><button class="btn ghost sm" onclick="registoJogador('${e.id}','${j.id}')">Registar</button>`:''}</div></div>`}).join('')}</div>
   ${passado?`<button class="btn gold full" style="margin-top:12px" onclick="abrirChecklist('${e.id}')">📋 Checklist do ${e.tipo==='jogo'?'jogo':'treino'} e pódio</button>`:''}
+  ${e.tipo==='jogo'&&isCoach()?`<button class="btn full" style="margin-top:8px" onclick="docsJogo('${e.id}')">🪪 Cartões de Cidadão para o jogo</button>`:''}
   ${passado&&e.tipo==='jogo'?`<button class="btn ghost full sm" style="margin-top:10px" onclick="resultadoJogo('${e.id}')">Resultado do jogo</button>`:''}</div>`;
 }
 async function convocar(ev,j,v){
@@ -3084,7 +3085,7 @@ async function vDados(){
   <input class="in" style="margin-top:12px" placeholder="🔎 Procurar nome, telemóvel ou escola" value="${esc(S._dq||'')}" oninput="S._dq=this.value;const v=this.value.toLowerCase();document.querySelectorAll('[data-busca]').forEach(c=>c.style.display=c.dataset.busca.includes(v)?'':'none')">
   <p class="faint" style="margin:8px 4px">Dados confidenciais: só o treinador e a administradora os veem. Usar apenas para assuntos da equipa.</p>
   ${L.map(j=>{const f=F.find(x=>x.jogador_id===j.id)||{};const idade=f.data_nascimento?Math.floor((Date.now()-new Date(f.data_nascimento))/31557600000):null;
-    return `<div class="h3s-card" style="margin-top:12px" data-busca="${esc((j.nome+' '+Object.values(f).join(' ')).toLowerCase())}"><div class="row between"><div class="row" style="gap:10px">${avatar(j,44)}<div><b style="font-size:16px">${esc(j.nome)}</b><div class="faint">${j.numero?'#'+j.numero+' · ':''}${idade!=null?idade+' anos':'sem data de nascimento'}</div>${anivLinha(f.data_nascimento,j)}</div></div><div class="row" style="gap:6px">${isAdminModo()?`<button class="btn ghost sm" onclick="verCC('${j.id}')">🪪 CC</button>`:''}<button class="btn ghost sm" onclick="abrirJogador('${j.id}','ficha')">Ficha ›</button></div></div>
+    return `<div class="h3s-card" style="margin-top:12px" data-busca="${esc((j.nome+' '+Object.values(f).join(' ')).toLowerCase())}"><div class="row between"><div class="row" style="gap:10px">${avatar(j,44)}<div><b style="font-size:16px">${esc(j.nome)}</b><div class="faint">${j.numero?'#'+j.numero+' · ':''}${idade!=null?idade+' anos':'sem data de nascimento'}</div>${anivLinha(f.data_nascimento,j)}</div></div><div class="row" style="gap:6px"><button class="btn ghost sm" onclick="verCC('${j.id}')">🪪 CC</button><button class="btn ghost sm" onclick="abrirJogador('${j.id}','ficha')">Ficha ›</button></div></div>
     <div class="faint" style="margin-top:8px">${[f.escola&&('🏫 '+esc(f.escola)+(f.turma?' · '+esc(f.turma):'')),f.localidade&&('📍 '+esc(f.localidade)),f.num_federado&&('🪪 Federado n.º '+esc(f.num_federado)),f.seguro_validade&&('🛡️ Seguro até '+new Date(f.seguro_validade).toLocaleDateString('pt-PT')),f.tamanho_equip&&('👕 '+esc(f.tamanho_equip))].filter(Boolean).join(' · ')||'Ficha por preencher'}</div>
     ${linha('⚽',j.nome+' (atleta)',f.atleta_tel,null)}
     ${linha('👤',f.encarregado_nome?f.encarregado_nome+' (encarregado/a)':'Encarregado(a) de educação',f.encarregado_tel,f.encarregado_email)}
@@ -3094,14 +3095,14 @@ async function vDados(){
 
 /* ---------- cartão de cidadão (só pais carregam; pais e administradora veem) ---------- */
 const CC_LADOS=[['frente','Frente'],['verso','Verso']];
-function podeVerCC(jid){return ePais()||isAdminModo()}
+function podeVerCC(jid){return ePais()||isCoach()}
 async function ccUrls(jid){const o={};try{const {data}=await sb.storage.from('fut-docs').list(jid);const fs=(data||[]).filter(f=>f.name.startsWith('cc-'));
   for(const f of fs){const {data:u}=await sb.storage.from('fut-docs').createSignedUrl(jid+'/'+f.name,600);const lado=f.name.includes('verso')?'verso':'frente';o[lado]=u&&u.signedUrl}}catch(_){}return o}
 async function blocoCC(j){
-  if(!podeVerCC(j.id))return isCoach()?`<div class="card"><h3 style="margin:0">🪪 Cartão de Cidadão</h3><p class="faint" style="margin:6px 0 0">🔒 Só os pais e a administradora veem o documento.</p></div>`:'';
+  if(!podeVerCC(j.id))return '';
   const u=await ccUrls(j.id);
   return `<div class="card" id="ccBox"><div class="row between"><h3 style="margin:0">🪪 Cartão de Cidadão</h3><span class="chip ${u.frente&&u.verso?'mint':'red'}">${u.frente&&u.verso?'✔ completo':'em falta'}</span></div>
-  <p class="faint" style="margin:6px 0 10px">Para a inscrição na federação. Documento confidencial: só os pais e a administradora o veem.</p>
+  <p class="faint" style="margin:6px 0 10px">Para a inscrição na federação. Obrigatório em todos os jogos. Documento confidencial: só os pais, o treinador e a administradora o veem.</p>
   <div class="row" style="gap:10px">${CC_LADOS.map(([k,l])=>`<div style="flex:1;text-align:center"><div class="faint" style="margin-bottom:4px">${l}</div>
     ${u[k]?`<a href="${u[k]}" target="_blank" rel="noopener"><img src="${u[k]}" alt="Cartão de Cidadão, ${l.toLowerCase()}" style="width:100%;aspect-ratio:1.58;object-fit:cover;border-radius:10px;border:1px solid var(--line)"></a>`:`<div style="width:100%;aspect-ratio:1.58;border-radius:10px;border:2px dashed var(--line);display:grid;place-items:center;font-size:28px">🪪</div>`}
     ${ePais()?`<label class="btn ghost sm full" style="margin-top:6px;cursor:pointer">📷 ${u[k]?'Trocar':'Fotografar'}<input type="file" accept="image/*" capture="environment" hidden onchange="carregarCC('${j.id}','${k}',this.files[0])"></label>${u[k]?`<button class="btn ghost sm full" style="margin-top:4px;color:var(--red)" onclick="apagarCC('${j.id}','${k}')">Apagar</button>`:''}`:''}</div>`).join('')}</div></div>`}
@@ -3112,6 +3113,12 @@ async function carregarCC(jid,lado,file){if(!file)return;toast('A carregar…');
   const {error}=await sb.storage.from('fut-docs').upload(`${jid}/cc-${lado}.jpg`,blob,{upsert:true,contentType:'image/jpeg'});
   if(error){toast('Não foi possível guardar: '+error.message);return}toast('Guardado');vJogador()}
 async function apagarCC(jid,lado){if(!confirm('Apagar esta fotografia do Cartão de Cidadão?'))return;const {error}=await sb.storage.from('fut-docs').remove([`${jid}/cc-${lado}.jpg`]);if(error){toast(error.message);return}toast('Apagado');vJogador()}
+async function docsJogo(evId){const e=S.eventos.find(x=>x.id===evId);
+  const conv=await q(sb.rpc('fut_convocados',{p_evento:evId}))||[];let ids=(conv||[]).map(c=>c.jogador_id);const temConv=ids.length>0;if(!ids.length)ids=S.jogadores.map(j=>j.id);
+  openSheet(`<h2>🪪 Documentos · vs ${esc(e.adversario||'?')}</h2><p class="muted" style="margin-top:0">${ids.length} ${ids.length===1?"atleta":"atletas"}${temConv?(ids.length===1?' convocado':' convocados'):' (ainda sem convocatória)'}. Mostre ao árbitro a partir daqui.</p><div id="docsL"><p class="muted">A carregar…</p></div>`);
+  const L=[];for(const id of ids){const j=S.jogadores.find(x=>x.id===id);if(!j)continue;L.push({j,u:await ccUrls(id)})}
+  $('#docsL').innerHTML=L.map(({j,u})=>`<div style="padding:10px 0;border-top:1px solid var(--line)"><div class="row between"><b>${j.numero?'#'+j.numero+' ':''}${esc(j.nome)}</b><span class="chip ${u.frente?'mint':'red'}">${u.frente?(u.verso?'✔ frente e verso':'só frente'):'✖ em falta'}</span></div>
+    ${u.frente?`<div class="row" style="gap:8px;margin-top:6px">${['frente','verso'].filter(k=>u[k]).map(k=>`<a href="${u[k]}" target="_blank" rel="noopener" style="flex:1"><img src="${u[k]}" alt="Cartão de Cidadão de ${esc(j.nome)}, ${k}" style="width:100%;aspect-ratio:1.58;object-fit:cover;border-radius:8px"></a>`).join('')}</div>`:''}</div>`).join('')}
 async function verCC(jid){const j=S.jogadores.find(x=>x.id===jid);const u=await ccUrls(jid);
   openSheet(`<h2>🪪 ${esc(j?j.nome:'')}</h2>${CC_LADOS.map(([k,l])=>`<div class="faint" style="margin-top:10px">${l}</div>${u[k]?`<img src="${u[k]}" alt="Cartão de Cidadão, ${l.toLowerCase()}" style="width:100%;border-radius:10px;margin-top:4px">`:'<p class="empty">Ainda não carregado pelos pais.</p>'}`).join('')}<p class="faint" style="margin-top:10px">Documento confidencial. Não reencaminhe nem guarde no telemóvel.</p>`)}
 
