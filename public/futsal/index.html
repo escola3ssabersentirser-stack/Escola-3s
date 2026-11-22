@@ -423,6 +423,7 @@ function proximos(){return S.eventos.filter(e=>e.data>=hoje())}
 function respostaDe(ev,j){return S.presencas.find(p=>p.evento_id===ev&&p.jogador_id===j)}
 function vInicio(){
   const m=$('#main');const prox=proximos();const ev=prox[0];
+  if(isCoach()){m.innerHTML=inicioTreinador();setTimeout(areasDinamicas,0);return}
   let h=`<div class="card" id="tarefas"><h2>📝 As minhas tarefas</h2><p class="muted">A carregar…</p></div>`;
   let filho=null;
   if(!isCoach()&&!isAtleta()&&(S.todosMeus||[]).length){filho=S.meus.find(j=>j.id===S.filhoSel)||S.meus[0]||null;
@@ -1372,7 +1373,9 @@ async function jFicha(j){
     ${linha('N.º de federado',esc(f.num_federado||''))}
     ${linha('Seguro desportivo válido até',f.seguro_validade?new Date(f.seguro_validade+'T12:00').toLocaleDateString('pt-PT'):'')}
     ${linha('Contacto de emergência',esc(f.contacto_emergencia||''))}
-    ${linha('Saúde (alergias, cuidados)',esc(f.saude_notas||''))}
+    ${linha('🩺 Doenças',esc(f.doencas||''))}
+    ${linha('⚠️ Alergias',esc(f.alergias||''))}
+    ${linha('Outros cuidados',esc(f.saude_notas||''))}
     </div><p class="faint" style="margin:8px 0 0">🔒 Só a família e o treinador veem estes dados.</p></div>
   <div class="card"><div class="row between"><h3 style="margin:0">📏 Peso e altura</h3><button class="btn ghost sm" onclick="novaMedida()">+ Registar</button></div>
     ${ult?`<div class="kpis" style="grid-template-columns:repeat(2,1fr);margin-top:10px"><div class="kpi"><b>${ult.peso!=null?String(ult.peso).replace('.',','):'–'}</b><small>kg</small></div><div class="kpi"><b>${ult.altura!=null?String(ult.altura).replace('.',','):'–'}</b><small>cm</small></div></div>
@@ -1405,13 +1408,15 @@ async function editarFicha(){
   <h3 style="margin:18px 0 0">Clube e saúde</h3>
   <div class="row"><div class="grow"><label class="f" for="fFed">N.º de federado</label><input id="fFed" class="in" value="${esc(f.num_federado||'')}"></div><div class="grow"><label class="f" for="fSeg">Seguro válido até</label><input id="fSeg" type="date" class="in" value="${f.seguro_validade||''}"></div></div>
   <label class="f" for="fEme">Contacto de emergência</label><input id="fEme" class="in" value="${esc(f.contacto_emergencia||'')}" placeholder="Nome e telemóvel">
-  <label class="f" for="fSau">Saúde: alergias, asma, medicação, cuidados</label><textarea id="fSau" class="in" placeholder="O que o treinador deve saber">${esc(f.saude_notas||'')}</textarea>
+  <label class="f" for="fDoe">🩺 Doenças (asma, diabetes, epilepsia…)</label><input id="fDoe" class="in" value="${esc(f.doencas||'')}" placeholder="Nenhuma">
+  <label class="f" for="fAle">⚠️ Alergias (alimentos, medicamentos, picadas…)</label><input id="fAle" class="in" value="${esc(f.alergias||'')}" placeholder="Nenhuma">
+  <label class="f" for="fSau">Outros cuidados ou medicação</label><textarea id="fSau" class="in" placeholder="O que o treinador deve saber">${esc(f.saude_notas||'')}</textarea>
   <button class="btn full" style="margin-top:14px" onclick="guardarFicha()">Guardar</button>`);
 }
 async function guardarFicha(){
   if(!g('fNome')){toast('Escreva o nome');return}
   await q(sb.from('fut_jogadores').update({nome:g('fNome'),numero:g('fNum')?parseInt(g('fNum')):null,posicao:g('fPos')||null,ano_escolar:g('fAno')||null}).eq('id',S.jog));
-  await q(sb.from('fut_fichas').upsert({jogador_id:S.jog,data_nascimento:g('fNasc')||null,pe_dominante:g('fPe')||null,tamanho_equip:g('fTam')||null,contacto_emergencia:g('fEme')||null,saude_notas:g('fSau')||null,localidade:g('fLoc')||null,atleta_tel:g('fAtT')||null,encarregado2_nome:g('fE2N')||null,encarregado2_tel:g('fE2T')||null,encarregado_nome:g('fEnN')||null,encarregado_tel:g('fEnT')||null,encarregado_email:g('fEnE')||null,escola:g('fEsc')||null,turma:g('fTur')||null,diretor_turma:g('fDT')||null,num_federado:g('fFed')||null,seguro_validade:g('fSeg')||null,updated_at:new Date().toISOString()},{onConflict:'jogador_id'}));
+  await q(sb.from('fut_fichas').upsert({jogador_id:S.jog,data_nascimento:g('fNasc')||null,pe_dominante:g('fPe')||null,tamanho_equip:g('fTam')||null,contacto_emergencia:g('fEme')||null,saude_notas:g('fSau')||null,doencas:g('fDoe')||null,alergias:g('fAle')||null,localidade:g('fLoc')||null,atleta_tel:g('fAtT')||null,encarregado2_nome:g('fE2N')||null,encarregado2_tel:g('fE2T')||null,encarregado_nome:g('fEnN')||null,encarregado_tel:g('fEnT')||null,encarregado_email:g('fEnE')||null,escola:g('fEsc')||null,turma:g('fTur')||null,diretor_turma:g('fDT')||null,num_federado:g('fFed')||null,seguro_validade:g('fSeg')||null,updated_at:new Date().toISOString()},{onConflict:'jogador_id'}));
   closeSheet();await carregar();vJogador();toast('Ficha guardada');
 }
 function novaMedida(){openSheet(`<h2>Peso e altura</h2>
@@ -3081,7 +3086,7 @@ async function vDados(){
   if(!isCoach()){$('#main').innerHTML='<div class="card"><p class="empty">Só o treinador e a administradora veem esta página.</p></div>';return}
   $('#main').innerHTML='<div class="card"><p class="muted">A carregar…</p></div>';
   const ids=S.jogadores.map(j=>j.id);
-  const F=ids.length?await q(sb.from('fut_fichas').select('*').in('jogador_id',ids))||[]:[];
+  const [F,NE]=ids.length?await Promise.all([q(sb.from('fut_fichas').select('*').in('jogador_id',ids)).then(r=>r||[]),q(sb.from('fut_notas_escola').select('*').in('jogador_id',ids)).then(r=>r||[])]):[[],[]];
   const tel=t=>t?`<a class="chip" style="text-decoration:none" href="tel:${telWa(t)}">📞 ${esc(t)}</a><a class="chip" style="text-decoration:none;background:#25D366;color:#fff" href="https://wa.me/${telWa(t)}" target="_blank" rel="noopener">WhatsApp</a>`:'<span class="chip red" style="font-size:11px">sem telemóvel</span>';
   const linha=(ic,n,t,em)=>`<div style="padding:8px 0;border-top:1px solid var(--line)"><div class="row between"><b style="font-size:14px">${ic} ${n?esc(n):'<span class="faint">sem nome</span>'}</b></div><div class="row wrap" style="gap:6px;margin-top:6px">${tel(t)}${em?`<a class="chip" style="text-decoration:none" href="mailto:${esc(em)}">✉️ ${esc(em)}</a>`:''}</div></div>`;
   S._dq='';const L=S.jogadores;
@@ -3090,7 +3095,9 @@ async function vDados(){
   <p class="faint" style="margin:8px 4px">Dados confidenciais: só o treinador e a administradora os veem. Usar apenas para assuntos da equipa.</p>
   ${L.map(j=>{const f=F.find(x=>x.jogador_id===j.id)||{};const idade=f.data_nascimento?Math.floor((Date.now()-new Date(f.data_nascimento))/31557600000):null;
     return `<div class="h3s-card" style="margin-top:12px" data-busca="${esc((j.nome+' '+Object.values(f).join(' ')).toLowerCase())}"><div class="row between"><div class="row" style="gap:10px">${avatar(j,44)}<div><b style="font-size:16px">${esc(j.nome)}</b><div class="faint">${j.numero?'#'+j.numero+' · ':''}${idade!=null?idade+' anos':'sem data de nascimento'}</div>${anivLinha(f.data_nascimento,j)}</div></div><div class="row" style="gap:6px"><button class="btn ghost sm" onclick="verCC('${j.id}')">🪪 CC</button><button class="btn ghost sm" onclick="abrirJogador('${j.id}','ficha')">Ficha ›</button></div></div>
-    <div class="faint" style="margin-top:8px">${[f.escola&&('🏫 '+esc(f.escola)+(f.turma?' · '+esc(f.turma):'')),f.localidade&&('📍 '+esc(f.localidade)),f.num_federado&&('🪪 Federado n.º '+esc(f.num_federado)),f.seguro_validade&&('🛡️ Seguro até '+new Date(f.seguro_validade).toLocaleDateString('pt-PT')),f.tamanho_equip&&('👕 '+esc(f.tamanho_equip))].filter(Boolean).join(' · ')||'Ficha por preencher'}</div>
+    <div class="faint" style="margin-top:8px">${[f.escola&&('🏫 '+esc(f.escola)+(f.turma?' · '+esc(f.turma):'')),f.localidade&&('📍 '+esc(f.localidade)),f.num_federado&&('🪪 Federado n.º '+esc(f.num_federado)),f.seguro_validade&&('🛡️ Seguro até '+new Date(f.seguro_validade).toLocaleDateString('pt-PT'))].filter(Boolean).join(' · ')}</div>
+    <div class="row wrap" style="gap:6px;margin-top:8px"><span class="chip">👕 ${f.tamanho_equip?esc(f.tamanho_equip):'tamanho –'}</span>${f.alergias?`<span class="chip red">⚠️ Alergias: ${esc(f.alergias)}</span>`:''}${f.doencas?`<span class="chip red">🩺 ${esc(f.doencas)}</span>`:''}${!f.alergias&&!f.doencas?'<span class="chip">🩺 sem doenças nem alergias registadas</span>':''}${f.saude_notas?`<span class="chip gold">💊 ${esc(f.saude_notas)}</span>`:''}</div>
+    ${(()=>{const u=ultimasNotas(NE.filter(n=>n.jogador_id===j.id));if(!u.length)return '<div class="faint" style="margin-top:8px">📚 Notas da escola: ainda não registadas pelos pais</div>';const dn=u.filter(x=>x.ant&&pct(x.ult)<pct(x.ant)).length;return `<div style="margin-top:8px"><b style="font-size:13px">📚 Notas da escola</b>${dn?` <span class="chip red" style="font-size:11px">▼ ${dn} desceram</span>`:''}<div class="row wrap" style="gap:4px;margin-top:4px">${u.map(x=>`<span class="chip" style="font-size:11px">${esc(x.disciplina)} ${fmtNota(x.ult)}${setaTend(x)}</span>`).join('')}</div></div>`})()}
     ${linha('⚽',j.nome+' (atleta)',f.atleta_tel,null)}
     ${linha('👤',f.encarregado_nome?f.encarregado_nome+' (encarregado/a)':'Encarregado(a) de educação',f.encarregado_tel,f.encarregado_email)}
     ${f.encarregado2_nome||f.encarregado2_tel?linha('👤',(f.encarregado2_nome||'Encarregado(a) 2')+' (2.º contacto)',f.encarregado2_tel,null):''}
@@ -3170,8 +3177,39 @@ async function cartaoTarefas(){const el=$('#tarefas');if(!el)return;
   <button class="btn ghost full sm" style="margin-top:10px" onclick="novaTarefa()">+ Acrescentar uma tarefa minha</button>`}
 function novaTarefa(){openSheet(`<h2>📝 Nova tarefa</h2><label class="f" for="tTx">O que tenho de fazer</label><input id="tTx" class="in" maxlength="300"><label class="f" for="tPz">Até (opcional)</label><input id="tPz" class="in" type="date"><button class="btn full" style="margin-top:12px" onclick="guardarTarefa()">Guardar</button>`)}
 async function guardarTarefa(){const t=g('tTx');if(!t){toast('Escreva a tarefa');return}const r=await q(sb.from('fut_tarefas').insert({texto:t,prazo:g('tPz')||null,equipa_id:S.eq?S.eq.id:null,user_id:S.me}));if(r===null)return;closeSheet();cartaoTarefas()}
-async function feitaTarefa(id){await q(sb.from('fut_tarefas').update({feito:true}).eq('id',id));toast('Feita ✔');cartaoTarefas()}
+async function feitaTarefa(id){await q(sb.from('fut_tarefas').update({feito:true}).eq('id',id));toast('Feita ✔');cartaoTarefas();if(isCoach()&&S.tab==='inicio')areasDinamicas()}
 async function apagarTarefa(id){await q(sb.from('fut_tarefas').delete().eq('id',id));cartaoTarefas()}
+
+/* ---------- Início do treinador: áreas em cartões ---------- */
+function areaCard(id,ic,t,sub,acao){return `<button onclick="${acao}" style="border:0;background:var(--card);border-radius:24px;padding:20px 18px;min-height:150px;box-shadow:0 6px 20px var(--shadow);display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;cursor:pointer"><span style="font-size:36px;line-height:1">${ic}</span><b style="font-size:19px;color:var(--navy);margin-top:6px">${t}</b><span id="ar_${id}" class="faint" style="font-size:13px;line-height:1.35">${sub}</span></button>`}
+function inicioTreinador(){
+  const ev=proximos()[0];
+  return `<div style="background:var(--bg,#F3EEE6);border-radius:28px;padding:18px 14px 6px;position:relative;z-index:2"><div class="row between" style="margin:0 4px 14px"><h2 style="margin:0;color:var(--navy)">${isAdminModo()?'Administração':'Áreas da equipa'}</h2><span class="chip">${esc(S.eq.nome)}</span></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+   ${areaCard('dados','📇','Dados pessoais','pais e jogadores · contactos e Cartão de Cidadão','irDados()')}
+   ${areaCard('jog','⚽','Jogadores',`${S.jogadores.length} atletas · fotos e fichas`,"irPara('jogadores')")}
+   ${areaCard('tar','📝','Tarefas','a carregar…','abrirTarefas()')}
+   ${areaCard('ace','🔑','Acessos','códigos por WhatsApp','irAcessos()')}
+   ${areaCard('ava','💛','Avaliações',`3S, FPF, coaching · ${trimLabel(trimAtual())}`,'irAvaliacoes()')}
+   ${areaCard('pag','💶','Pagamentos','quotas e conta corrente','painelPagamentos()')}
+   ${areaCard('eq','🛡️','Equipa','plantel, jogos, classificação','irEquipa()')}
+   ${areaCard('age','📅','Agenda',ev?`próximo: ${ev.tipo==='jogo'?'jogo vs '+esc(ev.adversario||'?'):'treino'} · ${dataCurta(ev.data)}`:'treinos, jogos e reuniões',"irPara('agenda')")}
+  </div>
+  <h3 style="margin:20px 4px 10px;color:var(--navy)">Mais</h3>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">${[['🏆','Pódios','irPodios()'],['✅','Obrigações','abrirObrig()'],['📊','Visão geral','abrirVisao()'],['🎂','Aniversários','abrirAnivSheet()'],['📋','Presenças','mapaPresencas()']].map(([i,l,a])=>`<button onclick="${a}" style="border:0;background:var(--card);border-radius:16px;padding:12px 4px;box-shadow:0 6px 20px var(--shadow);display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer"><span style="font-size:24px">${i}</span><b style="font-size:12px;color:var(--navy)">${l}</b></button>`).join('')}</div></div>`}
+async function areasDinamicas(){
+  const [auto,minhas,cods,av]=await Promise.all([tarefasAuto().catch(()=>[]),q(sb.from('fut_tarefas').select('id').eq('user_id',S.me).eq('feito',false)),sb.rpc('fut_codigos_equipa',{p_equipa:S.eq.id}).then(r=>r.data||[]),S.jogadores.length?q(sb.from('fut_avaliacoes_360').select('jogador_id').eq('trimestre',trimAtual()).eq('respondente_tipo','treinador').in('jogador_id',S.jogadores.map(j=>j.id))):[]]);
+  const n=auto.length+(minhas||[]).length,urg=auto.filter(t=>t.urg).length;
+  const set=(id,t)=>{const e=$('#ar_'+id);if(e)e.innerHTML=t};
+  const pp=S.pagPend||[];const tp=pp.filter(x=>x.estado==='pendente').reduce((s,x)=>s+Number(x.valor),0);set('pag',tp?`<b style="color:var(--red)">${euro(tp)}</b> por receber${pp.some(x=>x.estado==='avisado')?' · há avisos de pagamento':''}`:'<b style="color:var(--mint)">✔ tudo pago</b>');
+  {const jg=S.eventos.filter(e=>e.tipo==='jogo'&&e.resultado);let v=0,e2=0,d=0;jg.forEach(e=>{const m=String(e.resultado).match(/(\d+)\s*-\s*(\d+)/);if(m){+m[1]>+m[2]?v++:+m[1]<+m[2]?d++:e2++}});set('eq',jg.length?`${jg.length} jogos · ${v}V ${e2}E ${d}D`:'plantel, jogos, classificação')}
+  set('tar',n?`<b style="color:var(--red)">${n} por fazer</b>${urg?` · ${urg} urgente${urg>1?'s':''}`:''}`:'<b style="color:var(--mint)">✔ tudo em dia</b>');
+  const fam=(cods||[]).filter(x=>x.n_familia>0).length,atl=(cods||[]).filter(x=>x.n_atleta>0).length,tot=(cods||[]).length;
+  set('ace',`👨‍👩‍👦 ${fam}/${tot} famílias · ⚽ ${atl}/${tot} atletas ligados`);
+  const feitas=new Set((av||[]).map(x=>x.jogador_id)).size;
+  set('ava',`<b style="color:${feitas===S.jogadores.length&&feitas?'var(--mint)':'var(--gold)'}">${feitas}/${S.jogadores.length}</b> avaliados · ${trimLabel(trimAtual())}`);
+}
+function abrirTarefas(){openSheet(`<div id="tarefas"><p class="muted">A carregar…</p></div>`);cartaoTarefas()}
 
 /* ---------- mensagens ---------- */
 async function vMensagens(){
