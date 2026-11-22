@@ -8789,7 +8789,7 @@ EVENTOS_PUBLICOS.novembro = {
   inicio: "2026-11-26T21:00:00+00:00",
   chamada: "Quem sou eu?",
   quandoCurto: "Quinta, 26 nov · 21h",
-  descricao: "Se te tirassem o nome, a profissão, os papéis de mãe, de pai, de filho ou de chefe, o que ficava? Quantas das tuas certezas escolheste tu, e quantas herdaste sem perguntar? Um encontro para parar, questionar e escutar o que há por baixo do que mostramos aos outros, com o método 3S: Saber, Sentir e Ser.",
+  descricao: "A Escola 3S convida-o(a) para o encontro online «Quem sou eu?», na quinta-feira, 26 de novembro, às 21h00. Uma sessão de reflexão sobre identidade, valores e propósito, com o método 3S: Saber, Sentir, Ser. Participação gratuita.",
 };
 EVENTOS_PUBLICOS.dezembro = {
   nome: "Encontro à distância da Escola 3S — 18 de dezembro (21h)",
@@ -8893,7 +8893,7 @@ function InscricaoEventoPublica({ eventoId }) {
                 <div className="rounded-2xl px-5 py-6 text-center" style={{ backgroundColor: palette.card, border: `1px solid ${palette.gold}` }}>
                   <CheckCircle2 size={30} style={{ color: palette.gold, margin: "0 auto" }} />
                   <p className="font-serif text-2xl mt-2" style={{ color: palette.navy }}>Inscrição concluída!</p>
-                  <p className="text-sm mt-2 leading-relaxed" style={{ color: palette.ink }}>Obrigada, {nome.trim().split(" ")[0]}. Vais receber a ligação de acesso antes do evento, no correio eletrónico {email.trim()}.</p>
+                  <p className="text-sm mt-2 leading-relaxed" style={{ color: palette.ink }}>Inscrição confirmada, {nome.trim().split(" ")[0]}. A ligação de acesso será enviada antes do encontro para {email.trim()}.</p>
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -9783,7 +9783,8 @@ function numeroWhatsApp(tel) {
 function mensagemEvento(nome, ev) {
   const primeiro = String(nome || "").trim().split(" ")[0];
   const quando = new Date(ev.inicio).toLocaleDateString("pt-PT", { weekday: "long", day: "numeric", month: "long" }) + " às " + new Date(ev.inicio).toLocaleTimeString("pt-PT", { hour: "2-digit", minute: "2-digit" });
-  return `Olá${primeiro ? " " + primeiro : ""}! 😊 Obrigada pela tua inscrição no ${ev.titulo}.\n\n📅 ${quando}\n🔗 Ligação para entrar: ${ev.link}\n\nAté já!\nConceição Alves · Escola 3S`;
+  const tema = String(ev.titulo || "").replace(/^Encontro à distância\s*[—-]\s*/, "");
+  return `Olá${primeiro ? ", " + primeiro : ""}.\n\nA Escola 3S confirma a sua inscrição no encontro online «${tema}», ${quando}. Participação gratuita.\n\nAcesso: ${ev.link}\n\nCumprimentos,\nConceição Alves | Escola 3S`;
 }
 
 function ArquivoCartao({ titulo, linhas }) {
