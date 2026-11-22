@@ -4412,7 +4412,7 @@ function ConteudoDetalhe({ curso, concluido, onToggleConcluido, onBack, materiai
                           </div>
                         )}
                         {(() => {
-                          const primeiraFrase = aula.conteudo.split(/(?<=[.!?])\s/)[0];
+                          const primeiraFrase = (String(aula.conteudo).match(/^[\s\S]*?[.!?](?=\s|$)/) || [aula.conteudo])[0];
                           return (
                             <p className="text-sm leading-relaxed mb-2 italic" style={{ color: palette.navySoft }}>{primeiraFrase} — continua no Livro do Aluno.</p>
                           );
@@ -8789,6 +8789,7 @@ EVENTOS_PUBLICOS.novembro = {
   inicio: "2026-11-26T21:00:00+00:00",
   chamada: "Quem sou eu?",
   quandoCurto: "Quinta, 26 nov · 21h",
+  link: "https://meet.jit.si/Escola3S-Encontro-9358a97bf1",
   descricao: "A Escola 3S convida-o(a) para o encontro online «Quem sou eu?», na quinta-feira, 26 de novembro, às 21h00. Uma sessão de reflexão sobre identidade, valores e propósito, com o método 3S: Saber, Sentir, Ser. Participação gratuita.",
 };
 EVENTOS_PUBLICOS.dezembro = {
@@ -8893,11 +8894,27 @@ function InscricaoEventoPublica({ eventoId }) {
                 <div className="rounded-2xl px-5 py-6 text-center" style={{ backgroundColor: palette.card, border: `1px solid ${palette.gold}` }}>
                   <CheckCircle2 size={30} style={{ color: palette.gold, margin: "0 auto" }} />
                   <p className="font-serif text-2xl mt-2" style={{ color: palette.navy }}>Inscrição concluída!</p>
-                  <p className="text-sm mt-2 leading-relaxed" style={{ color: palette.ink }}>Inscrição confirmada, {nome.trim().split(" ")[0]}. A ligação de acesso será enviada antes do encontro para {email.trim()}.</p>
+                  <p className="text-sm mt-2 leading-relaxed" style={{ color: palette.ink }}>Inscrição confirmada, {nome.trim().split(" ")[0]}. Guarde a ligação de acesso abaixo; também lhe será enviada para {email.trim()}.</p>
+                  {evento.link && (
+                    <div className="rounded-2xl px-5 py-5 text-center my-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.gold}` }}>
+                      <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>LIGAÇÃO DE ACESSO</p>
+                      <a href={evento.link} target="_blank" rel="noopener noreferrer" className="inline-block mt-3 rounded-full px-6 py-3 text-sm font-semibold" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Entrar no encontro</a>
+                      <p className="text-[11px] mt-3 break-all" style={{ color: palette.navySoft }}>{evento.link}</p>
+                      <p className="text-[11px] mt-1" style={{ color: palette.navySoft }}>Disponível no dia {evento.quandoCurto.replace(/^\S+,\s*/, "")}. Não é necessário instalar nenhum programa.</p>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="space-y-3">
                   <p className="text-sm leading-relaxed mb-2" style={{ color: palette.ink }}>{evento.descricao}</p>
+                  {evento.link && (
+                    <div className="rounded-2xl px-5 py-5 text-center my-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.gold}` }}>
+                      <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>LIGAÇÃO DE ACESSO</p>
+                      <a href={evento.link} target="_blank" rel="noopener noreferrer" className="inline-block mt-3 rounded-full px-6 py-3 text-sm font-semibold" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Entrar no encontro</a>
+                      <p className="text-[11px] mt-3 break-all" style={{ color: palette.navySoft }}>{evento.link}</p>
+                      <p className="text-[11px] mt-1" style={{ color: palette.navySoft }}>Disponível no dia {evento.quandoCurto.replace(/^\S+,\s*/, "")}. Não é necessário instalar nenhum programa.</p>
+                    </div>
+                  )}
                   {campo(nome, setNome, "Nome completo")}
                   {campo(email, setEmail, "Correio eletrónico", "email")}
                   {campo(telefone, setTelefone, "Telemóvel", "tel")}

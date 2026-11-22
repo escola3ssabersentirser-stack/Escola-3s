@@ -8,6 +8,16 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Escola 3S" />
+    <script>
+    (function(){
+      var U="https://hspekqrhttxeckghtryi.supabase.co/rest/v1/erros_app",K="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhzcGVrcXJodHR4ZWNrZ2h0cnlpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyNTc2OTQsImV4cCI6MjEwMzgzMzY5NH0.2MKWYnUYWbxJqogSzpsfbkVHD_J0QqqMse-duNtj_GI",n=0;
+      function reg(m,p){try{if(n++>5)return;var x=new XMLHttpRequest();x.open("POST",U,true);x.setRequestHeader("apikey",K);x.setRequestHeader("Authorization","Bearer "+K);x.setRequestHeader("Content-Type","application/json");x.send(JSON.stringify({mensagem:String(m||"").slice(0,1900),pilha:String(p||"").slice(0,5900),navegador:String(navigator.userAgent).slice(0,490),pagina:String(location.href).slice(0,490)}));}catch(e){}}
+      window.__erro3s=reg;
+      window.addEventListener("error",function(e){reg(e.message+" @ "+(e.filename||"")+":"+(e.lineno||""),e.error&&e.error.stack);});
+      window.addEventListener("unhandledrejection",function(e){var r=e.reason;reg("promessa: "+(r&&r.message||r),r&&r.stack);});
+      setTimeout(function(){if(document.getElementById("abertura")){reg("A app nao arrancou em 12 s");var a=document.getElementById("abertura");var d=document.createElement("div");d.setAttribute("style","position:absolute;bottom:calc(110px + env(safe-area-inset-bottom,0px));left:24px;right:24px;text-align:center;font:400 14px/1.5 -apple-system,sans-serif;color:#F7EEDD");d.innerHTML='A app está a demorar a abrir.<br><a href="/" style="color:#C6A253">Tocar aqui para tentar outra vez</a>';a.appendChild(d);}},12000);
+    })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
