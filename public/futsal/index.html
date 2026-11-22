@@ -433,7 +433,7 @@ function vInicio(){
     h+=`<div class="card"><h2>Agenda</h2><p class="empty">Ainda não há treinos nem jogos marcados.${isCoach()?'':' O treinador vai marcá-los aqui.'}</p>${isCoach()?'<button class="btn full" onclick="novoEvento()">+ Marcar treino ou jogo</button>':''}</div>`;
   }
   const reu=(S.reunioes||[]).find(r=>r.data>=hoje()&&r.estado!=='cancelada'&&(isCoach()||!r.jogador_id||S.meus.some(m=>m.id===r.jogador_id)));
-  if(reu){const jr=reu.jogador_id&&S.jogadores.find(x=>x.id===reu.jogador_id);h+=`<div class="card"><div class="row between"><h2>🤝 Próxima reunião</h2><span class="chip ${ESTADOS_REUNIAO[reu.estado][1]}">${ESTADOS_REUNIAO[reu.estado][0]}</span></div><p style="margin:0;font-weight:600">${TIPOS_REUNIAO[reu.tipo]}${jr?' · '+esc(primeiro(jr.nome)):''}</p><p class="muted" style="margin:2px 0 10px">${diaSemana(reu.data)}, ${dataCurta(reu.data)} · ${esc(reu.hora||'')}${reu.assunto?' · '+esc(reu.assunto):''}</p><button class="btn ghost full sm" onclick="S.agTab='reunioes';irPara('agenda')">Ver reuniões</button></div>`}
+  if(reu){const jr=reu.jogador_id&&S.jogadores.find(x=>x.id===reu.jogador_id);h+=`<div class="card"><div class="row between"><h2>🤝 Próxima reunião</h2><span class="chip ${ESTADOS_REUNIAO[reu.estado][1]}">${ESTADOS_REUNIAO[reu.estado][0]}</span></div><p style="margin:0;font-weight:600">${TIPOS_REUNIAO[reu.tipo]}${jr?' · '+esc(primeiro(jr.nome)):''}</p><p class="muted" style="margin:2px 0 10px">${diaSemana(reu.data)}, ${dataCurta(reu.data)} · ${esc(reu.hora||'')}${reu.assunto?' · '+esc(reu.assunto):''}</p>${reu.link&&reu.estado==='marcada'?`<a class="btn gold full sm" style="display:block;text-align:center;text-decoration:none;margin-bottom:6px" href="${esc(reu.link)}" target="_blank" rel="noopener">🎥 Entrar na reunião</a>`:''}<button class="btn ghost full sm" onclick="S.agTab='reunioes';irPara('agenda')">Ver reuniões</button></div>`}
   if(isCoach()){const ultEx=j=>S.exames.find(e=>e.jogador_id===j.id);
    const probEx=[];
    if(probEx.length)h+=`<div class="card"><h2>🩺 Exames médicos</h2><div class="list">${probEx.slice(0,6).map(([j,e])=>`<button class="item" onclick="abrirJogador('${j.id}','ficha')"><div class="av">${iniciais(j.nome)}</div><div class="grow"><b>${esc(j.nome)}</b><div><span class="chip ${e[1]}">${e[0]}</span></div></div></button>`).join('')}</div>${probEx.length>6?`<p class="faint">e mais ${probEx.length-6}.</p>`:''}</div>`;
@@ -1101,11 +1101,15 @@ function novaReuniao(r){
   <div id="rJogW" ${r.tipo==='pais'?'hidden':''}><label class="f" for="rJog">Sobre</label><select id="rJog" class="in">${S.meus.map(j=>`<option value="${j.id}" ${r.jogador_id===j.id?'selected':''}>${esc(j.nome)}</option>`).join('')}</select></div>
   <div class="row"><div class="grow"><label class="f" for="rData">Dia</label><input id="rData" type="date" class="in" value="${r.data||addDias(7)}"></div><div class="grow"><label class="f" for="rHora">Hora</label><input id="rHora" type="time" class="in" value="${esc(r.hora||'19:00')}"></div></div>
   <label class="f" for="rLocal">Local</label><input id="rLocal" class="in" value="${esc(r.local||'')}" placeholder="Pavilhão, escola…">
-  <label class="f" for="rLink">Link da videochamada (opcional)</label><input id="rLink" class="in" type="url" value="${esc(r.link||'')}" placeholder="https://meet.google.com/…">
+  <label class="f" for="rLink">Link para entrar na reunião (opcional)</label><input id="rLink" class="in" type="url" value="${esc(r.link||'')}" placeholder="https://meet.jit.si/… ou Google Meet">
+  <div class="row" style="gap:6px;margin-top:6px"><button type="button" class="btn sm grow" onclick="document.getElementById('rLink').value=linkReuniao()">🎥 Criar link automático</button><a class="btn ghost sm grow" style="text-align:center;text-decoration:none" href="https://meet.google.com/new" target="_blank" rel="noopener">Google Meet</a></div>
+  <p class="faint" style="margin:4px 0 0">O link automático é gratuito e funciona no telemóvel e no computador. Com o Google Meet, copie o link que aparece e cole-o aqui.</p>
   <label class="f" for="rAss">Assunto</label><input id="rAss" class="in" value="${esc(r.assunto||'')}" placeholder="Ex.: avaliação do 1.º trimestre">
   <label class="f" for="rPart">Participantes</label><input id="rPart" class="in" value="${esc(r.participantes||'')}" placeholder="Ex.: mãe, pai, diretora de turma">
   <button class="btn full" style="margin-top:14px" onclick="guardarReuniao('${r.id||''}')">${r.id?'Guardar':isCoach()?'Marcar':'Enviar pedido'}</button>`);
 }
+function linkReuniao(){const a='abcdefghijkmnpqrstuvwxyz23456789';let s='';const r=crypto.getRandomValues(new Uint8Array(10));r.forEach(x=>s+=a[x%a.length]);return 'https://meet.jit.si/Futsal3S-'+s}
+function txtReuniao(r){const j=r.jogador_id&&S.jogadores.find(x=>x.id===r.jogador_id);return `🤝 Reunião ${CLUBE} – ${S.eq.nome}\n${r.assunto?r.assunto+(j?' · '+j.nome:'')+'\n':j?j.nome+'\n':''}📅 ${diaSemana(r.data)}, ${dataCurta(r.data)} às ${r.hora||''}${r.local?'\n📍 '+r.local:''}${r.link?'\n🎥 Entrar na reunião: '+r.link:''}`}
 async function guardarReuniao(id){
   const tipo=g('rTipo');if(!g('rData')){toast('Escolha o dia');return}
   const lk=g('rLink');
@@ -1121,7 +1125,8 @@ function abrirReuniao(id){
   openSheet(`<div class="row between"><span class="chip">${TIPOS_REUNIAO[r.tipo]}</span><span class="chip ${e[1]}">${e[0]}</span></div>
   <h2 style="margin-top:8px">${esc(r.assunto||'Reunião')}${j?' · '+esc(primeiro(j.nome)):''}</h2>
   <p class="muted">${diaSemana(r.data)}, ${dataCurta(r.data)} · ${esc(r.hora||'')}${r.local?'<br>📍 '+esc(r.local):''}${r.participantes?'<br>👥 '+esc(r.participantes):''}<br>Marcada por ${esc(nomeDe(r.criado_por))}</p>
-  ${r.link?`<a class="btn full" style="display:block;text-align:center;text-decoration:none" href="${esc(r.link)}" target="_blank" rel="noopener">Entrar na videochamada</a>`:''}
+  ${r.link?`<a class="btn gold full" style="display:block;text-align:center;text-decoration:none" href="${esc(r.link)}" target="_blank" rel="noopener">🎥 Entrar na reunião</a>`:''}
+  <a class="btn full" style="display:block;text-align:center;text-decoration:none;background:#25D366;margin-top:8px" href="https://wa.me/?text=${encodeURIComponent(txtReuniao(r))}" target="_blank" rel="noopener">Enviar convite pelo WhatsApp</a>
   ${isCoach()&&r.estado==='pedida'?`<button class="btn gold full" style="margin-top:8px" onclick="estadoReuniao('${id}','marcada')">✔ Confirmar reunião</button>`:''}
   ${podeEditar?`<label class="f" for="rAta">Conclusões / ata</label><textarea id="rAta" class="in" style="min-height:120px" placeholder="O que se combinou, próximos passos…">${esc(r.ata||'')}</textarea>
   <button class="btn full" style="margin-top:8px" onclick="guardarAta('${id}')">Guardar conclusões</button>`:r.ata?`<div class="card" style="margin-top:10px"><b>Conclusões</b><p style="margin:4px 0 0">${esc(r.ata)}</p></div>`:''}
