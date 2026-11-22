@@ -414,7 +414,7 @@ function render(){
     ${emPrevia()?`<div style="margin-top:8px;font-size:12px;background:rgba(255,255,255,.12);border-radius:10px;padding:6px 10px">👁️ Pré-visualização como <b>${{treinador:'treinador',pai:'pais',atleta:'atleta'}[modoVer()]}</b>${S.meus[0]&&modoVer()!=='treinador'?' de '+esc(primeiro(S.meus[0].nome)):''}. O que gravar fica em seu nome. <button style="border:0;background:none;color:var(--gold);font-weight:700;padding:0" onclick="mudarModo('admin')">Sair</button></div>`:''}
   </header>
   <main id="main"></main>
-  ${isCoach()?'':`<nav class="bottom">${TABS.filter(([k])=>!(k==='mensagens'&&isAtleta())).map(([k,i,l])=>`<button class="${S.tab===k?'on':''}" onclick="irPara('${k}')"><span>${i}</span>${rotuloTab(k)}</button>`).join('')}</nav>`}`;
+  ${isCoach()||(ePais()&&S.meus.length)?'':`<nav class="bottom">${TABS.filter(([k])=>!(k==='mensagens'&&isAtleta())).map(([k,i,l])=>`<button class="${S.tab===k?'on':''}" onclick="irPara('${k}')"><span>${i}</span>${rotuloTab(k)}</button>`).join('')}</nav>`}`;
   ({inicio:vInicio,agenda:vAgenda,jogadores:vJogadores,mensagens:vMensagens,guia:vGuia,ajuda:vAjuda,podios:vPodios,equipa:vEquipa,acessos:vAcessos,avaliacoes:vAvaliacoes,dados:vDados})[S.tab]();
 }
 function irPara(t){S.tab=t;S.jog=null;render();window.scrollTo(0,0)}
@@ -425,6 +425,7 @@ function respostaDe(ev,j){return S.presencas.find(p=>p.evento_id===ev&&p.jogador
 function vInicio(){
   const m=$('#main');const prox=proximos();const ev=prox[0];
   if(isCoach()){m.innerHTML=inicioTreinador();setTimeout(areasDinamicas,0);return}
+  if(ePais()&&S.meus.length){const hp=inicioPais();if(hp){m.innerHTML=hp;setTimeout(areasPais,0);return}}
   let h=`<div class="card" id="tarefas"><h2>📝 As minhas tarefas</h2><p class="muted">A carregar…</p></div>`;
   let filho=null;
   if(!isCoach()&&!isAtleta()&&(S.todosMeus||[]).length){filho=S.meus.find(j=>j.id===S.filhoSel)||S.meus[0]||null;
@@ -3210,6 +3211,38 @@ async function areasDinamicas(){
 }
 function abrirRegras(){openSheet(cartaoRegras().replace('<div class="card">','<div>'))}
 function abrirTarefas(){openSheet(`<div id="tarefas"><p class="muted">A carregar…</p></div>`);cartaoTarefas()}
+
+/* ---------- Início dos pais: áreas em cartões ---------- */
+function inicioPais(){
+  const todos=S.todosMeus||S.meus||[];const f=S.meus.find(j=>j.id===S.filhoSel)||S.meus[0];
+  if(!f)return null;
+  const ev=proximos()[0];const r=ev?respostaDe(ev.id,f.id):null;const n=esc(primeiro(f.nome));
+  const ab=t=>`abrirJogadorEm('${f.id}','${t}')`;
+  const fotoF=j=>{const p=S.fotos[j.id];return p?`<img src="${p}" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid ${f.id===j.id?'var(--gold)':'transparent'}">`:`<span style="width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:var(--cream,#F6EEE4);font-family:'Baloo 2';font-weight:800;font-size:22px;color:var(--gold);border:3px solid ${f.id===j.id?'var(--gold)':'transparent'}">${esc(j.nome.split(' ').map(x=>x[0]).slice(0,2).join(''))}</span>`};
+  return `<div style="background:var(--card);border-radius:24px;padding:14px;box-shadow:0 6px 20px var(--shadow);position:relative;z-index:2;margin-bottom:12px"><div class="faint" style="margin:0 4px 8px">${todos.length>1?'Escolha o seu filho':'O seu filho'}</div><div class="row" style="gap:14px;overflow-x:auto">${todos.map(j=>`<button onclick="escolherFilho('${j.id}')" style="border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;flex:none;opacity:${f.id===j.id?1:.6}">${fotoF(j)}<b style="font-size:13px;color:var(--navy)">${esc(primeiro(j.nome))}</b><span class="faint" style="font-size:11px">${esc(((S.equipas||[]).find(e=>e.id===j.equipa_id)||{}).escalao||'').split(' (')[0]}</span></button>`).join('')}</div></div>
+  <div style="background:var(--bg);border-radius:28px;padding:18px 14px 6px;position:relative;z-index:1"><div class="row between" style="margin:0 4px 14px"><h2 style="margin:0;color:var(--navy)">${n}</h2><span class="chip">${esc(S.eq.nome)}</span></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+   ${areaCard('pf','⚽',`Perfil de ${n}`,'avaliação, evolução e plano',ab('resumo'))}
+   ${areaCard('tar','📝','Tarefas','a carregar…','abrirTarefas()')}
+   ${areaCard('age','📅','Agenda',ev?`${ev.tipo==='jogo'?'jogo vs '+esc(ev.adversario||'?'):'treino'} · ${dataCurta(ev.data)} · ${r?.resposta?({vai:'✅ vai',talvez:'🤔 talvez',nao_vai:'❌ não vai'}[r.resposta]):'<b style="color:var(--red)">falta responder</b>'}`:'treinos, jogos e reuniões',ev?`abrirEvento('${ev.id}')`:"irPara('agenda')")}
+   ${areaCard('ava','💛','Avaliações','3S, coaching, feedback do treinador',ab('avalhub'))}
+   ${areaCard('dad','📇','Dados pessoais','contactos, saúde e Cartão de Cidadão',ab('ficha'))}
+   ${areaCard('esc','📚','Escola','notas por disciplina',ab('escola'))}
+   ${areaCard('pag','💶','Pagamentos','conta corrente',ab('conta'))}
+   ${areaCard('aju','🤝','Ajuda aos pais','check-in, pergunta e desafio da semana',"irPara('ajuda')")}
+  </div>
+  <h3 style="margin:20px 4px 10px;color:var(--navy)">Mais</h3>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">${[['💬','Mensagens',"irPara('mensagens')"],['🌱','Guia 3S',"irPara('guia')"],['📜','Regras de funcionamento','abrirRegras()'],['🛡️','Equipa','irEquipa()'],['🏆','Pódios','irPodios()'],['🎂','Aniversários','abrirAnivSheet()']].map(([i,l,a])=>`<button onclick="${a}" style="border:0;background:var(--card);border-radius:16px;padding:12px 4px;box-shadow:0 6px 20px var(--shadow);display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer"><span style="font-size:24px">${i}</span><b style="font-size:12px;color:var(--navy)">${l}</b></button>`).join('')}</div></div>`}
+async function areasPais(){const f=S.meus.find(j=>j.id===S.filhoSel)||S.meus[0];if(!f)return;
+  const set=(id,t)=>{const e=$('#ar_'+id);if(e)e.innerHTML=t};
+  const [auto,minhas]=await Promise.all([tarefasAuto().catch(()=>[]),q(sb.from('fut_tarefas').select('id').eq('user_id',S.me).eq('feito',false))]);
+  const n=auto.length+(minhas||[]).length,urg=auto.filter(t=>t.urg).length;
+  set('tar',n?`<b style="color:var(--red)">${n} por fazer</b>${urg?` · ${urg} urgente${urg>1?'s':''}`:''}`:'<b style="color:var(--mint)">✔ tudo em dia</b>');
+  const dev=(S.pagPend||[]).filter(p=>p.jogador_id===f.id&&p.estado==='pendente').reduce((s,p)=>s+Number(p.valor),0);
+  set('pag',dev?`<b style="color:var(--red)">${euro(dev)}</b> por pagar`:'<b style="color:var(--mint)">✔ tudo pago</b>');
+  const ne=await q(sb.from('fut_notas_escola').select('*').eq('jogador_id',f.id))||[];const u=ultimasNotas(ne);
+  if(u.length){const dn=u.filter(x=>x.ant&&pct(x.ult)<pct(x.ant)).length,up=u.filter(x=>x.ant&&pct(x.ult)>pct(x.ant)).length;set('esc',`${u.length} disciplinas${up?` · <span style="color:var(--mint)">▲ ${up}</span>`:''}${dn?` · <span style="color:var(--red)">▼ ${dn}</span>`:''}`)}
+  else set('esc','<b style="color:var(--gold)">registar as notas</b>')}
 
 /* ---------- mensagens ---------- */
 async function vMensagens(){
