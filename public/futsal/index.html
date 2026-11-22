@@ -2733,6 +2733,28 @@ function cartaoSerAtleta(){
   <div style="display:flex;flex-wrap:wrap;gap:14px">${col('✅ Comportamentos a adotar','var(--mint)',SER_ATLETA.fazer,'✔')}${col('🚫 Comportamentos a evitar','var(--red)',SER_ATLETA.nao,'✖')}</div></div>`;
 }
 
+
+/* ---------- regras do treinador ---------- */
+const REGRAS_BASE=`Pontualidade: chegada ao pavilhão 15 minutos antes do início do treino ou da hora de concentração.
+Ausências: comunicadas na app com 24 horas de antecedência, salvo motivo de força maior.
+Equipamento: equipamento oficial do clube, caneleiras obrigatórias e garrafa de água individual.
+Telemóveis: guardados durante treinos, palestras e no banco de suplentes.
+Respeito: pelo treinador, colegas, adversários e equipa de arbitragem. As decisões da arbitragem não se contestam.
+Comunicação com a arbitragem: exclusiva do capitão de equipa.
+Convocatórias: definidas pelo treinador com base na assiduidade, empenho, comportamento e rendimento.
+Balneário: espaço de equipa, mantido limpo e organizado, com respeito pela privacidade de todos.
+Compromisso escolar: o rendimento escolar faz parte do compromisso de atleta.
+Pais e encarregados de educação: apoio positivo na bancada. As indicações técnico-táticas são da responsabilidade do treinador.
+Conduta antidesportiva: implica medidas disciplinares, incluindo afastamento de treinos ou convocatórias.`;
+function cartaoRegras(){const t=(S.eq.regras||REGRAS_BASE).split('\n').map(x=>x.trim()).filter(Boolean);
+  return `<div class="card"><div class="row between"><h2>📜 Regras da equipa</h2>${isCoach()?`<button class="btn ghost sm" onclick="editarRegras()">✏️ Editar</button>`:''}</div>
+  <p class="faint" style="margin:0 0 8px">Definidas pelo treinador · ${esc(S.eq.nome)}${!S.eq.regras&&isCoach()?' · modelo base, ainda por confirmar':''}</p>
+  <ol style="margin:0;padding-left:20px">${t.map(x=>{const k=x.indexOf(':');return `<li style="padding:5px 0;font-size:14px;line-height:1.4">${k>0&&k<45?`<b>${esc(x.slice(0,k))}:</b>${esc(x.slice(k+1))}`:esc(x)}</li>`}).join('')}</ol></div>`}
+function editarRegras(){openSheet(`<h2>📜 Regras da equipa</h2><p class="muted">Uma regra por linha. Pode começar com um título seguido de dois pontos, por exemplo «Pontualidade: …».</p>
+  <textarea id="rgTxt" class="in" style="min-height:320px">${esc(S.eq.regras||REGRAS_BASE)}</textarea>
+  <button class="btn full" style="margin-top:12px" onclick="guardarRegras()">Guardar</button>`)}
+async function guardarRegras(){const t=g('rgTxt');const r=await q(sb.from('fut_equipas').update({regras:t||null}).eq('id',S.eq.id));if(r===null)return;S.eq.regras=t||null;closeSheet();render();toast('Regras guardadas')}
+
 /* ---------- mensagens ---------- */
 async function vMensagens(){
   const m=$('#main');
@@ -2771,7 +2793,7 @@ const GUIA=[
 function vGuia(){
   const G=isCoach()?GUIA_TREINADOR:isAtleta()?GUIA_ATLETA:GUIA;
   $('#main').innerHTML=`<div class="card"><h2>${isCoach()?'Guia do Treinador 3S':isAtleta()?'Guia do Atleta 3S':'Guia Pai 3S'}</h2><p class="muted" style="margin:0">${isCoach()?'Ideias para treinar crianças e jovens com o método Saber, Sentir, Ser da Escola 3S.':isAtleta()?'Dicas para cresceres no futsal e fora dele, com o método Saber, Sentir, Ser.':'Pequenas ideias para acompanhar o seu filho no futsal com o método Saber, Sentir, Ser da Escola 3S.'}</p></div>
-  ${cartaoPodcasts()}${!isCoach()&&!isAtleta()?`<div class="card" style="border:2px solid var(--gold)"><h2>🤝 Ajuda aos pais</h2><p class="muted" style="margin-top:0">Como usar a app, o jogo visto da bancada e cuidar de quem cuida.</p><button class="btn gold full" onclick="irPara('ajuda')">Abrir</button></div>`:''}
+  ${cartaoRegras()}${cartaoPodcasts()}${!isCoach()&&!isAtleta()?`<div class="card" style="border:2px solid var(--gold)"><h2>🤝 Ajuda aos pais</h2><p class="muted" style="margin-top:0">Como usar a app, o jogo visto da bancada e cuidar de quem cuida.</p><button class="btn gold full" onclick="irPara('ajuda')">Abrir</button></div>`:''}
   ${S.meus[0]?`<div class="card" style="background:var(--mint-soft)"><h2>💚 Crescer bem</h2><p class="muted" style="margin-top:0">Adolescência, saúde mental e prevenção do tabaco, álcool e drogas.</p><button class="btn full" style="background:var(--mint)" onclick="abrirJogador('${S.meus[0].id}','bem')">Abrir</button></div>`:''}
   ${G.map(s=>`<div class="card"><h2>${s.i} ${s.t}</h2>${s.c.map(([a,b])=>`<div class="tip"><b>${a}</b><span class="muted" style="font-size:14px">${b}</span></div>`).join('')}</div>`).join('')}
   <div class="card"><h2>🎒 Mochila do jogo</h2>${['Equipamento completo','Caneleiras','Sapatilhas de pavilhão','Garrafa de água','Toalha e muda de roupa','Lanche para depois'].map(x=>`<label class="check"><input type="checkbox"> ${x}</label>`).join('')}</div>`;
