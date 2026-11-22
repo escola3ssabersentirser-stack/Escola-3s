@@ -6,7 +6,7 @@
 <title>Quem sou eu? · Encontro online Escola 3S</title>
 <meta name="description" content="Encontro online gratuito da Escola 3S. Quinta-feira, 26 de novembro, às 21h00.">
 <meta property="og:title" content="Quem sou eu? · Encontro online Escola 3S">
-<meta property="og:description" content="Quinta-feira, 26 de novembro, às 21h00. Toque para entrar. Não é preciso instalar nada.">
+<meta property="og:description" content="Quinta-feira, 26 de novembro, às 21h00. Toque para entrar. Não é preciso inscrição nem instalar nada.">
 <meta property="og:image" content="https://escola-3s.pt/icon-512.png">
 <meta property="og:url" content="https://escola-3s.pt/encontro/">
 <meta name="theme-color" content="#1B3355">
@@ -29,11 +29,12 @@ a.b{display:inline-block;margin-top:28px;padding:15px 30px;border-radius:999px;b
   <h1>Quem sou eu?</h1>
   <p class="d">Quinta-feira, 26 de novembro · 21h00</p>
   <a class="b" id="entrar" href="#">Entrar no encontro</a>
-  <p class="n">Abre diretamente no navegador do telemóvel ou do computador. Não é preciso instalar nenhuma aplicação. Quando o navegador pedir, permita o acesso à câmara e ao microfone.</p>
+  <p class="n">Entrada livre: sem inscrição, sem conta e sem instalar nada. Abre no navegador do telemóvel ou do computador.<br><br>1. Escreva o seu nome.<br>2. Toque em «Pedir para participar».<br>3. Permita a câmara e o microfone.<br><br>Se a sala não abrir sozinha, toque no botão acima.</p>
 </main>
 <script>
-  var sala = "https://meet.jit.si/Escola3S-Encontro-9358a97bf1#config.disableDeepLinking=true&config.prejoinConfig.enabled=true&interfaceConfig.MOBILE_APP_PROMO=false";
+  var sala = "https://meet.google.com/tfu-urjt-zxp";
   document.getElementById("entrar").href = sala;
+  try { location.replace(sala); } catch (e) {}
 </script>
 </body>
 </html>
