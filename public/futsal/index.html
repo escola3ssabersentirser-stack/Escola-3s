@@ -3194,9 +3194,8 @@ function inicioTreinador(){
    ${areaCard('pag','💶','Pagamentos','quotas e conta corrente','painelPagamentos()')}
    ${areaCard('eq','🛡️','Equipa','plantel, jogos, classificação','irEquipa()')}
    ${areaCard('age','📅','Agenda',ev?`próximo: ${ev.tipo==='jogo'?'jogo vs '+esc(ev.adversario||'?'):'treino'} · ${dataCurta(ev.data)}`:'treinos, jogos e reuniões',"irPara('agenda')")}
-  </div>
-  <h3 style="margin:20px 4px 10px;color:var(--navy)">Mais</h3>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">${[['💬','Mensagens',"irPara('mensagens')"],['🌱','Guia 3S',"irPara('guia')"],['🏆','Pódios','irPodios()'],['📜','Regras de funcionamento','abrirRegras()'],['📊','Visão geral','abrirVisao()'],['🎂','Aniversários','abrirAnivSheet()'],['📋','Presenças','mapaPresencas()'],['🎧','Podcasts','abrirPodcasts()']].map(([i,l,a])=>`<button onclick="${a}" style="border:0;background:var(--card);border-radius:16px;padding:12px 4px;box-shadow:0 6px 20px var(--shadow);display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer"><span style="font-size:24px">${i}</span><b style="font-size:12px;color:var(--navy)">${l}</b></button>`).join('')}</div></div>`}
+   ${[['imp','📥','Importar dados','Excel, PDF ou fotografia','irImportar()'],['pres','📋','Presenças','mapa de treinos e jogos','mapaPresencas()'],['pod','🏆','Pódios','melhor marcador, jogo e treino','irPodios()'],['vis','📊','Visão geral','perfil da equipa e atleta a atleta','abrirVisao()'],['reg','📜','Regras de funcionamento','ver e editar','abrirRegras()'],['ani','🎂','Aniversários','próximos 30 dias','abrirAnivSheet()'],['msg','💬','Mensagens','avisos e conversas',"irPara('mensagens')"],['gui','🌱','Guia 3S','crescer bem e ajuda',"irPara('guia')"],['pdc','🎧','Podcasts','Banco de Suplentes e outros','abrirPodcasts()']].map(a=>areaCard(...a)).join('')}
+  </div></div>`}
 async function areasDinamicas(){
   const [auto,minhas,cods,av]=await Promise.all([tarefasAuto().catch(()=>[]),q(sb.from('fut_tarefas').select('id').eq('user_id',S.me).eq('feito',false)),sb.rpc('fut_codigos_equipa',{p_equipa:S.eq.id}).then(r=>r.data||[]),S.jogadores.length?q(sb.from('fut_avaliacoes_360').select('jogador_id').eq('trimestre',trimAtual()).eq('respondente_tipo','treinador').in('jogador_id',S.jogadores.map(j=>j.id))):[]]);
   const n=auto.length+(minhas||[]).length,urg=auto.filter(t=>t.urg).length;
@@ -3231,9 +3230,8 @@ function inicioPais(){
    ${areaCard('esc','📚','Escola','notas por disciplina',ab('escola'))}
    ${areaCard('pag','💶','Pagamentos','conta corrente',ab('conta'))}
    ${areaCard('aju','🤝','Ajuda aos pais','check-in, pergunta e desafio da semana',"irPara('ajuda')")}
-  </div>
-  <h3 style="margin:20px 4px 10px;color:var(--navy)">Mais</h3>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">${[['💬','Mensagens',"irPara('mensagens')"],['🌱','Guia 3S',"irPara('guia')"],['📜','Regras de funcionamento','abrirRegras()'],['🛡️','Equipa','irEquipa()'],['🏆','Pódios','irPodios()'],['🎂','Aniversários','abrirAnivSheet()'],['🎧','Podcasts','abrirPodcasts()']].map(([i,l,a])=>`<button onclick="${a}" style="border:0;background:var(--card);border-radius:16px;padding:12px 4px;box-shadow:0 6px 20px var(--shadow);display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer"><span style="font-size:24px">${i}</span><b style="font-size:12px;color:var(--navy)">${l}</b></button>`).join('')}</div></div>`}
+   ${[['eq2','🛡️','Equipa','plantel, jogos, classificação','irEquipa()'],['pod','🏆','Pódios','melhor marcador, jogo e treino','irPodios()'],['reg','📜','Regras de funcionamento','o que a equipa combinou','abrirRegras()'],['ani','🎂','Aniversários','próximos 30 dias','abrirAnivSheet()'],['msg','💬','Mensagens','avisos e conversas',"irPara('mensagens')"],['gui','🌱','Guia 3S','crescer bem e ajuda',"irPara('guia')"],['pdc','🎧','Podcasts','para ouvir no carro','abrirPodcasts()']].map(a=>areaCard(...a)).join('')}
+  </div></div>`}
 async function areasPais(){const f=S.meus.find(j=>j.id===S.filhoSel)||S.meus[0];if(!f)return;
   const set=(id,t)=>{const e=$('#ar_'+id);if(e)e.innerHTML=t};
   const [auto,minhas]=await Promise.all([tarefasAuto().catch(()=>[]),q(sb.from('fut_tarefas').select('id').eq('user_id',S.me).eq('feito',false))]);
@@ -3244,6 +3242,92 @@ async function areasPais(){const f=S.meus.find(j=>j.id===S.filhoSel)||S.meus[0];
   const ne=await q(sb.from('fut_notas_escola').select('*').eq('jogador_id',f.id))||[];const u=ultimasNotas(ne);
   if(u.length){const dn=u.filter(x=>x.ant&&pct(x.ult)<pct(x.ant)).length,up=u.filter(x=>x.ant&&pct(x.ult)>pct(x.ant)).length;set('esc',`${u.length} disciplinas${up?` · <span style="color:var(--mint)">▲ ${up}</span>`:''}${dn?` · <span style="color:var(--red)">▼ ${dn}</span>`:''}`)}
   else set('esc','<b style="color:var(--gold)">registar as notas</b>')}
+
+/* ---------- importar dados: Excel, CSV, PDF e fotografia ---------- */
+const IMP_TIPOS={
+ jogadores:{t:'👥 Jogadores e dados pessoais',campos:[['nome','Nome*'],['numero','N.º'],['posicao','Posição'],['data_nascimento','Data de nascimento'],['pe_dominante','Pé'],['tamanho_equip','Tamanho'],['ano_escolar','Ano escolar'],['escola','Escola'],['turma','Turma'],['localidade','Localidade'],['atleta_tel','Telemóvel do atleta'],['encarregado_nome','Encarregado'],['encarregado_tel','Telemóvel encarregado'],['encarregado_email','Email encarregado'],['encarregado2_nome','Encarregado 2'],['encarregado2_tel','Telemóvel encarregado 2'],['contacto_emergencia','Emergência'],['doencas','Doenças'],['alergias','Alergias'],['num_federado','N.º federado'],['seguro_validade','Seguro válido até']]},
+ estat:{t:'⚽ Jogos e golos por atleta',campos:[['nome','Nome*'],['jogos','Jogos (JJ)'],['golos','Golos (GM)'],['assistencias','Assistências'],['amarelos','Amarelos'],['vermelhos','Vermelhos']]},
+ jogos:{t:'📅 Jogos e resultados',campos:[['data','Data*'],['hora','Hora'],['adversario','Adversário*'],['local','Local'],['resultado','Resultado'],['casa_fora','Casa/Fora']]},
+ classif:{t:'🏅 Classificação',campos:[['posicao','Posição'],['clube','Clube*'],['j','J'],['v','V'],['e','E'],['d','D'],['gm','GM'],['gs','GS'],['pts','Pts']]},
+ notas:{t:'📚 Notas da escola',campos:[['nome','Nome do atleta*'],['disciplina','Disciplina*'],['nota','Nota*'],['periodo','Período'],['ano_letivo','Ano letivo'],['escala','Escala']]}
+};
+const IMP_ALIAS={nome:['nome','atleta','jogador','name','nome completo'],numero:['n','nº','n.º','numero','número','camisola','#','num'],posicao:['posicao','posição','pos'],data_nascimento:['data de nascimento','nascimento','data nasc','dn','data_nascimento'],pe_dominante:['pe','pé','pe dominante','pé dominante'],tamanho_equip:['tamanho','equipamento','tam'],ano_escolar:['ano','ano escolar','ano_escolar'],escola:['escola'],turma:['turma'],localidade:['localidade','morada','residencia'],atleta_tel:['telemovel do atleta','tel atleta','telemovel atleta'],encarregado_nome:['encarregado','encarregado de educacao','mae','pai','ee','nome encarregado'],encarregado_tel:['telemovel','telefone','contacto','tel','telemovel encarregado'],encarregado_email:['email','e-mail','mail'],encarregado2_nome:['encarregado 2','segundo encarregado'],encarregado2_tel:['telemovel 2','telefone 2','contacto 2'],contacto_emergencia:['emergencia','emergência','contacto de emergencia'],doencas:['doencas','doenças','doenca'],alergias:['alergias','alergia'],num_federado:['federado','n federado','licenca','licença'],seguro_validade:['seguro','validade seguro'],jogos:['jj','jogos','j jogados','jogos jogados'],golos:['gm','golos','golos marcados','g'],assistencias:['assistencias','assistências','ast','a'],amarelos:['amarelos','ca','cartoes amarelos'],vermelhos:['vermelhos','cv','cartoes vermelhos'],data:['data','dia'],hora:['hora','horario'],adversario:['adversario','adversário','equipa','visitante','oponente'],local:['local','pavilhao','pavilhão','campo'],resultado:['resultado','res','marcador'],casa_fora:['casa/fora','casa fora','c/f'],posicao_c:[],clube:['clube','equipa','equipas'],j:['j','jogos'],v:['v','vitorias','vitórias'],e:['e','empates'],d:['d','derrotas'],gm:['gm','golos marcados'],gs:['gs','golos sofridos'],pts:['pts','pontos','p'],disciplina:['disciplina','materia','matéria'],nota:['nota','classificacao','classificação'],periodo:['periodo','período'],ano_letivo:['ano letivo','ano lectivo'],escala:['escala']};
+const _nrm=s=>String(s??'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[.:º°]/g,'').replace(/\s+/g,' ').trim();
+let IMP=null;
+function irImportar(){closeSheet();IMP={tipo:'jogadores',rows:[],map:[],hdr:0};
+  openSheet(`<h2>📥 Importar dados</h2><p class="muted" style="margin-top:0">Carregue um ficheiro <b>Excel</b> ou <b>CSV</b>, um <b>PDF</b> ou uma <b>fotografia</b> (por exemplo, uma captura da app da federação). Antes de guardar, vê tudo e corrige.</p>
+  <label class="f">O que quer importar?</label><div class="opts" style="flex-wrap:wrap" id="impT">${Object.entries(IMP_TIPOS).map(([k,v])=>`<button class="${k==='jogadores'?'on':''}" onclick="IMP.tipo='${k}';document.querySelectorAll('#impT button').forEach(b=>b.classList.remove('on'));this.classList.add('on')">${v.t}</button>`).join('')}</div>
+  <div class="row" style="gap:8px;margin-top:14px;flex-wrap:wrap">
+   <label class="btn gold grow" style="cursor:pointer;text-align:center">📊 Excel / CSV<input type="file" hidden accept=".xlsx,.xls,.csv,.ods" onchange="impFicheiro(this.files[0],'xls')"></label>
+   <label class="btn grow" style="cursor:pointer;text-align:center">📄 PDF<input type="file" hidden accept="application/pdf" onchange="impFicheiro(this.files[0],'pdf')"></label>
+   <label class="btn grow" style="cursor:pointer;text-align:center;background:var(--mint)">📷 Foto<input type="file" hidden accept="image/*" onchange="impFicheiro(this.files[0],'img')"></label></div>
+  <details style="margin-top:12px"><summary style="cursor:pointer;font-weight:600">✍️ Colar texto ou tabela</summary><textarea id="impTxt" class="in" style="min-height:120px;margin-top:8px" placeholder="Cole aqui linhas copiadas de um email, Word ou site"></textarea><button class="btn ghost full sm" style="margin-top:6px" onclick="impTexto(g('impTxt'))">Ler texto</button></details>
+  <button class="btn ghost full sm" style="margin-top:12px" onclick="impModelo()">⬇️ Descarregar modelo Excel deste tipo</button>
+  <div id="impSt" class="faint" style="margin-top:10px"></div><div id="impPrev"></div>`)}
+function carregarScript(src){return new Promise((res,rej)=>{if(document.querySelector(`script[src="${src}"]`)){res();return}const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=()=>rej(new Error('Não foi possível carregar '+src));document.head.appendChild(s)})}
+const impSt=t=>{const e=$('#impSt');if(e)e.innerHTML=t};
+async function impFicheiro(f,tipo){if(!f)return;try{
+  if(tipo==='xls'){impSt('A ler a folha de cálculo…');await carregarScript('lib/xlsx.full.min.js');const wb=XLSX.read(await f.arrayBuffer(),{type:'array',cellDates:true});const ws=wb.Sheets[wb.SheetNames[0]];
+    const rows=XLSX.utils.sheet_to_json(ws,{header:1,raw:false,dateNF:'yyyy-mm-dd',defval:''});impRows(rows,`Folha «${esc(wb.SheetNames[0])}»`)}
+  else if(tipo==='pdf'){impSt('A ler o PDF…');await carregarScript('lib/pdf.min.js');pdfjsLib.GlobalWorkerOptions.workerSrc='lib/pdf.worker.min.js';
+    const pdf=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise;let linhas=[];
+    for(let p=1;p<=Math.min(pdf.numPages,20);p++){const pg=await pdf.getPage(p);const tc=await pg.getTextContent();const L={};
+      tc.items.forEach(it=>{if(!it.str.trim())return;const y=Math.round(it.transform[5]/3);(L[y]=L[y]||[]).push({x:it.transform[4],w:it.width,s:it.str.trim()})});
+      Object.keys(L).map(Number).sort((a,b)=>b-a).forEach(y=>{const it=L[y].sort((a,b)=>a.x-b.x);const cel=[];let fim=-1e9;it.forEach(o=>{if(cel.length&&o.x-fim<6)cel[cel.length-1]+=' '+o.s;else cel.push(o.s);fim=o.x+o.w});linhas.push(cel)})}
+    if(!linhas.length){impSt('Este PDF não tem texto (é uma imagem). Use o botão 📷 Foto com uma captura da página.');return}
+    impRows(linhas,`PDF · ${pdf.numPages} página${pdf.numPages>1?'s':''}`)}
+  else{impSt('A ler a fotografia… pode demorar 20 a 40 segundos na primeira vez.');await carregarScript('lib/ocr/tesseract.min.js');
+    const w=await Tesseract.createWorker('por',1,{workerPath:'lib/ocr/worker.min.js',corePath:'lib/ocr/',langPath:'lib/ocr',gzip:true,logger:m=>{if(m.status==='recognizing text')impSt(`A ler a fotografia… ${Math.round(m.progress*100)}%`)}});
+    const {data}=await w.recognize(f);await w.terminate();impTexto(data.text,'Fotografia')}
+ }catch(e){impSt('⚠️ '+esc(e.message||String(e)))}}
+function impTexto(t,orig){const linhas=String(t||'').split(/\r?\n/).map(l=>l.trim()).filter(Boolean).map(l=>l.includes('\t')?l.split('\t'):l.includes(';')?l.split(';'):l.split(/\s{2,}|\s\|\s|\|/).length>1?l.split(/\s{2,}|\s\|\s|\|/):impPartir(l));impRows(linhas,orig||'Texto')}
+function impPartir(l){const m=l.match(/^(\d{1,2})?\s*([A-Za-zÀ-ÿ'’.\- ]+?)\s+((?:\d+\s*)+)$/);if(m){return [...(m[1]?[m[1]]:[]),m[2].trim(),...m[3].trim().split(/\s+/)]}return [l]}
+function impRows(rows,orig){rows=rows.map(r=>r.map(c=>String(c??'').trim())).filter(r=>r.some(Boolean));if(!rows.length){impSt('Não encontrei dados.');return}
+  const T=IMP_TIPOS[IMP.tipo];let hdr=-1,best=0;rows.slice(0,10).forEach((r,i)=>{const n=r.filter(c=>impCampo(c)).length;if(n>best&&n>=2){best=n;hdr=i}});
+  const nc=Math.max(...rows.map(r=>r.length));IMP.rows=rows.slice(hdr+1).filter(r=>!/^(nome|atleta|jogador|data|clube|equipa|#)\b/.test(_nrm(r[0]))).map(r=>{while(r.length<nc)r.push('');return r});
+  IMP.map=[...Array(nc)].map((_,i)=>hdr>=0?impCampo(rows[hdr][i])||'':'');
+  if(hdr<0){const num=i=>IMP.rows.filter(r=>/^\d+([.,]\d+)?$/.test(r[i])).length>IMP.rows.length/2;const livres=T.campos.map(c=>c[0]);
+    const txt=[...Array(nc)].map((_,i)=>i).filter(i=>!num(i));const nums=[...Array(nc)].map((_,i)=>i).filter(num);
+    if(IMP.tipo==='estat'){if(txt[0]!=null)IMP.map[txt[0]]='nome';const ord=['jogos','golos','assistencias','amarelos','vermelhos'];nums.forEach((i,k)=>{if(k===0&&nums.length>2&&IMP.rows.every(r=>+r[i]<100)&&i<txt[0])IMP.map[i]='';else IMP.map[i]=ord.shift()||''})}
+    else if(txt[0]!=null)IMP.map[txt[0]]=livres[0]}
+  impSt(`${orig}: ${IMP.rows.length} linhas lidas. Confirme a coluna de cada dado.`);impPreview()}
+function impCampo(c){const n=_nrm(c);if(!n)return null;const T=IMP_TIPOS[IMP.tipo].campos.map(x=>x[0]);for(const k of T){const al=IMP_ALIAS[k==='posicao'&&IMP.tipo==='classif'?'posicao_c':k]||[];if(_nrm(k)===n||al.map(_nrm).includes(n))return k}if(IMP.tipo==='classif'&&['#','pos','posicao','lugar'].includes(n))return 'posicao';return null}
+function impPreview(){const T=IMP_TIPOS[IMP.tipo];const nc=IMP.map.length;
+  $('#impPrev').innerHTML=`<div style="overflow-x:auto;margin-top:10px;border:1px solid var(--line);border-radius:12px"><table style="border-collapse:collapse;font-size:12px;min-width:100%">
+  <tr>${IMP.map.map((m,i)=>`<th style="padding:4px;background:var(--navy-soft)"><select class="in" style="padding:4px;font-size:12px;min-width:110px" onchange="IMP.map[${i}]=this.value;impPreview()"><option value="">— ignorar —</option>${T.campos.map(([k,l])=>`<option value="${k}" ${m===k?'selected':''}>${l}</option>`).join('')}</select></th>`).join('')}<th></th></tr>
+  ${IMP.rows.slice(0,40).map((r,ri)=>`<tr style="border-top:1px solid var(--line)">${r.map((c,ci)=>`<td style="padding:2px"><input class="in" style="padding:4px;font-size:12px;min-width:90px;${IMP.map[ci]?'':'opacity:.45'}" value="${esc(c)}" onchange="IMP.rows[${ri}][${ci}]=this.value"></td>`).join('')}<td><button class="btn ghost sm" style="padding:2px 8px" onclick="IMP.rows.splice(${ri},1);impPreview()" aria-label="Retirar linha">✖</button></td></tr>`).join('')}</table></div>
+  ${IMP.rows.length>40?`<p class="faint">Mostradas 40 de ${IMP.rows.length} linhas. Todas serão importadas.</p>`:''}
+  <button class="btn gold full" style="margin-top:12px" onclick="impGuardar()">✔ Importar ${IMP.rows.length} linha${IMP.rows.length===1?'':'s'} para ${esc(S.eq.nome)}</button>`}
+function impObj(r){const o={};IMP.map.forEach((k,i)=>{if(k&&r[i]!=='')o[k]=r[i]});return o}
+function impData(v){if(!v)return null;v=String(v).trim();let m=v.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);if(m)return `${m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`;m=v.match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4})/);if(m){let y=+m[3];if(y<100)y+=2000;return `${y}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`}return null}
+const impNum=v=>{const n=parseInt(String(v||'').replace(/\D/g,''));return isNaN(n)?null:n};
+function impJog(nome){const n=_nrm(nome);if(!n)return null;return S.jogadores.find(j=>_nrm(j.nome)===n)||S.jogadores.find(j=>{const a=_nrm(j.nome).split(' '),b=n.split(' ');return a[0]===b[0]&&(b.length===1||a[a.length-1]===b[b.length-1])})||null}
+async function impGuardar(){const T=IMP.tipo;const L=IMP.rows.map(impObj).filter(o=>Object.keys(o).length);let ok=0,novos=0,falhas=[];impSt('A guardar…');
+ try{
+ if(T==='jogadores'){for(const o of L){if(!o.nome){falhas.push('linha sem nome');continue}let j=impJog(o.nome);
+    if(!j){const {data,error}=await sb.rpc('fut_adicionar_filho',{p_equipa:S.eq.id,p_nome:o.nome,p_numero:impNum(o.numero),p_posicao:o.posicao||null,p_ano:o.ano_escolar||null,p_fotos:false});if(error){falhas.push(o.nome+': '+error.message);continue}j={id:data,nome:o.nome};novos++}
+    else{const up={};if(o.numero)up.numero=impNum(o.numero);if(o.posicao)up.posicao=o.posicao;if(o.ano_escolar)up.ano_escolar=o.ano_escolar;if(Object.keys(up).length)await sb.from('fut_jogadores').update(up).eq('id',j.id)}
+    const fi={jogador_id:j.id};['pe_dominante','tamanho_equip','escola','turma','localidade','atleta_tel','encarregado_nome','encarregado_tel','encarregado_email','encarregado2_nome','encarregado2_tel','contacto_emergencia','doencas','alergias','num_federado'].forEach(k=>{if(o[k])fi[k]=o[k]});
+    if(o.data_nascimento)fi.data_nascimento=impData(o.data_nascimento);if(o.seguro_validade)fi.seguro_validade=impData(o.seguro_validade);
+    if(Object.keys(fi).length>1){const {error}=await sb.from('fut_fichas').upsert(fi,{onConflict:'jogador_id'});if(error){falhas.push(o.nome+': '+error.message);continue}}ok++}}
+ else if(T==='estat'){const rows=[];for(const o of L){const j=impJog(o.nome);if(!j){falhas.push((o.nome||'?')+': atleta não encontrado');continue}rows.push({jogador_id:j.id,epoca:epocaAtual(),jogos:impNum(o.jogos)||0,golos:impNum(o.golos)||0,assistencias:impNum(o.assistencias)||0,amarelos:impNum(o.amarelos)||0,vermelhos:impNum(o.vermelhos)||0,origem:'importação'})}
+    if(rows.length){const {error}=await sb.from('fut_estat_base').upsert(rows,{onConflict:'jogador_id,epoca'});if(error)throw error;ok=rows.length}}
+ else if(T==='jogos'){for(const o of L){const d=impData(o.data);if(!d||!o.adversario){falhas.push((o.adversario||o.data||'?')+': falta data ou adversário');continue}
+    const res=o.resultado&&/\d+\s*[-–x]\s*\d+/.test(o.resultado)?o.resultado.replace(/\s/g,'').replace(/[–x]/,'-'):null;const cf=/fora/i.test(o.casa_fora||'')?'fora':/casa/i.test(o.casa_fora||'')?'casa':null;
+    const ex=S.eventos.find(e=>e.tipo==='jogo'&&e.data===d&&_nrm(e.adversario)===_nrm(o.adversario));
+    const row={equipa_id:S.eq.id,tipo:'jogo',data:d,hora:o.hora||null,adversario:o.adversario,local:o.local||null,resultado:res,casa_fora:cf,estado:res?'realizado':d<hoje()?null:'agendado'};
+    const {error}=ex?await sb.from('fut_eventos').update({resultado:res||ex.resultado,local:row.local||ex.local,hora:row.hora||ex.hora,casa_fora:cf||ex.casa_fora,estado:res?'realizado':ex.estado}).eq('id',ex.id):await sb.from('fut_eventos').insert(row);
+    if(error)falhas.push(o.adversario+': '+error.message);else{ok++;if(!ex)novos++}}}
+ else if(T==='classif'){const rows=L.filter(o=>o.clube).map((o,i)=>({equipa_id:S.eq.id,epoca:epocaAtual(),posicao:impNum(o.posicao)||i+1,clube:o.clube,nosso:/arcas|s\.?\s*paio/i.test(o.clube),...Object.fromEntries(['j','v','e','d','gm','gs','pts'].map(k=>[k,impNum(o[k])||0]))}));
+    if(rows.length){await sb.from('fut_classificacao').delete().eq('equipa_id',S.eq.id).eq('epoca',epocaAtual());const {error}=await sb.from('fut_classificacao').insert(rows);if(error)throw error;ok=rows.length}}
+ else if(T==='notas'){const rows=[];for(const o of L){const j=impJog(o.nome);if(!j){falhas.push((o.nome||'?')+': atleta não encontrado');continue}const nota=parseFloat(String(o.nota||'').replace(',','.'));if(!o.disciplina||isNaN(nota)){falhas.push(j.nome+': falta disciplina ou nota');continue}
+    const esc_=o.escala&&ESCALAS[o.escala]?o.escala:nota>5?'0-20':'1-5';const per=PERIODOS.find(p=>_nrm(p).startsWith(_nrm(o.periodo||'').slice(0,2)))||'1.º Período';
+    rows.push({jogador_id:j.id,ano_letivo:o.ano_letivo||anoLetivoAtual(),periodo:per,disciplina:o.disciplina,nota,escala:esc_,autor_id:S.me})}
+    if(rows.length){const {error}=await sb.from('fut_notas_escola').upsert(rows,{onConflict:'jogador_id,ano_letivo,periodo,disciplina'});if(error)throw error;ok=rows.length}}
+ }catch(e){falhas.push(e.message||String(e))}
+ await carregar();
+ $('#impPrev').innerHTML=`<div class="card" style="margin-top:10px;border:2px solid ${falhas.length?'var(--gold)':'var(--mint)'}"><b>✔ ${ok} linha${ok===1?'':'s'} importada${ok===1?'':'s'}</b>${novos?` · ${novos} novo${novos===1?'':'s'}`:''}${falhas.length?`<div class="faint" style="margin-top:6px">Não importado:<br>${falhas.slice(0,15).map(esc).join('<br>')}</div>`:''}</div><button class="btn full" style="margin-top:10px" onclick="closeSheet();render()">Concluir</button>`;impSt('')}
+async function impModelo(){await carregarScript('lib/xlsx.full.min.js');const T=IMP_TIPOS[IMP.tipo];const ws=XLSX.utils.aoa_to_sheet([T.campos.map(c=>c[1].replace('*',''))]);const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Dados');XLSX.writeFile(wb,`modelo-${IMP.tipo}.xlsx`)}
 
 /* ---------- mensagens ---------- */
 async function vMensagens(){
