@@ -432,6 +432,7 @@ function vInicio(){
   } else {
     h+=`<div class="card"><h2>Agenda</h2><p class="empty">Ainda não há treinos nem jogos marcados.${isCoach()?'':' O treinador vai marcá-los aqui.'}</p>${isCoach()?'<button class="btn full" onclick="novoEvento()">+ Marcar treino ou jogo</button>':''}</div>`;
   }
+  h+=`<div class="card"><h2>🎂 Aniversários</h2><div id="aniv"><p class="muted">A carregar…</p></div></div>`;
   const reu=(S.reunioes||[]).find(r=>r.data>=hoje()&&r.estado!=='cancelada'&&(isCoach()||!r.jogador_id||S.meus.some(m=>m.id===r.jogador_id)));
   if(reu){const jr=reu.jogador_id&&S.jogadores.find(x=>x.id===reu.jogador_id);h+=`<div class="card"><div class="row between"><h2>🤝 Próxima reunião</h2><span class="chip ${ESTADOS_REUNIAO[reu.estado][1]}">${ESTADOS_REUNIAO[reu.estado][0]}</span></div><p style="margin:0;font-weight:600">${TIPOS_REUNIAO[reu.tipo]}${jr?' · '+esc(primeiro(jr.nome)):''}</p><p class="muted" style="margin:2px 0 10px">${diaSemana(reu.data)}, ${dataCurta(reu.data)} · ${esc(reu.hora||'')}${reu.assunto?' · '+esc(reu.assunto):''}</p>${reu.link&&reu.estado==='marcada'?`<a class="btn gold full sm" style="display:block;text-align:center;text-decoration:none;margin-bottom:6px" href="${esc(reu.link)}" target="_blank" rel="noopener">🎥 Entrar na reunião</a>`:''}<button class="btn ghost full sm" onclick="S.agTab='reunioes';irPara('agenda')">Ver reuniões</button></div>`}
   if(isCoach()){const ultEx=j=>S.exames.find(e=>e.jogador_id===j.id);
@@ -455,7 +456,7 @@ function vInicio(){
   if(d) h+=`<div class="card"><h2>🎯 Desafio em casa</h2><p style="margin:0 0 4px;font-weight:600">${esc(d.titulo)}</p><p class="muted" style="margin:0 0 10px">${esc(d.descricao||'')}</p><span class="chip gold">${d.minutos} min · ${d.pontos} pontos</span>
     ${!isCoach()&&S.meus.length?`<div style="margin-top:12px">${S.meus.map(j=>`<button class="btn sm" style="margin:4px 4px 0 0" onclick="feitoDesafio('${d.id}','${j.id}')">✔ ${esc(primeiro(j.nome))} fez</button>`).join('')}</div>`:''}</div>`;
 
-  setTimeout(()=>{if(isCoach()){painelEquipa();painelVisao()}else if(isAtleta()&&filho)painelAtleta(filho);else if(filho)painelFilho(filho)},0);
+  setTimeout(()=>{cartaoAniv();if(isCoach()){painelEquipa();painelVisao()}else if(isAtleta()&&filho)painelAtleta(filho);else if(filho)painelFilho(filho)},0);
   if(isCoach()) h+=`<div class="card"><h2>Código da equipa</h2><p class="muted" style="margin-top:0">Envie aos pais para entrarem na app.</p><span class="code">${esc(S.eq.codigo)}</span></div>`;
   m.innerHTML=h;
 }
@@ -2682,6 +2683,33 @@ async function painelVisao(){
     <b style="width:34px;text-align:right;font-size:13px;color:${l.hm==null?'var(--soft)':l.hm>=3.5?'var(--mint)':l.hm<2.5?'var(--red)':'var(--ink)'}">${l.hm!=null?fmt1(l.hm):'–'}</b></button>`).join('')}
   <p class="faint" style="margin-top:8px">Toque num atleta para abrir o perfil. Perfil = média dos 6 pilares (0 a 5).</p>`;
 }
+
+/* ---------- aniversários ---------- */
+async function cartaoAniv(){
+  const el=$('#aniv');if(!el)return;
+  const {data}=await sb.rpc('fut_aniversarios',{p_equipa:S.eq.id});const L=data||[];S.aniv=L;
+  const h=new Date();h.setHours(12,0,0,0);
+  const dias=a=>{let d=new Date(h.getFullYear(),a.mes-1,a.dia,12);if(d<h)d=new Date(h.getFullYear()+1,a.mes-1,a.dia,12);return Math.round((d-h)/864e5)};
+  const ord=L.map(a=>({...a,d:dias(a)})).sort((a,b)=>a.d-b.d);
+  const hojeL=ord.filter(a=>a.d===0),prox=ord.filter(a=>a.d>0&&a.d<=30);
+  const sem=S.jogadores.length-L.length;
+  const parabens=a=>encodeURIComponent(`🎂 Parabéns, ${primeiro(a.nome)}! Hoje fazes ${a.faz} anos. Toda a equipa do ${CLUBE} deseja-te um dia fantástico! ⚽💛`);
+  el.innerHTML=`${hojeL.map(a=>`<div style="background:linear-gradient(135deg,#F6EEE4,#FFF6E0);border:2px solid var(--gold);border-radius:16px;padding:14px;margin-bottom:10px;text-align:center"><div style="font-size:34px">🎉🎂🎉</div><b style="font-size:18px">Hoje é dia de ${esc(primeiro(a.nome))}!</b><div class="muted">Faz ${a.faz} anos</div><a class="btn full sm" style="display:block;text-decoration:none;background:#25D366;margin-top:10px" href="https://wa.me/?text=${parabens(a)}" target="_blank" rel="noopener">Enviar parabéns pelo WhatsApp</a></div>`).join('')}
+  ${prox.length?`<div class="list">${prox.map(a=>`<div class="item"><div class="date"><b>${a.dia}</b><small>${MESES[a.mes-1]}</small></div><div class="grow"><b>${esc(a.nome)}</b><div class="muted">faz ${a.faz} anos · ${a.d===1?'amanhã':'daqui a '+a.d+' dias'}</div></div></div>`).join('')}</div>`:hojeL.length?'':`<p class="empty">Sem aniversários nos próximos 30 dias.</p>`}
+  <div class="row" style="gap:6px;margin-top:10px">${L.length?`<button class="btn ghost sm grow" onclick="todosAniv()">📅 Ver todos</button>`:''}${isCoach()?`<button class="btn ghost sm grow" onclick="registarAniv()">✏️ Datas${sem>0?' ('+sem+' em falta)':''}</button>`:''}</div>`;
+}
+function todosAniv(){const L=[...(S.aniv||[])].sort((a,b)=>a.mes-b.mes||a.dia-b.dia);
+  openSheet(`<h2>🎂 Aniversários · ${esc(S.eq.nome)}</h2>${MESES_L.map((m,i)=>{const x=L.filter(a=>a.mes===i+1);return x.length?`<h3 style="margin:12px 0 4px;font-size:15px">${m[0].toUpperCase()+m.slice(1)}</h3>${x.map(a=>`<div class="row between" style="padding:4px 0;border-bottom:1px solid #F0E7DB"><span>${esc(a.nome)}</span><b>${a.dia}</b></div>`).join('')}`:''}).join('')}<button class="btn full" style="margin-top:14px" onclick="closeSheet()">Fechar</button>`)}
+async function registarAniv(){
+  const ids=S.jogadores.map(j=>j.id);const fs=ids.length?await q(sb.from('fut_fichas').select('jogador_id,data_nascimento').in('jogador_id',ids)):[];
+  const dn=id=>((fs||[]).find(f=>f.jogador_id===id)||{}).data_nascimento||'';
+  openSheet(`<h2>🎂 Datas de nascimento</h2><p class="muted">Os colegas e as famílias da equipa só veem o dia e o mês. O ano fica na ficha.</p>
+  ${S.jogadores.map(j=>`<div class="row" style="gap:8px;align-items:center;margin-top:8px"><span class="grow" style="font-weight:600;font-size:14px">${esc(j.nome)}</span><input type="date" class="in" style="width:160px;margin:0" data-aniv="${j.id}" data-orig="${dn(j.id)}" value="${dn(j.id)}"></div>`).join('')}
+  <button class="btn full" style="margin-top:14px" onclick="guardarAniv()">Guardar</button>`)}
+async function guardarAniv(){
+  const mud=[...document.querySelectorAll('[data-aniv]')].filter(i=>i.value&&i.value!==i.dataset.orig);
+  for(const i of mud){const r=await q(sb.from('fut_fichas').upsert({jogador_id:i.dataset.aniv,data_nascimento:i.value},{onConflict:'jogador_id'}));if(r===null)return}
+  closeSheet();cartaoAniv();toast(mud.length?'Datas guardadas':'Sem alterações')}
 
 /* ---------- mensagens ---------- */
 async function vMensagens(){
