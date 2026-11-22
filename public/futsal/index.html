@@ -401,7 +401,7 @@ function render(){
     ${emPrevia()?`<div style="margin-top:8px;font-size:12px;background:rgba(255,255,255,.12);border-radius:10px;padding:6px 10px">👁️ Pré-visualização como <b>${{treinador:'treinador',pai:'pais',atleta:'atleta'}[modoVer()]}</b>${S.meus[0]&&modoVer()!=='treinador'?' de '+esc(primeiro(S.meus[0].nome)):''}. O que gravar fica em seu nome. <button style="border:0;background:none;color:var(--gold);font-weight:700;padding:0" onclick="mudarModo('admin')">Sair</button></div>`:''}
   </header>
   <main id="main"></main>
-  <nav class="bottom">${TABS.map(([k,i,l])=>`<button class="${S.tab===k?'on':''}" onclick="irPara('${k}')"><span>${i}</span>${rotuloTab(k)}</button>`).join('')}</nav>`;
+  <nav class="bottom">${TABS.filter(([k])=>!(k==='mensagens'&&isAtleta())).map(([k,i,l])=>`<button class="${S.tab===k?'on':''}" onclick="irPara('${k}')"><span>${i}</span>${rotuloTab(k)}</button>`).join('')}</nav>`;
   ({inicio:vInicio,agenda:vAgenda,jogadores:vJogadores,mensagens:vMensagens,guia:vGuia,ajuda:vAjuda,podios:vPodios,equipa:vEquipa,acessos:vAcessos})[S.tab]();
 }
 function irPara(t){S.tab=t;S.jog=null;render();window.scrollTo(0,0)}
@@ -447,17 +447,11 @@ function vInicio(){
   if(isCoach()&&S.alertas&&S.alertas.length){
     h+=`<div class="card"><h2>💛 Atenção a estes miúdos</h2><p class="muted" style="margin-top:0">Disseram que se sentiram assim nos últimos dias.</p><div class="list">${S.alertas.slice(0,5).map(a=>{const j=S.jogadores.find(x=>x.id===a.jogador_id);return j?`<button class="item" onclick="abrirJogador('${j.id}','emocoes')"><div class="av">${iniciais(j.nome)}</div><div class="grow"><b>${esc(j.nome)}</b><div class="muted">${(EMOCOES.find(e=>e[1]===a.emocao)||[''])[0]} ${esc(a.emocao)} ${a.nota?'· '+esc(a.nota):''}</div></div></button>`:''}).join('')}</div></div>`;
   }
-  if(!isCoach()&&S.meus.length){
-    h+=`<div class="card"><h2>Rotina de hoje</h2><p class="muted" style="margin-top:0">Sono, água, lanche e trabalhos de casa.</p>${S.meus.map(j=>`<button class="btn ghost full sm" style="margin-top:6px" onclick="abrirJogador('${j.id}','rotina')">🌙 Rotina de ${esc(primeiro(j.nome))}</button>`).join('')}</div>`;
-  }
   const av=S.avisos[0];
-  h+=`<div class="card"><div class="row between"><h2>Avisos</h2><button class="btn ghost sm" onclick="S.msgTab='avisos';irPara('mensagens')">Ver todos</button></div>${av?`<div class="msg"><div class="who">${esc(nomeDe(av.autor_id))} · ${dataCurta(av.created_at.slice(0,10))}</div>${esc(av.texto)}</div>`:'<p class="empty">Sem avisos.</p>'}</div>`;
-  const d=S.desafios[0];
-  if(d) h+=`<div class="card"><h2>🎯 Desafio em casa</h2><p style="margin:0 0 4px;font-weight:600">${esc(d.titulo)}</p><p class="muted" style="margin:0 0 10px">${esc(d.descricao||'')}</p><span class="chip gold">${d.minutos} min · ${d.pontos} pontos</span>
-    ${!isCoach()&&S.meus.length?`<div style="margin-top:12px">${S.meus.map(j=>`<button class="btn sm" style="margin:4px 4px 0 0" onclick="feitoDesafio('${d.id}','${j.id}')">✔ ${esc(primeiro(j.nome))} fez</button>`).join('')}</div>`:''}</div>`;
+  if(!isAtleta())h+=`<div class="card"><div class="row between"><h2>Avisos</h2><button class="btn ghost sm" onclick="S.msgTab='avisos';irPara('mensagens')">Ver todos</button></div>${av?`<div class="msg"><div class="who">${esc(nomeDe(av.autor_id))} · ${dataCurta(av.created_at.slice(0,10))}</div>${esc(av.texto)}</div>`:'<p class="empty">Sem avisos.</p>'}</div>`;
 
   setTimeout(()=>{cartaoAniv();if(isCoach()){painelEquipa();painelVisao()}else if(isAtleta()&&filho)painelAtleta(filho);else if(filho)painelFilho(filho)},0);
-  if(isCoach()) h+=`<div class="card"><h2>Código da equipa</h2><p class="muted" style="margin-top:0">Envie aos pais para entrarem na app.</p><span class="code">${esc(S.eq.codigo)}</span></div>`;
+  if(isCoach()) h+=`<div class="card"><h2>Código da equipa</h2><p class="muted" style="margin-top:0">Envie aos pais para entrarem na app.</p><span class="code">${esc(S.eq.codigo)}</span><a class="btn full" style="display:block;text-align:center;text-decoration:none;background:#25D366;margin-top:10px" href="https://wa.me/?text=${encodeURIComponent(`⚽ ${CLUBE} – ${S.eq.nome}\n\nOlá! A nossa equipa já tem app: o Futsal 3S. Lá vão ver os treinos e jogos, confirmar presenças, combinar boleias e acompanhar a evolução dos atletas.\n\n1. Abra https://escola-3s.pt/futsal\n2. Crie a sua conta (cada pessoa escolhe a sua palavra-passe)\n3. Escreva o código da equipa: ${S.eq.codigo}\n\nQualquer dúvida, diga.`)}" target="_blank" rel="noopener">Enviar código pelo WhatsApp</a></div>`;
   m.innerHTML=h;
 }
 function linhaResposta(ev,j){
@@ -658,7 +652,7 @@ async function guardarFilho(){
 }
 function abrirJogador(id,tab){S.tab='jogadores';S.jog=id;S.jogTab=tab||'resumo';closeSheet();render();window.scrollTo(0,0)}
 
-const JTABS=[['resumo','Resumo'],['avaliacao','Avaliação 3S'],['ficha','Ficha'],['presencas','Presenças'],['pagamentos','Pagamentos'],['melhorar','A melhorar'],['escola','Escola'],['evolucao','Evolução'],['objetivos','Objetivos'],['desafios','Desafios'],['emocoes','Emoções'],['rotina','Rotina'],['conversa','Conversa']];
+const JTABS=[['resumo','Resumo'],['avaliacao','Avaliação 3S'],['ficha','Ficha'],['presencas','Presenças'],['pagamentos','Pagamentos'],['melhorar','A melhorar'],['escola','Escola'],['evolucao','Evolução'],['objetivos','Objetivos'],['emocoes','Emoções'],['conversa','Conversa']];
 async function vJogador(){
   marcarNav();
   const j=S.jogadores.find(x=>x.id===S.jog);if(!j){S.jog=null;return vJogadores()}
@@ -1503,13 +1497,13 @@ function abrirJogadorEm(id,tab){const j=(S.todosMeus||[]).find(x=>x.id===id)||S.
 /* ---------- página do miúdo: 4 áreas ---------- */
 const AREAS=[
   ['ficha','📇','Ficha',[['ficha','Dados e saúde'],['pagamentos','Pagamentos']]],
-  ['desporto','⚽','Desporto',[['fpf','Ficha FPF'],['presencas','Presenças'],['evolucao','Evolução'],['desafios','Desafios'],['objetivos','Objetivos']]],
-  ['escola','📚','Escola',[['escola','Notas'],['melhorar','A melhorar'],['rotina','Rotina']]],
+  ['desporto','⚽','Desporto',[['fpf','Ficha FPF'],['presencas','Presenças'],['evolucao','Evolução'],['objetivos','Objetivos']]],
+  ['escola','📚','Escola',[['escola','Notas'],['melhorar','A melhorar']]],
   ['crescer','💛','Crescer',[['avaliacao','Avaliação 3S'],['emocoes','Emoções'],['conversa','Conversa']]]
 ];
 const AREAS_ATLETA=[
-  ['desporto','⚽','Desporto',[['presencas','Presenças'],['fpf','Ficha FPF'],['evolucao','Evolução'],['desafios','Desafios'],['objetivos','Objetivos']]],
-  ['escola','📚','Escola',[['escola','Notas'],['rotina','Rotina']]],
+  ['desporto','⚽','Desporto',[['presencas','Presenças'],['fpf','Ficha FPF'],['evolucao','Evolução'],['objetivos','Objetivos']]],
+  ['escola','📚','Escola',[['escola','Notas']]],
   ['crescer','💛','Crescer',[['avaliacao','Autoavaliação'],['emocoes','Emoções']]]
 ];
 const areasPerfil=()=>isAtleta()?AREAS_ATLETA:AREAS;
@@ -1714,14 +1708,12 @@ async function jPainel(j){
       ${tileC('presencas','✅','Presenças',pctT!=null?pctT+'%':'–','últimos 3 meses',pctT!=null&&pctT<70?'neg':'')}
       ${tileC('evolucao','⚽','Competências','Abrir ›','técnica e tática','h3s-abrir')}
       ${tileC('objetivos','🏁','Objetivos',ob,'em curso')}
-      ${tileC('desafios','🏆','Desafios',pts,'pontos')}
     </div>
     <div class="h3s-card h3s-tiles" style="margin-top:10px">
       ${tileC('escola','📚','Escola',un.length?`<span style="color:var(--mint)">▲${sub_}</span> <span style="color:var(--red)">▼${des}</span>`:'–',un.length?un.length+' disciplinas':'sem notas')}
       ${tileC('avaliacao','💛',at?'Autoavaliação':'Avaliação 3S',m3s!=null?fmt1(m3s):'–',trimLabel(trimAtual()))}
       ${tileC('emocoes','😀','Emoções',em?(EMOCOES.find(x=>x[1]===em.emocao)||['–'])[0]:'–',em?esc(em.emocao):'sem registo')}
       ${tileC('bem','💚','Crescer bem','Abrir ›','mente, adolescência, escolhas','h3s-abrir')}
-      ${tileC('rotina','🌙','Rotina','Abrir ›','sono, água, estudo','h3s-abrir')}
       ${at?'':tileC('melhorar','🔎','A melhorar','Abrir ›','jogo, treino, escola','h3s-abrir')}
       ${at?'':tileC('conversa','💬','Conversa','Abrir ›','família e treinador','h3s-abrir')}
     </div>
@@ -2170,11 +2162,12 @@ async function podioEvento(evId){
 
 /* ---------- pódios ---------- */
 const MEDALHA=['🥇','🥈','🥉'],CORPOD=['#D4A93C','#B8BEC8','#C78A52'];
+const podClick=id=>(isCoach()||S.meus.some(m=>m.id===id))?`onclick="abrirJogador('${id}','dadosjogo')"`:'';
 function podioHTML(top){
   if(!top.length)return '<p class="empty">Ainda sem dados. O treinador preenche a checklist depois de cada treino e jogo.</p>';
   const ordem=[1,0,2].filter(i=>top[i]);const alt={0:120,1:88,2:66};
   return `<div style="display:flex;align-items:flex-end;justify-content:center;gap:8px;margin-top:14px">${ordem.map(i=>{const x=top[i];const j=S.jogadores.find(y=>y.id===x.jogador_id)||{id:x.jogador_id,nome:x.nome,numero:x.numero};
-    return `<div style="flex:1;max-width:120px;text-align:center"><div style="font-size:${i?24:32}px">${MEDALHA[i]}</div><div style="display:flex;justify-content:center;margin:4px 0">${x.autoriza_fotos!==false?avatar(j,i?46:58):`<div class="av" style="width:${i?46:58}px;height:${i?46:58}px">${x.numero??iniciais(x.nome)}</div>`}</div>
+    return `<div style="flex:1;max-width:120px;text-align:center " ${podClick(x.jogador_id)}><div style="font-size:${i?24:32}px">${MEDALHA[i]}</div><div style="display:flex;justify-content:center;margin:4px 0">${x.autoriza_fotos!==false?avatar(j,i?46:58):`<div class="av" style="width:${i?46:58}px;height:${i?46:58}px">${x.numero??iniciais(x.nome)}</div>`}</div>
       <b style="font-size:13px;display:block;line-height:1.2">${esc(primeiro(x.nome))} ${esc((x.nome.split(' ').slice(-1)[0]||'')[0]||'')}.</b><div class="faint">${fmtVal(x.val)} ${x.un}</div>
       <div style="height:${alt[i]}px;background:${CORPOD[i]};border-radius:12px 12px 0 0;margin-top:6px;display:grid;place-items:center;color:#fff;font-family:'Baloo 2';font-size:30px">${i+1}</div></div>`}).join('')}</div>`;
 }
@@ -2186,7 +2179,13 @@ function periodoPodio(){const p=S.perPod||'epoca';const h=new Date();let d;
 async function vPodios(){
   const [de,ate,rot]=periodoPodio();
   const {data,error}=await sb.rpc('fut_podio',{p_equipa:S.eq.id,p_desde:de,p_ate:ate});
-  const L=data||[];
+  const L=(data||[]).map(x=>({...x}));
+  if((S.perPod||'epoca')==='epoca'&&S.jogadores.length){
+    const base=await q(sb.from('fut_estat_base').select('*').eq('epoca',epocaAtual()).in('jogador_id',S.jogadores.map(j=>j.id)))||[];
+    base.forEach(b=>{let x=L.find(y=>y.jogador_id===b.jogador_id);const j=S.jogadores.find(y=>y.id===b.jogador_id);if(!j)return;
+      if(!x){x={jogador_id:j.id,nome:j.nome,numero:j.numero,autoriza_fotos:!!j.autoriza_fotos,jogos:0,pts_jogo:0,treinos:0,pts_treino:0,golos:0,assistencias:0};L.push(x)}
+      x.golos=(Number(x.golos)||0)+(b.golos||0);x.assistencias=(Number(x.assistencias)||0)+(b.assistencias||0);x.jj=(b.jogos||0)+(x.jogos||0)});
+  }
   const cat=[
     ['jogo','🏆','Melhor performance em jogo',x=>x.jogos?Number(x.pts_jogo)/x.jogos:0,'pts/jogo',x=>x.jogos>0],
     ['treino','🏃','Melhor performance em treino',x=>x.treinos?Number(x.pts_treino)/x.treinos:0,'pts/treino',x=>x.treinos>0],
@@ -2195,10 +2194,10 @@ async function vPodios(){
   ];
   S._podios={};
   $('#main').innerHTML=`<div class="seg">${[['mes','Este mês'],['3m','3 meses'],['epoca','Época']].map(([k,l])=>`<button class="${(S.perPod||'epoca')===k?'on':''}" onclick="S.perPod='${k}';vPodios()">${l}</button>`).join('')}</div>
-  ${isCoach()?`<div class="card"><p class="muted" style="margin:0 0 8px">Os pódios usam a checklist que o treinador preenche em cada treino e jogo (Agenda → treino ou jogo → 📋 Checklist).</p></div>`:''}
+  ${isCoach()?`<div class="card"><p class="muted" style="margin:0 0 8px">Os golos e as assistências da época juntam os números da Ficha de Equipa (federação) e os da checklist. A performance usa a checklist de cada treino e jogo (Agenda → 📋 Checklist). Toque num atleta para abrir a ficha dele.</p></div>`:''}
   ${cat.map(([k,ic,t,f,un,ok])=>{const top=L.filter(ok).map(x=>({...x,val:f(x),un})).sort((a,b)=>b.val-a.val);S._podios[k]={titulo:t,sub:rot,lista:top.slice(0,3)};
     return `<div class="h3s-card" style="margin-bottom:14px"><div class="h3s-hero-tit" style="text-align:center">${ic} ${t}</div><div class="faint" style="text-align:center">${rot}</div>${podioHTML(top.slice(0,3))}
-    ${top.length>3?`<div class="list" style="margin-top:10px">${top.slice(3,8).map((x,i)=>`<div class="row between"><span>${i+4}. ${esc(x.nome)}</span><b>${fmtVal(x.val)} ${un}</b></div>`).join('')}</div>`:''}
+    ${top.length>3?`<div class="list" style="margin-top:10px">${top.slice(3,8).map((x,i)=>`<div class="row between" style="padding:3px 0" ${podClick(x.jogador_id)}><span>${i+4}. ${esc(x.nome)}</span><b>${fmtVal(x.val)} ${un}</b></div>`).join('')}</div>`:''}
     ${top.length?`<button class="btn ghost full sm" style="margin-top:12px" onclick="S._podio=S._podios['${k}'];imagemPodio()">🖼️ Criar imagem</button>`:''}</div>`}).join('')}`;
 }
 /* imagem do pódio (PNG para partilhar) */
@@ -2427,7 +2426,6 @@ async function jCartoes(j){
       tile('🔁',soma('passes'),'passes','',go('evolucao')),
       tile('🟨',`${soma('amarelos')} · 🟥 ${soma('vermelhos')}`,'cartões',soma('amarelos')||soma('vermelhos')?'var(--red)':'',go('evolucao')),
       tile('📈',D.evs.filter(e=>e.tipo==='jogo'&&P.some(p=>p.evento_id===e.id&&(p.presente||p.minutos))).length,`jogos · ${soma('minutos')} min`,'',go('evolucaoGeral')),
-      tile('🏆',pts,'pontos dos desafios','var(--gold)',go('desafios')),
       tile('🏁',ob,'objetivos em curso','',go('objetivos')),
       tile('🥇','Ver','pódios da equipa','','irPodios()')
     ])}
@@ -2437,7 +2435,6 @@ async function jCartoes(j){
       tile('💛',m3s!=null?fmt1(m3s):'–',at?'autoavaliação 3S':'avaliação 3S','',go('avaliacao')),
       tile('😀',em?(EMOCOES.find(x=>x[1]===em.emocao)||['–'])[0]:'–',em?'última emoção: '+em.emocao.toLowerCase():'emoções','',go('emocoes')),
       tile('💚','Abrir','crescer bem','var(--mint)',go('bem')),
-      tile('🌙','Abrir','rotina: sono, água, estudo','',go('rotina')),
       at?'':tile('🔎','Abrir','a melhorar (jogo, treino, escola)','',go('melhorar'))
     ])}
     ${sec('🛡️ Clube e ficha')}
@@ -2597,7 +2594,7 @@ async function painelAtleta(j){
   el.innerHTML=grelha4([
     tile4('🧭',hm!=null?fmt1(hm)+'<small style="font-size:14px;color:var(--soft)"> /5</small>':'–','O meu perfil',forte?'ponto forte: '+forte.n.toLowerCase():'faz a tua autoavaliação',hm!=null&&hm>=3.5?'var(--mint)':'',`S.tab='jogadores';S.jog='${j.id}';S.jogTab='resumo';render()`),
     tile4('📅',pd,'Próximo treino',ps,'',ev?`abrirEvento('${ev.id}')`:"irPara('agenda')"),
-    tile4('🏆',pts,'Desafios',pts>=200?'medalha de ouro':pts>=100?'medalha de prata':pts>=40?'medalha de bronze':'pontos: faz mais um!','var(--gold)',`S.tab='jogadores';S.jog='${j.id}';S.jogTab='desafios';render()`),
+    tile4('🎯','','O meu plano','o que estou a trabalhar','var(--gold)',`S.tab='jogadores';S.jog='${j.id}';S.jogTab='plano';render()`),
     tile4('⚽',eu.gm,'Os meus golos',`${eu.jj} jogos esta época`,'var(--mint)','irEquipa()')
   ]);
 }
@@ -2648,9 +2645,9 @@ async function jPerfil4(j){
   <details class="h3s-card" style="margin-top:14px;padding:14px"><summary style="font-weight:700;cursor:pointer;font-size:15px">➕ Mais: evolução, escola, crescer bem, clube…</summary>
     <div class="h3s-tiles" style="padding:10px 0 0">
       ${mini('📈','Evolução','gráficos',go('evolucaoGeral'))}${mini('📋','Ficha FPF','Arcas',go('fpf'))}${mini('🏁','Objetivos','',go('objetivos'))}
-      ${mini('🏆','Desafios','em casa',go('desafios'))}${mini('🥇','Pódios','equipa','irPodios()')}${mini('📚','Escola','notas',go('escola'))}
+      ${mini('🥇','Pódios','equipa','irPodios()')}${mini('📚','Escola','notas',go('escola'))}
       ${mini('💛',at?'Autoavaliação':'Avaliação 3S','trimestral',go('avaliacao'))}${mini('😀','Emoções','',go('emocoes'))}${mini('💚','Crescer bem','',go('bem'))}
-      ${mini('🌙','Rotina','',go('rotina'))}${mini('🛡️','Arcas','clube',go('clube'))}${at?'':mini('🔎','A melhorar','',go('melhorar'))}
+      ${mini('🛡️','Arcas','clube',go('clube'))}${at?'':mini('🔎','A melhorar','',go('melhorar'))}
       ${at?'':mini('💶','Conta corrente','',go('conta'))}${at?'':mini('📇','Ficha','dados',go('ficha'))}${at?'':mini('💬','Conversa','treinador',go('conversa'))}
     </div></details>`;
 }
