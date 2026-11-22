@@ -432,7 +432,7 @@ function vInicio(){
     if(filho)h+=`<div class="card"><div class="row between" style="margin-bottom:10px"><div><h2 style="margin:0">${esc(primeiro(filho.nome))} · ${MESES_L[new Date().getMonth()]}</h2><div class="muted">${esc(S.eq.nome)}${filho.numero!=null?' · n.º '+filho.numero:''}</div></div><button class="btn ghost sm" onclick="abrirJogador('${filho.id}')">Abrir ›</button></div><div id="painel"><p class="muted">A carregar…</p></div></div>`;
   }
   if(isAtleta()&&S.meus[0]){filho=S.meus[0];h+=`<div class="card"><h2 style="margin-bottom:10px">O meu mês · ${MESES_L[new Date().getMonth()]}</h2><div id="painel"><p class="muted">A carregar…</p></div></div>`}
-  if(isCoach())h+=`<div class="card"><h2 style="margin-bottom:10px">${isAdminModo()?'Administração · '+esc(S.eq.nome):'Equipa'} · ${MESES_L[new Date().getMonth()]}</h2><div id="painel"><p class="muted">A carregar…</p></div><button class="btn gold full" style="margin-top:12px;padding:14px;font-size:16px" onclick="irAvaliacoes()">📋 Avaliação dos jogadores</button><button class="btn full" style="margin-top:8px;padding:14px;font-size:16px" onclick="irDados()">📇 Dados pessoais de pais e atletas</button><div class="row" style="gap:6px;margin-top:10px">${[['✅','Obrigações','abrirObrig()'],['📊','Visão geral','abrirVisao()'],['🎂','Aniversários','abrirAnivSheet()'],[isAdminModo()?'🔑':'🔗',isAdminModo()?'Acessos':'Código','${isAdminModo()?\'irAcessos()\':\'mostrarCodigoEquipa()\'}']].map(([i,l,a])=>`<button class="btn ghost sm" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 2px;font-size:12px;line-height:1.2" onclick="${a}"><span style="font-size:20px">${i}</span>${l}</button>`).join('')}</div></div>`;
+  if(isCoach())h+=`<div class="card"><h2 style="margin-bottom:10px">${isAdminModo()?'Administração · '+esc(S.eq.nome):'Equipa'} · ${MESES_L[new Date().getMonth()]}</h2><div id="painel"><p class="muted">A carregar…</p></div><button class="btn gold full" style="margin-top:12px;padding:14px;font-size:16px" onclick="irAvaliacoes()">📋 Avaliação dos jogadores</button><button class="btn full" style="margin-top:8px;padding:14px;font-size:16px" onclick="irDados()">📇 Dados pessoais de pais e atletas</button><div class="row" style="gap:6px;margin-top:10px">${[['📜','Regras de funcionamento','abrirRegras()'],['📊','Visão geral','abrirVisao()'],['🎂','Aniversários','abrirAnivSheet()'],[isAdminModo()?'🔑':'🔗',isAdminModo()?'Acessos':'Código','${isAdminModo()?\'irAcessos()\':\'mostrarCodigoEquipa()\'}']].map(([i,l,a])=>`<button class="btn ghost sm" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 2px;font-size:12px;line-height:1.2" onclick="${a}"><span style="font-size:20px">${i}</span>${l}</button>`).join('')}</div></div>`;
   if(!isCoach()&&S.meus.length)h+=`<div id="iqHome"></div><div id="reflHome"></div>`;
   if(!isCoach()&&!S.meus.length){
     h+=`<div class="card">${isAtleta()?'<h2>Ainda não estás ligado a um jogador</h2><p class="muted">Pede o código de atleta aos teus pais ou ao treinador.</p><button class="btn gold full" onclick="ecraSemEquipa()">Tenho um código</button>':'<h2>Falta ligar ao seu filho</h2><p class="muted">Escreva o código de família que recebeu por mensagem. O seu filho já está registado pelo treinador.</p><button class="btn gold full" onclick="pedirCodigoFamilia()">Tenho um código</button>'}</div>`;
@@ -2813,10 +2813,10 @@ Compromisso escolar: o rendimento escolar faz parte do compromisso de atleta.
 Pais e encarregados de educação: apoio positivo na bancada. As indicações técnico-táticas são da responsabilidade do treinador.
 Conduta antidesportiva: implica medidas disciplinares, incluindo afastamento de treinos ou convocatórias.`;
 function cartaoRegras(){const t=(S.eq.regras||REGRAS_BASE).split('\n').map(x=>x.trim()).filter(Boolean);
-  return `<div class="card"><div class="row between"><h2>📜 Regras da equipa</h2>${isCoach()?`<button class="btn ghost sm" onclick="editarRegras()">✏️ Editar</button>`:''}</div>
+  return `<div class="card"><div class="row between"><h2>📜 Regras de funcionamento</h2>${isCoach()?`<button class="btn ghost sm" onclick="editarRegras()">✏️ Editar</button>`:''}</div>
   <p class="faint" style="margin:0 0 8px">Definidas pelo treinador · ${esc(S.eq.nome)}${!S.eq.regras&&isCoach()?' · modelo base, ainda por confirmar':''}</p>
   <ol style="margin:0;padding-left:20px">${t.map(x=>{const k=x.indexOf(':');return `<li style="padding:5px 0;font-size:14px;line-height:1.4">${k>0&&k<45?`<b>${esc(x.slice(0,k))}:</b>${esc(x.slice(k+1))}`:esc(x)}</li>`}).join('')}</ol></div>`}
-function editarRegras(){openSheet(`<h2>📜 Regras da equipa</h2><p class="muted">Uma regra por linha. Pode começar com um título seguido de dois pontos, por exemplo «Pontualidade: …».</p>
+function editarRegras(){openSheet(`<h2>📜 Regras de funcionamento</h2><p class="muted">Uma regra por linha. Pode começar com um título seguido de dois pontos, por exemplo «Pontualidade: …».</p>
   <textarea id="rgTxt" class="in" style="min-height:320px">${esc(S.eq.regras||REGRAS_BASE)}</textarea>
   <button class="btn full" style="margin-top:12px" onclick="guardarRegras()">Guardar</button>`)}
 async function guardarRegras(){const t=g('rgTxt');const r=await q(sb.from('fut_equipas').update({regras:t||null}).eq('id',S.eq.id));if(r===null)return;S.eq.regras=t||null;closeSheet();render();toast('Regras guardadas')}
@@ -3208,6 +3208,7 @@ async function areasDinamicas(){
   const feitas=new Set((av||[]).map(x=>x.jogador_id)).size;
   set('ava',`<b style="color:${feitas===S.jogadores.length&&feitas?'var(--mint)':'var(--gold)'}">${feitas}/${S.jogadores.length}</b> avaliados · ${trimLabel(trimAtual())}`);
 }
+function abrirRegras(){openSheet(cartaoRegras().replace('<div class="card">','<div>'))}
 function abrirTarefas(){openSheet(`<div id="tarefas"><p class="muted">A carregar…</p></div>`);cartaoTarefas()}
 
 /* ---------- mensagens ---------- */
