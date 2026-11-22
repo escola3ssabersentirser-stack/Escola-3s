@@ -448,7 +448,6 @@ function vInicio(){
     h+=`<div class="card"><h2>💛 Atenção a estes miúdos</h2><p class="muted" style="margin-top:0">Disseram que se sentiram assim nos últimos dias.</p><div class="list">${S.alertas.slice(0,5).map(a=>{const j=S.jogadores.find(x=>x.id===a.jogador_id);return j?`<button class="item" onclick="abrirJogador('${j.id}','emocoes')"><div class="av">${iniciais(j.nome)}</div><div class="grow"><b>${esc(j.nome)}</b><div class="muted">${(EMOCOES.find(e=>e[1]===a.emocao)||[''])[0]} ${esc(a.emocao)} ${a.nota?'· '+esc(a.nota):''}</div></div></button>`:''}).join('')}</div></div>`;
   }
   const av=S.avisos[0];
-  if(!isAtleta())h+=`<div class="card"><div class="row between"><h2>Avisos</h2><button class="btn ghost sm" onclick="S.msgTab='avisos';irPara('mensagens')">Ver todos</button></div>${av?`<div class="msg"><div class="who">${esc(nomeDe(av.autor_id))} · ${dataCurta(av.created_at.slice(0,10))}</div>${esc(av.texto)}</div>`:'<p class="empty">Sem avisos.</p>'}</div>`;
 
   setTimeout(()=>{cartaoAniv();if(isCoach()){painelEquipa();painelVisao()}else if(isAtleta()&&filho)painelAtleta(filho);else if(filho)painelFilho(filho)},0);
   if(isCoach()) h+=`<div class="card"><h2>Código da equipa</h2><p class="muted" style="margin-top:0">Envie aos pais para entrarem na app.</p><span class="code">${esc(S.eq.codigo)}</span><a class="btn full" style="display:block;text-align:center;text-decoration:none;background:#25D366;margin-top:10px" href="https://wa.me/?text=${encodeURIComponent(`⚽ ${CLUBE} – ${S.eq.nome}\n\nOlá! A nossa equipa já tem app: o Futsal 3S. Lá vão ver os treinos e jogos, confirmar presenças, combinar boleias e acompanhar a evolução dos atletas.\n\n1. Abra https://escola-3s.pt/futsal\n2. Crie a sua conta (cada pessoa escolhe a sua palavra-passe)\n3. Escreva o código da equipa: ${S.eq.codigo}\n\nQualquer dúvida, diga.`)}" target="_blank" rel="noopener">Enviar código pelo WhatsApp</a></div>`;
@@ -2116,6 +2115,12 @@ function planoDoCheckin(jid,k){S.jog=jid;const it=CHK_PAIS.find(x=>x.k===k);cons
 
 /* ---------- checklist do treinador ---------- */
 const CHECK_ITENS=[['tarefas','Cumpriu as tarefas táticas'],['esforco','Esforço máximo'],['equipa','Espírito de equipa'],['fairplay','Fair-play e respeito'],['concentracao','Concentração'],['comunicacao','Comunicação em campo']];
+const CHECK_GRUPOS=t=>[
+ ['📜 Regras',[['pontual','Pontualidade'],['equipamento','Equipamento completo'],['telemovel','Telemóvel guardado'],['respeito_regras','Cumpriu as regras da equipa']]],
+ ['🤝 Atitude',CHECK_ITENS],
+ ['⚽ Competências',[['passe','Passe e receção'],['conducao','Condução e drible'],['remate','Finalização'],['defesa','Posicionamento defensivo'],['decisao','Tomada de decisão'],['intensidade','Intensidade física']]],
+ t==='jogo'?['🏟️ Jogo',[['plano_jogo','Cumpriu o plano de jogo'],['banco','Comportamento no banco'],['transicoes','Transições ataque-defesa']]]:['🏃 Treino',[['exercicio','Aplicou o objetivo do treino'],['aquecimento','Aquecimento com qualidade'],['aprendizagem','Aceitou a correção']]]
+];
 let CL=null;
 function ptsEvento(p,tipo){if(!p)return 0;const c=Object.values(p.checklist||{}).filter(Boolean).length;return (p.nota_perf||0)+c+(tipo==='jogo'?(p.golos||0)+(p.assistencias||0):0)}
 async function abrirChecklist(evId){
@@ -2131,7 +2136,7 @@ function clRender(){
     return `<div class="card" style="margin:10px 0;${aus?'opacity:.55':''}"><div class="row between"><div class="row" style="gap:10px">${avatar(j,38)}<b>${esc(j.nome)}</b></div>
       <div class="row" style="gap:6px"><button class="btn sm ${r.presente===true?'':'ghost'}" aria-label="Presente" onclick="clSet('${j.id}','presente',true)">✔</button><button class="btn sm ${aus?'red':'ghost'}" aria-label="Faltou" onclick="clSet('${j.id}','presente',false)">✖</button></div></div>
       ${aus?'':`<div class="faint" style="margin:10px 0 4px">Performance (1 a 5)</div><div class="opts" style="gap:6px">${[1,2,3,4,5].map(n=>`<button class="${r.nota_perf===n?'on':''}" style="flex:1;padding:8px 0" onclick="clSet('${j.id}','nota_perf',${n})">${n}</button>`).join('')}</div>
-      <div class="row wrap" style="gap:6px;margin-top:10px">${CHECK_ITENS.map(([k,l])=>`<button class="chip" style="border:0;cursor:pointer;padding:8px 10px;${r.checklist[k]?'background:var(--mint);color:#fff':''}" onclick="clChk('${j.id}','${k}')">${r.checklist[k]?'✔ ':''}${l}</button>`).join('')}</div>
+      ${CHECK_GRUPOS(CL.tipo).map(([gt,its],gi)=>`<div class="row between" style="margin:12px 0 4px"><span class="faint" style="font-weight:700">${gt}</span><button class="btn ghost sm" style="padding:2px 10px" onclick="clGrupo('${j.id}',${gi})">${its.every(([k])=>r.checklist[k])?'Limpar':'✔ Tudo'}</button></div><div class="row wrap" style="gap:6px">${its.map(([k,l])=>`<button class="chip" style="border:0;cursor:pointer;padding:8px 10px;${r.checklist[k]?'background:var(--mint);color:#fff':''}" onclick="clChk('${j.id}','${k}')">${r.checklist[k]?'✔ ':''}${l}</button>`).join('')}</div>`).join('')}
       ${jogo?`<div class="row wrap" style="gap:10px 16px;margin-top:12px">${[['golos','⚽ Golos'],['assistencias','🎯 Assist.'],['passes','🔁 Passes'],['amarelos','🟨'],['vermelhos','🟥']].map(([k,l])=>`<div class="row" style="gap:6px"><span style="font-size:14px">${l}</span><button class="btn ghost sm" aria-label="Menos" onclick="clSet('${j.id}','${k}',Math.max(0,${r[k]}-1))">−</button><b style="min-width:18px;text-align:center">${r[k]}</b><button class="btn ghost sm" aria-label="Mais" onclick="clSet('${j.id}','${k}',${r[k]}+1)">+</button></div>`).join('')}</div>`:''}
       <div class="faint" style="text-align:right;margin-top:6px">${ptsEvento(r,CL.tipo)} pontos</div>`}</div>`};
   const y=$('.sheet')?$('.sheet').scrollTop:0;
@@ -2141,6 +2146,7 @@ function clRender(){
   if($('.sheet'))$('.sheet').scrollTop=y;
 }
 function clSet(j,k,v){CL.d[j][k]=v;if(k==='presente'&&v===true&&CL.d[j].nota_perf==null)CL.d[j].nota_perf=3;clRender()}
+function clGrupo(j,gi){const its=CHECK_GRUPOS(CL.tipo)[gi][1];const c=CL.d[j].checklist;const v=!its.every(([k])=>c[k]);its.forEach(([k])=>c[k]=v);clRender()}
 function clChk(j,k){CL.d[j].checklist[k]=!CL.d[j].checklist[k];clRender()}
 async function clGuardar(){
   const rows=Object.entries(CL.d).filter(([,r])=>r.presente!=null||r.nota_perf!=null).map(([jid,r])=>({evento_id:CL.ev,jogador_id:jid,presente:r.presente,nota_perf:r.presente===false?null:r.nota_perf,golos:CL.tipo==='jogo'&&r.presente!==false?r.golos:null,assistencias:CL.tipo==='jogo'&&r.presente!==false?r.assistencias:null,passes:CL.tipo==='jogo'&&r.presente!==false?r.passes:null,amarelos:CL.tipo==='jogo'&&r.presente!==false?r.amarelos:null,vermelhos:CL.tipo==='jogo'&&r.presente!==false?r.vermelhos:null,checklist:r.presente===false?null:r.checklist}));
