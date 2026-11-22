@@ -647,6 +647,10 @@ function adicionarFilho(){
 async function guardarFilho(){
   if(!g('jNome')){toast('Escreva o nome');return}
   if(!$('#jCons').checked){toast('Falta a autorização para registar os dados');return}
+const _n=s=>(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').trim();
+  {const nn=_n(g('jNome'));const ig=(S.jogadores||[]).find(x=>_n(x.nome)===nn||(_n(x.nome).split(' ')[0]===nn.split(' ')[0]&&_n(x.nome).split(' ').slice(-1)[0]===nn.split(' ').slice(-1)[0]));
+   if(ig&&!isCoach()){toast(`${ig.nome} já está registado. Use o código de família que recebeu para se ligar a ele.`);return}
+   if(ig&&isCoach()&&!confirm(`Já existe ${ig.nome} nesta equipa. Criar outro jogador mesmo assim?`))return}
   const {data,error}=await sb.rpc('fut_adicionar_filho',{p_equipa:S.eq.id,p_nome:g('jNome'),p_numero:g('jNum')?parseInt(g('jNum')):null,p_posicao:g('jPos')||null,p_ano:g('jAno')||null,p_fotos:$('#jFotos').checked});
   if(error){toast('Não foi possível registar');return}
   if(g('jPe'))await q(sb.from('fut_fichas').upsert({jogador_id:data,pe_dominante:g('jPe')},{onConflict:'jogador_id'}));
