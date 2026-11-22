@@ -2530,10 +2530,7 @@ async function vEquipa(){
     ${L.sort((a,b)=>(a.j.numero??99)-(b.j.numero??99)).map(x=>`<button class="item" style="padding:10px 0;border-bottom:1px solid var(--line)" onclick="abrirJogador('${x.j.id}')">${avatar(x.j,46)}<div class="grow"><b style="font-size:16px">${esc(x.j.nome)}</b><div class="faint">${x.j.numero!=null?'n.º '+x.j.numero:''}${x.j.posicao?' · '+esc(x.j.posicao):''}</div></div><span style="display:flex;gap:18px;font-size:17px;font-weight:700;min-width:58px;justify-content:flex-end"><span style="width:20px;text-align:center">${x.jj||'–'}</span><span style="width:20px;text-align:center">${x.gm||'–'}</span></span><span style="font-size:20px;width:26px;text-align:center" title="${x.gm===maxG&&maxG?'Melhor marcador':''}">${x.gm===maxG&&maxG?'⭐':'☆'}</span></button>`).join('')||'<p class="empty">Sem jogadores.</p>'}
     <p class="faint" style="margin:10px 0 4px">JJ = jogos jogados · GM = golos marcados · ⭐ melhor marcador. Época ${epocaAtual()}: números de outras apps somados aos registados na checklist.</p></div>
     ${isCoach()?`<button class="btn ghost full" style="margin-top:12px" onclick="editarBase()">✏️ Acertar números (de outras apps)</button>`:''}`}
-  if(tab==='classificacao'){const cl=await q(sb.from('fut_classificacao').select('*').eq('equipa_id',S.eq.id).eq('epoca',epocaAtual()).order('posicao'))||[];
-    corpo=`<div class="h3s-card" style="padding:8px">${cl.length?`<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:13.5px"><tr class="faint"><th style="text-align:left;padding:8px 4px">#</th><th style="text-align:left">Equipa</th><th>J</th><th>V</th><th>E</th><th>D</th><th>GM-GS</th><th>Pts</th></tr>
-      ${cl.map(c=>`<tr style="border-top:1px solid var(--line);${c.nosso?'background:var(--gold-soft);font-weight:700':''}"><td style="padding:8px 4px">${c.posicao??''}</td><td>${esc(c.clube)}</td><td style="text-align:center">${c.j}</td><td style="text-align:center">${c.v}</td><td style="text-align:center">${c.e}</td><td style="text-align:center">${c.d}</td><td style="text-align:center">${c.gm}-${c.gs}</td><td style="text-align:center;font-weight:800">${c.pts}</td></tr>`).join('')}</table></div>`:'<p class="empty">A classificação ainda não foi inserida.</p>'}</div>
-    ${isCoach()?`<button class="btn ghost full" style="margin-top:12px" onclick="editarClassif()">✏️ ${cl.length?'Atualizar':'Inserir'} classificação</button>`:''}`}
+  if(tab==='classificacao'){corpo=await vCompeticao()}
   if(tab==='jogos'){const js=await q(sb.from('fut_eventos').select('*').eq('equipa_id',S.eq.id).eq('tipo','jogo').order('data',{ascending:true}))||[];S._jogos=js;
     const n=k=>js.filter(e=>estadoJogo(e)===k).length;
     const fil=S.jogFil||'todos';const L=js.filter(e=>fil==='todos'||estadoJogo(e)===fil);
@@ -2565,17 +2562,17 @@ async function editarBase(){const L=await dadosEquipa();
   <button class="btn gold full" style="margin-top:14px" onclick="guardarBase()">Guardar</button>`)}
 async function guardarBase(){const rows={};document.querySelectorAll('[data-b]').forEach(i=>{const id=i.dataset.b;rows[id]=rows[id]||{jogador_id:id,epoca:epocaAtual(),origem:'Acertado na app',updated_at:new Date().toISOString()};rows[id][i.dataset.k]=parseInt(i.value)||0});
   const r=await q(sb.from('fut_estat_base').upsert(Object.values(rows),{onConflict:'jogador_id,epoca'}));if(r===null)return;closeSheet();vEquipa();toast('Números guardados')}
-async function editarClassif(){const cl=await q(sb.from('fut_classificacao').select('*').eq('equipa_id',S.eq.id).eq('epoca',epocaAtual()).order('posicao'))||[];
+async function editarClassif(jn){const todos=await q(sb.from('fut_classificacao').select('*').eq('equipa_id',S.eq.id).eq('epoca',epocaAtual()).order('posicao'))||[];const jx=[...new Set(todos.map(c=>c.jornada).filter(x=>x!=null))];const ult=jx.length?Math.max(...jx):null;let cl=todos.filter(c=>(c.jornada??null)===(jn??null));if(!cl.length&&ult!=null)cl=todos.filter(c=>c.jornada===ult).map(c=>({...c,id:undefined}));
   const linhas=cl.length?cl:[{clube:CLUBE,nosso:true}];S._cl=linhas.length;
   const L=(c,i)=>`<div class="card" style="margin:8px 0;padding:10px" data-cl="${i}"><div class="row" style="gap:6px"><input class="in" style="width:52px;padding:8px" inputmode="numeric" placeholder="#" data-f="posicao" value="${c.posicao??i+1}"><input class="in grow" style="padding:8px" placeholder="Clube" data-f="clube" value="${esc(c.clube||'')}"><label class="check" style="margin:0;font-size:12px"><input type="checkbox" data-f="nosso" ${c.nosso?'checked':''}>nós</label></div>
     <div class="row" style="gap:4px;margin-top:6px">${['j','v','e','d','gm','gs','pts'].map(k=>`<input class="in" style="padding:6px;text-align:center;font-size:14px" inputmode="numeric" placeholder="${k.toUpperCase()}" aria-label="${k}" data-f="${k}" value="${c[k]??''}">`).join('')}</div></div>`;
-  openSheet(`<h2>Classificação</h2><p class="muted">Copie da app da federação. J jogos · V vitórias · E empates · D derrotas · GM golos marcados · GS golos sofridos · Pts pontos.</p>
+  openSheet(`<h2>Classificação</h2><label class="f" for="clJ">Jornada</label><input id="clJ" class="in" type="number" inputmode="numeric" style="width:110px" value="${jn??(ult!=null?ult+1:'')}"><p class="muted">Copie da app da federação. J jogos · V vitórias · E empates · D derrotas · GM golos marcados · GS golos sofridos · Pts pontos.</p>
   <div id="clL">${linhas.map(L).join('')}</div>
   <button class="btn ghost full sm" onclick="document.getElementById('clL').insertAdjacentHTML('beforeend',(${L.toString()})({},S._cl++))">+ Linha</button>
   <button class="btn gold full" style="margin-top:12px" onclick="guardarClassif()">Guardar</button>`)}
-async function guardarClassif(){const rows=[...document.querySelectorAll('[data-cl]')].map(d=>{const r={equipa_id:S.eq.id,epoca:epocaAtual()};d.querySelectorAll('[data-f]').forEach(i=>{const k=i.dataset.f;r[k]=k==='clube'?i.value.trim():k==='nosso'?i.checked:(parseInt(i.value)||0)});return r}).filter(r=>r.clube);
-  await q(sb.from('fut_classificacao').delete().eq('equipa_id',S.eq.id).eq('epoca',epocaAtual()));
-  if(rows.length)await q(sb.from('fut_classificacao').insert(rows));closeSheet();vEquipa();toast('Classificação guardada')}
+async function guardarClassif(){const jn=parseInt(g('clJ'))||null;const rows=[...document.querySelectorAll('[data-cl]')].map(d=>{const r={equipa_id:S.eq.id,epoca:epocaAtual(),jornada:jn};d.querySelectorAll('[data-f]').forEach(i=>{const k=i.dataset.f;r[k]=k==='clube'?i.value.trim():k==='nosso'?i.checked:(parseInt(i.value)||0)});return r}).filter(r=>r.clube);
+  {let d=sb.from('fut_classificacao').delete().eq('equipa_id',S.eq.id).eq('epoca',epocaAtual());d=jn==null?d.is('jornada',null):d.eq('jornada',jn);await q(d)}
+  if(rows.length)await q(sb.from('fut_classificacao').insert(rows));closeSheet();S.compV='classif';S.compJ=jn;vEquipa();toast('Classificação guardada')}
 
 /* ---------- acessos: códigos para pais e atletas, enviados por WhatsApp ---------- */
 function irAcessos(){closeSheet();S.tab='acessos';S.jog=null;render();window.scrollTo(0,0)}
@@ -2652,6 +2649,48 @@ async function guardarLigacao(jid){
   openSheet(`<h2>✔ ${esc(primeiro(nome))} guardado(a)</h2><p class="muted">${esc(nome)} (${esc(par.toLowerCase())}) ainda não tem conta na app com o número ${esc(tel)}. Envie-lhe o link e o código pelo WhatsApp: quando criar conta e escrever o código, fica ligado(a) automaticamente.</p>
    <a class="btn full" style="display:block;text-align:center;text-decoration:none;background:#25D366;margin-top:12px" href="https://wa.me/${telWa(tel)}?text=${encodeURIComponent(msgPais(x))}" target="_blank" rel="noopener" onclick="setTimeout(()=>{closeSheet();vAcessos()},400)">Enviar pelo WhatsApp</a>
    <button class="btn ghost full" style="margin-top:8px" onclick="closeSheet();vAcessos()">Mais tarde</button>`)}
+
+/* ---------- competição: classificação e jogos por jornada (estilo federação) ---------- */
+const eNosso=c=>/arcas|arcos s\.?\s*paio/i.test(c||'');
+async function vCompeticao(){
+  const ep=epocaAtual();
+  const [cl,jj]=await Promise.all([q(sb.from('fut_classificacao').select('*').eq('equipa_id',S.eq.id).eq('epoca',ep).order('posicao')),q(sb.from('fut_jornada_jogos').select('*').eq('equipa_id',S.eq.id).eq('epoca',ep).order('data').order('hora'))]);
+  const C=cl||[],J=jj||[];S._cj={C,J};
+  const jornC=[...new Set(C.map(c=>c.jornada).filter(x=>x!=null))].sort((a,b)=>a-b),jornJ=[...new Set(J.map(x=>x.jornada))].sort((a,b)=>a-b);
+  const vista=S.compV||'classif';
+  const hj=hoje(),proxJ=(J.find(x=>(x.data||'')>=hj)||{}).jornada;
+  const lista=vista==='classif'?jornC:jornJ;
+  let sel=S.compJ&&lista.includes(S.compJ)?S.compJ:(vista==='jogos'?(proxJ||lista[lista.length-1]):lista[lista.length-1]);
+  const maxN=Math.max(10,...jornC,...jornJ);const nums=Array.from({length:maxN},(_,i)=>i+1);
+  const tem=n=>lista.includes(n);
+  const barra=`<div style="background:#4CAF50;border-radius:14px 14px 0 0;overflow:hidden"><div class="row between" style="padding:8px 12px;border-bottom:3px solid #2E7D32"><button aria-label="Jornada anterior" style="border:0;background:none;color:#fff;font-size:24px;padding:0 6px" onclick="mudarJornada(-1)">‹</button><b style="color:#1B3A1B;letter-spacing:.5px">JORNADAS</b><button aria-label="Jornada seguinte" style="border:0;background:none;color:#fff;font-size:24px;padding:0 6px" onclick="mudarJornada(1)">›</button></div>
+   <div id="jornBar" style="display:flex;overflow-x:auto;scrollbar-width:none">${nums.map(n=>`<button ${n===sel?'id="jornSel"':''} onclick="S.compJ=${n};vEquipa()" style="flex:0 0 52px;border:0;padding:10px 0;font-size:26px;font-weight:600;background:${n===sel?'#000':'transparent'};color:${n===sel?'#fff':tem(n)?'#fff':'#2E7D32'}">${n}</button>`).join('')}</div></div>`;
+  const tog=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px">${[['classif','Classificação'],['jogos','Jogos']].map(([k,l])=>`<button onclick="S.compV='${k}';S.compJ=null;vEquipa()" style="border:0;border-radius:10px;padding:12px;font-size:16px;font-weight:700;background:${vista===k?'#555':'#d6d6d6'};color:${vista===k?'#fff':'#222'}">${l}</button>`).join('')}</div>`;
+  let corpo='';
+  if(vista==='classif'){const L=C.filter(c=>(c.jornada??null)===(sel??null));
+    corpo=L.length?`<div style="background:#fff;border-radius:0 0 14px 14px;overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:14px;color:#333"><tr style="font-size:12px;color:#222"><th style="text-align:left;padding:12px 8px">POS</th><th></th>${['JGS','V','E','D','GM','GS','PTS'].map(t=>`<th style="width:30px;padding:0 3px;text-align:center">${t}</th>`).join('')}</tr>
+     ${L.map(c=>{const n=c.nosso||eNosso(c.clube);return `<tr style="border-top:2px solid #eee;${n?'background:#FFF6E0;font-weight:800':''}"><td style="padding:12px 8px"><span style="display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:${n?'var(--gold)':'#ccc'};color:${n?'#fff':'#333'}">${c.posicao??''}</span></td><td style="padding:8px 4px;line-height:1.25">${esc(c.clube)}${n?' ⭐':''}</td>${['j','v','e','d','gm','gs'].map(k=>`<td style="text-align:center;padding:0 3px">${c[k]??0}</td>`).join('')}<td style="text-align:center;padding:0 3px;font-weight:800">${c.pts??0}</td></tr>`}).join('')}</table></div>`
+     :`<div style="background:#fff;border-radius:0 0 14px 14px;padding:18px"><p class="empty" style="margin:0">${lista.length?'Sem classificação desta jornada.':'A classificação ainda não foi inserida.'}</p></div>`}
+  else{const L=J.filter(x=>x.jornada===sel);
+    corpo=L.length?`<div style="background:#fff;border-radius:0 0 14px 14px">${L.map(x=>{const nC=eNosso(x.casa),nF=eNosso(x.fora),res=x.golos_casa!=null&&x.golos_fora!=null;return `<div style="padding:14px 12px;border-top:2px solid #eee;${nC||nF?'background:#FFF6E0':''}"><div style="display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;color:#333"><span style="${nC?'font-weight:800':''}">${esc(x.casa)}</span><span style="text-align:center;line-height:1.25">${res?`<b style="font-size:22px">${x.golos_casa} - ${x.golos_fora}</b>`:`${x.data?dataCurta(x.data).toUpperCase():''}<br>${esc(x.hora||'')}`}</span><span style="text-align:right;${nF?'font-weight:800':''}">${esc(x.fora)}</span></div>${x.local?`<div style="text-align:center;margin-top:8px;color:#111">${esc(x.local)}</div><div style="display:flex;justify-content:center">${gpsBotoes({local:x.local},1)}</div>`:''}${isCoach()?`<div style="text-align:center;margin-top:6px"><button class="btn ghost sm" onclick="editarJogoJornada('${x.id}')">✏️ Editar / resultado</button></div>`:''}</div>`}).join('')}</div>`
+     :`<div style="background:#fff;border-radius:0 0 14px 14px;padding:18px"><p class="empty" style="margin:0">Sem jogos desta jornada.</p></div>`}
+  setTimeout(()=>{const s=document.getElementById('jornSel');if(s)s.scrollIntoView({inline:'center',block:'nearest'})},0);
+  S._compSel=sel;
+  return tog+barra+corpo+(isCoach()?`<div class="row" style="gap:8px;margin-top:12px">${vista==='classif'?`<button class="btn ghost grow" onclick="editarClassif(${sel??'null'})">✏️ ${C.some(c=>c.jornada===sel)?'Atualizar':'Inserir'} classificação</button>`:`<button class="btn ghost grow" onclick="editarJogoJornada(null)">+ Jogo na jornada</button>`}</div>`:'');
+}
+function mudarJornada(d){const n=(S._compSel||1)+d;if(n<1)return;S.compJ=n;vEquipa()}
+function editarJogoJornada(id){const x=id?(S._cj.J.find(y=>y.id===id)||{}):{jornada:S._compSel||1};
+  openSheet(`<h2>${id?'Editar jogo':'Novo jogo da jornada'}</h2>
+  <div class="row"><div style="width:90px"><label class="f" for="jjN">Jornada</label><input id="jjN" class="in" type="number" inputmode="numeric" value="${x.jornada??''}"></div><div class="grow"><label class="f" for="jjD">Data</label><input id="jjD" class="in" type="date" value="${x.data||''}"></div><div style="width:100px"><label class="f" for="jjH">Hora</label><input id="jjH" class="in" type="time" value="${esc(x.hora||'')}"></div></div>
+  <label class="f" for="jjC">Equipa da casa</label><input id="jjC" class="in" value="${esc(x.casa||'')}">
+  <label class="f" for="jjF">Equipa de fora</label><input id="jjF" class="in" value="${esc(x.fora||'')}">
+  <label class="f" for="jjL">Pavilhão</label><input id="jjL" class="in" value="${esc(x.local||'')}">
+  <label class="f">Resultado (se já foi jogado)</label><div class="row"><input id="jjGc" class="in grow" type="number" inputmode="numeric" placeholder="casa" value="${x.golos_casa??''}"><b>-</b><input id="jjGf" class="in grow" type="number" inputmode="numeric" placeholder="fora" value="${x.golos_fora??''}"></div>
+  <button class="btn gold full" style="margin-top:14px" onclick="guardarJogoJornada(${id?`'${id}'`:'null'})">Guardar</button>`)}
+async function guardarJogoJornada(id){const n=parseInt(g('jjN'));if(!n||!g('jjC')||!g('jjF')){toast('Falta a jornada ou as equipas');return}
+  const r={equipa_id:S.eq.id,epoca:epocaAtual(),jornada:n,data:g('jjD')||null,hora:g('jjH')||null,casa:g('jjC').trim(),fora:g('jjF').trim(),local:g('jjL')||null,golos_casa:g('jjGc')===''?null:parseInt(g('jjGc')),golos_fora:g('jjGf')===''?null:parseInt(g('jjGf'))};
+  const res=id?await q(sb.from('fut_jornada_jogos').update(r).eq('id',id)):await q(sb.from('fut_jornada_jogos').insert(r));if(res===null)return;
+  closeSheet();S.compJ=n;toast('Guardado');vEquipa()}
 /* ---------- números WhatsApp de pai, mãe e atleta (editáveis) ---------- */
 const telIg=(a,b)=>{const x=telWa(a),y=telWa(b);return x&&y&&x.slice(-9)===y.slice(-9)};
 function blocoNumeros(x,i){
@@ -3394,8 +3433,8 @@ async function impGuardar(){const T=IMP.tipo;const L=IMP.rows.map(impObj).filter
     const row={equipa_id:S.eq.id,tipo:'jogo',data:d,hora:o.hora||null,adversario:o.adversario,local:o.local||null,resultado:res,casa_fora:cf,estado:res?'realizado':d<hoje()?null:'agendado'};
     const {error}=ex?await sb.from('fut_eventos').update({resultado:res||ex.resultado,local:row.local||ex.local,hora:row.hora||ex.hora,casa_fora:cf||ex.casa_fora,estado:res?'realizado':ex.estado}).eq('id',ex.id):await sb.from('fut_eventos').insert(row);
     if(error)falhas.push(o.adversario+': '+error.message);else{ok++;if(!ex)novos++}}}
- else if(T==='classif'){const rows=L.filter(o=>o.clube).map((o,i)=>({equipa_id:S.eq.id,epoca:epocaAtual(),posicao:impNum(o.posicao)||i+1,clube:o.clube,nosso:/arcas|s\.?\s*paio/i.test(o.clube),...Object.fromEntries(['j','v','e','d','gm','gs','pts'].map(k=>[k,impNum(o[k])||0]))}));
-    if(rows.length){await sb.from('fut_classificacao').delete().eq('equipa_id',S.eq.id).eq('epoca',epocaAtual());const {error}=await sb.from('fut_classificacao').insert(rows);if(error)throw error;ok=rows.length}}
+ else if(T==='classif'){const jn=parseInt(prompt('Esta classificação é de que jornada? (n.º)')||'')||null;const rows=L.filter(o=>o.clube).map((o,i)=>({equipa_id:S.eq.id,epoca:epocaAtual(),jornada:jn,posicao:impNum(o.posicao)||i+1,clube:o.clube,nosso:/arcas|s\.?\s*paio/i.test(o.clube),...Object.fromEntries(['j','v','e','d','gm','gs','pts'].map(k=>[k,impNum(o[k])||0]))}));
+    if(rows.length){{let d=sb.from('fut_classificacao').delete().eq('equipa_id',S.eq.id).eq('epoca',epocaAtual());d=jn==null?d.is('jornada',null):d.eq('jornada',jn);await d}const {error}=await sb.from('fut_classificacao').insert(rows);if(error)throw error;ok=rows.length}}
  else if(T==='notas'){const rows=[];for(const o of L){const j=IMP.jid&&!o.nome?S.jogadores.find(x=>x.id===IMP.jid)||(S.meus||[]).find(x=>x.id===IMP.jid):impJog(o.nome);if(!j){falhas.push((o.nome||'?')+': atleta não encontrado');continue}const nota=parseFloat(String(o.nota||'').replace(',','.'));if(!o.disciplina||isNaN(nota)){falhas.push(j.nome+': falta disciplina ou nota');continue}
     const esc_=o.escala&&ESCALAS[o.escala]?o.escala:nota>5?'0-20':'1-5';const per=PERIODOS.find(p=>_nrm(p).startsWith(_nrm(o.periodo||'').slice(0,2)))||'1.º Período';
     rows.push({jogador_id:j.id,ano_letivo:o.ano_letivo||anoLetivoAtual(),periodo:per,disciplina:o.disciplina,nota,escala:esc_,autor_id:S.me})}
