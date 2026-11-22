@@ -8822,7 +8822,7 @@ function BannerEncontro() {
         <p className="text-[11px] tracking-[0.15em] font-semibold" style={{ color: palette.gold }}>ENCONTRO GRATUITO · {ev.quandoCurto.toUpperCase()}</p>
         <p className="font-serif text-3xl leading-tight mt-3" style={{ color: palette.creamSoft }}>{ev.chamada}</p>
         <span className="inline-block mt-5 rounded-full px-6 py-3 text-sm font-medium" style={{ backgroundColor: palette.gold, color: palette.navy }}>
-          Quero participar
+          Entrar no encontro
         </span>
       </a>
     </div>
@@ -8831,48 +8831,14 @@ function BannerEncontro() {
 
 function InscricaoEventoPublica({ eventoId }) {
   const evento = EVENTOS_PUBLICOS[eventoId];
-  const [nome, setNome] = useState("");
-  const [email, setEmail] = useState("");
-  const [telefone, setTelefone] = useState("");
-  const [localidade, setLocalidade] = useState("");
-  const [aceitou, setAceitou] = useState(false);
-  const [estado, setEstado] = useState(null); // null | "a_enviar" | "ok"
-  const [erro, setErro] = useState("");
-
-  const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
-  const pode = nome.trim() && emailValido && telefone.trim() && aceitou;
-
-  const enviar = async () => {
-    if (!pode) return;
-    setEstado("a_enviar");
-    setErro("");
-    const { error } = await supabase.from("inscricoes_evento").insert({
-      evento: evento.nome,
-      evento_chave: eventoId === "imersao" ? "encontro" : eventoId,
-      nome: nome.trim(),
-      email: email.trim().toLowerCase(),
-      telefone: telefone.trim(),
-      localidade: localidade.trim() || null,
-      consentimento_texto: TEXTO_CONSENTIMENTO_EVENTO,
-    });
-    if (error) {
-      setEstado(null);
-      setErro("Não foi possível fazer a inscrição. Tenta novamente.");
-      return;
-    }
-    setEstado("ok");
+  const [copiado, setCopiado] = useState(false);
+  const link = evento && (evento.link || "https://escola-3s.pt/encontro/");
+  const mensagem = evento
+    ? `Bom dia,\n\nA Escola 3S convida-o(a) para o encontro online «${evento.titulo}», ${evento.data.replace(/^(\S+)-feira/, (m, d) => "na " + d.toLowerCase() + "-feira").replace(" · ", ", às ").replace(/h00$/, "h00")}. Participação gratuita.\n\nAcesso: ${link}\n\nCumprimentos,\nConceição Alves | Escola 3S`
+    : "";
+  const copiar = async () => {
+    try { await navigator.clipboard.writeText(mensagem); setCopiado(true); setTimeout(() => setCopiado(false), 2500); } catch (e) { /* sem acesso à área de transferência */ }
   };
-
-  const campo = (valor, setValor, placeholder, tipo = "text") => (
-    <input
-      type={tipo}
-      value={valor}
-      onChange={(e) => setValor(e.target.value)}
-      placeholder={placeholder}
-      className="w-full rounded-xl px-4 py-3 text-sm outline-none"
-      style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55`, color: palette.ink }}
-    />
-  );
 
   return (
     <>
@@ -8885,55 +8851,22 @@ function InscricaoEventoPublica({ eventoId }) {
           ) : (
             <>
               <div className="flex justify-center mb-6"><Brand size="lg" /></div>
-              <div className="rounded-2xl px-5 py-6 text-center mb-6" style={{ backgroundColor: palette.navy }}>
-                <p className="text-[11px] tracking-[0.25em] font-medium" style={{ color: palette.gold }}>{evento.subtitulo.toUpperCase()}</p>
+              <div className="rounded-2xl px-5 py-6 text-center" style={{ backgroundColor: palette.navy }}>
+                <p className="text-[11px] tracking-[0.25em] font-medium" style={{ color: palette.gold }}>ENCONTRO ONLINE GRATUITO</p>
                 <h1 className="font-serif text-3xl leading-tight mt-2" style={{ color: palette.creamSoft }}>{evento.titulo}</h1>
-                <p className="text-sm mt-3" style={{ color: palette.goldSoft }}>{evento.data}</p>
+                <p className="text-sm mt-2" style={{ color: palette.goldSoft }}>{evento.data}</p>
+                <a href={link} target="_blank" rel="noopener noreferrer" className="inline-block mt-5 rounded-full px-7 py-3.5 text-sm font-semibold" style={{ backgroundColor: palette.gold, color: palette.navy }}>Entrar no encontro</a>
+                <p className="text-[12px] mt-3 break-all" style={{ color: palette.creamSoft }}>{link}</p>
               </div>
-              {estado === "ok" ? (
-                <div className="rounded-2xl px-5 py-6 text-center" style={{ backgroundColor: palette.card, border: `1px solid ${palette.gold}` }}>
-                  <CheckCircle2 size={30} style={{ color: palette.gold, margin: "0 auto" }} />
-                  <p className="font-serif text-2xl mt-2" style={{ color: palette.navy }}>Inscrição concluída!</p>
-                  <p className="text-sm mt-2 leading-relaxed" style={{ color: palette.ink }}>Inscrição confirmada, {nome.trim().split(" ")[0]}. Guarde a ligação de acesso abaixo; também lhe será enviada para {email.trim()}.</p>
-                  {evento.link && (
-                    <div className="rounded-2xl px-5 py-5 text-center my-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.gold}` }}>
-                      <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>LIGAÇÃO DE ACESSO</p>
-                      <a href={evento.link} target="_blank" rel="noopener noreferrer" className="inline-block mt-3 rounded-full px-6 py-3 text-sm font-semibold" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Entrar no encontro</a>
-                      <p className="text-[11px] mt-3 break-all" style={{ color: palette.navySoft }}>{evento.link}</p>
-                      <p className="text-[11px] mt-1" style={{ color: palette.navySoft }}>Disponível no dia {evento.quandoCurto.replace(/^\S+,\s*/, "")}. Não é necessário instalar nenhum programa.</p>
-                    </div>
-                  )}
+
+              <div className="rounded-2xl px-5 py-5 mt-5" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
+                <p className="text-[11px] tracking-[0.2em] font-semibold mb-3" style={{ color: palette.gold }}>MENSAGEM PARA ENVIAR</p>
+                <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: palette.ink }}>{mensagem}</p>
+                <div className="grid grid-cols-2 gap-2 mt-4">
+                  <button onClick={copiar} className="rounded-full py-3 text-sm font-medium" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>{copiado ? "Copiada ✓" : "Copiar"}</button>
+                  <a href={`https://wa.me/?text=${encodeURIComponent(mensagem)}`} target="_blank" rel="noopener noreferrer" className="rounded-full py-3 text-sm font-medium text-center" style={{ backgroundColor: "#1F7A4D", color: "#fff" }}>WhatsApp</a>
                 </div>
-              ) : (
-                <div className="space-y-3">
-                  <p className="text-sm leading-relaxed mb-2" style={{ color: palette.ink }}>{evento.descricao}</p>
-                  {evento.link && (
-                    <div className="rounded-2xl px-5 py-5 text-center my-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.gold}` }}>
-                      <p className="text-[11px] tracking-[0.2em] font-semibold" style={{ color: palette.gold }}>LIGAÇÃO DE ACESSO</p>
-                      <a href={evento.link} target="_blank" rel="noopener noreferrer" className="inline-block mt-3 rounded-full px-6 py-3 text-sm font-semibold" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Entrar no encontro</a>
-                      <p className="text-[11px] mt-3 break-all" style={{ color: palette.navySoft }}>{evento.link}</p>
-                      <p className="text-[11px] mt-1" style={{ color: palette.navySoft }}>Disponível no dia {evento.quandoCurto.replace(/^\S+,\s*/, "")}. Não é necessário instalar nenhum programa.</p>
-                    </div>
-                  )}
-                  {campo(nome, setNome, "Nome completo")}
-                  {campo(email, setEmail, "Correio eletrónico", "email")}
-                  {campo(telefone, setTelefone, "Telemóvel", "tel")}
-                  {campo(localidade, setLocalidade, "Localidade (opcional)")}
-                  <label className="flex items-start gap-2.5 px-1 pt-1">
-                    <input type="checkbox" checked={aceitou} onChange={(e) => setAceitou(e.target.checked)} className="mt-0.5 shrink-0" />
-                    <span className="text-[13px] leading-relaxed" style={{ color: palette.navySoft }}>{TEXTO_CONSENTIMENTO_EVENTO}</span>
-                  </label>
-                  {erro && <p className="text-[13px]" style={{ color: "#B23A3A" }}>{erro}</p>}
-                  <button
-                    onClick={enviar}
-                    disabled={!pode || estado === "a_enviar"}
-                    className="w-full rounded-full py-3.5 font-medium text-sm disabled:opacity-50"
-                    style={{ backgroundColor: palette.navy, color: palette.creamSoft }}
-                  >
-                    {estado === "a_enviar" ? "A inscrever…" : "Quero inscrever-me"}
-                  </button>
-                </div>
-              )}
+              </div>
             </>
           )}
         </div>

@@ -22,7 +22,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Protecao>
       <App />
-      <InstalarApp />
+      {!/[?&]inscricao=/.test(window.location.search) && <InstalarApp />}
     </Protecao>
   </React.StrictMode>
 );
