@@ -41,6 +41,11 @@
       "source": "/movimento",
       "destination": "/movimento/",
       "permanent": false
+    },
+    {
+      "source": "/encontro",
+      "destination": "/encontro/",
+      "permanent": false
     }
   ]
 }

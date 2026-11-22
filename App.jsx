@@ -8789,7 +8789,7 @@ EVENTOS_PUBLICOS.novembro = {
   inicio: "2026-11-26T21:00:00+00:00",
   chamada: "Quem sou eu?",
   quandoCurto: "Quinta, 26 nov · 21h",
-  link: "https://meet.jit.si/Escola3S-Encontro-9358a97bf1",
+  link: "https://escola-3s.pt/encontro/",
   descricao: "A Escola 3S convida-o(a) para o encontro online «Quem sou eu?», na quinta-feira, 26 de novembro, às 21h00. Uma sessão de reflexão sobre identidade, valores e propósito, com o método 3S: Saber, Sentir, Ser. Participação gratuita.",
 };
 EVENTOS_PUBLICOS.dezembro = {
