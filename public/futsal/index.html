@@ -418,7 +418,9 @@ function vInicio(){
     if(filho)h+=`<div class="card"><div class="row between" style="margin-bottom:10px"><div><h2 style="margin:0">${esc(primeiro(filho.nome))} · ${MESES_L[new Date().getMonth()]}</h2><div class="muted">${esc(S.eq.nome)}${filho.numero!=null?' · n.º '+filho.numero:''}</div></div><button class="btn ghost sm" onclick="abrirJogador('${filho.id}')">Abrir ›</button></div><div id="painel"><p class="muted">A carregar…</p></div></div>`;
   }
   if(isAtleta()&&S.meus[0]){filho=S.meus[0];h+=`<div class="card"><h2 style="margin-bottom:10px">O meu mês · ${MESES_L[new Date().getMonth()]}</h2><div id="painel"><p class="muted">A carregar…</p></div></div>`}
+  if(isCoach())h+=`<div class="card"><h2 style="margin-bottom:10px">✅ Obrigações do treinador</h2><div id="obrig"><p class="muted">A carregar…</p></div></div>`;
   if(isCoach())h+=`<div class="card"><h2 style="margin-bottom:10px">${isAdminModo()?'Administração · '+esc(S.eq.nome):'Equipa'} · ${MESES_L[new Date().getMonth()]}</h2><div id="painel"><p class="muted">A carregar…</p></div></div>`;
+  if(!isCoach()&&S.meus.length)h+=`<div id="iqHome"></div>`;
   if(isCoach())h+=`<div class="card"><h2 style="margin-bottom:10px">📊 Visão geral</h2><div id="visao"><p class="muted">A carregar…</p></div></div>`;
   if(!isCoach()&&!S.meus.length){
     h+=`<div class="card">${isAtleta()?'<h2>Ainda não estás ligado a um jogador</h2><p class="muted">Pede o código de atleta aos teus pais ou ao treinador.</p><button class="btn gold full" onclick="ecraSemEquipa()">Tenho um código</button>':'<h2>Falta registar o seu filho</h2><p class="muted">Registe-o para receber convocatórias e acompanhar a evolução.</p><button class="btn gold full" onclick="adicionarFilho()">+ Registar filho(a)</button>'}</div>`;
@@ -449,7 +451,7 @@ function vInicio(){
   }
   const av=S.avisos[0];
 
-  setTimeout(()=>{cartaoAniv();if(isCoach()){painelEquipa();painelVisao()}else if(isAtleta()&&filho)painelAtleta(filho);else if(filho)painelFilho(filho)},0);
+  setTimeout(()=>{cartaoAniv();if(!isCoach())cartaoInqHome();if(isCoach()){painelEquipa();painelObrigacoes();painelVisao()}else if(isAtleta()&&filho)painelAtleta(filho);else if(filho)painelFilho(filho)},0);
   if(isCoach()) h+=`<div class="card"><h2>Código da equipa</h2><p class="muted" style="margin-top:0">Envie aos pais para entrarem na app.</p><span class="code">${esc(S.eq.codigo)}</span><a class="btn full" style="display:block;text-align:center;text-decoration:none;background:#25D366;margin-top:10px" href="https://wa.me/?text=${encodeURIComponent(`⚽ ${CLUBE} – ${S.eq.nome}\n\nOlá! A nossa equipa já tem app: o Futsal 3S. Lá vão ver os treinos e jogos, confirmar presenças, combinar boleias e acompanhar a evolução dos atletas.\n\n1. Abra https://escola-3s.pt/futsal\n2. Crie a sua conta (cada pessoa escolhe a sua palavra-passe)\n3. Escreva o código da equipa: ${S.eq.codigo}\n\nQualquer dúvida, diga.`)}" target="_blank" rel="noopener">Enviar código pelo WhatsApp</a></div>`;
   m.innerHTML=h;
 }
@@ -659,8 +661,8 @@ async function vJogador(){
   m.innerHTML=`<div class="card"><div class="row">${isAtleta()?'':`<button class="btn ghost sm" aria-label="Voltar atrás" onclick="botaoVoltar()">‹</button>`}<button style="border:0;background:none;padding:0;position:relative" aria-label="Fotografia do atleta" onclick="${isAtleta()?'':`menuFoto('${j.id}')`}">${avatar(j,56)}${isAtleta()?'':'<span style="position:absolute;right:-4px;bottom:-4px;background:var(--gold);color:#fff;border-radius:99px;width:22px;height:22px;display:grid;place-items:center;font-size:12px">📷</span>'}</button><div class="grow"><h2 style="margin:0">${esc(j.nome)}</h2><div class="muted">${[j.posicao,(S.pes||{})[j.id]?'pé '+(S.pes||{})[j.id].toLowerCase():'',j.ano_escolar].filter(Boolean).map(esc).join(' · ')}</div></div>${isAtleta()?'':`<button class="btn ghost sm" aria-label="Definições" onclick="editarJogador()">⚙</button>`}</div></div>
   ${S.jogTab&&S.jogTab!=='resumo'?`<div class="h3s-bloco-tit" style="margin-top:2px">${(VISTAS[S.jogTab]||['',''])[0]} ${(VISTAS[S.jogTab]||['',''])[1]}</div>`:''}
   <div id="jBody"><div class="card"><p class="empty">A carregar…</p></div></div>`;
-  const f={resumo:jPerfil4,dadosjogo:jDadosJogo,holistico:jHolistico,bem:jBem,evolucaoGeral:jEvolucaoGeral,plano:jPlano,conta:jContaCorrente,clube:jClube,avaliacao:jAvaliacao,fpf:jFPF,ficha:jFicha,presencas:jPresencas,pagamentos:jPagamentos,melhorar:jMelhorar,escola:jEscola,evolucao:jEvolucao,objetivos:jObjetivos,desafios:jDesafios,emocoes:jEmocoes,rotina:jRotina,conversa:jConversa}[S.jogTab];
-  $('#jBody').innerHTML=await f(j);
+  const f={inquerito:jInquerito,feedback:jFeedback,resumo:jPerfil4,dadosjogo:jDadosJogo,holistico:jHolistico,bem:jBem,evolucaoGeral:jEvolucaoGeral,plano:jPlano,conta:jContaCorrente,clube:jClube,avaliacao:jAvaliacao,fpf:jFPF,ficha:jFicha,presencas:jPresencas,pagamentos:jPagamentos,melhorar:jMelhorar,escola:jEscola,evolucao:jEvolucao,objetivos:jObjetivos,desafios:jDesafios,emocoes:jEmocoes,rotina:jRotina,conversa:jConversa}[S.jogTab];
+  const [_av,_corpo]=await Promise.all([S.jogTab==='resumo'?avisoObrigJog(j):'',f(j)]);$('#jBody').innerHTML=_av+_corpo;
   if(S.jogTab==='conversa'){const b=$('#chatEnd');if(b)b.scrollIntoView()}
 }
 async function editarJogador(){
@@ -1667,7 +1669,7 @@ async function fpPDF(id){
 
 /* ---------- página do atleta em cartões (estilo Gestor de Loja) ---------- */
 const VISTAS={
-  evolucaoGeral:['📈','Evolução do atleta'],holistico:['🧭','Perfil holístico'],dadosjogo:['📊','Presenças e dados de jogo'],bem:['💚','Crescer bem'],fpf:['📋','Ficha FPF'],plano:['🎯','Plano de ação'],conta:['💶','Conta corrente'],clube:['🛡️','Arcas'],
+  inquerito:['🗣️','O que me move'],feedback:['📝','Feedback do treinador'],evolucaoGeral:['📈','Evolução do atleta'],holistico:['🧭','Perfil holístico'],dadosjogo:['📊','Presenças e dados de jogo'],bem:['💚','Crescer bem'],fpf:['📋','Ficha FPF'],plano:['🎯','Plano de ação'],conta:['💶','Conta corrente'],clube:['🛡️','Arcas'],
   ficha:['📇','Ficha do atleta'],presencas:['✅','Presenças'],escola:['📚','Escola'],melhorar:['🔎','A melhorar'],avaliacao:['💛','Avaliação 3S'],
   objetivos:['🏁','Objetivos'],desafios:['🏆','Desafios'],emocoes:['😀','Emoções'],rotina:['🌙','Rotina'],conversa:['💬','Conversa'],evolucao:['⚽','Competências'],pagamentos:['💶','Pagamentos']
 };
@@ -2650,7 +2652,7 @@ async function jPerfil4(j){
   ])}
   <details class="h3s-card" style="margin-top:14px;padding:14px"><summary style="font-weight:700;cursor:pointer;font-size:15px">➕ Mais: evolução, escola, crescer bem, clube…</summary>
     <div class="h3s-tiles" style="padding:10px 0 0">
-      ${mini('📈','Evolução','gráficos',go('evolucaoGeral'))}${mini('📋','Ficha FPF','Arcas',go('fpf'))}${mini('🏁','Objetivos','',go('objetivos'))}
+      ${mini('📝','Feedback','do treinador',go('feedback'))}${mini('🗣️','O que me move','gostos e sonhos',go('inquerito'))}${mini('📈','Evolução','gráficos',go('evolucaoGeral'))}${mini('📋','Ficha FPF','Arcas',go('fpf'))}${mini('🏁','Objetivos','',go('objetivos'))}
       ${mini('🥇','Pódios','equipa','irPodios()')}${mini('📚','Escola','notas',go('escola'))}
       ${mini('💛',at?'Autoavaliação':'Avaliação 3S','trimestral',go('avaliacao'))}${mini('😀','Emoções','',go('emocoes'))}${mini('💚','Crescer bem','',go('bem'))}
       ${mini('🛡️','Arcas','clube',go('clube'))}${at?'':mini('🔎','A melhorar','',go('melhorar'))}
@@ -2777,6 +2779,108 @@ function envioUmAUm(){const f=filaEnvio();S._fila=f;const feitos=f.filter(e=>foi
   ${sem.length?`<p class="faint" style="margin-top:10px">Sem telemóvel dos pais: ${sem.map(esc).join(', ')}. Ponha o número na ficha do atleta para aparecerem aqui.</p>`:''}`)}
 function marcarEnv(i){const e=S._fila[i];try{localStorage.setItem(envKey(e.x.jogador_id,e.t),new Date().toISOString())}catch(_){}setTimeout(envioUmAUm,600)}
 function limparEnvios(){(S._fila||[]).forEach(e=>{try{localStorage.removeItem(envKey(e.x.jogador_id,e.t))}catch(_){}});envioUmAUm()}
+
+/* ---------- inquérito ao atleta: o que gosta, o que o move, o que sonha ---------- */
+const INQ=[
+ {k:'gosta',t:'O que mais gostas no futsal?',tipo:'multi',o:['Marcar golos','Fintar e criar jogadas','Defender e recuperar bolas','Jogar em equipa','Estar com os amigos','Competir e ganhar','Aprender coisas novas','Os treinos']},
+ {k:'gosta_txt',t:'Conta por palavras tuas o que mais gostas',tipo:'txt'},
+ {k:'move',t:'O que te faz dar o máximo?',tipo:'multi',o:['Querer ser melhor','Ganhar jogos','Os meus colegas','Deixar a família orgulhosa','O reconhecimento do treinador','Desafios difíceis','Divertir-me']},
+ {k:'desmotiva',t:'O que te tira a vontade ou te deixa em baixo?',tipo:'txt'},
+ {k:'sonho',t:'Qual é o teu sonho no futsal?',tipo:'multi',o:['Jogar na Seleção Nacional','Jogar num clube grande','Ser jogador profissional','Ser capitão de equipa','Ser campeão com o Arcas','Divertir-me com os amigos','Ser treinador um dia']},
+ {k:'sonho_txt',t:'Descreve o teu sonho',tipo:'txt'},
+ {k:'objetivo',t:'O que queres conseguir esta época?',tipo:'txt'},
+ {k:'posicao',t:'Em que posição gostas mais de jogar?',tipo:'um',o:['Guarda-redes','Fixo','Ala','Pivô','Qualquer uma']},
+ {k:'idolo',t:'Que jogador ou jogadora admiras? Porquê?',tipo:'txt'},
+ {k:'feedback',t:'Como preferes receber correções do treinador?',tipo:'um',o:['Em privado','Durante o exercício','Com exemplos e vídeo','Por escrito na app']},
+ {k:'precisa',t:'O que precisas do treinador para evoluir?',tipo:'txt'},
+ {k:'gosto_treino',t:'Quanto gostas de vir aos treinos?',tipo:'escala'}
+];
+async function jInquerito(j){
+  const r=await q(sb.from('fut_inquerito_atleta').select('*').eq('jogador_id',j.id).eq('epoca',epocaAtual()).maybeSingle());
+  const R=(r&&r.respostas)||{};S._iq={...R};S._iqJ=j.id;
+  const pode=isAtleta()||!isCoach()||isAdminModo();
+  if(!pode||(r&&!S._iqEdit)){
+    if(!r)return `<div class="h3s-card"><p class="empty">${esc(primeiro(j.nome))} ainda não respondeu ao inquérito desta época.</p><p class="faint">O atleta responde no perfil dele, em «🗣️ O que me move». Os pais podem responder com ele.</p></div>`;
+    const v=x=>Array.isArray(x)?x.join(', '):x;
+    return `<div class="h3s-card h3s-hero"><div class="h3s-hero-tit">🗣️ O que move ${esc(primeiro(j.nome))}</div><div class="h3s-hero-sub">Época ${epocaAtual()} · atualizado a ${new Date(r.updated_at).toLocaleDateString('pt-PT')}</div></div>
+    <div class="h3s-card" style="margin-top:12px">${INQ.filter(x=>R[x.k]!=null&&R[x.k]!==''&&!(Array.isArray(R[x.k])&&!R[x.k].length)).map(x=>`<div style="padding:8px 0;border-top:1px solid var(--line)"><div class="faint">${x.t}</div><b style="font-size:15px">${x.tipo==='escala'?'⭐'.repeat(R[x.k])+` (${R[x.k]}/5)`:esc(v(R[x.k]))}</b></div>`).join('')}</div>
+    ${pode?`<button class="btn ghost full" style="margin-top:12px" onclick="S._iqEdit=1;vJogador()">✏️ Atualizar respostas</button>`:''}`;
+  }
+  return `<div class="h3s-card" style="background:var(--navy);color:#fff"><b style="font-size:17px">🗣️ O que me move</b><p style="margin:6px 0 0;opacity:.85;font-size:14px">${isAtleta()?'Responde com sinceridade: não há respostas certas. Ajuda o treinador a conhecer-te.':'Responda com o seu filho, pelas palavras dele.'}</p></div>
+  ${INQ.map(x=>`<div class="h3s-card" style="margin-top:10px"><b>${x.t}</b>${x.tipo==='multi'?'<div class="faint">Podes escolher várias</div>':''}<div id="iq_${x.k}" style="margin-top:8px">${iqCampo(x)}</div></div>`).join('')}
+  <button class="btn gold full" style="margin-top:14px" onclick="guardarInq()">Guardar respostas</button>`;
+}
+function iqCampo(x){const v=S._iq[x.k];
+  if(x.tipo==='txt')return `<textarea class="in" oninput="S._iq['${x.k}']=this.value" placeholder="Escreve aqui…">${esc(v||'')}</textarea>`;
+  if(x.tipo==='escala')return `<div class="opts" style="gap:6px">${[1,2,3,4,5].map(n=>`<button class="${v===n?'on':''}" style="flex:1" onclick="S._iq['${x.k}']=${n};iqRefresh('${x.k}')">${'⭐'.repeat(n)}</button>`).join('')}</div>`;
+  const sel=x.tipo==='multi'?(v||[]):[v];
+  return `<div class="row wrap" style="gap:6px">${x.o.map((o,i)=>`<button class="chip" style="border:0;cursor:pointer;padding:8px 10px;${sel.includes(o)?'background:var(--navy);color:#fff':''}" onclick="iqTog('${x.k}',${i})">${sel.includes(o)?'✔ ':''}${o}</button>`).join('')}</div>`}
+function iqTog(k,i){const x=INQ.find(y=>y.k===k);const o=x.o[i];if(x.tipo==='multi'){const a=S._iq[k]||[];S._iq[k]=a.includes(o)?a.filter(y=>y!==o):[...a,o]}else S._iq[k]=o;iqRefresh(k)}
+function iqRefresh(k){const x=INQ.find(y=>y.k===k);$('#iq_'+k).innerHTML=iqCampo(x)}
+async function guardarInq(){const r=await q(sb.from('fut_inquerito_atleta').upsert({jogador_id:S._iqJ,epoca:epocaAtual(),respostas:S._iq,updated_at:new Date().toISOString()},{onConflict:'jogador_id,epoca'}));if(r===null)return;S._iqEdit=0;toast('Obrigado! O treinador já pode ler.');vJogador();window.scrollTo(0,0)}
+
+/* ---------- feedback individual do treinador ---------- */
+async function jFeedback(j){
+  const L=await q(sb.from('fut_feedback').select('*').eq('jogador_id',j.id).order('created_at',{ascending:false}))||[];
+  const doMes=L.some(f=>f.created_at.slice(0,7)===hoje().slice(0,7));
+  return `<div class="h3s-card h3s-hero"><div class="h3s-hero-tit">📝 Feedback do treinador</div><div class="h3s-hero-num">${L.length}</div><div class="h3s-hero-sub">${doMes?'✔ feedback deste mês dado':'falta o feedback deste mês'}</div></div>
+  ${isCoach()?`<button class="btn gold full" style="margin-top:12px" onclick="novoFeedback('${j.id}')">+ Dar feedback</button>`:''}
+  ${L.map(f=>`<div class="h3s-card" style="margin-top:12px"><div class="faint">${new Date(f.created_at).toLocaleDateString('pt-PT',{day:'numeric',month:'long',year:'numeric'})} · ${esc(nomeDe(f.autor_id))}</div>
+    ${f.fortes?`<p style="margin:8px 0 0"><b style="color:var(--mint)">💪 Pontos fortes</b><br>${esc(f.fortes)}</p>`:''}
+    ${f.melhorar?`<p style="margin:8px 0 0"><b style="color:var(--gold)">🎯 A melhorar</b><br>${esc(f.melhorar)}</p>`:''}
+    ${f.proximo?`<p style="margin:8px 0 0"><b>👉 Próximo passo</b><br>${esc(f.proximo)}</p>`:''}</div>`).join('')||'<div class="h3s-card" style="margin-top:12px"><p class="empty">Ainda sem feedback.</p></div>'}`;
+}
+function novoFeedback(jid){const j=S.jogadores.find(x=>x.id===jid);
+  openSheet(`<h2>📝 Feedback a ${esc(primeiro(j.nome))}</h2><p class="muted" style="margin-top:0">Concreto e observável. O atleta e a família leem na app.</p>
+  <label class="f" for="fbF">💪 Pontos fortes</label><textarea id="fbF" class="in" placeholder="Ex.: pressão imediata após perda de bola"></textarea>
+  <label class="f" for="fbM">🎯 A melhorar</label><textarea id="fbM" class="in" placeholder="Ex.: levantar a cabeça antes do passe"></textarea>
+  <label class="f" for="fbP">👉 Próximo passo</label><textarea id="fbP" class="in" placeholder="Ex.: 10 min de passe com os dois pés no início de cada treino"></textarea>
+  <label class="check" style="margin-top:10px"><input type="checkbox" id="fbPA" checked> Juntar «A melhorar» ao plano de ação</label>
+  <button class="btn full" style="margin-top:12px" onclick="guardarFeedback('${jid}')">Guardar feedback</button>`)}
+async function guardarFeedback(jid){const f=g('fbF'),m=g('fbM'),p=g('fbP');if(!f&&!m){toast('Escreva os pontos fortes ou a melhorar');return}
+  const r=await q(sb.from('fut_feedback').insert({jogador_id:jid,fortes:f||null,melhorar:m||null,proximo:p||null,autor_id:S.me}));if(r===null)return;
+  if(m&&$('#fbPA')?.checked)await q(sb.from('fut_plano_acao').insert({jogador_id:jid,area:'futsal',melhorar:m,acao:p||null,responsavel:'Atleta',prazo:prazoPadrao(),origem:'Feedback',autor_id:S.me}));
+  closeSheet();toast('Feedback guardado');if(S.tab==='jogadores'&&S.jog)vJogador();else render()}
+
+/* ---------- obrigações do treinador ---------- */
+async function dadosObrigacoes(){
+  const ids=S.jogadores.map(j=>j.id);if(!ids.length)return null;
+  const mes=hoje().slice(0,8)+'01';
+  const evs=S.eventos.filter(e=>e.data<hoje()&&e.data>=addDias(-14));
+  const [iq,av,fb,pa,pr]=await Promise.all([
+    q(sb.from('fut_inquerito_atleta').select('jogador_id').eq('epoca',epocaAtual()).in('jogador_id',ids)),
+    q(sb.from('fut_avaliacoes_360').select('jogador_id').eq('trimestre',trimAtual()).eq('respondente_tipo','treinador').in('jogador_id',ids)),
+    q(sb.from('fut_feedback').select('jogador_id').gte('created_at',mes).in('jogador_id',ids)),
+    q(sb.from('fut_plano_acao').select('jogador_id,estado,created_at').in('jogador_id',ids)),
+    evs.length?q(sb.from('fut_presencas').select('evento_id,nota_perf,checklist').in('evento_id',evs.map(e=>e.id))):[]
+  ]);
+  const tem=(L,id)=>(L||[]).some(x=>x.jogador_id===id);
+  const at=S.jogadores.map(j=>({j,iq:tem(iq,j.id),av:tem(av,j.id),fb:tem(fb,j.id),pa:(pa||[]).some(x=>x.jogador_id===j.id&&(x.estado!=='feito'||x.created_at>=addDias(-90)))}));
+  const semCl=evs.filter(e=>!(pr||[]).some(p=>p.evento_id===e.id&&(p.nota_perf!=null||(p.checklist&&Object.keys(p.checklist).length))));
+  const tot=at.length*3+evs.length,ok=at.reduce((s,a)=>s+(a.av?1:0)+(a.fb?1:0)+(a.pa?1:0),0)+(evs.length-semCl.length);
+  return {at,semCl,pct:tot?Math.round(ok/tot*100):100,evs};
+}
+async function painelObrigacoes(){
+  const el=$('#obrig');if(!el)return;const D=await dadosObrigacoes();if(!D){el.innerHTML='<p class="empty">Sem jogadores.</p>';return}
+  const ic=(b,l)=>`<span class="chip ${b?'mint':'red'}" style="font-size:11px;padding:3px 7px">${b?'✔':'✖'} ${l}</span>`;
+  const falta=D.at.filter(a=>!a.av||!a.fb||!a.pa);
+  el.innerHTML=`<div class="row between"><b style="font-size:28px;font-family:'Baloo 2';color:${D.pct>=90?'var(--mint)':D.pct>=60?'var(--gold)':'var(--red)'}">${D.pct}%</b><span class="faint" style="text-align:right">cumprido · ${MESES_L[new Date().getMonth()]}</span></div>
+  <div class="bar ${D.pct>=90?'mint':''}" style="margin:6px 0 12px"><i style="width:${D.pct}%"></i></div>
+  ${D.semCl.length?`<div style="margin-bottom:10px"><b style="font-size:14px">📋 Observação: checklist em falta (${D.semCl.length})</b>${D.semCl.map(e=>`<button class="btn ghost full sm" style="margin-top:6px;justify-content:space-between" onclick="abrirChecklist('${e.id}')">${e.tipo==='jogo'?'🏟️ Jogo':'🏃 Treino'} · ${diaSemana(e.data)}, ${dataCurta(e.data)} ›</button>`).join('')}</div>`:`<p style="margin:0 0 10px;font-size:14px">📋 Observação: ✔ checklists em dia</p>`}
+  ${falta.length?`<b style="font-size:14px">Por atleta</b><div class="list" style="margin-top:6px">${falta.map(a=>`<button class="item" onclick="abrirJogador('${a.j.id}','${!a.fb?'feedback':!a.pa?'plano':'avaliacao'}')"><div class="grow"><b style="font-size:14px">${esc(a.j.nome)}</b><div class="row wrap" style="gap:4px;margin-top:4px">${ic(a.av,'Avaliação')}${ic(a.fb,'Feedback do mês')}${ic(a.pa,'Plano de ação')}${a.iq?'':'<span class="chip" style="font-size:11px;padding:3px 7px">🗣️ sem inquérito</span>'}</div></div><span class="faint">›</span></button>`).join('')}</div>`:'<p style="margin:0;font-size:14px">✔ Todos os atletas com avaliação, feedback do mês e plano de ação.</p>'}
+  <p class="faint" style="margin:10px 0 0">Obrigatório: checklist em cada treino e jogo, avaliação 3S por trimestre, feedback individual por mês e plano de ação ativo para cada atleta.</p>`;
+  el.closest('.card').style.border=D.pct<90?'2px solid var(--red)':'2px solid var(--mint)';
+}
+async function avisoObrigJog(j){if(!isCoach())return '';
+  const mes=hoje().slice(0,8)+'01';
+  const [av,fb,pa,iq]=await Promise.all([q(sb.from('fut_avaliacoes_360').select('id').eq('jogador_id',j.id).eq('trimestre',trimAtual()).eq('respondente_tipo','treinador')),q(sb.from('fut_feedback').select('id').eq('jogador_id',j.id).gte('created_at',mes)),q(sb.from('fut_plano_acao').select('estado,created_at').eq('jogador_id',j.id)),q(sb.from('fut_inquerito_atleta').select('id').eq('jogador_id',j.id).eq('epoca',epocaAtual()))]);
+  const f=[];if(!(av||[]).length)f.push(['💛 Avaliação do trimestre',`responder360('${j.id}')`]);if(!(fb||[]).length)f.push(['📝 Feedback do mês',`novoFeedback('${j.id}')`]);if(!(pa||[]).some(x=>x.estado!=='feito'||x.created_at>=addDias(-90)))f.push(['🎯 Plano de ação',`S.jogTab='plano';vJogador()`]);
+  if(!f.length)return '';
+  return `<div class="h3s-card" style="border:2px solid var(--red);margin-bottom:12px"><b>⚠️ Obrigatório para ${esc(primeiro(j.nome))}</b>${(iq||[]).length?`<div class="faint" style="margin:4px 0 0">Leia primeiro <a href="#" onclick="S.jogTab='inquerito';vJogador();return false">o que move o atleta</a>.</div>`:''}<div class="row wrap" style="gap:6px;margin-top:8px">${f.map(([l,a])=>`<button class="btn sm red" onclick="${a}">${l}</button>`).join('')}</div></div>`}
+async function cartaoInqHome(){const el=$('#iqHome');if(!el)return;const j=isAtleta()?S.meus[0]:(S.meus.find(x=>x.id===S.filhoSel)||S.meus[0]);if(!j){el.remove();return}
+  const r=await q(sb.from('fut_inquerito_atleta').select('id').eq('jogador_id',j.id).eq('epoca',epocaAtual()));
+  if((r||[]).length){el.remove();return}
+  el.innerHTML=`<div class="card" style="border:2px solid var(--gold)"><h2>🗣️ O que ${isAtleta()?'te':'o'} move?</h2><p class="muted" style="margin-top:0">${isAtleta()?'Conta ao treinador o que gostas, o que te motiva e qual é o teu sonho no futsal. Demora 3 minutos.':'Responda com '+esc(primeiro(j.nome))+': o que gosta, o que o motiva e o que sonha no futsal. Demora 3 minutos.'}</p><button class="btn gold full" onclick="S._iqEdit=1;abrirJogador('${j.id}','inquerito')">Responder</button></div>`}
 
 /* ---------- mensagens ---------- */
 async function vMensagens(){
