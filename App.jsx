@@ -8792,20 +8792,12 @@ EVENTOS_PUBLICOS.novembro = {
   link: "https://escola-3s.pt/encontro/",
   descricao: "A Escola 3S convida-o(a) para o encontro online «Quem sou eu?», na quinta-feira, 26 de novembro, às 21h00. Uma sessão de reflexão sobre identidade, valores e propósito, com o método 3S: Saber, Sentir, Ser. Participação gratuita.",
 };
-EVENTOS_PUBLICOS.dezembro = {
-  nome: "Encontro à distância da Escola 3S — 18 de dezembro (21h)",
-  titulo: "Encontro à distância da Escola 3S",
-  subtitulo: "Encontro à distância",
-  data: "Sexta-feira, 18 de dezembro · 21h00",
-  inicio: "2026-12-18T21:00:00+00:00",
-  chamada: "Encontro à distância da Escola 3S",
-  quandoCurto: "Sexta, 18 dez · 21h",
-  descricao: "Um encontro ao vivo, à distância, para refletir, partilhar e crescer em conjunto com a Escola 3S.",
-};
 const TEXTO_CONSENTIMENTO_EVENTO = "Aceito que a Escola 3S guarde os meus dados (nome, correio eletrónico e telemóvel) para gerir a minha inscrição neste evento e me enviar a ligação e informações sobre ele.";
 
 // O único encontro à distância em destaque (atualizar a chave todos os meses)
 const ENCONTRO_DO_MES = "novembro";
+// Eventos retirados: não aparecem na app nem no painel
+const EVENTOS_RETIRADOS = ["dezembro"];
 
 function BannerEncontro() {
   const chaves = [ENCONTRO_DO_MES];
@@ -9312,7 +9304,7 @@ function EventosOnlineMentora({ compacto }) {
   const [eventos, setEventos] = useState([]);
   useEffect(() => {
     (async () => {
-      const { data } = await supabase.from("eventos_online").select("*").gte("inicio", new Date(Date.now() - 4 * 3600e3).toISOString()).order("inicio", { ascending: true });
+      const { data } = await supabase.from("eventos_online").select("*").not("chave", "in", `(${EVENTOS_RETIRADOS.join(",")})`).gte("inicio", new Date(Date.now() - 4 * 3600e3).toISOString()).order("inicio", { ascending: true });
       const ativos = (data || []).filter((e) => new Date(e.inicio).getTime() + (e.duracao_min || 90) * 60000 > Date.now());
       const comContagem = await Promise.all(ativos.map(async (e) => {
         const { count } = await supabase.from("inscricoes_evento").select("id", { count: "exact", head: true }).eq("evento_chave", e.chave);
@@ -9634,7 +9626,7 @@ function ArquivoEscolaScreen({ onBack }) {
         supabase.from("visualizacoes_aulas").select("*").order("visto_em", { ascending: false }),
       ]);
       setVisualizacoes(rV.data || []);
-      const rE = await supabase.from("eventos_online").select("*").order("inicio", { ascending: true });
+      const rE = await supabase.from("eventos_online").select("*").not("chave", "in", `(${EVENTOS_RETIRADOS.join(",")})`).order("inicio", { ascending: true });
       setEventosOnline(rE.data || []);
       const rCod = await supabase.from("codigos_resgatados").select("*").order("resgatado_em", { ascending: false });
       setCodigosUsados(rCod.data || []);
