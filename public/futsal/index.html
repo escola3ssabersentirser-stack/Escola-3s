@@ -2601,6 +2601,7 @@ Não partilhes o código com ninguém.`}
 async function vAcessos(){
   if(!isCoach()){$('#main').innerHTML='<div class="card"><p class="empty">Só o treinador e a administradora veem os acessos.</p></div>';return}
   const [{data},ct]=await Promise.all([sb.rpc('fut_codigos_equipa',{p_equipa:S.eq.id}),sb.rpc('fut_contas_equipa',{p_equipa:S.eq.id}).then(r=>r.data||[])]);const L=data||[];S._acessos=L;S._contas=Array.isArray(ct)?ct:[];
+  if(L.length){const pr=await q(sb.from('fut_fichas').select('jogador_id,encarregado_parentesco,encarregado2_parentesco').in('jogador_id',L.map(x=>x.jogador_id)));(pr||[]).forEach(r=>{const x=L.find(y=>y.jogador_id===r.jogador_id);if(x)Object.assign(x,{encarregado_parentesco:r.encarregado_parentesco,encarregado2_parentesco:r.encarregado2_parentesco})})}
   const fam=L.filter(x=>x.n_familia>0).length,atl=L.filter(x=>x.n_atleta>0).length;
   $('#main').innerHTML=`<div class="h3s-card h3s-hero"><div class="h3s-hero-tit">🔑 Acessos · ${esc(S.eq.nome)}</div>
     <div class="h3s-hero-row"><div><div class="h3s-mini-tit">Famílias ligadas</div><div class="h3s-mini-num ${fam===L.length&&L.length?'pos':''}">${fam}/${L.length}</div></div><div><div class="h3s-mini-tit">Atletas com conta</div><div class="h3s-mini-num">${atl}/${L.length}</div></div></div>
@@ -2611,27 +2612,53 @@ async function vAcessos(){
       <div class="kpi grow" style="text-align:left;padding:10px"><small>👨‍👩‍👦 Família ${x.n_familia?`<span class="chip mint">✔ ${x.n_familia}</span>`:''}</small><b style="font-size:20px;letter-spacing:2px">${esc(x.codigo_familia)}</b></div>
       <div class="kpi grow" style="text-align:left;padding:10px"><small>⚽ Atleta ${x.n_atleta?'<span class="chip mint">✔</span>':''}</small><b style="font-size:20px;letter-spacing:2px">${esc(x.codigo_atleta)}</b></div></div>
     ${blocoNumeros(x,i)}
-    <div style="margin-top:10px;padding:10px;border-radius:12px;background:var(--navy-soft)"><div class="row between"><b style="font-size:13px">🔗 Contas ligadas</b><button class="btn sm" style="padding:6px 10px" onclick="ligarConta('${x.jogador_id}')">+ Ligar pai/mãe</button></div><div class="faint" style="margin-top:4px">${(S._contas||[]).filter(c=>(c.filhos||'').split(', ').includes(x.nome)).map(c=>`👤 ${esc(c.nome||c.email)} <span style="opacity:.7">(${esc(c.email)})</span>`).join('<br>')||'Ainda nenhuma conta ligada.'}</div>${sugLigar(x)}</div>
+    <div style="margin-top:10px;padding:10px;border-radius:12px;background:var(--navy-soft)"><div class="row between"><b style="font-size:13px">🔗 Contas ligadas</b><button class="btn sm" style="padding:6px 10px" onclick="ligarConta('${x.jogador_id}')">+ Ligar familiar</button></div><div class="faint" style="margin-top:4px">${(S._contas||[]).filter(c=>(c.filhos||'').split(', ').includes(x.nome)).map(c=>`👤 ${esc(c.nome||c.email)} <span style="opacity:.7">(${esc(c.email)})</span>`).join('<br>')||'Ainda nenhuma conta ligada.'}</div>${sugLigar(x)}</div>
     <div class="row" style="gap:8px;margin-top:6px"><button class="btn ghost sm grow" onclick="copiar(msgPais(S._acessos[${i}]))">Copiar mensagem (pais)</button><button class="btn ghost sm grow" onclick="copiar(msgAtleta(S._acessos[${i}]))">Copiar (atleta)</button></div>
   </div>`).join('')||'<div class="card"><p class="empty">Sem jogadores nesta equipa.</p></div>'}
   <p class="faint" style="margin:12px 4px">${L.some(x=>!x.encarregado_tel&&!x.encarregado2_tel)?'Falta o número do pai ou da mãe em alguns atletas: toque em ✏️ Editar. Quando o pai ou a mãe cria conta com o mesmo número, aparece o botão para ligar a conta ao filho.':'O WhatsApp abre com a mensagem escrita. Só sai quando carregar em enviar. Quando o pai ou a mãe cria conta com o mesmo número, aparece o botão para ligar a conta ao filho.'}</p>`;
 }
 
+const PARENTESCOS=['Pai','Mãe','Avó','Avô','Tia','Tio','Irmã','Irmão','Padrasto','Madrasta','Outro'];
+const icPar=p=>({'Mãe':'👩','Avó':'👵','Avô':'👴','Tia':'👩','Irmã':'👧','Madrasta':'👩'}[p]||'👨');
 function ligarConta(jid){const j=S.jogadores.find(x=>x.id===jid);const ct=(S._contas||[]).filter(c=>c.papel!=='treinador'&&c.papel!=='atleta');
-  openSheet(`<h2>🔗 Ligar pai/mãe a ${esc(j?primeiro(j.nome):'')}</h2><p class="muted" style="margin-top:0">A pessoa tem de ter criado conta na app. Depois de ligada, vê e edita os dados do filho e recebe as convocatórias.</p>
+  openSheet(`<h2>🔗 Ligar familiar a ${esc(j?primeiro(j.nome):'')}</h2><p class="muted" style="margin-top:0">Depois de ligado, vê e edita os dados de ${esc(j?primeiro(j.nome):'')} e recebe as convocatórias.</p>
+  <label class="f" for="lcNome">Nome</label><input id="lcNome" class="in" autocomplete="off" placeholder="Nome e apelido">
+  <label class="f" for="lcPar">Parentesco</label><select id="lcPar" class="in">${PARENTESCOS.map(p=>`<option>${p}</option>`).join('')}</select>
+  <label class="f" for="lcTel">Número de telemóvel (WhatsApp)</label><input id="lcTel" class="in" type="tel" inputmode="tel" placeholder="9xx xxx xxx" autocomplete="off">
+  <button class="btn gold full" style="margin-top:16px" onclick="guardarLigacao('${jid}')">🔗 Guardar e ligar</button>
+  <details style="margin-top:14px"><summary class="faint" style="cursor:pointer">Ligar por conta ou email</summary>
   ${ct.length?`<label class="f" for="lcSel">Contas que já entraram nesta equipa</label><select id="lcSel" class="in"><option value="">— escolher —</option>${ct.map(c=>`<option value="${c.user_id}">${esc(c.nome||'(sem nome)')} · ${esc(c.email)}${c.filhos?' · já ligado a '+esc(c.filhos):''}</option>`).join('')}</select>`:''}
-  <label class="f" for="lcEm">${ct.length?'Ou escreva o email da conta':'Email da conta do pai/mãe'}</label><input id="lcEm" class="in" type="email" placeholder="exemplo@email.com" autocomplete="off">
-  <button class="btn gold full" style="margin-top:14px" onclick="guardarLigacao('${jid}')">🔗 Ligar</button>`)}
-async function guardarLigacao(jid){const u=$('#lcSel')?.value||null,em=g('lcEm');if(!u&&!em){toast('Escolha uma conta ou escreva o email');return}
+  <label class="f" for="lcEm">Email da conta</label><input id="lcEm" class="in" type="email" placeholder="exemplo@email.com" autocomplete="off">
+  <button class="btn ghost full" style="margin-top:10px" onclick="ligarPorConta('${jid}')">Ligar esta conta</button></details>`)}
+async function ligarPorConta(jid){const u=$('#lcSel')?.value||null,em=g('lcEm');if(!u&&!em){toast('Escolha uma conta ou escreva o email');return}
   const {data,error}=await sb.rpc('fut_ligar_familia',{p_jogador:jid,p_email:em||null,p_user:u});if(error){toast(error.message.replace(/^.*?: /,''));return}
   closeSheet();toast(`Ligado${data?' a '+data:''} ✔`);vAcessos()}
+async function guardarLigacao(jid){
+  const nome=g('lcNome').trim(),par=g('lcPar')||'Outro',tel=g('lcTel').trim();
+  if(!nome){toast('Escreva o nome');return}
+  if(tel.replace(/\D/g,'').length<9){toast('Número incompleto: tem de ter 9 algarismos');$('#lcTel').focus();return}
+  const x=(S._acessos||[]).find(y=>y.jogador_id===jid)||{};
+  const livre=s=>{const t=s===1?x.encarregado_tel:x.encarregado2_tel;return !t||telIg(t,tel)};
+  const pref=['Mãe','Avó','Tia','Irmã','Madrasta'].includes(par)?2:1,outro=pref===1?2:1;
+  let slot=livre(pref)?pref:livre(outro)?outro:null;
+  if(!slot){const nm=pref===1?x.encarregado_nome:x.encarregado2_nome;if(!confirm(`Já há dois familiares com número. Substituir ${nm||'o '+(pref===1?'primeiro':'segundo')}?`))return;slot=pref}
+  const r={jogador_id:jid,updated_at:new Date().toISOString()};
+  if(slot===1)Object.assign(r,{encarregado_nome:nome,encarregado_tel:tel,encarregado_parentesco:par});else Object.assign(r,{encarregado2_nome:nome,encarregado2_tel:tel,encarregado2_parentesco:par});
+  const {error}=await sb.from('fut_fichas').upsert(r,{onConflict:'jogador_id'});if(error){toast('Não foi possível guardar');return}
+  Object.assign(x,r);
+  const c=(S._contas||[]).find(c=>c.telefone&&c.papel!=='treinador'&&telIg(c.telefone,tel));
+  if(c){const {error:e2}=await sb.rpc('fut_ligar_familia',{p_jogador:jid,p_email:null,p_user:c.user_id});
+    if(!e2){closeSheet();toast(`${primeiro(nome)} ligado(a) à conta ✔`);vAcessos();return}}
+  openSheet(`<h2>✔ ${esc(primeiro(nome))} guardado(a)</h2><p class="muted">${esc(nome)} (${esc(par.toLowerCase())}) ainda não tem conta na app com o número ${esc(tel)}. Envie-lhe o link e o código pelo WhatsApp: quando criar conta e escrever o código, fica ligado(a) automaticamente.</p>
+   <a class="btn full" style="display:block;text-align:center;text-decoration:none;background:#25D366;margin-top:12px" href="https://wa.me/${telWa(tel)}?text=${encodeURIComponent(msgPais(x))}" target="_blank" rel="noopener" onclick="setTimeout(()=>{closeSheet();vAcessos()},400)">Enviar pelo WhatsApp</a>
+   <button class="btn ghost full" style="margin-top:8px" onclick="closeSheet();vAcessos()">Mais tarde</button>`)}
 /* ---------- números WhatsApp de pai, mãe e atleta (editáveis) ---------- */
 const telIg=(a,b)=>{const x=telWa(a),y=telWa(b);return x&&y&&x.slice(-9)===y.slice(-9)};
 function blocoNumeros(x,i){
   const lin=(ic,rot,nome,tel,msg,cor)=>`<div class="row between" style="gap:8px;padding:8px 0;border-top:1px solid var(--line,#eee)"><div class="grow" style="min-width:0"><small class="faint">${ic} ${rot}</small><div><b>${nome?esc(nome):'<span class="faint">sem nome</span>'}</b></div><div class="${tel?'':'faint'}" style="font-size:13px">${tel?esc(tel):'sem número'}</div></div>${tel?`<a class="btn sm" style="text-decoration:none;background:${cor};flex:none" href="https://wa.me/${telWa(tel)}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">WhatsApp</a>`:''}</div>`;
   return `<div style="margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--cream,#F6EEE4)"><div class="row between"><b style="font-size:13px">📱 Números WhatsApp</b><button class="btn ghost sm" style="padding:6px 10px" onclick="editarNumeros(${i})">✏️ Editar</button></div>
-   ${lin('👨','Pai',x.encarregado_nome,x.encarregado_tel,msgPais(x),'#25D366')}
-   ${lin('👩','Mãe',x.encarregado2_nome,x.encarregado2_tel,msgPais(x),'#25D366')}
+   ${lin(icPar(x.encarregado_parentesco||'Pai'),x.encarregado_parentesco||'Pai',x.encarregado_nome,x.encarregado_tel,msgPais(x),'#25D366')}
+   ${lin(icPar(x.encarregado2_parentesco||'Mãe'),x.encarregado2_parentesco||'Mãe',x.encarregado2_nome,x.encarregado2_tel,msgPais(x),'#25D366')}
    ${lin('⚽','Atleta',primeiro(x.nome),x.atleta_tel,msgAtleta(x),'#128C7E')}</div>`}
 function sugLigar(x){const lig=c=>(c.filhos||'').split(', ').includes(x.nome);
   const s=(S._contas||[]).filter(c=>c.telefone&&!lig(c)&&c.papel!=='treinador'&&(telIg(c.telefone,x.encarregado_tel)||telIg(c.telefone,x.encarregado2_tel)));
@@ -2639,13 +2666,13 @@ function sugLigar(x){const lig=c=>(c.filhos||'').split(', ').includes(x.nome);
 async function ligarPorNumero(jid,uid){const {data,error}=await sb.rpc('fut_ligar_familia',{p_jogador:jid,p_email:null,p_user:uid});if(error){toast(error.message.replace(/^.*?: /,''));return}toast(`Ligado${data?' a '+data:''} ✔`);vAcessos()}
 function editarNumeros(i){const x=S._acessos[i];
   openSheet(`<h2>📱 Números de ${esc(primeiro(x.nome))}</h2><p class="muted" style="margin-top:0">Corrija aqui se algum nome ou número estiver errado. Ficam também nos Dados pessoais.</p>
-  <h3 style="margin:14px 0 0">👨 Pai</h3><div class="row"><div class="grow"><label class="f" for="nPaN">Nome</label><input id="nPaN" class="in" value="${esc(x.encarregado_nome||'')}"></div><div class="grow"><label class="f" for="nPaT">WhatsApp</label><input id="nPaT" class="in" type="tel" inputmode="tel" placeholder="9xx xxx xxx" value="${esc(x.encarregado_tel||'')}"></div></div>
-  <h3 style="margin:14px 0 0">👩 Mãe</h3><div class="row"><div class="grow"><label class="f" for="nMaN">Nome</label><input id="nMaN" class="in" value="${esc(x.encarregado2_nome||'')}"></div><div class="grow"><label class="f" for="nMaT">WhatsApp</label><input id="nMaT" class="in" type="tel" inputmode="tel" placeholder="9xx xxx xxx" value="${esc(x.encarregado2_tel||'')}"></div></div>
+  <h3 style="margin:14px 0 0">👨‍👩‍👦 Familiar 1</h3><label class="f" for="nPaP">Parentesco</label><select id="nPaP" class="in">${PARENTESCOS.map(p=>`<option ${p===(x.encarregado_parentesco||'Pai')?'selected':''}>${p}</option>`).join('')}</select><div class="row"><div class="grow"><label class="f" for="nPaN">Nome</label><input id="nPaN" class="in" value="${esc(x.encarregado_nome||'')}"></div><div class="grow"><label class="f" for="nPaT">Telemóvel</label><input id="nPaT" class="in" type="tel" inputmode="tel" placeholder="9xx xxx xxx" value="${esc(x.encarregado_tel||'')}"></div></div>
+  <h3 style="margin:14px 0 0">👨‍👩‍👦 Familiar 2</h3><label class="f" for="nMaP">Parentesco</label><select id="nMaP" class="in">${PARENTESCOS.map(p=>`<option ${p===(x.encarregado2_parentesco||'Mãe')?'selected':''}>${p}</option>`).join('')}</select><div class="row"><div class="grow"><label class="f" for="nMaN">Nome</label><input id="nMaN" class="in" value="${esc(x.encarregado2_nome||'')}"></div><div class="grow"><label class="f" for="nMaT">Telemóvel</label><input id="nMaT" class="in" type="tel" inputmode="tel" placeholder="9xx xxx xxx" value="${esc(x.encarregado2_tel||'')}"></div></div>
   <h3 style="margin:14px 0 0">⚽ Atleta</h3><label class="f" for="nAtT">WhatsApp do atleta (opcional)</label><input id="nAtT" class="in" type="tel" inputmode="tel" value="${esc(x.atleta_tel||'')}">
   <button class="btn gold full" style="margin-top:16px" onclick="guardarNumeros(${i})">Guardar</button>`)}
 async function guardarNumeros(i){const x=S._acessos[i];
   const bad=['nPaT','nMaT','nAtT'].find(k=>{const d=g(k).replace(/\D/g,'');return d&&d.length<9});if(bad){toast('Número incompleto: tem de ter 9 algarismos');$('#'+bad).focus();return}
-  const r={jogador_id:x.jogador_id,encarregado_nome:g('nPaN')||null,encarregado_tel:g('nPaT')||null,encarregado2_nome:g('nMaN')||null,encarregado2_tel:g('nMaT')||null,atleta_tel:g('nAtT')||null,updated_at:new Date().toISOString()};
+  const r={jogador_id:x.jogador_id,encarregado_nome:g('nPaN')||null,encarregado_tel:g('nPaT')||null,encarregado2_nome:g('nMaN')||null,encarregado2_tel:g('nMaT')||null,encarregado_parentesco:g('nPaP')||null,encarregado2_parentesco:g('nMaP')||null,atleta_tel:g('nAtT')||null,updated_at:new Date().toISOString()};
   const {error}=await sb.from('fut_fichas').upsert(r,{onConflict:'jogador_id'});if(error){toast('Não foi possível guardar');return}
   closeSheet();toast('Números guardados ✔');vAcessos()}
 /* ---------- 4 cartões ao abrir cada perfil ---------- */
