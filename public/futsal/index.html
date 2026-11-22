@@ -399,7 +399,7 @@ function voltar(){
 function botaoVoltar(){if(S.hist.length){try{history.back();return}catch(_){}}voltar()}
 window.addEventListener('popstate',()=>{if($('.sheet')){closeSheet();try{history.pushState({fut:1},'')}catch(_){}return}if(S.perfil&&S.eq)voltar()});
 /* ---------- estrutura ---------- */
-const TABS=[['inicio','🏠','Início'],['agenda','📅','Agenda'],['jogadores','⚽','Jogadores'],['avaliacoes','📋','Avaliações'],['mensagens','💬','Mensagens'],['guia','🌱','Guia 3S']];
+const TABS=[['inicio','🏠','Início'],['agenda','📅','Agenda'],['jogadores','⚽','Jogadores'],['avaliacoes','📋','Avaliações'],['mensagens','💬','Mensagens']];
 const rotuloTab=k=>k==='dados'?'Dados pessoais':k==='avaliacoes'?'Avaliações':k==='acessos'?'Acessos':k==='ajuda'?'Ajuda aos pais':k==='podios'?'Pódios':k==='equipa'?'Ficha de Equipa':k==='jogadores'?(isCoach()?'Jogadores':isAtleta()?'Eu':'Filhos'):k==='mensagens'&&isAtleta()?'Avisos':(TABS.find(t=>t[0]===k)||[])[2];
 function render(){
   marcarNav();
@@ -498,7 +498,7 @@ async function vAgenda(){
   const linha=e=>`<button class="item" onclick="abrirEvento('${e.id}')"><div class="date ${e.tipo}"><b>${new Date(e.data+'T12:00').getDate()}</b><small>${MESES[new Date(e.data+'T12:00').getMonth()]}</small></div>
     <div class="grow"><b>${e.tipo==='jogo'?'⚽ Jogo vs '+esc(e.adversario||'?'):'🏃 Treino'}</b><div class="muted">${diaSemana(e.data)} · ${esc(horaEv(e))} ${e.local?'· '+esc(e.local):''}</div></div>
     ${e.resultado?`<span class="chip gold">${esc(e.resultado)}</span>`:''}</button>`;
-  $('#main').innerHTML=(isAtleta()?'':segA)+`${isCoach()?'<div class="card"><button class="btn full" onclick="novoEvento()">+ Marcar treino ou jogo</button></div>':''}
+  $('#main').innerHTML=(isAtleta()?'':segA)+`${isCoach()?`<div class="card"><button class="btn full" onclick="novoEvento()">+ Marcar treino ou jogo</button><button class="btn ghost full sm" style="margin-top:8px" onclick="irImportar('jogos')">📥 Importar calendário de jogos (PDF, Excel ou foto)</button></div>`:''}
   <div class="card"><h2>Próximos</h2>${prox.length?`<div class="list">${prox.map(linha).join('')}</div>`:'<p class="empty">Nada marcado.</p>'}</div>
   ${pass.length?`<div class="card"><h2>Anteriores</h2><div class="list">${pass.map(linha).join('')}</div></div>`:''}`;
 }
@@ -641,7 +641,7 @@ async function vJogadores(){
   const ferr=[['📋','Presenças','mapaPresencas()'],['💛','Avaliações','irAvaliacoes()'],['📇','Dados pessoais','irDados()'],['🛡️','Ficha de Equipa','irEquipa()'],['🏆','Pódios','irPodios()'],['💶','Pagamentos','painelPagamentos()'],['📄','Relatórios','painelRelatorios()'],['🔑','Acessos','irAcessos()']];
   m.innerHTML=`${lista.length?`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">${lista.map(j=>`<button onclick="abrirJogador('${j.id}')" style="border:0;background:var(--card);border-radius:18px;padding:8px;box-shadow:0 6px 20px var(--shadow);cursor:pointer;text-align:center;position:relative">${foto(j)}${j.numero?`<span style="position:absolute;top:12px;left:12px;background:var(--navy);color:#fff;border-radius:10px;padding:1px 7px;font-weight:800;font-size:13px">${j.numero}</span>`:''}<b style="display:block;margin-top:6px;font-size:13px;line-height:1.2">${esc(primeiro(j.nome))}<br><span style="font-weight:600;color:var(--soft)">${esc(j.nome.split(' ').slice(-1)[0]===primeiro(j.nome)?'':j.nome.split(' ').slice(-1)[0])}</span></b>${isCoach()?`<div class="bar mint" style="margin-top:6px;height:5px"><i style="width:${Math.round((mins[j.id]||0)/maxMin*100)}%"></i></div><div class="faint" style="font-size:10px">${mins[j.id]||0} min</div>`:`<div class="faint" style="font-size:11px">${esc(j.posicao||'')}</div>`}</button>`).join('')}</div>`
     :`<div class="card"><p class="empty">${isCoach()?'Ainda não há jogadores. Registe-os aqui e depois envie a cada família o código pessoal em 🔑 Acessos.':'Ainda não está ligado ao seu filho. Use o código de família que recebeu.'}</p></div>`}
-    ${isCoach()?`<button class="btn gold full" style="margin-top:14px" onclick="adicionarFilho()">+ Registar jogador</button>`:`<button class="btn ghost full" style="margin-top:14px" onclick="pedirCodigoFamilia()">🔑 Ligar outro filho com código</button>`}
+    ${isCoach()?`<button class="btn gold full" style="margin-top:14px" onclick="adicionarFilho()">+ Registar jogador</button><button class="btn ghost full sm" style="margin-top:8px" onclick="irImportar('jogadores')">📥 Importar jogadores de um documento</button>`:`<button class="btn ghost full" style="margin-top:14px" onclick="pedirCodigoFamilia()">🔑 Ligar outro filho com código</button>`}
     ${isCoach()&&lista.length?`<h3 style="margin:20px 4px 10px">🧰 Ferramentas da equipa</h3><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">${ferr.map(([i,l,a])=>`<button onclick="${a}" style="border:0;background:var(--card);border-radius:16px;padding:14px 6px;box-shadow:0 6px 20px var(--shadow);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="font-size:26px">${i}</span><b style="font-size:13px;color:var(--navy)">${l}</b></button>`).join('')}</div>
     <p class="faint" style="text-align:center;margin-top:12px">A barra verde por baixo de cada foto mostra os minutos jogados nos últimos 60 dias, para garantir oportunidades a todos. Só o treinador a vê.</p>`:''}`;
 }
@@ -782,7 +782,7 @@ async function jEscola(j){
   const subir=ult.filter(u=>u.ant&&pct(u.ult)>pct(u.ant)).length,descer=ult.filter(u=>u.ant&&pct(u.ult)<pct(u.ant)).length;
   const obsE=await q(sb.from('fut_observacoes').select('*').eq('jogador_id',j.id).eq('contexto','escola').eq('resolvido',false).order('created_at',{ascending:false}).limit(3))||[];
   return `<div class="card"><p class="muted" style="margin-top:0">Notas por disciplina, ao longo dos períodos. Pais e treinador registam e acompanham a mesma evolução: o esforço na escola também conta.</p>
-    ${podeEditar()?'<button class="btn gold full" onclick="novaNota()">+ Registar notas</button>':''}</div>
+    ${podeEditar()?`<button class="btn gold full" onclick="novaNota()">+ Registar notas</button><button class="btn ghost full sm" style="margin-top:8px" onclick="irImportar('notas','${j.id}')">📥 Importar notas (foto da pauta, PDF ou Excel)</button>`:''}</div>
     ${ult.length?`<div class="card"><div class="kpis"><div class="kpi"><b>${ult.length}</b><small>disciplinas</small></div><div class="kpi"><b style="color:var(--mint)">${subir}</b><small>subiram</small></div><div class="kpi"><b style="color:var(--red)">${descer}</b><small>desceram</small></div></div></div>`:''}
     ${ult.map(u=>`<div class="card"><div class="row between"><h3 style="margin:0">${esc(u.disciplina)}</h3><span>${setaTend(u)} <b style="font-family:'Baloo 2';font-size:20px">${fmtNota(u.ult)}</b></span></div>
       ${spark(u.arr)}
@@ -1985,9 +1985,10 @@ const FAQ_PAIS=[
 async function vAjuda(){
   const sec=S.ajSec&&AJUDA_PAIS.some(a=>a[0]===S.ajSec)?S.ajSec:'app';const b=AJUDA_PAIS.find(a=>a[0]===sec);
   const f=S.meus.find(x=>x.id===S.ajFilho)||S.meus[0];
-  const inter=f?await blocoInterativo(f.id,false):'';
-  $('#main').innerHTML=`${S.meus.length>1?`<div class="seg">${S.meus.map(x=>`<button class="${f&&x.id===f.id?'on':''}" onclick="S.ajFilho='${x.id}';vAjuda()">${esc(primeiro(x.nome))}</button>`).join('')}</div>`:''}${inter}<div class="h3s-card h3s-hero" style="margin-top:14px"><div class="h3s-hero-tit">🤝 Ajuda aos pais</div><div class="h3s-hero-sub" style="margin-top:6px">Tudo o que precisa para acompanhar o seu filho, na app e fora dela.</div>
+  const [inter,plano,ferr]=await Promise.all([f?blocoInterativo(f.id,false):'',planoPais(f),blocoFerramentas()]);
+  $('#main').innerHTML=`${S.meus.length>1?`<div class="seg">${S.meus.map(x=>`<button class="${f&&x.id===f.id?'on':''}" onclick="S.ajFilho='${x.id}';vAjuda()">${esc(primeiro(x.nome))}</button>`).join('')}</div>`:''}${plano}${blocoHumanos(f)}${ferr}<div style="margin-top:14px"></div>${inter}<div class="h3s-card h3s-hero" style="margin-top:14px"><div class="h3s-hero-tit">🤝 Ajuda aos pais</div><div class="h3s-hero-sub" style="margin-top:6px">Tudo o que precisa para acompanhar o seu filho, na app e fora dela.</div>
     <div class="h3s-pills" style="justify-content:center;margin-top:14px">${f?`<button class="h3s-pill" onclick="S.agTab='reunioes';irPara('agenda');setTimeout(()=>novaReuniao(),300)">🤝 Pedir reunião</button><button class="h3s-pill claro" style="background:#fff;color:var(--navy);border:2px solid var(--navy)" onclick="abrirJogador('${f.id}','conversa')">💬 Falar com o treinador</button>`:''}</div></div>
+  <h3 style="margin:18px 4px 0">📖 Guias rápidos</h3>
   <div class="seg" style="margin-top:14px">${AJUDA_PAIS.map(([k,i,t])=>`<button class="${k===sec?'on':''}" onclick="S.ajSec='${k}';vAjuda()">${i} ${t}</button>`).join('')}</div>
   <div class="h3s-card">${b[3].map(([t,x])=>`<div class="tip"><b>${t}</b><span class="muted" style="font-size:14px">${x}</span></div>`).join('')}</div>
   <div class="h3s-card" style="margin-top:14px"><b>❓ Perguntas frequentes</b>${FAQ_PAIS.map(([p,r])=>`<details style="border-top:1px solid var(--line);padding:10px 0"><summary style="font-weight:600;cursor:pointer">${p}</summary><p class="muted" style="margin:6px 0 0;font-size:14px">${r}</p></details>`).join('')}</div>
@@ -2547,7 +2548,7 @@ async function vEquipa(){
     <div class="h3s-card" style="margin-top:12px"><b>⚽ Marcadores</b>${top.map((x,i)=>`<div style="margin:10px 0"><div class="row between"><span>${MEDALHA[i]||(i+1)+'.'} ${esc(x.j.nome)}</span><b>${x.gm}</b></div><div class="bar"><i style="width:${x.gm/mx*100}%;background:${i<3?CORPOD[i]:'var(--gold)'}"></i></div></div>`).join('')||'<p class="empty">Sem golos registados.</p>'}</div>
     ${ta.length?`<div class="h3s-card" style="margin-top:12px"><b>🎯 Assistências</b>${ta.map((x,i)=>`<div class="row between" style="padding:6px 0;border-top:1px solid var(--line)"><span>${MEDALHA[i]} ${esc(x.j.nome)}</span><b>${x.as}</b></div>`).join('')}</div>`:''}
     <button class="btn gold full" style="margin-top:12px" onclick="irPodios()">🏆 Ver pódios e criar imagens</button>`}
-  $('#main').innerHTML=cab+corpo;
+  $('#main').innerHTML=cab+(isCoach()?`<button class="btn ghost full sm" style="margin:0 0 10px" onclick="irImportar('${{plantel:'estat',classificacao:'classif',jogos:'jogos'}[tab]||''}')">📥 Importar ${{plantel:'jogos e golos',classificacao:'classificação',jogos:'jogos e resultados'}[tab]||'documento'} (PDF, Excel ou foto)</button>`:'')+corpo;
 }
 async function editarBase(){const L=await dadosEquipa();
   openSheet(`<h2>Acertar números</h2><p class="muted">Jogos e golos que vêm de outras apps (por exemplo, a da federação) nesta época. A app soma-lhes o que for registado na checklist.</p>
@@ -3092,6 +3093,7 @@ async function vDados(){
   S._dq='';const L=S.jogadores;
   $('#main').innerHTML=`<div class="h3s-card h3s-hero"><div class="h3s-hero-tit">📇 Dados pessoais</div><div class="h3s-hero-sub">Pais e atletas · ${esc(S.eq.nome)} · ${S.jogadores.length} atletas</div></div>
   <input class="in" style="margin-top:12px" placeholder="🔎 Procurar nome, telemóvel ou escola" value="${esc(S._dq||'')}" oninput="S._dq=this.value;const v=this.value.toLowerCase();document.querySelectorAll('[data-busca]').forEach(c=>c.style.display=c.dataset.busca.includes(v)?'':'none')">
+  <button class="btn ghost full sm" style="margin-top:10px" onclick="irImportar('jogadores')">📥 Importar documento (Excel, PDF ou foto)</button>
   <p class="faint" style="margin:8px 4px">Dados confidenciais: só o treinador e a administradora os veem. Usar apenas para assuntos da equipa.</p>
   ${L.map(j=>{const f=F.find(x=>x.jogador_id===j.id)||{};const idade=f.data_nascimento?Math.floor((Date.now()-new Date(f.data_nascimento))/31557600000):null;
     return `<div class="h3s-card" style="margin-top:12px" data-busca="${esc((j.nome+' '+Object.values(f).join(' ')).toLowerCase())}"><div class="row between"><div class="row" style="gap:10px">${avatar(j,44)}<div><b style="font-size:16px">${esc(j.nome)}</b><div class="faint">${j.numero?'#'+j.numero+' · ':''}${idade!=null?idade+' anos':'sem data de nascimento'}</div>${anivLinha(f.data_nascimento,j)}</div></div><div class="row" style="gap:6px"><button class="btn ghost sm" onclick="verCC('${j.id}')">🪪 CC</button><button class="btn ghost sm" onclick="S.jog='${j.id}';S.tab='jogadores';S.jogTab='ficha';render();setTimeout(editarFicha,500)">✏️ Editar</button></div></div>
@@ -3149,7 +3151,7 @@ async function tarefasAuto(){const T=[];const add=(ic,t,sub,acao,urg)=>T.push({i
       if(nRt.length)add('🗓️',`Marcar reunião trimestral (${nRt.length})`,'com o atleta e os pais',"S.agTab='reunioes';irPara('agenda')")}
     const ped=(S.reunioes||[]).filter(r=>r.estado==='pedida');if(ped.length)add('🤝',`${ped.length} pedido${ped.length>1?'s':''} de reunião`,'confirmar data',"S.agTab='reunioes';irPara('agenda')",true);
     if(ev&&ev.tipo==='jogo'&&!S.presencas.some(p=>p.evento_id===ev.id&&p.convocado))add('📣',`Convocatória vs ${ev.adversario||'?'}`,dataCurta(ev.data),`abrirEvento('${ev.id}')`,true);
-    if(!S.eq.regras)add('📜','Confirmar as regras da equipa','Guia 3S → Regras',"irPara('guia')");
+    if(!S.eq.regras)add('📜','Confirmar as regras da equipa','Regras de funcionamento','abrirRegras()');
   } else if(isAtleta()){const j=S.meus[0];if(j){
     const jg=S.eventos.filter(e=>e.tipo==='jogo'&&e.data<=hoje()&&e.data>=addDias(-3)).pop();
     const [co,iq,av]=await Promise.all([jg?q(sb.from('fut_coaching').select('id').eq('jogador_id',j.id).eq('evento_id',jg.id)):[],q(sb.from('fut_inquerito_atleta').select('id').eq('jogador_id',j.id).eq('epoca',epocaAtual())),q(sb.from('fut_avaliacoes_360').select('id').eq('jogador_id',j.id).eq('trimestre',trimAtual()).eq('respondente_tipo','aluno'))]);
@@ -3181,20 +3183,20 @@ async function feitaTarefa(id){await q(sb.from('fut_tarefas').update({feito:true
 async function apagarTarefa(id){await q(sb.from('fut_tarefas').delete().eq('id',id));cartaoTarefas()}
 
 /* ---------- Início do treinador: áreas em cartões ---------- */
-function areaCard(id,ic,t,sub,acao){return `<button onclick="${acao}" style="border:0;background:var(--card);border-radius:24px;padding:20px 18px;min-height:150px;box-shadow:0 6px 20px var(--shadow);display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;cursor:pointer"><span style="font-size:36px;line-height:1">${ic}</span><b style="font-size:19px;color:var(--navy);margin-top:6px">${t}</b><span id="ar_${id}" class="faint" style="font-size:13px;line-height:1.35">${sub}</span></button>`}
+function areaCard(id,ic,t,sub,acao,imp){return `<button onclick="${acao}" style="position:relative;border:0;background:var(--card);border-radius:24px;padding:20px 18px;min-height:150px;box-shadow:0 6px 20px var(--shadow);display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;cursor:pointer">${imp!=null?`<span role="button" aria-label="Importar documento" title="Importar documento" onclick="event.stopPropagation();irImportar(${imp?`'${imp}'`:''}${imp==='notas'&&S.meus[0]&&!isCoach()?`,'${(S.meus.find(j=>j.id===S.filhoSel)||S.meus[0]).id}'`:''})" style="position:absolute;top:12px;right:12px;background:var(--navy-soft);border-radius:12px;padding:6px 8px;font-size:15px">📥</span>`:''}<span style="font-size:36px;line-height:1">${ic}</span><b style="font-size:19px;color:var(--navy);margin-top:6px">${t}</b><span id="ar_${id}" class="faint" style="font-size:13px;line-height:1.35">${sub}</span></button>`}
 function inicioTreinador(){
   const ev=proximos()[0];
   return `<div style="background:var(--bg,#F3EEE6);border-radius:28px;padding:18px 14px 6px;position:relative;z-index:2"><div class="row between" style="margin:0 4px 14px"><h2 style="margin:0;color:var(--navy)">${isAdminModo()?'Administração':'Áreas da equipa'}</h2><span class="chip">${esc(S.eq.nome)}</span></div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-   ${areaCard('dados','📇','Dados pessoais','pais e jogadores · contactos e Cartão de Cidadão','irDados()')}
-   ${areaCard('jog','⚽','Jogadores',`${S.jogadores.length} atletas · fotos e fichas`,"irPara('jogadores')")}
+   ${areaCard('dados','📇','Dados pessoais','pais e jogadores · contactos e Cartão de Cidadão','irDados()','jogadores')}
+   ${areaCard('jog','⚽','Jogadores',`${S.jogadores.length} atletas · fotos e fichas`,"irPara('jogadores')",'jogadores')}
    ${areaCard('tar','📝','Tarefas','a carregar…','abrirTarefas()')}
    ${areaCard('ace','🔑','Acessos','códigos por WhatsApp','irAcessos()')}
    ${areaCard('ava','💛','Avaliações',`3S, FPF, coaching · ${trimLabel(trimAtual())}`,'irAvaliacoes()')}
    ${areaCard('pag','💶','Pagamentos','quotas e conta corrente','painelPagamentos()')}
-   ${areaCard('eq','🛡️','Equipa','plantel, jogos, classificação','irEquipa()')}
-   ${areaCard('age','📅','Agenda',ev?`próximo: ${ev.tipo==='jogo'?'jogo vs '+esc(ev.adversario||'?'):'treino'} · ${dataCurta(ev.data)}`:'treinos, jogos e reuniões',"irPara('agenda')")}
-   ${[['imp','📥','Importar dados','Excel, PDF ou fotografia','irImportar()'],['pres','📋','Presenças','mapa de treinos e jogos','mapaPresencas()'],['pod','🏆','Pódios','melhor marcador, jogo e treino','irPodios()'],['vis','📊','Visão geral','perfil da equipa e atleta a atleta','abrirVisao()'],['reg','📜','Regras de funcionamento','ver e editar','abrirRegras()'],['ani','🎂','Aniversários','próximos 30 dias','abrirAnivSheet()'],['msg','💬','Mensagens','avisos e conversas',"irPara('mensagens')"],['gui','🌱','Guia 3S','crescer bem e ajuda',"irPara('guia')"],['pdc','🎧','Podcasts','Banco de Suplentes e outros','abrirPodcasts()']].map(a=>areaCard(...a)).join('')}
+   ${areaCard('eq','🛡️','Equipa','plantel, jogos, classificação','irEquipa()','')}
+   ${areaCard('age','📅','Agenda',ev?`próximo: ${ev.tipo==='jogo'?'jogo vs '+esc(ev.adversario||'?'):'treino'} · ${dataCurta(ev.data)}`:'treinos, jogos e reuniões',"irPara('agenda')",'jogos')}
+   ${[['imp','📥','Importar dados','Excel, PDF ou fotografia','irImportar()'],['pres','📋','Presenças','mapa de treinos e jogos','mapaPresencas()'],['pod','🏆','Pódios','melhor marcador, jogo e treino','irPodios()'],['vis','📊','Visão geral','perfil da equipa e atleta a atleta','abrirVisao()'],['reg','📜','Regras de funcionamento','ver e editar','abrirRegras()'],['ani','🎂','Aniversários','próximos 30 dias','abrirAnivSheet()'],['msg','💬','Mensagens','avisos e conversas',"irPara('mensagens')"],['pdc','🎧','Podcasts','Banco de Suplentes e outros','abrirPodcasts()']].map(a=>areaCard(...a)).join('')}
   </div></div>`}
 async function areasDinamicas(){
   const [auto,minhas,cods,av]=await Promise.all([tarefasAuto().catch(()=>[]),q(sb.from('fut_tarefas').select('id').eq('user_id',S.me).eq('feito',false)),sb.rpc('fut_codigos_equipa',{p_equipa:S.eq.id}).then(r=>r.data||[]),S.jogadores.length?q(sb.from('fut_avaliacoes_360').select('jogador_id').eq('trimestre',trimAtual()).eq('respondente_tipo','treinador').in('jogador_id',S.jogadores.map(j=>j.id))):[]]);
@@ -3226,11 +3228,11 @@ function inicioPais(){
    ${areaCard('tar','📝','Tarefas','a carregar…','abrirTarefas()')}
    ${areaCard('age','📅','Agenda',ev?`${ev.tipo==='jogo'?'jogo vs '+esc(ev.adversario||'?'):'treino'} · ${dataCurta(ev.data)} · ${r?.resposta?({vai:'✅ vai',talvez:'🤔 talvez',nao_vai:'❌ não vai'}[r.resposta]):'<b style="color:var(--red)">falta responder</b>'}`:'treinos, jogos e reuniões',ev?`abrirEvento('${ev.id}')`:"irPara('agenda')")}
    ${areaCard('ava','💛','Avaliações','3S, coaching, feedback do treinador',ab('avalhub'))}
-   ${areaCard('dad','📇','Dados pessoais','contactos, saúde e Cartão de Cidadão',ab('ficha'))}
-   ${areaCard('esc','📚','Escola','notas por disciplina',ab('escola'))}
+   ${areaCard('dad','📇','Dados pessoais','contactos, saúde e Cartão de Cidadão',ab('ficha'),'jogadores')}
+   ${areaCard('esc','📚','Escola','notas por disciplina',ab('escola'),'notas')}
    ${areaCard('pag','💶','Pagamentos','conta corrente',ab('conta'))}
    ${areaCard('aju','🤝','Ajuda aos pais','check-in, pergunta e desafio da semana',"irPara('ajuda')")}
-   ${[['eq2','🛡️','Equipa','plantel, jogos, classificação','irEquipa()'],['pod','🏆','Pódios','melhor marcador, jogo e treino','irPodios()'],['reg','📜','Regras de funcionamento','o que a equipa combinou','abrirRegras()'],['ani','🎂','Aniversários','próximos 30 dias','abrirAnivSheet()'],['msg','💬','Mensagens','avisos e conversas',"irPara('mensagens')"],['gui','🌱','Guia 3S','crescer bem e ajuda',"irPara('guia')"],['pdc','🎧','Podcasts','para ouvir no carro','abrirPodcasts()']].map(a=>areaCard(...a)).join('')}
+   ${[['eq2','🛡️','Equipa','plantel, jogos, classificação','irEquipa()'],['pod','🏆','Pódios','melhor marcador, jogo e treino','irPodios()'],['reg','📜','Regras de funcionamento','o que a equipa combinou','abrirRegras()'],['ani','🎂','Aniversários','próximos 30 dias','abrirAnivSheet()'],['msg','💬','Mensagens','avisos e conversas',"irPara('mensagens')"],['pdc','🎧','Podcasts','para ouvir no carro','abrirPodcasts()']].map(a=>areaCard(...a)).join('')}
   </div></div>`}
 async function areasPais(){const f=S.meus.find(j=>j.id===S.filhoSel)||S.meus[0];if(!f)return;
   const set=(id,t)=>{const e=$('#ar_'+id);if(e)e.innerHTML=t};
@@ -3254,9 +3256,9 @@ const IMP_TIPOS={
 const IMP_ALIAS={nome:['nome','atleta','jogador','name','nome completo'],numero:['n','nº','n.º','numero','número','camisola','#','num'],posicao:['posicao','posição','pos'],data_nascimento:['data de nascimento','nascimento','data nasc','dn','data_nascimento'],pe_dominante:['pe','pé','pe dominante','pé dominante'],tamanho_equip:['tamanho','equipamento','tam'],ano_escolar:['ano','ano escolar','ano_escolar'],escola:['escola'],turma:['turma'],localidade:['localidade','morada','residencia'],atleta_tel:['telemovel do atleta','tel atleta','telemovel atleta'],encarregado_nome:['encarregado','encarregado de educacao','mae','pai','ee','nome encarregado'],encarregado_tel:['telemovel','telefone','contacto','tel','telemovel encarregado'],encarregado_email:['email','e-mail','mail'],encarregado2_nome:['encarregado 2','segundo encarregado'],encarregado2_tel:['telemovel 2','telefone 2','contacto 2'],contacto_emergencia:['emergencia','emergência','contacto de emergencia'],doencas:['doencas','doenças','doenca'],alergias:['alergias','alergia'],num_federado:['federado','n federado','licenca','licença'],seguro_validade:['seguro','validade seguro'],jogos:['jj','jogos','j jogados','jogos jogados'],golos:['gm','golos','golos marcados','g'],assistencias:['assistencias','assistências','ast','a'],amarelos:['amarelos','ca','cartoes amarelos'],vermelhos:['vermelhos','cv','cartoes vermelhos'],data:['data','dia'],hora:['hora','horario'],adversario:['adversario','adversário','equipa','visitante','oponente'],local:['local','pavilhao','pavilhão','campo'],resultado:['resultado','res','marcador'],casa_fora:['casa/fora','casa fora','c/f'],posicao_c:[],clube:['clube','equipa','equipas'],j:['j','jogos'],v:['v','vitorias','vitórias'],e:['e','empates'],d:['d','derrotas'],gm:['gm','golos marcados'],gs:['gs','golos sofridos'],pts:['pts','pontos','p'],disciplina:['disciplina','materia','matéria'],nota:['nota','classificacao','classificação'],periodo:['periodo','período'],ano_letivo:['ano letivo','ano lectivo'],escala:['escala']};
 const _nrm=s=>String(s??'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[.:º°]/g,'').replace(/\s+/g,' ').trim();
 let IMP=null;
-function irImportar(){closeSheet();IMP={tipo:'jogadores',rows:[],map:[],hdr:0};
+function irImportar(tipo,jid){closeSheet();IMP={tipo:tipo||'jogadores',auto:!tipo,jid:jid||null,rows:[],map:[],hdr:0};
   openSheet(`<h2>📥 Importar dados</h2><p class="muted" style="margin-top:0">Carregue um ficheiro <b>Excel</b> ou <b>CSV</b>, um <b>PDF</b> ou uma <b>fotografia</b> (por exemplo, uma captura da app da federação). Antes de guardar, vê tudo e corrige.</p>
-  <label class="f">O que quer importar?</label><div class="opts" style="flex-wrap:wrap" id="impT">${Object.entries(IMP_TIPOS).map(([k,v])=>`<button class="${k==='jogadores'?'on':''}" onclick="IMP.tipo='${k}';document.querySelectorAll('#impT button').forEach(b=>b.classList.remove('on'));this.classList.add('on')">${v.t}</button>`).join('')}</div>
+  <label class="f">O que quer importar?</label><p class="faint" style="margin:0 0 6px">${IMP.auto?'A app deteta sozinha o tipo de dados. Se preferir, escolha:':'Escolhido para esta área. Pode mudar:'}</p><div class="opts" style="flex-wrap:wrap" id="impT">${Object.entries(IMP_TIPOS).map(([k,v])=>`<button class="${!IMP.auto&&k===IMP.tipo?'on':''}" onclick="IMP.tipo='${k}';IMP.auto=false;document.querySelectorAll('#impT button').forEach(b=>b.classList.remove('on'));this.classList.add('on')">${v.t}</button>`).join('')}</div>
   <div class="row" style="gap:8px;margin-top:14px;flex-wrap:wrap">
    <label class="btn gold grow" style="cursor:pointer;text-align:center">📊 Excel / CSV<input type="file" hidden accept=".xlsx,.xls,.csv,.ods" onchange="impFicheiro(this.files[0],'xls')"></label>
    <label class="btn grow" style="cursor:pointer;text-align:center">📄 PDF<input type="file" hidden accept="application/pdf" onchange="impFicheiro(this.files[0],'pdf')"></label>
@@ -3282,7 +3284,14 @@ async function impFicheiro(f,tipo){if(!f)return;try{
  }catch(e){impSt('⚠️ '+esc(e.message||String(e)))}}
 function impTexto(t,orig){const linhas=String(t||'').split(/\r?\n/).map(l=>l.trim()).filter(Boolean).map(l=>l.includes('\t')?l.split('\t'):l.includes(';')?l.split(';'):l.split(/\s{2,}|\s\|\s|\|/).length>1?l.split(/\s{2,}|\s\|\s|\|/):impPartir(l));impRows(linhas,orig||'Texto')}
 function impPartir(l){const m=l.match(/^(\d{1,2})?\s*([A-Za-zÀ-ÿ'’.\- ]+?)\s+((?:\d+\s*)+)$/);if(m){return [...(m[1]?[m[1]]:[]),m[2].trim(),...m[3].trim().split(/\s+/)]}return [l]}
+function impDetetar(rows){const txt=_nrm(rows.slice(0,12).map(r=>r.join(' ')).join(' '));const sc={jogadores:0,estat:0,jogos:0,classif:0,notas:0};
+  Object.keys(sc).forEach(t=>{const keep=IMP.tipo;IMP.tipo=t;rows.slice(0,10).forEach(r=>r.forEach(c=>{const k=impCampo(c);if(k&&k!=='nome')sc[t]+=2;else if(k)sc[t]+=.5}));IMP.tipo=keep});
+  if(/\bjj\b|\bgm\b/.test(txt)&&!/\bpts\b|pontos/.test(txt))sc.estat+=3;if(/\bpts\b|pontos|classifica/.test(txt))sc.classif+=3;if(/disciplina|matematica|portugues|ingles|periodo/.test(txt))sc.notas+=4;
+  if(rows.filter(r=>r.some(c=>/^\d{1,2}[\/.\-]\d{1,2}([\/.\-]\d{2,4})?$/.test(c))).length>=2&&rows.some(r=>r.some(c=>/\d+\s*[-–]\s*\d+/.test(c)||/^vs?\b/i.test(c))))sc.jogos+=4;
+  if(/telemovel|telefone|email|encarregado|nascimento|morada|alergia/.test(txt))sc.jogadores+=4;
+  return Object.entries(sc).sort((a,b)=>b[1]-a[1])[0][0]}
 function impRows(rows,orig){rows=rows.map(r=>r.map(c=>String(c??'').trim())).filter(r=>r.some(Boolean));if(!rows.length){impSt('Não encontrei dados.');return}
+  if(IMP.auto){IMP.tipo=impDetetar(rows);document.querySelectorAll('#impT button').forEach((b,i)=>b.classList.toggle('on',Object.keys(IMP_TIPOS)[i]===IMP.tipo));orig=(orig||'')+` · detetei <b>${IMP_TIPOS[IMP.tipo].t}</b>`}
   const T=IMP_TIPOS[IMP.tipo];let hdr=-1,best=0;rows.slice(0,10).forEach((r,i)=>{const n=r.filter(c=>impCampo(c)).length;if(n>best&&n>=2){best=n;hdr=i}});
   const nc=Math.max(...rows.map(r=>r.length));IMP.rows=rows.slice(hdr+1).filter(r=>!/^(nome|atleta|jogador|data|clube|equipa|#)\b/.test(_nrm(r[0]))).map(r=>{while(r.length<nc)r.push('');return r});
   IMP.map=[...Array(nc)].map((_,i)=>hdr>=0?impCampo(rows[hdr][i])||'':'');
@@ -3320,7 +3329,7 @@ async function impGuardar(){const T=IMP.tipo;const L=IMP.rows.map(impObj).filter
     if(error)falhas.push(o.adversario+': '+error.message);else{ok++;if(!ex)novos++}}}
  else if(T==='classif'){const rows=L.filter(o=>o.clube).map((o,i)=>({equipa_id:S.eq.id,epoca:epocaAtual(),posicao:impNum(o.posicao)||i+1,clube:o.clube,nosso:/arcas|s\.?\s*paio/i.test(o.clube),...Object.fromEntries(['j','v','e','d','gm','gs','pts'].map(k=>[k,impNum(o[k])||0]))}));
     if(rows.length){await sb.from('fut_classificacao').delete().eq('equipa_id',S.eq.id).eq('epoca',epocaAtual());const {error}=await sb.from('fut_classificacao').insert(rows);if(error)throw error;ok=rows.length}}
- else if(T==='notas'){const rows=[];for(const o of L){const j=impJog(o.nome);if(!j){falhas.push((o.nome||'?')+': atleta não encontrado');continue}const nota=parseFloat(String(o.nota||'').replace(',','.'));if(!o.disciplina||isNaN(nota)){falhas.push(j.nome+': falta disciplina ou nota');continue}
+ else if(T==='notas'){const rows=[];for(const o of L){const j=IMP.jid&&!o.nome?S.jogadores.find(x=>x.id===IMP.jid)||(S.meus||[]).find(x=>x.id===IMP.jid):impJog(o.nome);if(!j){falhas.push((o.nome||'?')+': atleta não encontrado');continue}const nota=parseFloat(String(o.nota||'').replace(',','.'));if(!o.disciplina||isNaN(nota)){falhas.push(j.nome+': falta disciplina ou nota');continue}
     const esc_=o.escala&&ESCALAS[o.escala]?o.escala:nota>5?'0-20':'1-5';const per=PERIODOS.find(p=>_nrm(p).startsWith(_nrm(o.periodo||'').slice(0,2)))||'1.º Período';
     rows.push({jogador_id:j.id,ano_letivo:o.ano_letivo||anoLetivoAtual(),periodo:per,disciplina:o.disciplina,nota,escala:esc_,autor_id:S.me})}
     if(rows.length){const {error}=await sb.from('fut_notas_escola').upsert(rows,{onConflict:'jogador_id,ano_letivo,periodo,disciplina'});if(error)throw error;ok=rows.length}}
@@ -3328,6 +3337,78 @@ async function impGuardar(){const T=IMP.tipo;const L=IMP.rows.map(impObj).filter
  await carregar();
  $('#impPrev').innerHTML=`<div class="card" style="margin-top:10px;border:2px solid ${falhas.length?'var(--gold)':'var(--mint)'}"><b>✔ ${ok} linha${ok===1?'':'s'} importada${ok===1?'':'s'}</b>${novos?` · ${novos} novo${novos===1?'':'s'}`:''}${falhas.length?`<div class="faint" style="margin-top:6px">Não importado:<br>${falhas.slice(0,15).map(esc).join('<br>')}</div>`:''}</div><button class="btn full" style="margin-top:10px" onclick="closeSheet();render()">Concluir</button>`;impSt('')}
 async function impModelo(){await carregarScript('lib/xlsx.full.min.js');const T=IMP_TIPOS[IMP.tipo];const ws=XLSX.utils.aoa_to_sheet([T.campos.map(c=>c[1].replace('*',''))]);const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Dados');XLSX.writeFile(wb,`modelo-${IMP.tipo}.xlsx`)}
+
+/* ---------- Ajuda aos pais 2.0: pessoas primeiro, ferramentas práticas e plano personalizado ---------- */
+const FERR_PAIS=[
+ {k:'birras',ic:'🌋',t:'Birras e explosões',sub:'quando a emoção é maior do que ele',
+  porque:'Uma birra não é falta de educação: é um cérebro em alarme. A parte que trava os impulsos (o córtex pré-frontal) só fica madura por volta dos 25 anos. Primeiro acalma-se, depois educa-se.',
+  passos:['Acalme-se primeiro: respire fundo 3 vezes. A sua calma é o que ele vai copiar.','Baixe-se ao nível dele, fale devagar e com poucas palavras.','Dê nome à emoção: «Estás muito zangado porque…»','Mantenha o limite com calma: «Percebo que estejas zangado. Não podes atirar coisas.»','Espere. Não discuta nem dê lições a meio da tempestade.','Quando passar, conversem e reparem: «O que te ajudava da próxima vez?»'],
+  dizer:['Estou aqui. Quando estiveres pronto, conversamos.','É normal sentires isso. Não é normal magoares alguém.','Vamos respirar juntos?'],
+  evitar:['Gritar mais alto do que ele.','Ameaças que não vai cumprir.','Rótulos: «És impossível», «És mimado».','Ceder ao que pediu para a birra parar.'],
+  treino:'Escolham juntos um «sinal de calma» (uma palavra ou um gesto) para usar quando um dos dois começar a perder a paciência.'},
+ {k:'impulso',ic:'⚡',t:'Impulsividade',sub:'agir antes de pensar',
+  porque:'Os miúdos impulsivos não são «maus»: têm o travão mais lento. O travão treina-se, como um músculo, com repetição e elogio.',
+  passos:['Ensine o STOP: Para · Toma fôlego · Observa · Prossegue com uma escolha.','Use o semáforo: 🔴 parar, 🟡 pensar em 2 opções, 🟢 escolher a melhor.','Antecipe as situações difíceis: «No jogo de sábado, se o árbitro errar, o que vais fazer?»','Elogie o autocontrolo no momento: «Vi que te controlaste quando ele te empurrou. Muito bem.»','Dê consequências curtas, ligadas ao ato e sem humilhar.'],
+  dizer:['Para. Respira. O que é que queres que aconteça a seguir?','Tens duas opções: … ou … Qual escolhes?'],
+  evitar:['Castigos longos e sem ligação ao que aconteceu.','Comparar com irmãos ou colegas.','Responder também por impulso.'],
+  treino:'Joguem «Macaquinho do chinês» ou «Simão diz» esta semana: são jogos que treinam o travão de forma divertida.'},
+ {k:'julgamento',ic:'⚖️',t:'Julgamento',sub:'de nós, dele e dos outros',
+  porque:'Julgar é rápido e humano. Mas um filho que se sente julgado deixa de contar as coisas. Trocar o julgamento pela curiosidade mantém a porta aberta.',
+  passos:['Descreva o comportamento, não a pessoa: «Chegaste atrasado» em vez de «És um irresponsável».','Pergunte antes de concluir: «O que aconteceu?»','Quando ele se julga («Sou um nabo»), acrescente «ainda»: «Ainda não consegues… estás a aprender.»','Sobre colegas, árbitros ou treinador: mostre que cada pessoa tem a sua história. O que diz deles, ele aprende a dizer de si.','Quando se sentir julgado por outros pais: o seu filho não é o seu cartão de visita. Concentre-se nele, não na bancada.'],
+  dizer:['Conta-me o que aconteceu, quero perceber.','Erraste naquele lance. Isso não faz de ti mau jogador.','Toda a gente está a aprender, até os adultos.'],
+  evitar:['Criticar o árbitro, o treinador ou outros miúdos à frente dele.','«Já sabia», «Eu avisei-te».','Corrigir em público.'],
+  treino:'Durante uma semana, troque cada crítica por uma pergunta. Ao fim do dia, conte quantas vezes conseguiu.'},
+ {k:'perder',ic:'😞',t:'Depois de perder',sub:'o caminho para casa',
+  porque:'Logo depois do jogo, o corpo ainda está em alerta. A análise feita no carro sente-se como um segundo jogo, e desta vez contra os pais.',
+  passos:['Regra das 24 horas: nada de análise do jogo no próprio dia.','Diga só uma frase de apoio e espere que seja ele a falar.','Fale do esforço e do que aprendeu, nunca do resultado nem dos erros dos outros.','No dia seguinte, se ele quiser: «O que correu bem? O que aprendeste?»'],
+  dizer:['Adoro ver-te jogar.','Estou orgulhoso do teu esforço.','Tens fome? Vamos comer qualquer coisa.'],
+  evitar:['«Porque é que não passaste a bola?»','Culpar o árbitro, o treinador ou os colegas.','Silêncio frio ou ar de desilusão.'],
+  treino:'Depois do próximo jogo, ganhe ou perca, diga apenas: «Adoro ver-te jogar.» E repare na reação dele.'},
+ {k:'banco',ic:'🪑',t:'Quando não joga',sub:'banco, poucos minutos',
+  porque:'Ficar no banco dói e pode baixar a confiança. Mas é também uma oportunidade para aprender a lidar com a frustração, a esperar e a apoiar a equipa.',
+  passos:['Valide o que ele sente, sem dramatizar.','Não critique o treinador à frente dele.','Ajude-o a perguntar ao treinador o que precisa de melhorar.','Lembre-lhe o que depende dele: esforço, atitude e treino.','Se continuar, peça uma reunião ao treinador na app.'],
+  dizer:['Percebo que estejas desiludido. É normal.','O que achas que podes fazer nos treinos para ganhar mais minutos?'],
+  evitar:['«O treinador não percebe nada.»','Prometer falar com o treinador por ele.'],
+  treino:'Ajude-o a escrever uma pergunta para fazer ao treinador no próximo treino.'},
+ {k:'desistir',ic:'🚪',t:'Quando quer desistir',sub:'perceber antes de decidir',
+  porque:'Querer desistir é muitas vezes um sinal de outra coisa: cansaço, conflito, medo de falhar, escola, amigos.',
+  passos:['Ouça sem tentar convencer.','Pergunte o que mudou: colegas, cansaço, escola, tempo de jogo, gosto.','Combine terminar o compromisso (por exemplo, até ao fim do mês) antes de decidir.','Fale com o treinador.','Se a decisão se mantiver, respeite-a: o objetivo é ele gostar de se mexer, não ser jogador a todo o custo.'],
+  dizer:['Conta-me o que mudou.','Decidimos juntos, com calma.'],
+  evitar:['«Pagámos a época toda!»','Desistir por ele, ou obrigá-lo sem ouvir.'],
+  treino:'Façam juntos uma lista com «o que gosto» e «o que custa» no futsal.'},
+ {k:'adolesc',ic:'🧑',t:'Adolescência e humor',sub:'portas fechadas, respostas curtas',
+  porque:'O adolescente afasta-se para construir a sua identidade. Continua a precisar de si, mas de outra forma: mais presença e menos controlo.',
+  passos:['Esteja disponível em momentos laterais: no carro, a cozinhar, num passeio.','Ouça mais do que fala.','Negoceie regras e explique o porquê.','Respeite a privacidade, mas mantenha os limites de segurança: ecrãs, horários, substâncias.','Esteja atento a sinais de alarme: isolamento, mudanças bruscas, notas a cair, tristeza persistente.'],
+  dizer:['Não precisas de me contar tudo. Mas estou aqui.','Confio em ti, e se algo correr mal, podes ligar-me sem castigo.'],
+  evitar:['Interrogatórios.','Ler mensagens às escondidas.','Ridicularizar o que sente.'],
+  treino:'Esta semana, faça uma atividade só com ele, à escolha dele, sem falar da escola nem do futsal.'}
+];
+const SOS_BIRRA=['1. Respire primeiro, devagar.','2. Garanta a segurança: afaste o que possa magoar.','3. Poucas palavras: «Estou aqui.»','4. Espere. Converse só depois de passar.'];
+function verFerr(k){const f=FERR_PAIS.find(x=>x.k===k);
+  openSheet(`<h2>${f.ic} ${f.t}</h2><p class="muted" style="margin-top:0">${f.porque}</p>
+  <h3 style="margin:14px 0 6px">👣 Passo a passo</h3><ol style="margin:0;padding-left:20px">${f.passos.map(p=>`<li style="padding:4px 0">${p}</li>`).join('')}</ol>
+  <div class="row" style="gap:10px;margin-top:14px;align-items:stretch;flex-wrap:wrap"><div style="flex:1;min-width:240px;background:var(--mint-soft);border-radius:14px;padding:12px"><b style="color:var(--mint)">💬 O que dizer</b>${f.dizer.map(d=>`<p style="margin:6px 0 0">«${d}»</p>`).join('')}</div>
+  <div style="flex:1;min-width:240px;background:#F6D9D5;border-radius:14px;padding:12px"><b style="color:var(--red)">🚫 O que evitar</b>${f.evitar.map(d=>`<p style="margin:6px 0 0">${d}</p>`).join('')}</div></div>
+  <div style="margin-top:12px;background:var(--cream,#F6EEE4);border-radius:14px;padding:12px;border:2px solid var(--gold)"><b>🎯 Treino desta semana</b><p style="margin:6px 0 0">${f.treino}</p></div>`)}
+function sosBirra(){openSheet(`<div style="text-align:center"><div style="font-size:48px">🫁</div><h2 style="margin:6px 0">Agora, no meio da tempestade</h2></div>${SOS_BIRRA.map(s=>`<p style="font-size:20px;font-weight:700;margin:14px 0">${s}</p>`).join('')}<p class="muted">Não é o momento de ensinar. É o momento de acalmar. A lição vem depois.</p><button class="btn ghost full" onclick="verFerr('birras')">Ver a ferramenta completa</button>`)}
+async function planoPais(f){if(!f)return '';const n=esc(primeiro(f.nome));const R=[];
+  const [pa,ne,iq,co]=await Promise.all([q(sb.from('fut_plano_acao').select('area,melhorar,acao,responsavel,estado').eq('jogador_id',f.id).neq('estado','feito')),q(sb.from('fut_notas_escola').select('*').eq('jogador_id',f.id)),q(sb.from('fut_inquerito_atleta').select('respostas').eq('jogador_id',f.id).eq('epoca',epocaAtual()).maybeSingle()),q(sb.from('fut_coaching').select('respostas,contexto,created_at').eq('jogador_id',f.id).order('created_at',{ascending:false}).limit(3))]);
+  (pa||[]).filter(p=>p.responsavel==='Pais'||p.responsavel==='Família').slice(0,2).forEach(p=>R.push(['🎯',`Plano de ação: ${esc(p.melhorar)}`,esc(p.acao||'Combine com o treinador como ajudar em casa.')]));
+  const at=(pa||[]).find(p=>p.area==='atitude');if(at)R.push(['⚡',`${n} está a trabalhar a atitude`,'Use a ferramenta <b>Impulsividade</b> e elogie cada vez que ele se controlar.']);
+  const u=ultimasNotas(ne||[]);const dn=u.filter(x=>x.ant&&pct(x.ult)<pct(x.ant));if(dn.length)R.push(['📚',`Notas a descer: ${dn.map(x=>esc(x.disciplina)).join(', ')}`,'Pergunte o que está mais difícil (sem julgar) e combinem 20 minutos de estudo diário. Avise o treinador: ele pode ajudar a motivar.']);
+  const ev=proximos()[0];if(ev&&ev.tipo==='jogo')R.push(['🏟️',`Jogo de ${diaSemana(ev.data)} vs ${esc(ev.adversario||'?')}`,'Antes: «Diverte-te e dá o teu melhor.» Depois: «Adoro ver-te jogar.» E nada de análise no carro.']);
+  const r=(iq&&iq.respostas)||{};if((r.desmotiva||[]).length)R.push(['🗣️',`O que lhe tira a vontade: ${esc(r.desmotiva.join(', ').toLowerCase())}`,(r.desmotiva.includes('Errar à frente dos outros')||r.desmotiva.includes('Críticas'))?'Evite correções em público. Elogie o esforço mais do que o resultado.':'Fale disto com ele numa conversa calma, sem pressa.']);
+  if((r.move||[]).length)R.push(['🔥',`O que o motiva: ${esc(r.move.join(', ').toLowerCase())}`,'Use isto para o encorajar esta semana.']);
+  const ult=(co||[]).find(c=>c.contexto==='jogo');if(ult&&['😤 Frustrado','😞 Triste'].includes(ult.respostas?.estado))R.push(['💛',`Depois do último jogo sentiu-se ${esc(ult.respostas.estado.split(' ')[1].toLowerCase())}`,'Veja a ferramenta <b>Depois de perder</b>. Uma conversa sem julgamento pode fazer muita diferença.']);
+  if(!R.length)R.push(['🌱','Tudo tranquilo esta semana','Aproveite para um momento só com ele, à escolha dele.']);
+  return `<div class="h3s-card" style="margin-top:14px;border:2px solid var(--gold)"><b style="font-size:17px">📌 Esta semana, para ${n}</b><p class="faint" style="margin:2px 0 8px">Feito a partir do plano de ação, das notas, do inquérito e do próximo jogo.</p>${R.slice(0,5).map(([i,t,x])=>`<div style="display:flex;gap:10px;padding:8px 0;border-top:1px solid var(--line)"><span style="font-size:22px">${i}</span><div><b style="font-size:14px">${t}</b><div class="muted" style="font-size:13px;margin-top:2px">${x}</div></div></div>`).join('')}</div>`}
+function blocoHumanos(f){const n=f?esc(primeiro(f.nome)):'o seu filho';
+  return `<div class="h3s-card" style="margin-top:14px;background:var(--navy);color:#fff"><b style="font-size:17px">🧍 Pessoas antes de atletas</b>
+  <div class="row" style="gap:10px;margin-top:10px;flex-wrap:wrap;align-items:stretch">
+  <div style="flex:1;min-width:240px;background:rgba(255,255,255,.08);border-radius:14px;padding:12px"><b>👦 ${n} é uma pessoa</b><p style="margin:6px 0 0;opacity:.9;font-size:14px">Tem dias bons e maus, medos, sono, escola e amigos. O valor dele não depende do resultado de sábado. O que mais precisa de ouvir é que é amado ganhe ou perca.</p></div>
+  <div style="flex:1;min-width:240px;background:rgba(255,255,255,.08);border-radius:14px;padding:12px"><b>🧑 Os pais também são humanos</b><p style="margin:6px 0 0;opacity:.9;font-size:14px">Cansar-se, irritar-se e errar faz parte. Pais perfeitos não existem. O que ensina é reparar: «Desculpa, exagerei.» Cuide também de si: um pai ou uma mãe descansados educam melhor.</p></div></div></div>`}
+async function blocoFerramentas(){return `<div class="h3s-card" style="margin-top:14px"><div class="row between"><b style="font-size:17px">🧰 Ferramentas para pais</b><button class="btn red sm" onclick="sosBirra()">🆘 Birra agora</button></div><p class="faint" style="margin:2px 0 10px">Passo a passo, o que dizer, o que evitar e um treino para a semana.</p>
+  <div class="h3s-tiles">${FERR_PAIS.map(f=>`<button class="h3s-tile" onclick="verFerr('${f.k}')"><span class="h3s-ic">${f.ic}</span><span class="h3s-tile-tit">${f.t}</span><span class="h3s-tile-sub">${f.sub}</span></button>`).join('')}</div></div>`}
 
 /* ---------- mensagens ---------- */
 async function vMensagens(){
