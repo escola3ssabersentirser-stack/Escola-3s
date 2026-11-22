@@ -9250,7 +9250,6 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher, onDestino }) {
   const marcar = (area) => onDestino(area ? `marcar:${area}` : "marcar");
   const chaveEnc = [ENCONTRO_DO_MES].find((k) => EVENTOS_PUBLICOS[k] && new Date(EVENTOS_PUBLICOS[k].inicio).getTime() + 2 * 3600e3 > Date.now());
   const enc = chaveEnc ? EVENTOS_PUBLICOS[chaveEnc] : null;
-  const escolas = Object.entries(ESCOLAS_3S).filter(([k]) => !ESCOLAS_OCULTAS.includes(k));
   return (
     <div className="min-h-screen w-full flex justify-center" style={{ backgroundColor: palette.cream, fontFamily: "Inter, sans-serif" }}>
       <div className="w-full max-w-md pb-12" style={{ backgroundColor: palette.creamSoft }}>
@@ -9263,7 +9262,7 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher, onDestino }) {
             </div>
             <button onClick={onEntrar} className="text-[13px] font-medium rounded-full px-4 py-2" style={{ border: `1px solid ${palette.goldSoft}88`, color: palette.creamSoft }}>Entrar</button>
           </div>
-          <h1 className="font-serif text-[34px] leading-[1.1] mt-8" style={{ color: palette.creamSoft }}>Uma filosofia.<br /><span style={{ color: palette.gold }}>Duas escolas.</span></h1>
+          <h1 className="font-serif text-[34px] leading-[1.1] mt-8" style={{ color: palette.creamSoft }}>Uma filosofia.<br /><span style={{ color: palette.gold }}>A tua evolução.</span></h1>
           <p className="text-[15px] mt-3 leading-relaxed" style={{ color: palette.creamSoft, opacity: 0.8 }}>Coaching e mentoria em liderança e vida, com o método Saber, Sentir, Ser.</p>
           <button onClick={() => marcar(null)} className="w-full mt-6 rounded-full py-3.5 text-[15px] font-semibold" style={{ backgroundColor: palette.gold, color: palette.navy }}>Marcar sessão de coaching</button>
         </div>
@@ -9280,27 +9279,6 @@ function MontraPublica({ onCriarConta, onEntrar, onEscolher, onDestino }) {
             </div>
           </div>
         )}
-
-        {/* ESCOLAS */}
-        <div className="px-6 pt-8 space-y-3" id="escolas">
-          {escolas.map(([chave, e]) => {
-            const curso = (e.cursos || []).map((id) => TODOS_CURSOS.find((c) => c.id === id)).filter(Boolean)[0];
-            return (
-              <div key={chave} id={e.secao} className="rounded-2xl px-5 py-4" style={{ backgroundColor: palette.card, border: `1px solid ${palette.goldSoft}55` }}>
-                <p className="font-serif text-[22px] leading-tight" style={{ color: palette.navy }}>{e.curto} <span style={{ color: palette.gold }}>3S</span></p>
-                <p className="text-[13px] mt-0.5" style={{ color: palette.navySoft }}>{e.frase}</p>
-                <div className="grid grid-cols-2 gap-2 mt-3">
-                  <button onClick={() => marcar(chave)} className="rounded-full py-2.5 text-[13px] font-semibold" style={{ backgroundColor: palette.navy, color: palette.creamSoft }}>Marcar sessão</button>
-                  {curso && !curso.emBreve ? (
-                    <button onClick={() => onDestino(`curso:${curso.id}`)} className="rounded-full py-2.5 text-[13px] font-semibold" style={{ border: `1.5px solid ${palette.navy}`, color: palette.navy }}>Aula 1 grátis</button>
-                  ) : (
-                    <button onClick={() => onDestino(e.secao)} className="rounded-full py-2.5 text-[13px] font-semibold" style={{ border: `1.5px solid ${palette.navy}`, color: palette.navy }}>Testes grátis</button>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
 
         {/* FIM */}
         <div className="px-6 pt-8 text-center">
