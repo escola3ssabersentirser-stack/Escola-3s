@@ -430,9 +430,9 @@ function render(){
   const jogLabel=isCoach()?'Jogadores':isAtleta()?'O meu perfil':(S.meus.length>1?'Filhos':'Filho(a)');
   $('#screen').innerHTML=`
   <header class="top">
-    <div class="row" style="gap:12px;position:relative"><button id="btnVoltar" ${podeVoltar()?'':'hidden'} onclick="botaoVoltar()" aria-label="Voltar atrás" style="flex:none;border:0;background:rgba(255,255,255,.15);color:#fff;border-radius:12px;height:40px;padding:0 12px;font-weight:600;font-size:15px">‹ Voltar</button><div style="flex:none;cursor:pointer" onclick="irPara('inicio')" title="Início">${ESCUDO(36)}</div><div class="grow"><div class="sub">${isAdminModo()?'Administradora':isCoach()?'Treinador(a)':isAtleta()?'Atleta':eClube()?'Clube':'Pai / Mãe'} · Futsal 3S</div>
+    <div class="row" style="gap:12px;position:relative"><button id="btnVoltar" ${podeVoltar()?'':'hidden'} onclick="botaoVoltar()" aria-label="Voltar atrás" style="flex:none;border:0;background:rgba(255,255,255,.15);color:#fff;border-radius:12px;height:40px;padding:0 12px;font-weight:600;font-size:15px">‹ Voltar</button><div style="flex:none;cursor:pointer" onclick="irPara('inicio')" title="Início">${ESCUDO(36)}</div><div class="grow"><div class="sub">${isAdminModo()?'Administração':isCoach()?'Treinador(a)':isAtleta()?'Atleta':eClube()?'Clube':'Pai / Mãe'} · Futsal 3S</div>
     <h1>${S.tab==='jogadores'?jogLabel:S.tab==='mensagens'&&isAtleta()?'Avisos':titulo}</h1></div><button onclick="abrirConta()" aria-label="A minha conta e fotografia" style="flex:none;border:0;background:none;padding:0;position:relative;z-index:2">${fotoPessoa(S.perfil,38)}</button><button onclick="confirmarSair()" aria-label="Sair da app" style="flex:none;border:0;background:rgba(255,255,255,.15);color:#fff;border-radius:12px;height:40px;padding:0 12px;font-weight:600;font-size:14px;position:relative;z-index:2">⏻ Sair</button></div>
-    <div class="row wrap" style="gap:6px;margin-top:8px"><button class="team" style="margin-top:0" onclick="abrirConta()">⚽ ${esc(S.eq.nome)} · ${esc(S.eq.escalao||'')} ▾</button>${S.admin?`<button class="team" style="margin-top:0;background:var(--gold)" onclick="escolherVista()">👁️ ${{admin:'Administradora',treinador:'Treinador',pai:'Pais',atleta:'Atleta'}[modoVer()]} ▾</button>`:''}</div>
+    <div class="row wrap" style="gap:6px;margin-top:8px"><button class="team" style="margin-top:0" onclick="abrirConta()">⚽ ${esc(S.eq.nome)} · ${esc(S.eq.escalao||'')} ▾</button>${S.admin?`<button class="team" style="margin-top:0;background:var(--gold)" onclick="escolherVista()">👁️ ${{admin:'Administração',treinador:'Treinador',pai:'Pais',atleta:'Atleta'}[modoVer()]} ▾</button>`:''}</div>
     ${emPrevia()?`<div style="margin-top:8px;font-size:12px;background:rgba(255,255,255,.12);border-radius:10px;padding:6px 10px">👁️ Pré-visualização como <b>${{treinador:'treinador',pai:'pais',atleta:'atleta'}[modoVer()]}</b>${S.meus[0]&&modoVer()!=='treinador'?' de '+esc(primeiro(S.meus[0].nome)):''}. O que gravar fica em seu nome. <button style="border:0;background:none;color:var(--gold);font-weight:700;padding:0" onclick="escolherVista()">Trocar</button> · <button style="border:0;background:none;color:var(--gold);font-weight:700;padding:0" onclick="mudarModo('admin')">Sair</button></div>`:''}
   </header>
   <main id="main"></main>
@@ -2657,7 +2657,7 @@ async function criarStaff(papel){const nome=g('sfN').trim(),tel=g('sfT').trim();
   else openSheet(`<h2>Código criado</h2><span class="code">${cod}</span><p class="muted">Envie esta mensagem a ${esc(nome)}:</p><textarea class="in" rows="8" readonly>${esc(msg)}</textarea>`);
   blocoStaff()}
 async function vAcessos(){
-  if(!isCoach()){$('#main').innerHTML='<div class="card"><p class="empty">Só o treinador e a administradora veem os acessos.</p></div>';return}
+  if(!isCoach()){$('#main').innerHTML='<div class="card"><p class="empty">Só o treinador e a administração veem os acessos.</p></div>';return}
   setTimeout(blocoStaff,300);
   const [{data},ct]=await Promise.all([sb.rpc('fut_codigos_equipa',{p_equipa:S.eq.id}),sb.rpc('fut_contas_equipa',{p_equipa:S.eq.id}).then(r=>r.data||[])]);const L=data||[];S._acessos=L;S._contas=Array.isArray(ct)?ct:[];
   if(L.length){const pr=await q(sb.from('fut_fichas').select('jogador_id,encarregado_parentesco,encarregado2_parentesco').in('jogador_id',L.map(x=>x.jogador_id)));(pr||[]).forEach(r=>{const x=L.find(y=>y.jogador_id===r.jogador_id);if(x)Object.assign(x,{encarregado_parentesco:r.encarregado_parentesco,encarregado2_parentesco:r.encarregado2_parentesco})})}
@@ -3749,7 +3749,7 @@ function vGuia(){
 
 /* ---------- conta ---------- */
 function abrirConta(){
-  openSheet(`<div class="row" style="gap:14px"><button onclick="menuMinhaFoto()" aria-label="A minha fotografia" style="border:0;background:none;padding:0;position:relative;flex:none">${fotoPessoa(S.perfil,64)}<span style="position:absolute;right:-4px;bottom:-4px;background:var(--gold);color:#fff;border-radius:99px;width:24px;height:24px;display:grid;place-items:center;font-size:12px">📷</span></button><div><h2 style="margin:0">${esc(S.perfil.nome)}</h2><p class="muted" style="margin:2px 0 0">${isAdminModo()?'Administradora':isCoach()?'Treinador(a)':isAtleta()?'Atleta':eClube()?'Clube':'Pai / Mãe'}</p></div></div>
+  openSheet(`<div class="row" style="gap:14px"><button onclick="menuMinhaFoto()" aria-label="A minha fotografia" style="border:0;background:none;padding:0;position:relative;flex:none">${fotoPessoa(S.perfil,64)}<span style="position:absolute;right:-4px;bottom:-4px;background:var(--gold);color:#fff;border-radius:99px;width:24px;height:24px;display:grid;place-items:center;font-size:12px">📷</span></button><div><h2 style="margin:0">${esc(S.perfil.nome)}</h2><p class="muted" style="margin:2px 0 0">${isAdminModo()?'Administração':isCoach()?'Treinador(a)':isAtleta()?'Atleta':eClube()?'Clube':'Pai / Mãe'}</p></div></div>
   ${S.equipas.length>1?`<label class="f">Equipa</label><select id="cEqSel" class="in" onchange="mudarEquipa(this.value)">${S.equipas.map(e=>`<option value="${e.id}" ${e.id===S.eq.id?'selected':''}>${esc(e.nome)}</option>`).join('')}</select>`:''}
   ${isCoach()?`<button class="btn full" style="margin-top:10px;background:#25D366" onclick="irAcessos()">🔑 Acessos de pais e atletas</button>`:''}
   ${isCoach()?`<div class="card" style="margin-top:14px"><b>Código da equipa</b><p class="muted" style="margin:4px 0 8px">Os pais usam-no para entrar.</p><span class="code">${esc(S.eq.codigo)}</span></div>`:''}
@@ -3764,9 +3764,9 @@ function abrirConta(){
 async function guardarConta(){const r={nome:g('cNome')||S.perfil.nome,telefone:g('cTel')||null};await q(sb.from('fut_perfis').update(r).eq('user_id',S.me));Object.assign(S.perfil,r);closeSheet();render();toast('Guardado')}
 function escolherVista(){
   const js=S.jogadores;const m=modoVer();
-  openSheet(`<h2>👁️ Ver a app como</h2><p class="muted">Veja exatamente o que cada pessoa vê. Pode voltar a Administradora quando quiser.</p>
+  openSheet(`<h2>👁️ Ver a app como</h2><p class="muted">Veja exatamente o que cada pessoa vê. Pode voltar a Administração quando quiser.</p>
   <div class="list">
-    <button class="item" onclick="mudarModo('admin')"><div class="av navy">🛡️</div><div class="grow"><b>Administradora</b><div class="muted">Tudo, em todas as equipas</div></div>${m==='admin'?'<span class="chip mint">✔</span>':''}</button>
+    <button class="item" onclick="mudarModo('admin')"><div class="av navy">🛡️</div><div class="grow"><b>Administração</b><div class="muted">Tudo, em todas as equipas</div></div>${m==='admin'?'<span class="chip mint">✔</span>':''}</button>
     <button class="item" onclick="mudarModo('treinador')"><div class="av navy">🧢</div><div class="grow"><b>Treinador</b><div class="muted">${esc(S.eq.nome)}: equipa, checklist, pódios, grelha, plano de ação</div></div>${m==='treinador'?'<span class="chip mint">✔</span>':''}</button>
   </div>
   <label class="f" for="vjSel">Atleta para ver como pais ou como atleta</label>
