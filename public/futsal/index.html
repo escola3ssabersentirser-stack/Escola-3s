@@ -358,7 +358,7 @@ async function carregarEquipas(){
   if(!S.equipas.length){ecraSemEquipa();return}
   let guardada=null;try{guardada=localStorage.getItem('fut_eq')}catch(_){}
   const minhaFam=await q(sb.from('fut_familia').select('jogador_id').eq('user_id',S.me))||[];
-  S.todosMeus=minhaFam.length?(await q(sb.from('fut_jogadores').select('id,equipa_id,nome,numero,posicao,ano_escolar,autoriza_fotos').in('id',minhaFam.map(f=>f.jogador_id)).order('nome'))||[]):[];
+  S.todosMeus=minhaFam.length?(await q(sb.from('fut_jogadores').select('id,equipa_id,nome,numero,posicao,ano_escolar,autoriza_fotos').in('id',minhaFam.map(f=>f.jogador_id)).order('nome'))||[]):[];S._fam=S.todosMeus;
   try{S.filhoSel=S.filhoSel||localStorage.getItem('fut_filho')}catch(_){}
   S.eq=S.equipas.find(e=>e.id===guardada)||S.equipas[0];
   await carregar(); render();
@@ -376,6 +376,7 @@ async function carregar(){
   S.jogadores=jog||[];S.familia=fam||[];S.eventos=evs||[];S.avisos=av||[];S.desafios=des||[];
   const minhas=new Set((fam||[]).filter(f=>f.user_id===S.me).map(f=>f.jogador_id));
   const verJ=S.admin&&['pai','atleta'].includes(modoVer())&&S.verJog?S.jogadores.find(j=>j.id===S.verJog):null;
+  S.todosMeus=S._fam||S.todosMeus||[];
   if(verJ){S.meus=[verJ];S.todosMeus=[verJ]}
   else if(isAtleta()&&S.admin){const meu=S.jogadores.find(j=>minhas.has(j.id));S.meus=meu?[meu]:S.jogadores.slice(0,1);S.todosMeus=S.meus}
   else if(isAtleta()){const at=await q(sb.from('fut_atletas').select('jogador_id').eq('user_id',S.me))||[];const ids=new Set(at.map(a=>a.jogador_id));S.meus=S.jogadores.filter(j=>ids.has(j.id))}
@@ -388,7 +389,7 @@ async function carregar(){
   S.exames=idsM.length?(await q(sb.from('fut_exames').select('jogador_id,data,valido_ate,resultado').in('jogador_id',idsM).order('data',{ascending:false}))||[]):[];
   S.pagPend=idsM.length?(await q(sb.from('fut_pagamentos').select('*').in('jogador_id',idsM).in('estado',['pendente','avisado']))||[]):[];
   S.pes={};if(!isAtleta()&&idsM.length){const fs=await q(sb.from('fut_fichas').select('jogador_id,pe_dominante').in('jogador_id',idsM))||[];fs.forEach(f=>{if(f.pe_dominante)S.pes[f.jogador_id]=f.pe_dominante})}
-  await carregarFotos(S.jogadores.map(j=>j.id));
+  await carregarFotos([...new Set([...S.jogadores.map(j=>j.id),...(S.todosMeus||[]).map(j=>j.id)])]);
   // presenças dos próximos eventos (pais: só dos filhos)
   const prox=S.eventos.filter(e=>e.data>=addDias(-1)).map(e=>e.id);
   S.presencas=prox.length?(await q(sb.from('fut_presencas').select('*').in('evento_id',prox))||[]):[];
