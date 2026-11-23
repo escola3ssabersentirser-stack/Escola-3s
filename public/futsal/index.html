@@ -2788,6 +2788,7 @@ const PAINEL_IT=[
 async function vPainel(){const m=$('#main');m.innerHTML='<div class="card"><p class="muted">A carregar o painel…</p></div>';
   const {data:P,error}=await sb.rpc('fut_painel_admin');if(error||!P){m.innerHTML=`<div class="card"><p class="empty">Não foi possível abrir o painel.</p></div>`;return}
   const E=P.equipas||[];S._painel=E;
+  const ST=await Promise.all(E.map(e=>sb.rpc('fut_painel_stats',{p_equipa:e.id}).then(r=>r.data||null).catch(()=>null)));S._stats={};E.forEach((e,i)=>S._stats[e.id]=ST[i]);
   const cor=p=>p>=80?'var(--mint)':p>=50?'var(--gold)':'var(--red)';
   const est=e=>{let ok=0,tot=0;PAINEL_IT.forEach(it=>{ok+=+e[it[3]]||0;tot+=e.jogadores||0});return tot?Math.round(100*ok/tot):0};
   const geral=(()=>{let ok=0,tot=0;E.forEach(e=>PAINEL_IT.forEach(it=>{ok+=+e[it[3]]||0;tot+=e.jogadores||0}));return tot?Math.round(100*ok/tot):0})();
@@ -2797,6 +2798,7 @@ async function vPainel(){const m=$('#main');m.innerHTML='<div class="card"><p cl
   ${E.map(e=>{const pe=est(e);const res=e.v+e.e+e.d;const px=e.proximo;
    return `<div class="card" style="margin-top:14px;padding:0;overflow:hidden">
     <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--navy);color:#fff">${anel(pe,54).replace('fill:var(--navy)','fill:#fff')}<div class="grow"><b style="font-size:17px">${esc(e.nome)}</b><div style="font-size:12px;opacity:.8">${e.jogadores} jogadores${res?` · ${e.v}V ${e.e}E ${e.d}D`:''}${e.presenca30!=null?` · presenças ${e.presenca30}%`:''}</div></div><button class="btn sm" style="background:rgba(255,255,255,.15);color:#fff;flex:none" onclick="painelIr('${e.id}')">Abrir ›</button></div>
+    ${miniStats(e.id)}
     ${px?`<div style="padding:10px 16px;font-size:14px;border-bottom:1px solid var(--line,#eee)">📅 Próximo: <b>${px.tipo==='jogo'?'jogo'+(px.adv?' vs '+esc(px.adv):''):'treino'}</b> · ${dataCurta(px.data)} · ${e.resp_prox} resposta(s)</div>`:''}
     ${PAINEL_IT.map(([k,ic,rot,campo])=>{const ok=+e[campo]||0,tot=e.jogadores||0,f=tot-ok,p=tot?Math.round(100*ok/tot):100;
       return `<button onclick="abrirFalta('${e.id}','${k}')" style="width:100%;border:0;background:none;display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line,#eee);cursor:pointer;text-align:left">
@@ -2804,6 +2806,33 @@ async function vPainel(){const m=$('#main');m.innerHTML='<div class="card"><p cl
        <span style="flex:none;text-align:right;min-width:70px">${f>0?`<b style="color:var(--red);font-size:15px">faltam ${f}</b>`:`<b style="color:var(--mint)">✔ completo</b>`}<span style="display:block;font-size:12px" class="faint">${ok} de ${tot}</span></span><span style="flex:none;color:var(--soft);font-size:20px">›</span></button>`}).join('')}
     ${+e.pag_pend>0?`<button onclick="abrirFalta('${e.id}','pag')" style="width:100%;border:0;background:none;display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;text-align:left"><span style="font-size:20px">💶</span><span class="grow" style="font-size:15px">Pagamentos por receber</span><b style="color:var(--red)">${(+e.pag_pend).toFixed(2).replace('.',',')} €</b><span style="color:var(--soft);font-size:20px">›</span></button>`:''}
    </div>`}).join('')}`}
+const AREAS4=[['emocional','💛','Emocional'],['relacional','🤝','Relacional'],['comportamento','🧭','Comportamento'],['tecnica','⚽','Técnica']];
+const corMedia=v=>v==null?'var(--soft)':v>=4?'var(--mint)':v>=3?'var(--gold)':'var(--red)';
+const PLANO_AREA={
+ emocional:['Rotina de 2 minutos antes do jogo: respiração e uma frase-âncora («Eu consigo»)','Depois do erro: «apaga e joga» (gesto combinado) e elogio ao esforço, não só ao resultado','Conversa curta e individual com quem tem confiança baixa, uma vez por semana'],
+ relacional:['Exercícios de treino com regra de passe obrigatório e comunicação em voz alta','Duplas de apoio (um mais velho com um mais novo) durante um mês','Momento «reconhecer o colega» no fim de cada treino'],
+ comportamento:['Combinar 3 regras simples com a equipa e afixá-las (pontualidade, material, respeito)','Registo semanal de compromissos cumpridos, com reconhecimento a quem cumpre','Falar com os pais sobre sono, ecrãs e alimentação, com metas pequenas'],
+ tecnica:['15 minutos por treino de técnica individual (passe, receção, drible) em circuito','Desafio técnico para casa com vídeo curto','Repetir a roda do atleta no fim do trimestre para medir a evolução']};
+function miniStats(eq){const s=(S._stats||{})[eq];if(!s)return '';const g={};(s.geral||[]).forEach(x=>g[x.area]=+x.media);
+  return `<button onclick="abrirStats('${eq}')" style="width:100%;border:0;background:var(--cream,#F6EEE4);display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:10px 8px;cursor:pointer;border-bottom:1px solid var(--line,#eee)">${AREAS4.map(([k,ic,l])=>`<span style="text-align:center"><span style="display:block;font-size:11px;color:var(--soft)">${ic} ${l}</span><b style="font-size:19px;color:${corMedia(g[k])}">${g[k]!=null?g[k].toFixed(1).replace('.',','):'—'}</b></span>`).join('')}<span style="grid-column:1/-1;font-size:12px;color:var(--gold);font-weight:700;margin-top:2px">📈 Média das respostas (1 a 5) · ver plano de ação ›</span></button>`}
+function abrirStats(eq){const s=(S._stats||{})[eq];const e=(S._painel||[]).find(x=>x.id===eq)||{};if(!s){toast('Sem dados');return}
+  const g={};(s.geral||[]).forEach(x=>g[x.area]=x);const M=(f,a)=>{const x=(s.medias||[]).find(y=>y.fonte===f&&y.area===a);return x?+x.media:null};
+  const fmt=v=>v==null?'—':v.toFixed(1).replace('.',',');
+  const com=AREAS4.filter(([k])=>g[k]).sort((a,b)=>g[a[0]].media-g[b[0]].media);
+  const fraca=com[0];
+  const gaps=AREAS4.map(([k,ic,l])=>{const a=M('atleta',k),t=M('treinador',k);return a!=null&&t!=null&&Math.abs(a-t)>=1?`${ic} ${l}: o atleta dá ${fmt(a)} e o treinador ${fmt(t)}`:null}).filter(Boolean);
+  const lista=(campo,tit)=>{const L=(s.escolhas||{})[campo]||[];return L.length?`<div style="margin-top:12px"><b style="font-size:14px">${tit}</b>${L.map(x=>`<div class="row between" style="font-size:14px;padding:4px 0;border-top:1px solid var(--line,#eee)"><span>${esc(x.t)}</span><span class="chip">${x.n}</span></div>`).join('')}</div>`:''};
+  const R=s.respostas||{};
+  openSheet(`<h2>📈 ${esc(e.nome||'Equipa')}</h2><p class="muted" style="margin-top:0">Média das respostas, de 1 a 5. Junta a autoavaliação dos atletas, as reflexões depois dos jogos e treinos, e as avaliações 3S dos pais e do treinador.</p>
+   ${AREAS4.map(([k,ic,l])=>{const x=g[k],v=x?+x.media:null;return `<div style="margin:12px 0"><div class="row between"><b>${ic} ${l}</b><b style="font-size:20px;color:${corMedia(v)}">${fmt(v)}</b></div>
+     <div style="height:10px;border-radius:6px;background:var(--line,#eee);overflow:hidden;margin:4px 0"><div style="width:${v?v/5*100:0}%;height:100%;background:${corMedia(v)}"></div></div>
+     <div class="faint" style="font-size:12px">${v==null?'Ainda sem respostas nesta área.':`Atleta ${fmt(M('atleta',k))} · Treinador ${fmt(M('treinador',k))} · Pais ${fmt(M('pais',k))} · ${x.n} jogador(es)`}</div></div>`}).join('')}
+   <div class="card" style="margin-top:14px;background:var(--cream,#F6EEE4)"><b>🎯 Plano de ação sugerido</b>
+    ${fraca?`<p style="margin:6px 0">A área mais baixa é <b>${fraca[1]} ${fraca[2]}</b> (${fmt(+g[fraca[0]].media)}). Proposta para as próximas 4 semanas:</p><ol style="margin:0;padding-left:20px">${PLANO_AREA[fraca[0]].map(t=>`<li style="margin:4px 0">${t}</li>`).join('')}</ol>`:'<p class="muted" style="margin:6px 0">Ainda não há respostas suficientes.</p>'}
+    ${!g.tecnica?`<p class="faint" style="font-size:13px;margin:8px 0 0">⚽ Técnica: ainda sem dados. Os valores vêm da «roda do atleta» no feedback trimestral.</p>`:''}
+    ${gaps.length?`<p style="margin:10px 0 4px"><b>⚠️ Diferenças de perceção</b> (vale a pena conversar):</p>${gaps.map(x=>`<div style="font-size:14px">• ${x}</div>`).join('')}`:''}</div>
+   ${lista('precisa','🙋 O que os jogadores dizem que precisam')}${lista('diferente','🔁 O que fariam de diferente')}${lista('travou','🚧 O que os travou')}${lista('move','🔥 O que os move')}${lista('sonho','⭐ Sonhos')}
+   <p class="faint" style="font-size:13px;margin-top:14px">Respostas: ${R.inqueritos||0} de ${R.jogadores||0} questionários «O que me move» · ${R.autoaval||0} autoavaliações 3S · ${R.reflexoes||0} reflexões de jogo/treino.</p>`)}
 async function abrirFalta(eq,k){const e=(S._painel||[]).find(x=>x.id===eq)||{};const it=PAINEL_IT.find(x=>x[0]===k)||['pag','💶','Pagamentos por receber','','pagamentos'];
   openSheet(`<h2>${it[1]} ${it[2]}</h2><p class="muted">A carregar…</p>`);
   const {data,error}=await sb.rpc('fut_painel_faltas',{p_equipa:eq});if(error||!data){toast('Não foi possível ver a lista');closeSheet();return}
