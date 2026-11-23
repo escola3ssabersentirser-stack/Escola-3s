@@ -377,11 +377,11 @@ async function carregar(){
   const minhas=new Set((fam||[]).filter(f=>f.user_id===S.me).map(f=>f.jogador_id));
   const verJ=S.admin&&['pai','atleta'].includes(modoVer())&&S.verJog?S.jogadores.find(j=>j.id===S.verJog):null;
   if(verJ){S.meus=[verJ];S.todosMeus=[verJ]}
-  else if(isAtleta()&&S.admin){S.meus=S.jogadores.slice(0,1);S.todosMeus=S.meus}
+  else if(isAtleta()&&S.admin){const meu=S.jogadores.find(j=>minhas.has(j.id));S.meus=meu?[meu]:S.jogadores.slice(0,1);S.todosMeus=S.meus}
   else if(isAtleta()){const at=await q(sb.from('fut_atletas').select('jogador_id').eq('user_id',S.me))||[];const ids=new Set(at.map(a=>a.jogador_id));S.meus=S.jogadores.filter(j=>ids.has(j.id))}
   else S.meus=isCoach()?S.jogadores:S.jogadores.filter(j=>minhas.has(j.id));
   const ids=[...new Set([S.eq.treinador_id,...(mem||[]).map(m=>m.user_id),...(fam||[]).map(f=>f.user_id)])];
-  if(ids.length){const ps=await q(sb.from('fut_perfis').select('user_id,nome,papel,telefone').in('user_id',ids));(ps||[]).forEach(p=>S.perfis[p.user_id]=p)}
+  if(ids.length){const ps=await q(sb.from('fut_perfis').select('user_id,nome,papel,telefone,foto').in('user_id',ids));(ps||[]).forEach(p=>S.perfis[p.user_id]=p)}
   await carregarReunioes();
   const idsM=S.meus.map(j=>j.id);
   S.av360=idsM.length?(await q(sb.from('fut_avaliacoes_360').select('jogador_id,respondente_tipo,autor_id').eq('trimestre',trimAtual()).in('jogador_id',idsM))||[]):[];
@@ -424,9 +424,9 @@ function render(){
   $('#screen').innerHTML=`
   <header class="top">
     <div class="row" style="gap:12px;position:relative"><button id="btnVoltar" ${podeVoltar()?'':'hidden'} onclick="botaoVoltar()" aria-label="Voltar atrás" style="flex:none;border:0;background:rgba(255,255,255,.15);color:#fff;border-radius:12px;height:40px;padding:0 12px;font-weight:600;font-size:15px">‹ Voltar</button><div style="flex:none;cursor:pointer" onclick="irPara('inicio')" title="Início">${ESCUDO(36)}</div><div class="grow"><div class="sub">${isAdminModo()?'Administradora':isCoach()?'Treinador(a)':isAtleta()?'Atleta':'Pai / Mãe'} · Futsal 3S</div>
-    <h1>${S.tab==='jogadores'?jogLabel:S.tab==='mensagens'&&isAtleta()?'Avisos':titulo}</h1></div><button onclick="confirmarSair()" aria-label="Sair da app" style="flex:none;border:0;background:rgba(255,255,255,.15);color:#fff;border-radius:12px;height:40px;padding:0 12px;font-weight:600;font-size:14px;position:relative;z-index:2">⏻ Sair</button></div>
+    <h1>${S.tab==='jogadores'?jogLabel:S.tab==='mensagens'&&isAtleta()?'Avisos':titulo}</h1></div><button onclick="abrirConta()" aria-label="A minha conta e fotografia" style="flex:none;border:0;background:none;padding:0;position:relative;z-index:2">${fotoPessoa(S.perfil,38)}</button><button onclick="confirmarSair()" aria-label="Sair da app" style="flex:none;border:0;background:rgba(255,255,255,.15);color:#fff;border-radius:12px;height:40px;padding:0 12px;font-weight:600;font-size:14px;position:relative;z-index:2">⏻ Sair</button></div>
     <div class="row wrap" style="gap:6px;margin-top:8px"><button class="team" style="margin-top:0" onclick="abrirConta()">⚽ ${esc(S.eq.nome)} · ${esc(S.eq.escalao||'')} ▾</button>${S.admin?`<button class="team" style="margin-top:0;background:var(--gold)" onclick="escolherVista()">👁️ ${{admin:'Administradora',treinador:'Treinador',pai:'Pais',atleta:'Atleta'}[modoVer()]} ▾</button>`:''}</div>
-    ${emPrevia()?`<div style="margin-top:8px;font-size:12px;background:rgba(255,255,255,.12);border-radius:10px;padding:6px 10px">👁️ Pré-visualização como <b>${{treinador:'treinador',pai:'pais',atleta:'atleta'}[modoVer()]}</b>${S.meus[0]&&modoVer()!=='treinador'?' de '+esc(primeiro(S.meus[0].nome)):''}. O que gravar fica em seu nome. <button style="border:0;background:none;color:var(--gold);font-weight:700;padding:0" onclick="mudarModo('admin')">Sair</button></div>`:''}
+    ${emPrevia()?`<div style="margin-top:8px;font-size:12px;background:rgba(255,255,255,.12);border-radius:10px;padding:6px 10px">👁️ Pré-visualização como <b>${{treinador:'treinador',pai:'pais',atleta:'atleta'}[modoVer()]}</b>${S.meus[0]&&modoVer()!=='treinador'?' de '+esc(primeiro(S.meus[0].nome)):''}. O que gravar fica em seu nome. <button style="border:0;background:none;color:var(--gold);font-weight:700;padding:0" onclick="escolherVista()">Trocar</button> · <button style="border:0;background:none;color:var(--gold);font-weight:700;padding:0" onclick="mudarModo('admin')">Sair</button></div>`:''}
   </header>
   <main id="main"></main>
   ${isCoach()||(!isCoach()&&S.meus.length)?'':`<nav class="bottom">${TABS.filter(([k])=>!(k==='mensagens'&&isAtleta())).map(([k,i,l])=>`<button class="${S.tab===k?'on':''}" onclick="irPara('${k}')"><span>${i}</span>${rotuloTab(k)}</button>`).join('')}</nav>`}`;
@@ -1600,10 +1600,22 @@ async function guardarFoto(jid,file){
     c.getContext('2d').drawImage(img,(img.width-s)/2,(img.height-s)/2,s,s,0,0,T,T);
     const data=c.toDataURL('image/jpeg',0.82);
     const r=await q(sb.from('fut_fotos').upsert({jogador_id:jid,foto:data,updated_at:new Date().toISOString()},{onConflict:'jogador_id'}));if(r===null)return;
-    S.fotos[jid]=data;toast('Fotografia guardada');if(S.tab==='jogadores')vJogador();
+    S.fotos[jid]=data;toast('Fotografia guardada');if(S.tab==='jogadores'&&S.jog)vJogador();else render();
   }catch(e){toast('Não foi possível ler a fotografia')}
 }
-async function apagarFoto(jid){await q(sb.from('fut_fotos').delete().eq('jogador_id',jid));delete S.fotos[jid];closeSheet();vJogador();toast('Fotografia retirada')}
+function fotoPessoa(p,t){t=t||40;const f=p&&p.foto;const ini=esc(((p&&p.nome)||'?').split(' ').map(x=>x[0]).slice(0,2).join(''));return f?`<img src="${f}" alt="" style="width:${t}px;height:${t}px;border-radius:50%;object-fit:cover;display:block;border:2px solid #fff">`:`<span style="width:${t}px;height:${t}px;border-radius:50%;display:grid;place-items:center;background:var(--cream,#F6EEE4);color:var(--gold);font-weight:800;font-size:${Math.round(t/2.6)}px;border:2px solid #fff">${ini}</span>`}
+function menuMinhaFoto(){const tem=!!S.perfil.foto;
+  openSheet(`<h2>A minha fotografia</h2><div style="display:grid;place-items:center">${fotoPessoa(S.perfil,140)}</div><p class="muted" style="text-align:center">Aparece à equipa ao lado do seu nome.</p>
+  <button class="btn gold full" onclick="closeSheet();escolherMinhaFoto()">📷 ${tem?'Trocar':'Pôr'} fotografia</button>${tem?`<button class="btn ghost full" style="margin-top:8px" onclick="guardarMinhaFoto(null)">Retirar fotografia</button>`:''}`)}
+function escolherMinhaFoto(){const i=document.createElement('input');i.type='file';i.accept='image/*';i.onchange=()=>{const f=i.files[0];if(f)guardarMinhaFoto(f)};i.click()}
+async function guardarMinhaFoto(file){
+  try{let data=null;
+    if(file){const img=await new Promise((ok,ko)=>{const u=URL.createObjectURL(file);const im=new Image();im.onload=()=>{ok(im);URL.revokeObjectURL(u)};im.onerror=ko;im.src=u});
+      const T=240,c=document.createElement('canvas');c.width=T;c.height=T;const s=Math.min(img.width,img.height);c.getContext('2d').drawImage(img,(img.width-s)/2,(img.height-s)/2,s,s,0,0,T,T);data=c.toDataURL('image/jpeg',0.8)}
+    const r=await q(sb.from('fut_perfis').update({foto:data}).eq('user_id',S.me));if(r===null)return;
+    S.perfil.foto=data;if(S.perfis[S.me])S.perfis[S.me].foto=data;closeSheet();toast(data?'Fotografia guardada':'Fotografia retirada');render()}
+  catch(e){toast('Não foi possível ler a fotografia')}}
+async function apagarFoto(jid){await q(sb.from('fut_fotos').delete().eq('jogador_id',jid));delete S.fotos[jid];closeSheet();if(S.tab==='jogadores'&&S.jog)vJogador();else render();toast('Fotografia retirada')}
 
 /* ---------- ficha FPF (cartão interativo) ---------- */
 const CLUBE='Arcas Futsal';
@@ -3380,7 +3392,7 @@ function inicioPais(){
   const ev=proximos()[0];const r=ev?respostaDe(ev.id,f.id):null;const n=esc(primeiro(f.nome));
   const ab=t=>`abrirJogadorEm('${f.id}','${t}')`;
   const fotoF=j=>{const p=S.fotos[j.id];return p?`<img src="${p}" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid ${f.id===j.id?'var(--gold)':'transparent'}">`:`<span style="width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:var(--cream,#F6EEE4);font-family:'Baloo 2';font-weight:800;font-size:22px;color:var(--gold);border:3px solid ${f.id===j.id?'var(--gold)':'transparent'}">${esc(j.nome.split(' ').map(x=>x[0]).slice(0,2).join(''))}</span>`};
-  return `<div style="background:var(--card);border-radius:24px;padding:14px;box-shadow:0 6px 20px var(--shadow);position:relative;z-index:2;margin-bottom:12px"><div class="row between" style="margin:0 4px 8px"><span class="faint">${todos.length>1?'Toque no filho que quer ver':'O seu filho'}</span><button onclick="osMeusFilhos()" style="border:0;background:none;color:var(--gold);font-weight:700;font-size:13px;cursor:pointer">Corrigir</button></div><div class="row" style="gap:14px;overflow-x:auto">${todos.map(j=>`<button onclick="escolherFilho('${j.id}')" style="border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;flex:none;opacity:${f.id===j.id?1:.6}">${fotoF(j)}<b style="font-size:13px;color:var(--navy)">${esc(primeiro(j.nome))}</b><span class="faint" style="font-size:11px">${esc(((S.equipas||[]).find(e=>e.id===j.equipa_id)||{}).escalao||'').split(' (')[0]}</span></button>`).join('')}<button onclick="outroFilho()" style="border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;flex:none"><span style="width:64px;height:64px;border-radius:50%;display:grid;place-items:center;border:2px dashed var(--gold);font-size:28px;color:var(--gold)">+</span><b style="font-size:13px;color:var(--navy)">Outro filho</b></button></div></div>
+  return `<div style="background:var(--card);border-radius:24px;padding:14px;box-shadow:0 6px 20px var(--shadow);position:relative;z-index:2;margin-bottom:12px"><div class="row between" style="margin:0 4px 8px"><span class="faint">${todos.length>1?'Toque no filho que quer ver':'O seu filho'}</span><button onclick="osMeusFilhos()" style="border:0;background:none;color:var(--gold);font-weight:700;font-size:13px;cursor:pointer">Corrigir</button></div><div class="row" style="gap:14px;overflow-x:auto">${todos.map(j=>`<button onclick="${f.id===j.id?`menuFoto('${j.id}')`:`escolherFilho('${j.id}')`}" style="border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;flex:none;opacity:${f.id===j.id?1:.6};position:relative">${fotoF(j)}${f.id===j.id?'<span style="position:absolute;top:44px;right:-2px;background:var(--gold);color:#fff;border-radius:99px;width:22px;height:22px;display:grid;place-items:center;font-size:11px">📷</span>':''}<b style="font-size:13px;color:var(--navy)">${esc(primeiro(j.nome))}</b><span class="faint" style="font-size:11px">${esc(((S.equipas||[]).find(e=>e.id===j.equipa_id)||{}).escalao||'').split(' (')[0]}</span></button>`).join('')}<button onclick="outroFilho()" style="border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;flex:none"><span style="width:64px;height:64px;border-radius:50%;display:grid;place-items:center;border:2px dashed var(--gold);font-size:28px;color:var(--gold)">+</span><b style="font-size:13px;color:var(--navy)">Outro filho</b></button></div></div>
   <div style="background:var(--bg);border-radius:28px;padding:18px 14px 6px;position:relative;z-index:1"><div class="row between" style="margin:0 4px 14px"><h2 style="margin:0;color:var(--navy)">${n}</h2><span class="chip">${esc(S.eq.nome)}</span></div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
    ${areaCard('pf','⚽',`Perfil de ${n}`,'avaliação, evolução e plano',ab('resumo'))}
@@ -3670,7 +3682,7 @@ function vGuia(){
 
 /* ---------- conta ---------- */
 function abrirConta(){
-  openSheet(`<h2>${esc(S.perfil.nome)}</h2><p class="muted">${isAdminModo()?'Administradora':isCoach()?'Treinador(a)':isAtleta()?'Atleta':'Pai / Mãe'}</p>
+  openSheet(`<div class="row" style="gap:14px"><button onclick="menuMinhaFoto()" aria-label="A minha fotografia" style="border:0;background:none;padding:0;position:relative;flex:none">${fotoPessoa(S.perfil,64)}<span style="position:absolute;right:-4px;bottom:-4px;background:var(--gold);color:#fff;border-radius:99px;width:24px;height:24px;display:grid;place-items:center;font-size:12px">📷</span></button><div><h2 style="margin:0">${esc(S.perfil.nome)}</h2><p class="muted" style="margin:2px 0 0">${isAdminModo()?'Administradora':isCoach()?'Treinador(a)':isAtleta()?'Atleta':'Pai / Mãe'}</p></div></div>
   ${S.equipas.length>1?`<label class="f">Equipa</label><select id="cEqSel" class="in" onchange="mudarEquipa(this.value)">${S.equipas.map(e=>`<option value="${e.id}" ${e.id===S.eq.id?'selected':''}>${esc(e.nome)}</option>`).join('')}</select>`:''}
   ${isCoach()?`<button class="btn full" style="margin-top:10px;background:#25D366" onclick="irAcessos()">🔑 Acessos de pais e atletas</button>`:''}
   ${isCoach()?`<div class="card" style="margin-top:14px"><b>Código da equipa</b><p class="muted" style="margin:4px 0 8px">Os pais usam-no para entrar.</p><span class="code">${esc(S.eq.codigo)}</span></div>`:''}
