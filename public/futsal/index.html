@@ -2815,24 +2815,52 @@ const PLANO_AREA={
  tecnica:['15 minutos por treino de técnica individual (passe, receção, drible) em circuito','Desafio técnico para casa com vídeo curto','Repetir a roda do atleta no fim do trimestre para medir a evolução']};
 function miniStats(eq){const s=(S._stats||{})[eq];if(!s)return '';const g={};(s.geral||[]).forEach(x=>g[x.area]=+x.media);
   return `<button onclick="abrirStats('${eq}')" style="width:100%;border:0;background:var(--cream,#F6EEE4);display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:10px 8px;cursor:pointer;border-bottom:1px solid var(--line,#eee)">${AREAS4.map(([k,ic,l])=>`<span style="text-align:center"><span style="display:block;font-size:11px;color:var(--soft)">${ic} ${l}</span><b style="font-size:19px;color:${corMedia(g[k])}">${g[k]!=null?g[k].toFixed(1).replace('.',','):'—'}</b></span>`).join('')}<span style="grid-column:1/-1;font-size:12px;color:var(--gold);font-weight:700;margin-top:2px">📈 Média das respostas (1 a 5) · ver plano de ação ›</span></button>`}
-function abrirStats(eq){const s=(S._stats||{})[eq];const e=(S._painel||[]).find(x=>x.id===eq)||{};if(!s){toast('Sem dados');return}
-  const g={};(s.geral||[]).forEach(x=>g[x.area]=x);const M=(f,a)=>{const x=(s.medias||[]).find(y=>y.fonte===f&&y.area===a);return x?+x.media:null};
-  const fmt=v=>v==null?'—':v.toFixed(1).replace('.',',');
-  const com=AREAS4.filter(([k])=>g[k]).sort((a,b)=>g[a[0]].media-g[b[0]].media);
-  const fraca=com[0];
-  const gaps=AREAS4.map(([k,ic,l])=>{const a=M('atleta',k),t=M('treinador',k);return a!=null&&t!=null&&Math.abs(a-t)>=1?`${ic} ${l}: o atleta dá ${fmt(a)} e o treinador ${fmt(t)}`:null}).filter(Boolean);
-  const lista=(campo,tit)=>{const L=(s.escolhas||{})[campo]||[];return L.length?`<div style="margin-top:12px"><b style="font-size:14px">${tit}</b>${L.map(x=>`<div class="row between" style="font-size:14px;padding:4px 0;border-top:1px solid var(--line,#eee)"><span>${esc(x.t)}</span><span class="chip">${x.n}</span></div>`).join('')}</div>`:''};
-  const R=s.respostas||{};
-  openSheet(`<h2>📈 ${esc(e.nome||'Equipa')}</h2><p class="muted" style="margin-top:0">Média das respostas, de 1 a 5. Junta a autoavaliação dos atletas, as reflexões depois dos jogos e treinos, e as avaliações 3S dos pais e do treinador.</p>
-   ${AREAS4.map(([k,ic,l])=>{const x=g[k],v=x?+x.media:null;return `<div style="margin:12px 0"><div class="row between"><b>${ic} ${l}</b><b style="font-size:20px;color:${corMedia(v)}">${fmt(v)}</b></div>
-     <div style="height:10px;border-radius:6px;background:var(--line,#eee);overflow:hidden;margin:4px 0"><div style="width:${v?v/5*100:0}%;height:100%;background:${corMedia(v)}"></div></div>
-     <div class="faint" style="font-size:12px">${v==null?'Ainda sem respostas nesta área.':`Atleta ${fmt(M('atleta',k))} · Treinador ${fmt(M('treinador',k))} · Pais ${fmt(M('pais',k))} · ${x.n} jogador(es)`}</div></div>`}).join('')}
-   <div class="card" style="margin-top:14px;background:var(--cream,#F6EEE4)"><b>🎯 Plano de ação sugerido</b>
-    ${fraca?`<p style="margin:6px 0">A área mais baixa é <b>${fraca[1]} ${fraca[2]}</b> (${fmt(+g[fraca[0]].media)}). Proposta para as próximas 4 semanas:</p><ol style="margin:0;padding-left:20px">${PLANO_AREA[fraca[0]].map(t=>`<li style="margin:4px 0">${t}</li>`).join('')}</ol>`:'<p class="muted" style="margin:6px 0">Ainda não há respostas suficientes.</p>'}
-    ${!g.tecnica?`<p class="faint" style="font-size:13px;margin:8px 0 0">⚽ Técnica: ainda sem dados. Os valores vêm da «roda do atleta» no feedback trimestral.</p>`:''}
-    ${gaps.length?`<p style="margin:10px 0 4px"><b>⚠️ Diferenças de perceção</b> (vale a pena conversar):</p>${gaps.map(x=>`<div style="font-size:14px">• ${x}</div>`).join('')}`:''}</div>
-   ${lista('precisa','🙋 O que os jogadores dizem que precisam')}${lista('diferente','🔁 O que fariam de diferente')}${lista('travou','🚧 O que os travou')}${lista('move','🔥 O que os move')}${lista('sonho','⭐ Sonhos')}
-   <p class="faint" style="font-size:13px;margin-top:14px">Respostas: ${R.inqueritos||0} de ${R.jogadores||0} questionários «O que me move» · ${R.autoaval||0} autoavaliações 3S · ${R.reflexoes||0} reflexões de jogo/treino.</p>`)}
+const PLANO_IND={
+ emocional:['Conversa individual de 5 minutos por semana: o que correu bem e o que o preocupa','Combinar uma frase-âncora e um gesto para usar depois do erro','Elogiar o esforço em público, corrigir em privado'],
+ relacional:['Dar-lhe uma função na equipa (ex.: responsável pelo material ou pelo aquecimento)','Juntá-lo em dupla com um colega que o puxe para cima','Reconhecer um gesto de ajuda aos colegas em cada treino'],
+ comportamento:['Definir com ele 1 compromisso por semana e confirmar no treino seguinte','Falar com os pais sobre rotina de sono, ecrãs e alimentação','Registar a pontualidade e reconhecer as melhorias'],
+ tecnica:['10 minutos extra de técnica individual no início do treino','Um desafio técnico para casa com vídeo curto','Rever com ele a roda do atleta daqui a 4 semanas']};
+function rotuloPerg(src,k){if(src==='360'){const x=QUEST.find(q=>q.id===k);return x?x.o:k}
+  if(src==='inq'){const x=INQ.find(q=>q.k===k);return x?x.t:k}
+  if(src==='roda')return 'Roda do atleta: '+k;
+  const c=COACH_Q[src.replace('coach_','')];const x=c&&c.q.find(q=>q.k===k);return x?x.t:k}
+const areaPerg=k=>({e1:'emocional',e2:'emocional',e3:'emocional',e4:'emocional',confianca:'emocional',autoconf:'emocional',gosto_treino:'emocional',v1:'relacional',v2:'relacional'}[k]||(['s1','s2','s3','v3','h1','h2','h3','h4','esforco','foco','cumpri'].includes(k)?'comportamento':'tecnica'));
+const origemPerg=s=>s==='360'?'Avaliação 3S':s==='inq'?'O que me move':s==='roda'?'Roda do atleta':s==='coach_jogo'?'Reflexão pós-jogo':s==='coach_treino'?'Reflexão do treino':'Feedback trimestral';
+async function abrirStats(eq){const e=(S._painel||[]).find(x=>x.id===eq)||{};
+  openSheet(`<h2>📈 ${esc(e.nome||'Equipa')}</h2><p class="muted">A carregar as respostas…</p>`);
+  const {data:P,error}=await sb.rpc('fut_painel_perguntas',{p_equipa:eq});if(error||!P){closeSheet();toast('Não foi possível ver as respostas');return}
+  const fmt=v=>v==null?'—':(+v).toFixed(1).replace('.',',');
+  const AI=Object.fromEntries(AREAS4.map(a=>[a[0],a]));
+  const num=(P.num||[]).filter(x=>x.src!=='roda'||true).map(x=>({...x,media:+x.media,area:x.src==='roda'?({'Técnica':'tecnica','Tática':'tecnica','Físico':'tecnica','Mental e emoções':'emocional','Relação com a equipa':'relacional'}[x.k]||'comportamento'):areaPerg(x.k)}));
+  const escG={};(P.esc||[]).forEach(x=>{const id=x.src+'|'+x.k;(escG[id]=escG[id]||{src:x.src,k:x.k,resp:x.resp,L:[]}).L.push(x)});
+  const cartNum=x=>`<div style="padding:10px 0;border-top:1px solid var(--line,#eee)"><div style="font-size:14px">${esc(rotuloPerg(x.src,x.k))}</div><div class="row between" style="margin-top:4px"><span class="faint" style="font-size:12px">${origemPerg(x.src)} · ${x.n} jogador(es)</span><span>Média <b style="font-size:18px;color:${corMedia(x.media)}">${fmt(x.media)}</b><span class="faint"> /5</span></span></div><div style="height:6px;border-radius:6px;background:var(--line,#eee);overflow:hidden;margin-top:4px"><div style="width:${x.media/5*100}%;height:100%;background:${corMedia(x.media)}"></div></div></div>`;
+  const cartEsc=g=>{const a=g.L.sort((p,q)=>p.rn-q.rn);return `<div style="padding:10px 0;border-top:1px solid var(--line,#eee)"><div style="font-size:14px">${esc(rotuloPerg(g.src,g.k))}</div><div class="faint" style="font-size:12px">${origemPerg(g.src)} · ${g.resp} resposta(s)</div><div style="margin-top:4px">Maior incidência: <b style="color:var(--navy)">${esc(a[0].t)}</b> <span class="chip">${a[0].n} de ${g.resp}</span></div>${a[1]?`<div class="faint" style="font-size:13px">2.ª: ${esc(a[1].t)} (${a[1].n})</div>`:''}</div>`};
+  // por área (numéricas), do mais baixo para o mais alto
+  const blocosNum=AREAS4.map(([k,ic,l])=>{const L=num.filter(x=>x.area===k).sort((a,b)=>a.media-b.media);if(!L.length)return '';const m=L.reduce((s,x)=>s+x.media,0)/L.length;
+    return `<details ${m<3.5?'open':''} style="margin-top:10px"><summary style="cursor:pointer;display:flex;justify-content:space-between;font-weight:700"><span>${ic} ${l}</span><span style="color:${corMedia(m)}">${fmt(m)}</span></summary>${L.map(cartNum).join('')}</details>`}).join('');
+  const blocosEsc=Object.values(escG).map(cartEsc).join('');
+  // plano de equipa
+  const baixas=num.filter(x=>x.src!=='roda').sort((a,b)=>a.media-b.media).slice(0,3);
+  const medA={};AREAS4.forEach(([k])=>{const L=num.filter(x=>x.area===k);if(L.length)medA[k]=L.reduce((s,x)=>s+x.media,0)/L.length});
+  const fraca=Object.keys(medA).sort((a,b)=>medA[a]-medA[b])[0];
+  const pede=(escG['inq|precisa']||{L:[]}).L.sort((a,b)=>a.rn-b.rn)[0],tira=(escG['inq|desmotiva']||{L:[]}).L.sort((a,b)=>a.rn-b.rn)[0],corr=(escG['inq|feedback']||{L:[]}).L.sort((a,b)=>a.rn-b.rn)[0];
+  const planoEq=fraca?`<div class="card" style="margin-top:14px;background:var(--cream,#F6EEE4)"><b style="font-size:17px">🎯 Plano de equipa</b>
+    <p style="margin:6px 0">Área mais baixa: <b>${AI[fraca][1]} ${AI[fraca][2]}</b> (${fmt(medA[fraca])}).</p>
+    ${baixas.length?`<p style="margin:6px 0 2px"><b>Perguntas mais baixas</b></p>${baixas.map(x=>`<div style="font-size:14px">• ${esc(rotuloPerg(x.src,x.k))} <b style="color:${corMedia(x.media)}">${fmt(x.media)}</b></div>`).join('')}`:''}
+    <p style="margin:10px 0 2px"><b>Ações para as próximas 4 semanas</b></p><ol style="margin:0;padding-left:20px">${PLANO_AREA[fraca].map(t=>`<li style="margin:4px 0">${t}</li>`).join('')}
+    ${pede?`<li style="margin:4px 0">Os jogadores pedem sobretudo <b>«${esc(pede.t)}»</b>: dar-lhes isso de forma combinada em cada treino.</li>`:''}
+    ${tira?`<li style="margin:4px 0">O que mais os desmotiva é <b>«${esc(tira.t)}»</b>: falar disto com a equipa e combinar como evitar.</li>`:''}
+    ${corr?`<li style="margin:4px 0">Preferem receber correções <b>${esc(corr.t.toLowerCase())}</b>.</li>`:''}</ol></div>`:'';
+  const nomeA=k=>AI[k]?AI[k][1]+' '+AI[k][2]:'—';
+  const baixos=(P.baixos||[]).map(b=>`<div class="card" style="margin-top:10px"><div class="row between"><b style="font-size:16px">${esc(b.nome)}</b><span>Média <b style="color:${corMedia(+b.media)}">${fmt(b.media)}</b></span></div>
+    <div class="faint" style="margin:2px 0 6px">Área mais baixa: ${nomeA(b.pior)} (${fmt(b.pior_media)})</div>
+    <b style="font-size:14px">Plano de ação individual</b><ol style="margin:4px 0 8px;padding-left:20px;font-size:14px">${(PLANO_IND[b.pior]||PLANO_IND.emocional).map(t=>`<li style="margin:3px 0">${t}</li>`).join('')}</ol>
+    <button class="btn gold sm full" onclick="painelIr('${eq}','plano','${b.id}')">🎯 Registar plano de ação de ${esc(primeiro(b.nome))} ›</button></div>`).join('');
+  openSheet(`<h2>📈 ${esc(e.nome||'Equipa')}</h2><p class="muted" style="margin-top:0">${P.com_dados} de ${P.jogadores} jogadores com respostas. Escala de 1 a 5.</p>
+   <h3 style="margin:10px 0 4px">❓ Pergunta a pergunta</h3><p class="faint" style="margin:0">Notas de 1 a 5, da mais baixa para a mais alta.</p>${blocosNum||'<p class="empty">Ainda sem respostas.</p>'}
+   ${blocosEsc?`<h3 style="margin:18px 0 4px">🗳️ Respostas de escolha: maior incidência</h3>${blocosEsc}`:''}
+   ${planoEq}
+   <h3 style="margin:18px 0 4px">🔻 ${P.baixos&&P.baixos.length?(P.baixos.length===1?'Jogador':P.baixos.length+' jogadores')+' com valores mais baixos':'Jogadores com valores mais baixos'}</h3>${baixos||'<p class="empty">Ainda sem respostas suficientes.</p>'}`)}
 async function abrirFalta(eq,k){const e=(S._painel||[]).find(x=>x.id===eq)||{};const it=PAINEL_IT.find(x=>x[0]===k)||['pag','💶','Pagamentos por receber','','pagamentos'];
   openSheet(`<h2>${it[1]} ${it[2]}</h2><p class="muted">A carregar…</p>`);
   const {data,error}=await sb.rpc('fut_painel_faltas',{p_equipa:eq});if(error||!data){toast('Não foi possível ver a lista');closeSheet();return}
