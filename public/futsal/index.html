@@ -2726,35 +2726,52 @@ async function sincJogoAgenda(x){const nC=eNosso(x.casa),nF=eNosso(x.fora);if(!(
   await carregar()}
 function abrirJogoJornada(id){const x=S._cj.J.find(y=>y.id===id);const ev=x&&(S.eventos||[]).find(e=>e.tipo==='jogo'&&e.data===x.data);if(ev)abrirEvento(ev.id);else toast('Este jogo ainda não está na agenda')}
 /* ---------- painel da app (administradora) ---------- */
+const PAINEL_IT=[
+ ['familia','👨‍👩‍👦','Pais ligados à app','familias','acessos'],
+ ['atleta','⚽','Atletas com conta','atletas','acessos'],
+ ['ficha','🗂️','Dados pessoais completos','fichas','ficha'],
+ ['cc','🪪','Cartão de Cidadão','cc','ficha'],
+ ['aval','📋','Avaliação 3S (últimos 3 meses)','aval90','avaliacao'],
+ ['feedback','💬','Feedback deste mês','feedback30','feedback'],
+ ['plano','🎯','Plano de ação','planos','plano'],
+ ['inquerito','🗣️','Questionário «O que me move»','inqueritos','inquerito']];
 async function vPainel(){const m=$('#main');m.innerHTML='<div class="card"><p class="muted">A carregar o painel…</p></div>';
   const {data:P,error}=await sb.rpc('fut_painel_admin');if(error||!P){m.innerHTML=`<div class="card"><p class="empty">Não foi possível abrir o painel.</p></div>`;return}
-  const E=P.equipas||[],soma=k=>E.reduce((a,e)=>a+(+e[k]||0),0);
-  const pc=(a,b)=>b?Math.round(100*a/b):0;
-  const barra=(rot,a,b,ic)=>{const p=pc(a,b),cor=p>=80?'var(--mint)':p>=50?'var(--gold)':'var(--red)';return `<div style="margin:8px 0"><div class="row between" style="font-size:13px"><span>${ic} ${rot}</span><b>${a}/${b}</b></div><div style="height:8px;border-radius:6px;background:var(--line,#eee);overflow:hidden;margin-top:4px"><div style="width:${p}%;height:100%;background:${cor}"></div></div></div>`};
-  const kpi=(v,l,ic)=>`<div style="background:var(--card);border-radius:18px;padding:14px;box-shadow:0 4px 14px var(--shadow)"><div style="font-size:20px">${ic}</div><div style="font-family:'Baloo 2';font-weight:800;font-size:28px;color:var(--navy);line-height:1.1">${v}</div><div class="faint" style="font-size:12px">${l}</div></div>`;
-  const J=soma('jogadores');
-  const alertas=[];E.forEach(e=>{const n=e.nome.replace(/^ARCAS\s*/i,'');
-    if(e.jogadores&&e.familias<e.jogadores)alertas.push(`👨‍👩‍👦 ${esc(n)}: ${e.jogadores-e.familias} jogador(es) sem família ligada`);
-    if(e.jogadores&&e.cc<e.jogadores)alertas.push(`🪪 ${esc(n)}: faltam ${e.jogadores-e.cc} Cartões de Cidadão`);
-    if(e.jogadores&&e.aval90<e.jogadores)alertas.push(`📋 ${esc(n)}: ${e.jogadores-e.aval90} sem avaliação 3S nos últimos 3 meses`);
-    if(e.jogadores&&e.feedback30<e.jogadores)alertas.push(`💬 ${esc(n)}: ${e.jogadores-e.feedback30} sem feedback este mês`);
-    if(+e.pag_pend>0)alertas.push(`💶 ${esc(n)}: ${(+e.pag_pend).toFixed(2).replace('.',',')} € por receber`)});
-  m.innerHTML=`<div class="row between" style="margin:4px 4px 12px;position:relative;z-index:2"><span class="faint">Todas as equipas · atualizado agora</span><button class="btn ghost sm" onclick="vPainel()">↻ Atualizar</button></div>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
-   ${kpi(E.length,'equipas','🛡️')}${kpi(J,'jogadores','⚽')}${kpi(P.contas,'contas na app','👤')}
-   ${kpi(P.ativos7,'entraram esta semana','🟢')}${kpi(P.novas7,'contas novas (7 dias)','✨')}${kpi(pc(soma('familias'),J)+'%','famílias ligadas','👨‍👩‍👦')}</div>
-  ${alertas.length?`<div class="card" style="margin-top:14px"><h3 style="margin:0 0 6px">⚠️ A tratar</h3>${alertas.map(a=>`<div style="padding:6px 0;border-top:1px solid var(--line,#eee);font-size:14px">${a}</div>`).join('')}</div>`:''}
-  ${E.map(e=>{const r=e.v+e.e+e.d;const px=e.proximo;return `<div class="card" style="margin-top:14px"><div class="row between"><div><h3 style="margin:0">${esc(e.nome)}</h3><div class="faint">${esc(e.escalao||'')} · ${e.jogadores} jogadores</div></div><button class="btn ghost sm" onclick="mudarEquipa('${e.id}')">Abrir</button></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:12px 0;text-align:center">
-     <div><div style="font-weight:800;font-size:20px;color:var(--navy)">${r?`${e.v}-${e.e}-${e.d}`:'—'}</div><div class="faint" style="font-size:11px">V-E-D</div></div>
-     <div><div style="font-weight:800;font-size:20px;color:var(--navy)">${e.presenca30!=null?e.presenca30+'%':'—'}</div><div class="faint" style="font-size:11px">presenças (30 dias)</div></div>
-     <div><div style="font-weight:800;font-size:20px;color:var(--navy)">${e.treinos30}</div><div class="faint" style="font-size:11px">treinos (30 dias)</div></div></div>
-    ${px?`<div class="faint" style="margin-bottom:6px">Próximo: ${px.tipo==='jogo'?'⚽ jogo'+(px.adv?' vs '+esc(px.adv):''):'🏃 treino'} · ${dataCurta(px.data)} · ${e.resp_prox} resposta(s)</div>`:''}
-    <b style="font-size:13px">Acessos e documentos</b>
-    ${barra('Famílias ligadas',e.familias,e.jogadores,'👨‍👩‍👦')}${barra('Atletas com conta',e.atletas,e.jogadores,'⚽')}${barra('Fichas completas',e.fichas,e.jogadores,'🗂️')}${barra('Cartão de Cidadão',e.cc,e.jogadores,'🪪')}
-    <b style="font-size:13px;display:block;margin-top:10px">Obrigações do treinador</b>
-    ${barra('Avaliação 3S (3 meses)',e.aval90,e.jogadores,'📋')}${barra('Feedback (este mês)',e.feedback30,e.jogadores,'💬')}${barra('Plano de ação',e.planos,e.jogadores,'🎯')}${barra('Questionário «O que me move»',e.inqueritos,e.jogadores,'🗣️')}
-    <div class="row between faint" style="margin-top:8px;font-size:13px"><span>👁️ ${e.observ30} observações (30 dias)</span><span>💶 ${(+e.pag_pend).toFixed(2).replace('.',',')} € por receber</span></div></div>`}).join('')}`}
+  const E=P.equipas||[];S._painel=E;
+  const cor=p=>p>=80?'var(--mint)':p>=50?'var(--gold)':'var(--red)';
+  const est=e=>{let ok=0,tot=0;PAINEL_IT.forEach(it=>{ok+=+e[it[3]]||0;tot+=e.jogadores||0});return tot?Math.round(100*ok/tot):0};
+  const geral=(()=>{let ok=0,tot=0;E.forEach(e=>PAINEL_IT.forEach(it=>{ok+=+e[it[3]]||0;tot+=e.jogadores||0}));return tot?Math.round(100*ok/tot):0})();
+  const anel=(p,t)=>{const r=t*0.4,c=2*Math.PI*r;return `<svg width="${t}" height="${t}" viewBox="0 0 ${t} ${t}" aria-hidden="true"><circle cx="${t/2}" cy="${t/2}" r="${r}" fill="none" stroke="var(--line,#eee)" stroke-width="${t*0.11}"/><circle cx="${t/2}" cy="${t/2}" r="${r}" fill="none" stroke="${cor(p)}" stroke-width="${t*0.11}" stroke-linecap="round" stroke-dasharray="${c*p/100} ${c}" transform="rotate(-90 ${t/2} ${t/2})"/><text x="50%" y="54%" text-anchor="middle" dominant-baseline="middle" style="font:800 ${t*0.24}px Inter,sans-serif;fill:var(--navy)">${p}%</text></svg>`};
+  const J=E.reduce((a,e)=>a+e.jogadores,0);
+  m.innerHTML=`<div class="card" style="display:flex;align-items:center;gap:16px;position:relative;z-index:2">${anel(geral,96)}<div class="grow"><div class="row between"><b style="font-size:18px;color:var(--navy)">Estado geral da app</b><button class="btn ghost sm" style="padding:4px 10px" aria-label="Atualizar" onclick="vPainel()">↻</button></div><div class="muted" style="font-size:14px;margin-top:4px">${E.length} equipas · ${J} jogadores<br>👤 ${P.contas} contas · 🟢 ${P.ativos7} entraram esta semana</div><div style="margin-top:6px;font-size:13px;color:var(--gold);font-weight:700">👇 Toque em cada linha para ver quem falta</div></div></div>
+  ${E.map(e=>{const pe=est(e);const res=e.v+e.e+e.d;const px=e.proximo;
+   return `<div class="card" style="margin-top:14px;padding:0;overflow:hidden">
+    <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--navy);color:#fff">${anel(pe,54).replace('fill:var(--navy)','fill:#fff')}<div class="grow"><b style="font-size:17px">${esc(e.nome)}</b><div style="font-size:12px;opacity:.8">${e.jogadores} jogadores${res?` · ${e.v}V ${e.e}E ${e.d}D`:''}${e.presenca30!=null?` · presenças ${e.presenca30}%`:''}</div></div><button class="btn sm" style="background:rgba(255,255,255,.15);color:#fff;flex:none" onclick="painelIr('${e.id}')">Abrir ›</button></div>
+    ${px?`<div style="padding:10px 16px;font-size:14px;border-bottom:1px solid var(--line,#eee)">📅 Próximo: <b>${px.tipo==='jogo'?'jogo'+(px.adv?' vs '+esc(px.adv):''):'treino'}</b> · ${dataCurta(px.data)} · ${e.resp_prox} resposta(s)</div>`:''}
+    ${PAINEL_IT.map(([k,ic,rot,campo])=>{const ok=+e[campo]||0,tot=e.jogadores||0,f=tot-ok,p=tot?Math.round(100*ok/tot):100;
+      return `<button onclick="abrirFalta('${e.id}','${k}')" style="width:100%;border:0;background:none;display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line,#eee);cursor:pointer;text-align:left">
+       <span style="font-size:20px;flex:none">${ic}</span><span class="grow"><span style="display:block;font-size:15px;color:var(--ink)">${rot}</span><span style="display:block;height:6px;border-radius:6px;background:var(--line,#eee);margin-top:6px;overflow:hidden"><span style="display:block;width:${p}%;height:100%;background:${cor(p)}"></span></span></span>
+       <span style="flex:none;text-align:right;min-width:70px">${f>0?`<b style="color:var(--red);font-size:15px">faltam ${f}</b>`:`<b style="color:var(--mint)">✔ completo</b>`}<span style="display:block;font-size:12px" class="faint">${ok} de ${tot}</span></span><span style="flex:none;color:var(--soft);font-size:20px">›</span></button>`}).join('')}
+    ${+e.pag_pend>0?`<button onclick="abrirFalta('${e.id}','pag')" style="width:100%;border:0;background:none;display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;text-align:left"><span style="font-size:20px">💶</span><span class="grow" style="font-size:15px">Pagamentos por receber</span><b style="color:var(--red)">${(+e.pag_pend).toFixed(2).replace('.',',')} €</b><span style="color:var(--soft);font-size:20px">›</span></button>`:''}
+   </div>`}).join('')}`}
+async function abrirFalta(eq,k){const e=(S._painel||[]).find(x=>x.id===eq)||{};const it=PAINEL_IT.find(x=>x[0]===k)||['pag','💶','Pagamentos por receber','','pagamentos'];
+  openSheet(`<h2>${it[1]} ${it[2]}</h2><p class="muted">A carregar…</p>`);
+  const {data,error}=await sb.rpc('fut_painel_faltas',{p_equipa:eq});if(error||!data){toast('Não foi possível ver a lista');closeSheet();return}
+  const L=data[k]||[];const acao=it[4];
+  const dica={familia:'Envie a cada família o código pessoal por WhatsApp, em Acessos.',atleta:'Envie a cada atleta o código de atleta, em Acessos.',ficha:'Abra a ficha e preencha o que falta. Os pais também o podem fazer.',cc:'Os pais carregam a fotografia do Cartão de Cidadão nos Dados pessoais. O treinador também pode.',aval:'Obrigação trimestral: avaliação 3S de cada jogador.',feedback:'Obrigação mensal: feedback a cada jogador.',plano:'Cada jogador deve ter um plano de ação.',inquerito:'O atleta responde ao questionário (ou o treinador com ele).',pag:'Valores pendentes por jogador.'}[k]||'';
+  openSheet(`<h2>${it[1]} ${it[2]}</h2><p class="muted" style="margin-top:0">${esc(e.nome||'')} · ${L.length?`<b style="color:var(--red)">${L.length} em falta</b>`:'<b style="color:var(--mint)">nada em falta ✔</b>'}</p><p class="faint" style="margin-top:0">${dica}</p>
+   ${L.map(x=>`<div class="row between" style="gap:10px;padding:10px 0;border-top:1px solid var(--line,#eee)"><div style="min-width:0"><b>${esc(x.nome)}</b>${x.falta?`<div class="faint" style="font-size:13px">falta: ${esc(x.falta)}</div>`:''}${x.valor!=null?`<div class="faint" style="font-size:13px">${(+x.valor).toFixed(2).replace('.',',')} €</div>`:''}</div>
+     <button class="btn gold sm" style="flex:none" onclick="painelIr('${eq}','${acao==='acessos'?(k==='atleta'?'waA':'waP'):acao}','${x.id}')">${acao==='acessos'?'📲 Enviar código':'Resolver ›'}</button></div>`).join('')}
+   ${L.length&&acao==='acessos'?`<button class="btn full" style="margin-top:12px;background:#25D366" onclick="painelIr('${eq}','acessos')">📲 Abrir Acessos desta equipa</button>`:''}`)}
+async function painelIr(eq,acao,jid){closeSheet();
+  if(S.eq.id!==eq){try{localStorage.setItem('fut_eq',eq)}catch(_){}S.eq=S.equipas.find(e=>e.id===eq)||S.eq;S.jog=null;await carregar()}
+  if(!acao){S.tab='inicio';render();window.scrollTo(0,0);return}
+  if(acao==='acessos'){irAcessos();return}
+  if(acao==='waP'||acao==='waA'){const {data}=await sb.rpc('fut_codigos_equipa',{p_equipa:eq});const x=(data||[]).find(y=>y.jogador_id===jid);
+    const tel=x&&(acao==='waA'?x.atleta_tel:(x.encarregado_tel||x.encarregado2_tel));
+    if(x&&tel){window.open(`https://wa.me/${telWa(tel)}?text=${encodeURIComponent(acao==='waA'?msgAtleta(x):msgPais(x))}`,'_blank');irAcessos()}
+    else{irAcessos();toast(acao==='waA'?'Falta o número do atleta: toque em ✏️ Editar':'Falta o número do pai ou da mãe: toque em ✏️ Editar')}return}
+  abrirJogador(jid,acao)}
 /* ---------- números WhatsApp de pai, mãe e atleta (editáveis) ---------- */
 const telIg=(a,b)=>{const x=telWa(a),y=telWa(b);return x&&y&&x.slice(-9)===y.slice(-9)};
 function blocoNumeros(x,i){
