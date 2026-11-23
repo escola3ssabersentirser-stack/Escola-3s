@@ -422,10 +422,10 @@ function botaoVoltar(){if(S.hist.length){try{history.back();return}catch(_){}}vo
 window.addEventListener('popstate',()=>{if(_ignPop){_ignPop=false;return}if($('.sheet')){closeSheet(true);return}if(S.perfil&&S.eq)voltar()});
 /* ---------- estrutura ---------- */
 const TABS=[['inicio','🏠','Início'],['agenda','📅','Agenda'],['jogadores','⚽','Jogadores'],['avaliacoes','📋','Avaliações'],['mensagens','💬','Mensagens']];
-const rotuloTab=k=>k==='dados'?'Dados pessoais':k==='avaliacoes'?'Avaliações':k==='acessos'?'Acessos':k==='painel'?'Painel da app':k==='ajuda'?'Ajuda aos pais':k==='podios'?'Pódios':k==='equipa'?'Ficha de Equipa':k==='jogadores'?(isCoach()?'Jogadores':isAtleta()?'Eu':'Filhos'):k==='mensagens'&&isAtleta()?'Avisos':(TABS.find(t=>t[0]===k)||[])[2];
+const rotuloTab=k=>k==='dados'?'Dados pessoais':k==='avaliacoes'?'Avaliações':k==='acessos'?'Acessos':k==='painel'?'Semáforo do clube':k==='ajuda'?'Ajuda aos pais':k==='podios'?'Pódios':k==='equipa'?'Ficha de Equipa':k==='jogadores'?(isCoach()?'Jogadores':isAtleta()?'Eu':'Filhos'):k==='mensagens'&&isAtleta()?'Avisos':(TABS.find(t=>t[0]===k)||[])[2];
 function render(){
   marcarNav();
-  const t=TABS.find(x=>x[0]===S.tab)||({ajuda:['ajuda','🤝','Ajuda aos pais'],podios:['podios','🏆','Pódios'],equipa:['equipa','🛡️','Ficha de Equipa'],acessos:['acessos','🔑','Acessos'],painel:['painel','📊','Painel da app'],avaliacoes:['avaliacoes','📋','Avaliação dos jogadores'],dados:['dados','📇','Dados pessoais']}[S.tab]);
+  const t=TABS.find(x=>x[0]===S.tab)||({ajuda:['ajuda','🤝','Ajuda aos pais'],podios:['podios','🏆','Pódios'],equipa:['equipa','🛡️','Ficha de Equipa'],acessos:['acessos','🔑','Acessos'],painel:['painel','🚦','Semáforo do clube'],avaliacoes:['avaliacoes','📋','Avaliação dos jogadores'],dados:['dados','📇','Dados pessoais']}[S.tab]);
   const titulo=S.tab==='inicio'?`Olá, ${esc(primeiro(emPrevia()&&modoVer()==='atleta'&&S.meus[0]?S.meus[0].nome:emPrevia()&&modoVer()==='treinador'?nomeDe(S.eq.treinador_id):S.perfil.nome))}`:t[2];
   const jogLabel=isCoach()?'Jogadores':isAtleta()?'O meu perfil':(S.meus.length>1?'Filhos':'Filho(a)');
   $('#screen').innerHTML=`
@@ -2768,7 +2768,7 @@ function inicioClube(){const ev=proximos()[0];
   return `<div style="background:var(--bg);border-radius:28px;padding:18px 14px 6px;position:relative;z-index:2"><div class="row between" style="margin:0 4px 14px"><h2 style="margin:0;color:var(--navy)">🏛️ Clube</h2><span class="chip">${esc(S.eq.nome)}</span></div>
   <p class="faint" style="margin:-6px 4px 12px">Acesso de consulta: vê todas as equipas. Para trocar de equipa, toque no nome da equipa no topo.</p>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-   ${areaCard('pnl','📊','Painel da app','todas as equipas',"S.tab='painel';render();window.scrollTo(0,0)")}
+   ${areaCard('pnl','🚦','Semáforo do clube','o que está em falta, equipa a equipa',"S.tab='painel';render();window.scrollTo(0,0)")}
    ${areaCard('age','📅',ev?(ev.tipo==='jogo'?'Próximo jogo':'Próximo treino'):'Agenda',ev?`${dataCurta(ev.data)} · ${esc(horaEv(ev)||'')}${ev.tipo==='jogo'?' · vs '+esc(ev.adversario||'?'):''}`:'treinos e jogos',"irPara('agenda')")}
    ${areaCard('cls','🏆','Classificação e jornadas','jogos de todos os clubes',"S.eqTab='classificacao';irEquipa()")}
    ${areaCard('eq','🛡️','Equipa','plantel e jogos','irEquipa()')}
@@ -2785,8 +2785,8 @@ const PAINEL_IT=[
  ['feedback','💬','Feedback deste mês','feedback30','feedback'],
  ['plano','🎯','Plano de ação','planos','plano'],
  ['inquerito','🗣️','Questionário «O que me move»','inqueritos','inquerito']];
-async function vPainel(){const m=$('#main');m.innerHTML='<div class="card"><p class="muted">A carregar o painel…</p></div>';
-  const {data:P,error}=await sb.rpc('fut_painel_admin');if(error||!P){m.innerHTML=`<div class="card"><p class="empty">Não foi possível abrir o painel.</p></div>`;return}
+async function vPainel(){const m=$('#main');m.innerHTML='<div class="card"><p class="muted">A carregar o semáforo…</p></div>';
+  const {data:P,error}=await sb.rpc('fut_painel_admin');if(error||!P){m.innerHTML=`<div class="card"><p class="empty">Não foi possível abrir o semáforo.</p></div>`;return}
   const E=P.equipas||[];S._painel=E;
   const ST=await Promise.all(E.map(e=>sb.rpc('fut_painel_stats',{p_equipa:e.id}).then(r=>r.data||null).catch(()=>null)));S._stats={};E.forEach((e,i)=>S._stats[e.id]=ST[i]);
   const cor=p=>p>=80?'var(--mint)':p>=50?'var(--gold)':'var(--red)';
@@ -3457,7 +3457,7 @@ function inicioTreinador(){
    ${areaCard('dados','📇','Dados pessoais','pais e jogadores · contactos e Cartão de Cidadão','irDados()','jogadores')}
    ${areaCard('jog','⚽','Jogadores',`${S.jogadores.length} atletas · fotos e fichas`,"irPara('jogadores')",'jogadores')}
    ${areaCard('tar','📝','Tarefas','a carregar…','abrirTarefas()')}
-   ${S.admin?areaCard('pnl','📊','Painel da app','números de todas as equipas',"S.tab='painel';S.jog=null;render();window.scrollTo(0,0)"):''}
+   ${S.admin?areaCard('pnl','🚦','Semáforo do clube','o que está em falta, equipa a equipa',"S.tab='painel';S.jog=null;render();window.scrollTo(0,0)"):''}
    ${areaCard('ace','🔑','Acessos','códigos por WhatsApp','irAcessos()')}
    ${areaCard('ava','💛','Avaliações',`3S, FPF, coaching · ${trimLabel(trimAtual())}`,'irAvaliacoes()')}
    ${areaCard('pag','💶','Pagamentos','quotas e conta corrente','painelPagamentos()')}
