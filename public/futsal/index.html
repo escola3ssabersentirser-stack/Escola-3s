@@ -185,8 +185,9 @@ const iniciais=n=>String(n||'?').trim().split(/\s+/).map(p=>p[0]).slice(0,2).joi
 const primeiro=n=>String(n||'').split(' ')[0];
 const modoVer=()=>S.admin?(S.modo==='familia'?'pai':(S.modo||'admin')):null;
 const emPrevia=()=>S.admin&&['treinador','pai','atleta'].includes(modoVer());
-const isCoach=()=>!!(S.eq && ((S.eq.treinador_id===S.me && !(S.admin&&['pai','atleta'].includes(modoVer()))) || (S.admin && ['admin','treinador'].includes(modoVer()))));
-const ePais=()=>!isCoach()&&!isAtleta();
+const isCoach=()=>!!(S.eq && (((S.eq.treinador_id===S.me||(S.treinaEqs&&S.treinaEqs.has(S.eq.id))) && !(S.admin&&['pai','atleta'].includes(modoVer()))) || (S.admin && ['admin','treinador'].includes(modoVer()))));
+const eClube=()=>!!S.clube&&!S.admin&&!isCoach();
+const ePais=()=>!isCoach()&&!isAtleta()&&!eClube();
 const podeEditar=()=>!isAtleta();
 const isAdminModo=()=>!!(S.admin && modoVer()==='admin');
 const horaEv=e=>(e.hora||'')+(e.hora_fim?'–'+e.hora_fim:'');
@@ -294,12 +295,12 @@ function ecraSemEquipa(){
     <div class="logo">${t?'🧢':'🔑'}</div>
     <h1>${t?'Crie a sua equipa':'Entre na equipa'}</h1>
     <p class="muted" style="margin:4px 0 18px">${t?'Depois recebe um código para enviar aos pais.':'Use o código pessoal que recebeu por mensagem.'}</p>
-    ${t?`<div class="card">
+    ${t?`<div class="card"><h3>Tenho um código de treinador</h3><p class="muted" style="margin:0 0 8px">Recebeu-o por WhatsApp do clube? Escreva-o aqui para entrar na sua equipa.</p><input id="cCod" class="in" placeholder="Ex.: TR4K9P" style="text-transform:uppercase;font-size:20px;letter-spacing:2px" autocomplete="off"><button class="btn gold full" style="margin-top:12px" onclick="entrarComCodigo()">Entrar</button></div><p class="faint" style="text-align:center;margin:10px 0">ou, se a equipa ainda não existe na app:</p>`:''}${t?`<div class="card">
       <label class="f" for="eNome">Nome da equipa</label><input id="eNome" class="in" placeholder="Ex.: Futsal Portuzelo">
       <label class="f" for="eEsc">Escalão</label>
       <select id="eEsc" class="in"><option>Petizes (sub-7)</option><option>Traquinas (sub-9)</option><option>Benjamins (sub-11)</option><option>Infantis (sub-13)</option><option>Iniciados (sub-15)</option><option>Juvenis (sub-17)</option><option>Juniores (sub-19)</option></select>
       <button class="btn full" style="margin-top:16px" onclick="criarEquipa()">Criar equipa</button></div>`
-    :`<div class="card"><h3>O seu código pessoal</h3><p class="muted" style="margin:0 0 8px">Recebeu-o por mensagem do clube. Serve para pais (código de família) e para atletas (código de atleta). Liga a sua conta à ficha que já existe: não é preciso registar ninguém.</p><input id="cCod" class="in" placeholder="Ex.: FF58B1" style="text-transform:uppercase;font-size:20px;letter-spacing:2px;text-align:center">
+    :`<div class="card"><h3>O seu código pessoal</h3><p class="muted" style="margin:0 0 8px">Recebeu-o por mensagem do clube. Serve para pais (código de família), atletas (código de atleta), treinadores e clube. Liga a sua conta à ficha que já existe: não é preciso registar ninguém.</p><input id="cCod" class="in" placeholder="Ex.: FF58B1" style="text-transform:uppercase;font-size:20px;letter-spacing:2px;text-align:center">
       <button class="btn gold full" style="margin-top:12px" onclick="entrarComCodigo()">Entrar</button></div>
       <details class="card"><summary style="cursor:pointer;font-weight:600">Só tenho o código da equipa</summary><p class="muted" style="margin:8px 0">Entra na equipa, mas para ver o seu filho precisa do código pessoal. Peça-o ao treinador.</p><input id="cEq" class="in" placeholder="Ex.: 4F9A2C" style="text-transform:uppercase">
       <button class="btn ghost full" style="margin-top:12px" onclick="entrarEquipa()">Entrar na equipa</button></details>`}
@@ -329,6 +330,10 @@ async function juntarFilho(cod){
 
 async function entrarComCodigo(cod){
   const c=(cod||g('cCod')||g('cFam2')||'').trim().toUpperCase();if(!c){toast('Escreva o código que recebeu');return}
+  if(/^(TR|CL)[A-Z0-9]{4}$/.test(c)){const s=await sb.rpc('fut_usar_codigo_staff',{p_codigo:c});
+    if(!s.error){closeSheet();if(S.perfil)S.perfil.papel=s.data.papel;if(s.data.equipa_id)try{localStorage.setItem('fut_eq',s.data.equipa_id)}catch(_){}
+      await carregarEquipas();toast(s.data.papel==='clube'?'Bem-vindo(a)! Acesso do clube ativo 🏛️':'Bem-vindo(a), treinador(a)! 🧢');return}
+    toast(s.error.message.replace(/^.*?: /,''));return}
   let r=await sb.rpc('fut_juntar_filho',{p_codigo:c});
   if(!r.error){closeSheet();await carregarEquipas();if(r.data&&(S.todosMeus||[]).some(j=>j.id===r.data))escolherFilho(r.data);toast('Ligado(a) ao seu filho');return}
   r=await sb.rpc('fut_juntar_atleta',{p_codigo:c});
@@ -354,6 +359,7 @@ async function juntarAtleta(){const c=g('cAt');if(!c){toast('Escreve o código')
 async function carregarEquipas(){
   const ad=await q(sb.from('fut_admins').select('user_id').eq('user_id',S.me));S.admin=!!(ad&&ad.length);
   try{S.modo=localStorage.getItem('fut_modo')||'admin';S.verJog=localStorage.getItem('fut_verjog')||null}catch(_){S.modo='admin'}
+  const [cl,tr]=await Promise.all([q(sb.from('fut_clube').select('user_id').eq('user_id',S.me)),q(sb.from('fut_treinadores').select('equipa_id').eq('user_id',S.me))]);S.clube=!!(cl&&cl.length);S.treinaEqs=new Set((tr||[]).map(t=>t.equipa_id));
   S.equipas=await q(sb.from('fut_equipas').select('*').order('created_at'))||[];
   if(!S.equipas.length){ecraSemEquipa();return}
   let guardada=null;try{guardada=localStorage.getItem('fut_eq')}catch(_){}
@@ -424,7 +430,7 @@ function render(){
   const jogLabel=isCoach()?'Jogadores':isAtleta()?'O meu perfil':(S.meus.length>1?'Filhos':'Filho(a)');
   $('#screen').innerHTML=`
   <header class="top">
-    <div class="row" style="gap:12px;position:relative"><button id="btnVoltar" ${podeVoltar()?'':'hidden'} onclick="botaoVoltar()" aria-label="Voltar atrás" style="flex:none;border:0;background:rgba(255,255,255,.15);color:#fff;border-radius:12px;height:40px;padding:0 12px;font-weight:600;font-size:15px">‹ Voltar</button><div style="flex:none;cursor:pointer" onclick="irPara('inicio')" title="Início">${ESCUDO(36)}</div><div class="grow"><div class="sub">${isAdminModo()?'Administradora':isCoach()?'Treinador(a)':isAtleta()?'Atleta':'Pai / Mãe'} · Futsal 3S</div>
+    <div class="row" style="gap:12px;position:relative"><button id="btnVoltar" ${podeVoltar()?'':'hidden'} onclick="botaoVoltar()" aria-label="Voltar atrás" style="flex:none;border:0;background:rgba(255,255,255,.15);color:#fff;border-radius:12px;height:40px;padding:0 12px;font-weight:600;font-size:15px">‹ Voltar</button><div style="flex:none;cursor:pointer" onclick="irPara('inicio')" title="Início">${ESCUDO(36)}</div><div class="grow"><div class="sub">${isAdminModo()?'Administradora':isCoach()?'Treinador(a)':isAtleta()?'Atleta':eClube()?'Clube':'Pai / Mãe'} · Futsal 3S</div>
     <h1>${S.tab==='jogadores'?jogLabel:S.tab==='mensagens'&&isAtleta()?'Avisos':titulo}</h1></div><button onclick="abrirConta()" aria-label="A minha conta e fotografia" style="flex:none;border:0;background:none;padding:0;position:relative;z-index:2">${fotoPessoa(S.perfil,38)}</button><button onclick="confirmarSair()" aria-label="Sair da app" style="flex:none;border:0;background:rgba(255,255,255,.15);color:#fff;border-radius:12px;height:40px;padding:0 12px;font-weight:600;font-size:14px;position:relative;z-index:2">⏻ Sair</button></div>
     <div class="row wrap" style="gap:6px;margin-top:8px"><button class="team" style="margin-top:0" onclick="abrirConta()">⚽ ${esc(S.eq.nome)} · ${esc(S.eq.escalao||'')} ▾</button>${S.admin?`<button class="team" style="margin-top:0;background:var(--gold)" onclick="escolherVista()">👁️ ${{admin:'Administradora',treinador:'Treinador',pai:'Pais',atleta:'Atleta'}[modoVer()]} ▾</button>`:''}</div>
     ${emPrevia()?`<div style="margin-top:8px;font-size:12px;background:rgba(255,255,255,.12);border-radius:10px;padding:6px 10px">👁️ Pré-visualização como <b>${{treinador:'treinador',pai:'pais',atleta:'atleta'}[modoVer()]}</b>${S.meus[0]&&modoVer()!=='treinador'?' de '+esc(primeiro(S.meus[0].nome)):''}. O que gravar fica em seu nome. <button style="border:0;background:none;color:var(--gold);font-weight:700;padding:0" onclick="escolherVista()">Trocar</button> · <button style="border:0;background:none;color:var(--gold);font-weight:700;padding:0" onclick="mudarModo('admin')">Sair</button></div>`:''}
@@ -441,6 +447,7 @@ function respostaDe(ev,j){return S.presencas.find(p=>p.evento_id===ev&&p.jogador
 function vInicio(){
   const m=$('#main');const prox=proximos();const ev=prox[0];
   if(isCoach()){m.innerHTML=inicioTreinador();setTimeout(areasDinamicas,0);return}
+  if(eClube()){m.innerHTML=inicioClube();return}
   if(isAtleta()&&S.meus.length){const ha=inicioAtleta();if(ha){m.innerHTML=ha;setTimeout(areasAtleta,0);return}}
   if(ePais()&&S.meus.length){const hp=inicioPais();if(hp){m.innerHTML=hp;setTimeout(areasPais,0);return}}
   let h=`<div class="card" id="tarefas"><h2>📝 As minhas tarefas</h2><p class="muted">A carregar…</p></div>`;
@@ -2621,8 +2628,37 @@ Vês os treinos, os desafios, os teus objetivos e a tua evolução.
 4) Escreve o teu código de atleta: ${x.codigo_atleta}
 
 Não partilhes o código com ninguém.`}
+function codStaff(p){const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s=p;const r=crypto.getRandomValues(new Uint8Array(4));r.forEach(x=>s+=A[x%A.length]);return s}
+const msgTreinador=(nome,cod,eq)=>`Olá ${primeiro(nome||'')}! Tem acesso de treinador(a) à equipa ${eq} na app Futsal 3S.\n\n1) Abra: ${location.origin}/futsal\n2) Toque em «Criar conta», escreva o seu email e crie uma palavra-passe só sua\n3) Quando a app pedir um código, escreva: ${cod}\n\nEste código é pessoal e só funciona uma vez.`;
+const msgClube=(nome,cod)=>`Olá ${primeiro(nome||'')}! Tem acesso do clube à app Futsal 3S: vê todas as equipas, a agenda, os jogos, a classificação e o painel.\n\n1) Abra: ${location.origin}/futsal\n2) Toque em «Criar conta», escreva o seu email e crie uma palavra-passe só sua\n3) Quando a app pedir um código, escreva: ${cod}\n\nEste código é pessoal e só funciona uma vez.`;
+async function blocoStaff(){const box=$('#staffBox');if(!box)return;
+  const [tr,cods]=await Promise.all([q(sb.from('fut_treinadores').select('user_id').eq('equipa_id',S.eq.id)),q(sb.from('fut_codigos_staff').select('*').or(`equipa_id.eq.${S.eq.id}${S.admin?',papel.eq.clube':''}`).order('created_at',{ascending:false}))]);
+  const ids=[...new Set([S.eq.treinador_id,...(tr||[]).map(t=>t.user_id)].filter(Boolean))];
+  const nomes=ids.map(u=>S.perfis[u]?S.perfis[u].nome:'(sem nome)');
+  const pend=(cods||[]).filter(c=>!c.usado_por);
+  const linha=c=>`<div class="row between" style="gap:8px;padding:8px 0;border-top:1px solid var(--line,#eee)"><div style="min-width:0"><b>${esc(c.nome||'—')}</b> <span class="chip">${c.papel==='clube'?'🏛️ Clube':'🧢 Treinador'}</span><div class="faint" style="font-size:13px">código ${esc(c.codigo)} · ainda não entrou</div></div>${c.telefone?`<a class="btn sm" style="background:#25D366;text-decoration:none;flex:none" target="_blank" rel="noopener" href="https://wa.me/${telWa(c.telefone)}?text=${encodeURIComponent(c.papel==='clube'?msgClube(c.nome,c.codigo):msgTreinador(c.nome,c.codigo,S.eq.nome))}">WhatsApp</a>`:''}</div>`;
+  box.innerHTML=`<div class="h3s-card" style="margin-top:12px"><b>🧢 Treinadores desta equipa</b><div class="faint" style="margin:4px 0 6px">${nomes.length?nomes.map(esc).join(' · '):'Ainda nenhum.'}</div>
+   ${pend.filter(c=>c.papel==='treinador').map(linha).join('')}
+   <button class="btn gold full" style="margin-top:10px" onclick="novoStaff('treinador')">+ Dar acesso a um treinador</button></div>
+   ${S.admin?`<div class="h3s-card" style="margin-top:12px"><b>🏛️ Acesso do clube</b><div class="faint" style="margin:4px 0 6px">Direção do clube: vê todas as equipas, a agenda, os jogos, a classificação e o painel. Não vê dados pessoais nem avaliações e não altera nada.</div>
+   ${pend.filter(c=>c.papel==='clube').map(linha).join('')}
+   <button class="btn ghost full" style="margin-top:10px" onclick="novoStaff('clube')">+ Dar acesso ao clube</button></div>`:''}`}
+function novoStaff(papel){openSheet(`<h2>${papel==='clube'?'🏛️ Acesso do clube':'🧢 Novo treinador'}</h2><p class="muted" style="margin-top:0">${papel==='clube'?'Para alguém da direção do clube.':'Fica com acesso de treinador(a) à equipa '+esc(S.eq.nome)+'.'} A app cria um código pessoal e abre o WhatsApp com a mensagem.</p>
+  <label class="f" for="sfN">Nome</label><input id="sfN" class="in" autocomplete="off">
+  <label class="f" for="sfT">Telemóvel (WhatsApp)</label><input id="sfT" class="in" type="tel" inputmode="tel" placeholder="9xx xxx xxx" autocomplete="off">
+  <button class="btn gold full" style="margin-top:14px" onclick="criarStaff('${papel}')">Criar código e enviar</button>`)}
+async function criarStaff(papel){const nome=g('sfN').trim(),tel=g('sfT').trim();if(!nome){toast('Escreva o nome');return}
+  if(tel&&tel.replace(/\D/g,'').length<9){toast('Número incompleto');return}
+  const cod=codStaff(papel==='clube'?'CL':'TR');
+  const {error}=await sb.from('fut_codigos_staff').insert({codigo:cod,papel,equipa_id:papel==='clube'?null:S.eq.id,nome,telefone:tel||null});if(error){toast('Não foi possível criar o código');return}
+  const msg=papel==='clube'?msgClube(nome,cod):msgTreinador(nome,cod,S.eq.nome);
+  closeSheet();
+  if(tel)window.open(`https://wa.me/${telWa(tel)}?text=${encodeURIComponent(msg)}`,'_blank');
+  else openSheet(`<h2>Código criado</h2><span class="code">${cod}</span><p class="muted">Envie esta mensagem a ${esc(nome)}:</p><textarea class="in" rows="8" readonly>${esc(msg)}</textarea>`);
+  blocoStaff()}
 async function vAcessos(){
   if(!isCoach()){$('#main').innerHTML='<div class="card"><p class="empty">Só o treinador e a administradora veem os acessos.</p></div>';return}
+  setTimeout(blocoStaff,300);
   const [{data},ct]=await Promise.all([sb.rpc('fut_codigos_equipa',{p_equipa:S.eq.id}),sb.rpc('fut_contas_equipa',{p_equipa:S.eq.id}).then(r=>r.data||[])]);const L=data||[];S._acessos=L;S._contas=Array.isArray(ct)?ct:[];
   if(L.length){const pr=await q(sb.from('fut_fichas').select('jogador_id,encarregado_parentesco,encarregado2_parentesco').in('jogador_id',L.map(x=>x.jogador_id)));(pr||[]).forEach(r=>{const x=L.find(y=>y.jogador_id===r.jogador_id);if(x)Object.assign(x,{encarregado_parentesco:r.encarregado_parentesco,encarregado2_parentesco:r.encarregado2_parentesco})})}
   const fam=L.filter(x=>x.n_familia>0).length,atl=L.filter(x=>x.n_atleta>0).length;
@@ -2630,6 +2666,7 @@ async function vAcessos(){
     <div class="h3s-hero-row"><div><div class="h3s-mini-tit">Famílias ligadas</div><div class="h3s-mini-num ${fam===L.length&&L.length?'pos':''}">${fam}/${L.length}</div></div><div><div class="h3s-mini-tit">Atletas com conta</div><div class="h3s-mini-num">${atl}/${L.length}</div></div></div>
     <p class="faint" style="margin:12px 0 0">Cada pessoa cria a sua própria palavra-passe. Aqui só envia o link e o código, que ligam a conta ao atleta certo.</p><button class="btn full" style="margin-top:12px;background:#25D366" onclick="envioUmAUm()">📤 Enviar a cada pessoa, um a um</button></div>
   <div class="h3s-card" style="margin-top:12px"><div class="row between"><div><b>Código da equipa</b><div class="faint">Para pais que ainda vão registar o filho</div></div><span class="code" style="font-size:22px">${esc(S.eq.codigo)}</span></div></div>
+  <div id="staffBox"></div>
   ${L.map((x,i)=>`<div class="h3s-card" style="margin-top:12px"><div class="row between"><div class="row" style="gap:10px">${avatar(S.jogadores.find(j=>j.id===x.jogador_id)||{id:x.jogador_id,nome:x.nome,numero:x.numero},44)}<div><b>${esc(x.nome)}</b><div class="faint">${x.numero?'n.º '+x.numero:''}</div></div></div></div>
     <div class="row" style="gap:8px;margin-top:12px">
       <div class="kpi grow" style="text-align:left;padding:10px"><small>👨‍👩‍👦 Família ${x.n_familia?`<span class="chip mint">✔ ${x.n_familia}</span>`:''}</small><b style="font-size:20px;letter-spacing:2px">${esc(x.codigo_familia)}</b></div>
@@ -2726,6 +2763,18 @@ async function sincJogoAgenda(x){const nC=eNosso(x.casa),nF=eNosso(x.fora);if(!(
   if(ev)await q(sb.from('fut_eventos').update(u).eq('id',ev.id));else await q(sb.from('fut_eventos').insert({equipa_id:S.eq.id,tipo:'jogo',...u}));
   await carregar()}
 function abrirJogoJornada(id){const x=S._cj.J.find(y=>y.id===id);const ev=x&&(S.eventos||[]).find(e=>e.tipo==='jogo'&&e.data===x.data);if(ev)abrirEvento(ev.id);else toast('Este jogo ainda não está na agenda')}
+/* ---------- Início do clube (só leitura) ---------- */
+function inicioClube(){const ev=proximos()[0];
+  return `<div style="background:var(--bg);border-radius:28px;padding:18px 14px 6px;position:relative;z-index:2"><div class="row between" style="margin:0 4px 14px"><h2 style="margin:0;color:var(--navy)">🏛️ Clube</h2><span class="chip">${esc(S.eq.nome)}</span></div>
+  <p class="faint" style="margin:-6px 4px 12px">Acesso de consulta: vê todas as equipas. Para trocar de equipa, toque no nome da equipa no topo.</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+   ${areaCard('pnl','📊','Painel da app','todas as equipas',"S.tab='painel';render();window.scrollTo(0,0)")}
+   ${areaCard('age','📅',ev?(ev.tipo==='jogo'?'Próximo jogo':'Próximo treino'):'Agenda',ev?`${dataCurta(ev.data)} · ${esc(horaEv(ev)||'')}${ev.tipo==='jogo'?' · vs '+esc(ev.adversario||'?'):''}`:'treinos e jogos',"irPara('agenda')")}
+   ${areaCard('cls','🏆','Classificação e jornadas','jogos de todos os clubes',"S.eqTab='classificacao';irEquipa()")}
+   ${areaCard('eq','🛡️','Equipa','plantel e jogos','irEquipa()')}
+   ${areaCard('reg','📜','Regras de funcionamento','o que a equipa combinou','abrirRegras()')}
+   ${areaCard('pdc','<img src="banco-suplentes.jpg" alt="" style="width:52px;height:52px;border-radius:12px;display:block">','Podcasts','Banco de Suplentes','abrirPodcasts()')}
+  </div></div>`}
 /* ---------- painel da app (administradora) ---------- */
 const PAINEL_IT=[
  ['familia','👨‍👩‍👦','Pais ligados à app','familias','acessos'],
@@ -3700,7 +3749,7 @@ function vGuia(){
 
 /* ---------- conta ---------- */
 function abrirConta(){
-  openSheet(`<div class="row" style="gap:14px"><button onclick="menuMinhaFoto()" aria-label="A minha fotografia" style="border:0;background:none;padding:0;position:relative;flex:none">${fotoPessoa(S.perfil,64)}<span style="position:absolute;right:-4px;bottom:-4px;background:var(--gold);color:#fff;border-radius:99px;width:24px;height:24px;display:grid;place-items:center;font-size:12px">📷</span></button><div><h2 style="margin:0">${esc(S.perfil.nome)}</h2><p class="muted" style="margin:2px 0 0">${isAdminModo()?'Administradora':isCoach()?'Treinador(a)':isAtleta()?'Atleta':'Pai / Mãe'}</p></div></div>
+  openSheet(`<div class="row" style="gap:14px"><button onclick="menuMinhaFoto()" aria-label="A minha fotografia" style="border:0;background:none;padding:0;position:relative;flex:none">${fotoPessoa(S.perfil,64)}<span style="position:absolute;right:-4px;bottom:-4px;background:var(--gold);color:#fff;border-radius:99px;width:24px;height:24px;display:grid;place-items:center;font-size:12px">📷</span></button><div><h2 style="margin:0">${esc(S.perfil.nome)}</h2><p class="muted" style="margin:2px 0 0">${isAdminModo()?'Administradora':isCoach()?'Treinador(a)':isAtleta()?'Atleta':eClube()?'Clube':'Pai / Mãe'}</p></div></div>
   ${S.equipas.length>1?`<label class="f">Equipa</label><select id="cEqSel" class="in" onchange="mudarEquipa(this.value)">${S.equipas.map(e=>`<option value="${e.id}" ${e.id===S.eq.id?'selected':''}>${esc(e.nome)}</option>`).join('')}</select>`:''}
   ${isCoach()?`<button class="btn full" style="margin-top:10px;background:#25D366" onclick="irAcessos()">🔑 Acessos de pais e atletas</button>`:''}
   ${isCoach()?`<div class="card" style="margin-top:14px"><b>Código da equipa</b><p class="muted" style="margin:4px 0 8px">Os pais usam-no para entrar.</p><span class="code">${esc(S.eq.codigo)}</span></div>`:''}
