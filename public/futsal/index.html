@@ -2630,7 +2630,7 @@ Vês os treinos, os desafios, os teus objetivos e a tua evolução.
 Não partilhes o código com ninguém.`}
 function codStaff(p){const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s=p;const r=crypto.getRandomValues(new Uint8Array(4));r.forEach(x=>s+=A[x%A.length]);return s}
 const msgTreinador=(nome,cod,eq)=>`Olá ${primeiro(nome||'')}! Tem acesso de treinador(a) à equipa ${eq} na app Futsal 3S.\n\n1) Abra: ${location.origin}/futsal\n2) Toque em «Criar conta», escreva o seu email e crie uma palavra-passe só sua\n3) Quando a app pedir um código, escreva: ${cod}\n\nEste código é pessoal e só funciona uma vez.`;
-const msgClube=(nome,cod)=>`Olá ${primeiro(nome||'')}! Tem acesso do clube à app Futsal 3S: vê todas as equipas, a agenda, os jogos, a classificação e o painel.\n\n1) Abra: ${location.origin}/futsal\n2) Toque em «Criar conta», escreva o seu email e crie uma palavra-passe só sua\n3) Quando a app pedir um código, escreva: ${cod}\n\nEste código é pessoal e só funciona uma vez.`;
+const msgClube=(nome,cod)=>`Olá ${primeiro(nome||'')}! Tem acesso do clube à app Futsal 3S: vê todas as equipas, a agenda, os jogos, a classificação e o semáforo do clube.\n\n1) Abra: ${location.origin}/futsal\n2) Toque em «Criar conta», escreva o seu email e crie uma palavra-passe só sua\n3) Quando a app pedir um código, escreva: ${cod}\n\nEste código é pessoal e só funciona uma vez.`;
 async function blocoStaff(){const box=$('#staffBox');if(!box)return;
   const [tr,cods]=await Promise.all([q(sb.from('fut_treinadores').select('user_id').eq('equipa_id',S.eq.id)),q(sb.from('fut_codigos_staff').select('*').or(`equipa_id.eq.${S.eq.id}${S.admin?',papel.eq.clube':''}`).order('created_at',{ascending:false}))]);
   const ids=[...new Set([S.eq.treinador_id,...(tr||[]).map(t=>t.user_id)].filter(Boolean))];
@@ -2640,7 +2640,7 @@ async function blocoStaff(){const box=$('#staffBox');if(!box)return;
   box.innerHTML=`<div class="h3s-card" style="margin-top:12px"><b>🧢 Treinadores desta equipa</b><div class="faint" style="margin:4px 0 6px">${nomes.length?nomes.map(esc).join(' · '):'Ainda nenhum.'}</div>
    ${pend.filter(c=>c.papel==='treinador').map(linha).join('')}
    <button class="btn gold full" style="margin-top:10px" onclick="novoStaff('treinador')">+ Dar acesso a um treinador</button></div>
-   ${S.admin?`<div class="h3s-card" style="margin-top:12px"><b>🏛️ Acesso do clube</b><div class="faint" style="margin:4px 0 6px">Direção do clube: vê todas as equipas, a agenda, os jogos, a classificação e o painel. Não vê dados pessoais nem avaliações e não altera nada.</div>
+   ${S.admin?`<div class="h3s-card" style="margin-top:12px"><b>🏛️ Acesso do clube</b><div class="faint" style="margin:4px 0 6px">Direção do clube: vê todas as equipas, a agenda, os jogos, a classificação e o semáforo do clube. Não vê dados pessoais nem avaliações e não altera nada.</div>
    ${pend.filter(c=>c.papel==='clube').map(linha).join('')}
    <button class="btn ghost full" style="margin-top:10px" onclick="novoStaff('clube')">+ Dar acesso ao clube</button></div>`:''}`}
 function novoStaff(papel){openSheet(`<h2>${papel==='clube'?'🏛️ Acesso do clube':'🧢 Novo treinador'}</h2><p class="muted" style="margin-top:0">${papel==='clube'?'Para alguém da direção do clube.':'Fica com acesso de treinador(a) à equipa '+esc(S.eq.nome)+'.'} A app cria um código pessoal e abre o WhatsApp com a mensagem.</p>
