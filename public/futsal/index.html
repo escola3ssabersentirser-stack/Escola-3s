@@ -415,10 +415,10 @@ function botaoVoltar(){if(S.hist.length){try{history.back();return}catch(_){}}vo
 window.addEventListener('popstate',()=>{if(_ignPop){_ignPop=false;return}if($('.sheet')){closeSheet(true);return}if(S.perfil&&S.eq)voltar()});
 /* ---------- estrutura ---------- */
 const TABS=[['inicio','🏠','Início'],['agenda','📅','Agenda'],['jogadores','⚽','Jogadores'],['avaliacoes','📋','Avaliações'],['mensagens','💬','Mensagens']];
-const rotuloTab=k=>k==='dados'?'Dados pessoais':k==='avaliacoes'?'Avaliações':k==='acessos'?'Acessos':k==='ajuda'?'Ajuda aos pais':k==='podios'?'Pódios':k==='equipa'?'Ficha de Equipa':k==='jogadores'?(isCoach()?'Jogadores':isAtleta()?'Eu':'Filhos'):k==='mensagens'&&isAtleta()?'Avisos':(TABS.find(t=>t[0]===k)||[])[2];
+const rotuloTab=k=>k==='dados'?'Dados pessoais':k==='avaliacoes'?'Avaliações':k==='acessos'?'Acessos':k==='painel'?'Painel da app':k==='ajuda'?'Ajuda aos pais':k==='podios'?'Pódios':k==='equipa'?'Ficha de Equipa':k==='jogadores'?(isCoach()?'Jogadores':isAtleta()?'Eu':'Filhos'):k==='mensagens'&&isAtleta()?'Avisos':(TABS.find(t=>t[0]===k)||[])[2];
 function render(){
   marcarNav();
-  const t=TABS.find(x=>x[0]===S.tab)||({ajuda:['ajuda','🤝','Ajuda aos pais'],podios:['podios','🏆','Pódios'],equipa:['equipa','🛡️','Ficha de Equipa'],acessos:['acessos','🔑','Acessos'],avaliacoes:['avaliacoes','📋','Avaliação dos jogadores'],dados:['dados','📇','Dados pessoais']}[S.tab]);
+  const t=TABS.find(x=>x[0]===S.tab)||({ajuda:['ajuda','🤝','Ajuda aos pais'],podios:['podios','🏆','Pódios'],equipa:['equipa','🛡️','Ficha de Equipa'],acessos:['acessos','🔑','Acessos'],painel:['painel','📊','Painel da app'],avaliacoes:['avaliacoes','📋','Avaliação dos jogadores'],dados:['dados','📇','Dados pessoais']}[S.tab]);
   const titulo=S.tab==='inicio'?`Olá, ${esc(primeiro(emPrevia()&&modoVer()==='atleta'&&S.meus[0]?S.meus[0].nome:emPrevia()&&modoVer()==='treinador'?nomeDe(S.eq.treinador_id):S.perfil.nome))}`:t[2];
   const jogLabel=isCoach()?'Jogadores':isAtleta()?'O meu perfil':(S.meus.length>1?'Filhos':'Filho(a)');
   $('#screen').innerHTML=`
@@ -430,7 +430,7 @@ function render(){
   </header>
   <main id="main"></main>
   ${isCoach()||(!isCoach()&&S.meus.length)?'':`<nav class="bottom">${TABS.filter(([k])=>!(k==='mensagens'&&isAtleta())).map(([k,i,l])=>`<button class="${S.tab===k?'on':''}" onclick="irPara('${k}')"><span>${i}</span>${rotuloTab(k)}</button>`).join('')}</nav>`}`;
-  ({inicio:vInicio,agenda:vAgenda,jogadores:vJogadores,mensagens:vMensagens,guia:vGuia,ajuda:vAjuda,podios:vPodios,equipa:vEquipa,acessos:vAcessos,avaliacoes:vAvaliacoes,dados:vDados})[S.tab]();
+  ({inicio:vInicio,agenda:vAgenda,jogadores:vJogadores,mensagens:vMensagens,guia:vGuia,ajuda:vAjuda,podios:vPodios,equipa:vEquipa,acessos:vAcessos,painel:vPainel,avaliacoes:vAvaliacoes,dados:vDados})[S.tab]();
 }
 function irPara(t){S.tab=t;S.jog=null;render();window.scrollTo(0,0)}
 
@@ -2713,6 +2713,36 @@ async function sincJogoAgenda(x){const nC=eNosso(x.casa),nF=eNosso(x.fora);if(!(
   if(ev)await q(sb.from('fut_eventos').update(u).eq('id',ev.id));else await q(sb.from('fut_eventos').insert({equipa_id:S.eq.id,tipo:'jogo',...u}));
   await carregar()}
 function abrirJogoJornada(id){const x=S._cj.J.find(y=>y.id===id);const ev=x&&(S.eventos||[]).find(e=>e.tipo==='jogo'&&e.data===x.data);if(ev)abrirEvento(ev.id);else toast('Este jogo ainda não está na agenda')}
+/* ---------- painel da app (administradora) ---------- */
+async function vPainel(){const m=$('#main');m.innerHTML='<div class="card"><p class="muted">A carregar o painel…</p></div>';
+  const {data:P,error}=await sb.rpc('fut_painel_admin');if(error||!P){m.innerHTML=`<div class="card"><p class="empty">Não foi possível abrir o painel.</p></div>`;return}
+  const E=P.equipas||[],soma=k=>E.reduce((a,e)=>a+(+e[k]||0),0);
+  const pc=(a,b)=>b?Math.round(100*a/b):0;
+  const barra=(rot,a,b,ic)=>{const p=pc(a,b),cor=p>=80?'var(--mint)':p>=50?'var(--gold)':'var(--red)';return `<div style="margin:8px 0"><div class="row between" style="font-size:13px"><span>${ic} ${rot}</span><b>${a}/${b}</b></div><div style="height:8px;border-radius:6px;background:var(--line,#eee);overflow:hidden;margin-top:4px"><div style="width:${p}%;height:100%;background:${cor}"></div></div></div>`};
+  const kpi=(v,l,ic)=>`<div style="background:var(--card);border-radius:18px;padding:14px;box-shadow:0 4px 14px var(--shadow)"><div style="font-size:20px">${ic}</div><div style="font-family:'Baloo 2';font-weight:800;font-size:28px;color:var(--navy);line-height:1.1">${v}</div><div class="faint" style="font-size:12px">${l}</div></div>`;
+  const J=soma('jogadores');
+  const alertas=[];E.forEach(e=>{const n=e.nome.replace(/^ARCAS\s*/i,'');
+    if(e.jogadores&&e.familias<e.jogadores)alertas.push(`👨‍👩‍👦 ${esc(n)}: ${e.jogadores-e.familias} jogador(es) sem família ligada`);
+    if(e.jogadores&&e.cc<e.jogadores)alertas.push(`🪪 ${esc(n)}: faltam ${e.jogadores-e.cc} Cartões de Cidadão`);
+    if(e.jogadores&&e.aval90<e.jogadores)alertas.push(`📋 ${esc(n)}: ${e.jogadores-e.aval90} sem avaliação 3S nos últimos 3 meses`);
+    if(e.jogadores&&e.feedback30<e.jogadores)alertas.push(`💬 ${esc(n)}: ${e.jogadores-e.feedback30} sem feedback este mês`);
+    if(+e.pag_pend>0)alertas.push(`💶 ${esc(n)}: ${(+e.pag_pend).toFixed(2).replace('.',',')} € por receber`)});
+  m.innerHTML=`<div class="row between" style="margin:4px 4px 12px;position:relative;z-index:2"><span class="faint">Todas as equipas · atualizado agora</span><button class="btn ghost sm" onclick="vPainel()">↻ Atualizar</button></div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+   ${kpi(E.length,'equipas','🛡️')}${kpi(J,'jogadores','⚽')}${kpi(P.contas,'contas na app','👤')}
+   ${kpi(P.ativos7,'entraram esta semana','🟢')}${kpi(P.novas7,'contas novas (7 dias)','✨')}${kpi(pc(soma('familias'),J)+'%','famílias ligadas','👨‍👩‍👦')}</div>
+  ${alertas.length?`<div class="card" style="margin-top:14px"><h3 style="margin:0 0 6px">⚠️ A tratar</h3>${alertas.map(a=>`<div style="padding:6px 0;border-top:1px solid var(--line,#eee);font-size:14px">${a}</div>`).join('')}</div>`:''}
+  ${E.map(e=>{const r=e.v+e.e+e.d;const px=e.proximo;return `<div class="card" style="margin-top:14px"><div class="row between"><div><h3 style="margin:0">${esc(e.nome)}</h3><div class="faint">${esc(e.escalao||'')} · ${e.jogadores} jogadores</div></div><button class="btn ghost sm" onclick="mudarEquipa('${e.id}')">Abrir</button></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:12px 0;text-align:center">
+     <div><div style="font-weight:800;font-size:20px;color:var(--navy)">${r?`${e.v}-${e.e}-${e.d}`:'—'}</div><div class="faint" style="font-size:11px">V-E-D</div></div>
+     <div><div style="font-weight:800;font-size:20px;color:var(--navy)">${e.presenca30!=null?e.presenca30+'%':'—'}</div><div class="faint" style="font-size:11px">presenças (30 dias)</div></div>
+     <div><div style="font-weight:800;font-size:20px;color:var(--navy)">${e.treinos30}</div><div class="faint" style="font-size:11px">treinos (30 dias)</div></div></div>
+    ${px?`<div class="faint" style="margin-bottom:6px">Próximo: ${px.tipo==='jogo'?'⚽ jogo'+(px.adv?' vs '+esc(px.adv):''):'🏃 treino'} · ${dataCurta(px.data)} · ${e.resp_prox} resposta(s)</div>`:''}
+    <b style="font-size:13px">Acessos e documentos</b>
+    ${barra('Famílias ligadas',e.familias,e.jogadores,'👨‍👩‍👦')}${barra('Atletas com conta',e.atletas,e.jogadores,'⚽')}${barra('Fichas completas',e.fichas,e.jogadores,'🗂️')}${barra('Cartão de Cidadão',e.cc,e.jogadores,'🪪')}
+    <b style="font-size:13px;display:block;margin-top:10px">Obrigações do treinador</b>
+    ${barra('Avaliação 3S (3 meses)',e.aval90,e.jogadores,'📋')}${barra('Feedback (este mês)',e.feedback30,e.jogadores,'💬')}${barra('Plano de ação',e.planos,e.jogadores,'🎯')}${barra('Questionário «O que me move»',e.inqueritos,e.jogadores,'🗣️')}
+    <div class="row between faint" style="margin-top:8px;font-size:13px"><span>👁️ ${e.observ30} observações (30 dias)</span><span>💶 ${(+e.pag_pend).toFixed(2).replace('.',',')} € por receber</span></div></div>`}).join('')}`}
 /* ---------- números WhatsApp de pai, mãe e atleta (editáveis) ---------- */
 const telIg=(a,b)=>{const x=telWa(a),y=telWa(b);return x&&y&&x.slice(-9)===y.slice(-9)};
 function blocoNumeros(x,i){
@@ -3319,6 +3349,7 @@ function inicioTreinador(){
    ${areaCard('dados','📇','Dados pessoais','pais e jogadores · contactos e Cartão de Cidadão','irDados()','jogadores')}
    ${areaCard('jog','⚽','Jogadores',`${S.jogadores.length} atletas · fotos e fichas`,"irPara('jogadores')",'jogadores')}
    ${areaCard('tar','📝','Tarefas','a carregar…','abrirTarefas()')}
+   ${S.admin?areaCard('pnl','📊','Painel da app','números de todas as equipas',"S.tab='painel';S.jog=null;render();window.scrollTo(0,0)"):''}
    ${areaCard('ace','🔑','Acessos','códigos por WhatsApp','irAcessos()')}
    ${areaCard('ava','💛','Avaliações',`3S, FPF, coaching · ${trimLabel(trimAtual())}`,'irAvaliacoes()')}
    ${areaCard('pag','💶','Pagamentos','quotas e conta corrente','painelPagamentos()')}
