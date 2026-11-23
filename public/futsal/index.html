@@ -2631,7 +2631,7 @@ Não partilhes o código com ninguém.`}
 function codStaff(p){const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s=p;const r=crypto.getRandomValues(new Uint8Array(4));r.forEach(x=>s+=A[x%A.length]);return s}
 const msgTreinador=(nome,cod,eq)=>`Olá ${primeiro(nome||'')}! Tem acesso de treinador(a) à equipa ${eq} na app Futsal 3S.\n\n1) Abra: ${location.origin}/futsal\n2) Toque em «Criar conta», escreva o seu email e crie uma palavra-passe só sua\n3) Quando a app pedir um código, escreva: ${cod}\n\nEste código é pessoal e só funciona uma vez.`;
 const msgClube=(nome,cod)=>`Olá ${primeiro(nome||'')}! Tem acesso do clube à app Futsal 3S: vê todas as equipas, a agenda, os jogos, a classificação e o semáforo do clube.\n\n1) Abra: ${location.origin}/futsal\n2) Toque em «Criar conta», escreva o seu email e crie uma palavra-passe só sua\n3) Quando a app pedir um código, escreva: ${cod}\n\nEste código é pessoal e só funciona uma vez.`;
-async function blocoStaff(){const box=$('#staffBox');if(!box)return;
+async function blocoStaff(t){const box=$('#staffBox');if(!box){if((t||0)<40&&S.tab==='acessos')setTimeout(()=>blocoStaff((t||0)+1),250);return}
   const [tr,cods]=await Promise.all([q(sb.from('fut_treinadores').select('user_id').eq('equipa_id',S.eq.id)),q(sb.from('fut_codigos_staff').select('*').or(`equipa_id.eq.${S.eq.id}${S.admin?',papel.eq.clube':''}`).order('created_at',{ascending:false}))]);
   const ids=[...new Set([S.eq.treinador_id,...(tr||[]).map(t=>t.user_id)].filter(Boolean))];
   const nomes=ids.map(u=>S.perfis[u]?S.perfis[u].nome:'(sem nome)');
