@@ -446,7 +446,7 @@ function proximos(){return S.eventos.filter(e=>e.data>=hoje())}
 function respostaDe(ev,j){return S.presencas.find(p=>p.evento_id===ev&&p.jogador_id===j)}
 function vInicio(){
   const m=$('#main');const prox=proximos();const ev=prox[0];
-  if(isCoach()){m.innerHTML=inicioTreinador();setTimeout(areasDinamicas,0);return}
+  if(isCoach()){m.innerHTML=inicioTreinador();setTimeout(()=>{areasDinamicas();cartaoConvocatoria()},0);return}
   if(eClube()){m.innerHTML=inicioClube();return}
   if(isAtleta()&&S.meus.length){const ha=inicioAtleta();if(ha){m.innerHTML=ha;setTimeout(areasAtleta,0);return}}
   if(ePais()&&S.meus.length){const hp=inicioPais();if(hp){m.innerHTML=hp;setTimeout(areasPais,0);return}}
@@ -580,6 +580,7 @@ async function abrirEvento(id){
   ${e.levar?`<div class="card" style="margin:10px 0"><b>🎒 O que levar</b><p style="margin:4px 0 0">${esc(e.levar)}</p></div>`:''}`;
   if(!isCoach()&&S.meus.length&&!passado) h+=`<div class="card" style="margin:10px 0"><b>Resposta</b>${S.meus.map(j=>linhaResposta(e,j)).join('')}</div>`;
   if(e.tipo==='jogo'&&conv&&conv.length) h+=`<div class="card" style="margin:10px 0"><b>Convocados (${conv.length})</b><p style="margin:6px 0 0">${conv.map(c=>(c.numero?c.numero+' · ':'')+esc(c.nome)).join('<br>')}</p></div>`;
+  if(isCoach()&&e.tipo==='jogo'&&!passado&&!['cancelado','adiado'].includes(e.estado)) h+=`<a class="btn full" style="display:block;text-align:center;text-decoration:none;background:#25D366;margin:10px 0" href="https://wa.me/?text=${encodeURIComponent(msgConvocatoria(e,conv||[]))}" target="_blank" rel="noopener" onclick="marcarConvEnviada('${e.id}')">📣 ${e.convocatoria_enviada_em?'Reenviar':'Enviar'} convocatória pelo WhatsApp</a>${e.convocatoria_enviada_em?`<p class="faint" style="margin:-4px 0 10px;text-align:center;font-size:13px">Já enviada a ${new Date(e.convocatoria_enviada_em).toLocaleDateString('pt-PT',{day:'numeric',month:'short'})}</p>`:''}`;
   if(isCoach()) h+=blocoTreinador(e);
   else if(passado) h+=`<button class="btn ghost full" style="margin:10px 0" onclick="podioEvento('${e.id}')">🏆 Ver o pódio do ${e.tipo==='jogo'?'jogo':'treino'}</button>`;
   // boleias
@@ -3482,9 +3483,59 @@ async function apagarTarefa(id){await q(sb.from('fut_tarefas').delete().eq('id',
 
 /* ---------- Início do treinador: áreas em cartões ---------- */
 function areaCard(id,ic,t,sub,acao,imp){return `<button onclick="${acao}" style="position:relative;border:0;background:var(--card);border-radius:24px;padding:20px 18px;min-height:150px;box-shadow:0 6px 20px var(--shadow);display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;cursor:pointer">${imp!=null?`<span role="button" aria-label="Importar documento" title="Importar documento" onclick="event.stopPropagation();irImportar(${imp?`'${imp}'`:''}${imp==='notas'&&S.meus[0]&&!isCoach()?`,'${(S.meus.find(j=>j.id===S.filhoSel)||S.meus[0]).id}'`:''})" style="position:absolute;top:12px;right:12px;background:var(--navy-soft);border-radius:12px;padding:6px 8px;font-size:15px">📥</span>`:''}<span style="font-size:36px;line-height:1">${ic}</span><b style="font-size:19px;color:var(--navy);margin-top:6px">${t}</b><span id="ar_${id}" class="faint" style="font-size:13px;line-height:1.35">${sub}</span></button>`}
+/* ---------- convocatória automática pelo WhatsApp ---------- */
+const FRASES_CONV=[
+ 'Rapazes, quero ver-vos a correr uns pelos outros, a levantar o colega que falha e a respeitar o árbitro e o adversário. Errar faz parte: respira, foca e volta ao jogo.',
+ 'Cabeça fria e coração quente! Quem controla as emoções controla o jogo. Joguem juntos, falem uns com os outros e deem tudo até ao último segundo.',
+ 'Um grande jogador não é só o que marca: é o que ajuda, o que anima e o que nunca desiste. Hoje quero ver uma equipa unida.',
+ 'O talento ganha jogos, mas o trabalho de equipa e a atitude ganham campeonatos. Respeito por todos e entrega total!',
+ 'Errou? Não faz mal. Levanta a cabeça, respira três vezes e vai à próxima jogada. Somos uma equipa: ninguém joga sozinho.',
+ 'Entrem em campo com vontade, humildade e alegria. Ganhando ou perdendo, saímos de cabeça erguida se dermos o nosso melhor.'
+];
+function fraseConv(e){let h=0;for(const c of String(e.id))h=(h*31+c.charCodeAt(0))>>>0;return FRASES_CONV[h%FRASES_CONV.length]}
+function msgConvocatoria(e,conv){
+  const dt=new Date(e.data+'T12:00').toLocaleDateString('pt-PT',{weekday:'long',day:'numeric',month:'long'});
+  const casa=e.casa_fora==='fora'?' (fora)':e.casa_fora==='casa'?' (em casa)':'';
+  const nomes=(conv||[]).map(c=>(c.numero!=null?c.numero+' · ':'')+c.nome);
+  const eqN=S.eq.nome.toLowerCase().includes(CLUBE.split(' ')[0].toLowerCase())?S.eq.nome:CLUBE+' '+S.eq.nome;
+  return `⚽ *CONVOCATÓRIA – ${eqN}* ⚽\n\n`
+   +`🆚 ${CLUBE} vs ${e.adversario||'adversário a definir'}${casa}\n`
+   +`📅 ${dt.charAt(0).toUpperCase()+dt.slice(1)}\n`
+   +(e.hora_chegada?`⏰ Concentração às ${e.hora_chegada}${e.hora?' · jogo às '+e.hora:''}\n`:e.hora?`⏰ Jogo às ${e.hora}\n`:'')
+   +(e.local||e.morada?`📍 ${[e.local,e.morada].filter(Boolean).join(' · ')}\n`:'')
+   +`\n🎒 Levar: ${e.levar||'equipamento completo, caneleiras, garrafa de água e cartão de atleta'}.\n`
+   +(nomes.length?`\n*Convocados (${nomes.length}):*\n${nomes.join('\n')}\n`:'')
+   +(e.notas?`\n📝 ${e.notas}\n`:'')
+   +`\n💪 ${fraseConv(e)}\n\n`
+   +`Confirmem a presença na app: https://escola-3s.pt/futsal\n\nBora, ${CLUBE.split(' ')[0]}! 💙`;
+}
+async function marcarConvEnviada(id){
+  const t=new Date().toISOString();
+  await q(sb.from('fut_eventos').update({convocatoria_enviada_em:t}).eq('id',id));
+  const e=S.eventos.find(x=>x.id===id);if(e)e.convocatoria_enviada_em=t;
+  setTimeout(()=>{if(S.tab==='inicio'&&!$('.sheet'))cartaoConvocatoria()},800);
+}
+async function cartaoConvocatoria(){
+  const el=document.getElementById('convHome');if(!el)return;
+  const lim=addDias(2);
+  const e=S.eventos.find(x=>x.tipo==='jogo'&&x.data>=hoje()&&x.data<=lim&&!x.convocatoria_enviada_em&&!['cancelado','adiado','realizado'].includes(x.estado));
+  if(!e){el.innerHTML='';return}
+  const conv=await q(sb.rpc('fut_convocados',{p_evento:e.id}))||[];
+  const quando=e.data===hoje()?'hoje':e.data===addDias(1)?'amanhã':diaSemana(e.data);
+  const msg=msgConvocatoria(e,conv);
+  el.innerHTML=`<div style="background:#fff;border:2px solid #25D366;border-radius:20px;padding:16px;margin-bottom:14px">
+   <div class="row between" style="gap:8px"><b style="font-size:18px;color:var(--navy)">📣 Convocatória · jogo ${quando}</b><span class="chip gold">${dataCurta(e.data)}</span></div>
+   <p style="margin:6px 0 0;font-weight:600">vs ${esc(e.adversario||'adversário a definir')}${e.hora?' · '+esc(e.hora):''}</p>
+   ${conv.length?`<p class="muted" style="margin:4px 0 0">${conv.length} convocados · mensagem pronta com a frase motivadora</p>`:`<p style="margin:6px 0 0;color:#b3261e;font-size:14px">Ainda não escolheu os convocados. Pode enviar já, mas a lista de nomes não vai na mensagem.</p>`}
+   <details style="margin-top:8px"><summary class="faint" style="cursor:pointer">Ver a mensagem</summary><div style="white-space:pre-wrap;font-size:14px;background:var(--cream,#F6EEE4);border-radius:12px;padding:10px;margin-top:6px">${esc(msg)}</div></details>
+   <a class="btn full" style="display:block;text-align:center;text-decoration:none;background:#25D366;margin-top:10px;padding:14px;font-size:16px" href="https://wa.me/?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener" onclick="marcarConvEnviada('${e.id}')">Enviar pelo WhatsApp</a>
+   <button class="btn ghost full" style="margin-top:8px" onclick="abrirEvento('${e.id}')">${conv.length?'Rever convocados':'Escolher convocados'}</button>
+   <p class="faint" style="margin:8px 0 0;font-size:13px">O WhatsApp abre com a mensagem escrita: escolha o grupo da equipa e carregue em enviar.</p></div>`;
+}
 function inicioTreinador(){
   const ev=proximos()[0];
   return `<div style="background:var(--bg,#F3EEE6);border-radius:28px;padding:18px 14px 6px;position:relative;z-index:2"><div class="row between" style="margin:0 4px 14px"><h2 style="margin:0;color:var(--navy)">${isAdminModo()?'Administração':'Áreas da equipa'}</h2><span class="chip">${esc(S.eq.nome)}</span></div>
+  <div id="convHome"></div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
    ${areaCard('dados','📇','Dados pessoais','pais e jogadores · contactos e Cartão de Cidadão','irDados()','jogadores')}
    ${areaCard('jog','⚽','Jogadores',`${S.jogadores.length} atletas · fotos e fichas`,"irPara('jogadores')",'jogadores')}
